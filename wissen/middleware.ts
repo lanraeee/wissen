@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { verifyToken, COOKIE_NAME } from '@/lib/auth'
+import { verifyToken, COOKIE_NAME } from '@/lib/auth-edge'
 
 const protectedRoutes = ['/community', '/jobs', '/internships', '/scholarships', '/competitions']
 // Profile page requires auth; courses are publicly browsable (progress tracking is optional)
