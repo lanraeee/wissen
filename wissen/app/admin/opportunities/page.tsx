@@ -5,8 +5,8 @@ export const metadata: Metadata = { title: 'Opportunities · Admin · Wissen-Hau
 
 export default async function AdminOpportunities() {
   const opps = await sql`
-    SELECT id, title, company, type, location, deadline, created_at
-    FROM opportunities ORDER BY created_at DESC LIMIT 100
+    SELECT id, title, company, type, source, url, date_posted, first_seen_at
+    FROM opportunities ORDER BY first_seen_at DESC LIMIT 100
   `
 
   return (
@@ -20,7 +20,7 @@ export default async function AdminOpportunities() {
         <table style={{ width: '100%', borderCollapse: 'collapse' }}>
           <thead>
             <tr style={{ background: '#f9f7f3' }}>
-              {['Title', 'Company', 'Type', 'Location', 'Deadline', 'Added'].map(h => (
+              {['Title', 'Company', 'Type', 'Source', 'Posted', 'Added'].map(h => (
                 <th key={h} style={{ padding: '10px 16px', textAlign: 'left', fontSize: '.72rem', fontWeight: 700, letterSpacing: '.08em', textTransform: 'uppercase', color: '#8a9a8f', borderBottom: '1px solid #e8e4dc' }}>{h}</th>
               ))}
             </tr>
@@ -28,14 +28,16 @@ export default async function AdminOpportunities() {
           <tbody>
             {opps.map((o, i) => (
               <tr key={i} style={{ borderBottom: '1px solid #f0ece4' }}>
-                <td style={{ padding: '10px 16px', fontSize: '.88rem', fontWeight: 500 }}>{o.title as string}</td>
-                <td style={{ padding: '10px 16px', fontSize: '.85rem', color: '#3a4a3f' }}>{o.company as string}</td>
+                <td style={{ padding: '10px 16px', fontSize: '.88rem', fontWeight: 500 }}>
+                  <a href={o.url as string} target="_blank" rel="noopener noreferrer" style={{ color: '#1a3c2e', textDecoration: 'none' }}>{o.title as string}</a>
+                </td>
+                <td style={{ padding: '10px 16px', fontSize: '.85rem', color: '#3a4a3f' }}>{(o.company as string) || '—'}</td>
                 <td style={{ padding: '10px 16px' }}>
                   <span style={{ background: '#f0ece4', borderRadius: 99, padding: '2px 8px', fontSize: '.72rem', fontWeight: 600, textTransform: 'capitalize' }}>{o.type as string}</span>
                 </td>
-                <td style={{ padding: '10px 16px', fontSize: '.82rem', color: '#8a9a8f' }}>{o.location as string}</td>
-                <td style={{ padding: '10px 16px', fontSize: '.82rem', color: '#8a9a8f' }}>{o.deadline ? new Date(o.deadline as string).toLocaleDateString('en-GB') : '—'}</td>
-                <td style={{ padding: '10px 16px', fontSize: '.8rem', color: '#8a9a8f' }}>{new Date(o.created_at as string).toLocaleDateString('en-GB')}</td>
+                <td style={{ padding: '10px 16px', fontSize: '.82rem', color: '#8a9a8f', textTransform: 'capitalize' }}>{o.source as string}</td>
+                <td style={{ padding: '10px 16px', fontSize: '.82rem', color: '#8a9a8f' }}>{o.date_posted ? new Date(o.date_posted as string).toLocaleDateString('en-GB') : '—'}</td>
+                <td style={{ padding: '10px 16px', fontSize: '.8rem', color: '#8a9a8f' }}>{new Date(o.first_seen_at as string).toLocaleDateString('en-GB')}</td>
               </tr>
             ))}
           </tbody>
