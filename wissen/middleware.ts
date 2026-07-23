@@ -2,11 +2,12 @@ import { NextRequest, NextResponse } from 'next/server'
 import { verifyToken, COOKIE_NAME } from '@/lib/auth-edge'
 
 const protectedRoutes = ['/community', '/jobs', '/internships', '/scholarships', '/competitions']
-// Profile page requires auth; courses are publicly browsable (progress tracking is optional)
+const publicCommunityRoutes = ['/community/landing']
 const profileRoutes = ['/profile']
 
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl
+  if (publicCommunityRoutes.some(p => pathname === p || pathname.startsWith(p + '/'))) return NextResponse.next()
   const isProtected = protectedRoutes.some(p => pathname === p || pathname.startsWith(p + '/'))
   const isProfileRoute = profileRoutes.some(p => pathname === p || pathname.startsWith(p + '/'))
   if (!isProtected && !isProfileRoute) return NextResponse.next()
