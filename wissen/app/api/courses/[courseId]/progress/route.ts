@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getSession } from '@/lib/auth'
 import sql from '@/lib/db'
 import { COURSES } from '@/lib/courseData'
-import { randomUUID } from 'crypto'
 
 export async function GET(
   _req: NextRequest,

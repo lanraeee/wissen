@@ -22,8 +22,8 @@ export interface Course {
   isPremium: boolean
 }
 
-export const COURSES: Record<string, Course> = {
-  'soft-skills': {
+export const COURSES: Course[] = [
+  {
     id: 'soft-skills',
     title: 'Soft Skills for the Modern Workplace',
     tagline: 'Master communication, teamwork, time management, problem-solving, adaptability, and professional branding.',
@@ -291,7 +291,7 @@ export const COURSES: Record<string, Course> = {
     ]
   },
 
-  'career-launch': {
+  {
     id: 'career-launch',
     title: 'Career Launch Blueprint',
     tagline: 'Everything you need to know before graduating. Learn CV writing, interviewing, networking, and build your 5-year plan.',
@@ -541,7 +541,7 @@ export const COURSES: Record<string, Course> = {
     ]
   },
 
-  'ai': {
+  {
     id: 'ai',
     title: 'AI for Students & Young Professionals',
     tagline: 'Learn how to work smarter with AI. Master ChatGPT, prompt engineering, and build your AI workflow.',
@@ -791,7 +791,7 @@ export const COURSES: Record<string, Course> = {
     ]
   },
 
-  'financial-literacy': {
+  {
     id: 'financial-literacy',
     title: 'Financial Literacy for Young Adults',
     tagline: 'Make your first salary count. Master budgeting, saving, investing, and personal finance habits.',
@@ -811,7 +811,7 @@ export const COURSES: Record<string, Course> = {
     ]
   },
 
-  'workplace-readiness': {
+  {
     id: 'workplace-readiness',
     title: 'Workplace Readiness',
     tagline: 'Thrive during your first five years at work. Master office dynamics, productivity, influence, and promotion strategies.',
@@ -830,4 +830,4 @@ export const COURSES: Record<string, Course> = {
       { id: 10, title: 'Leadership Mindset & Career Advancement', desc: 'Position yourself for growth and promotion.', objectives: ['Develop a leadership mindset from any level', 'Position yourself for promotion proactively', 'Build executive presence over time'], summary: 'Leadership is not a job title—it is a way of showing up. Learn to develop a leadership mindset from wherever you are, build executive presence, and proactively position yourself for career advancement.', quiz: [{ question: 'A leadership mindset at any level means:', options: { a: 'Only relevant once you are a manager', b: 'Taking ownership, thinking about the bigger picture, and helping others succeed', c: 'Telling others what to do', d: 'Waiting to be given more responsibility' }, correct: 'b' }, { question: 'Executive presence is built through:', options: { a: 'Having an impressive office and job title', b: 'Consistent credibility, clear communication, confidence, and the ability to inspire trust', c: 'Seniority alone', d: 'Wearing expensive clothing' }, correct: 'b' }, { question: 'To get promoted, the most important thing is:', options: { a: 'Working longer hours than everyone else', b: 'Consistently delivering results, being visible, and demonstrating readiness for the next level', c: 'Being the most liked person in the team', d: 'Waiting for opportunities to come to you' }, correct: 'b' }] }
     ]
   }
-}
+]
