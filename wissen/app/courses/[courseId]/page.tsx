@@ -13,7 +13,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { courseId } = await params
   const course = COURSES.find(c => c.id === courseId)
   if (!course) return { title: 'Course Not Found' }
-  return { title: `${course.title} · Wissen-Haus`, description: course.description }
+  return { title: `${course.title} · Wissen-Haus`, description: course.tagline }
 }
 
 export default async function CourseDetailPage({ params }: Props) {
@@ -42,7 +42,7 @@ export default async function CourseDetailPage({ params }: Props) {
         <div className="wrap">
           <span className="eyebrow eyebrow--light">Course</span>
           <h1 className="display-lg mt-s" style={{ color: '#fff' }}>{course.title}</h1>
-          <p className="lead mt-s" style={{ color: 'rgba(244,240,231,.78)' }}>{course.description}</p>
+          <p className="lead mt-s" style={{ color: 'rgba(244,240,231,.78)' }}>{course.tagline}</p>
           <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', marginTop: '1.5rem', alignItems: 'center' }}>
             {course.isPremium ? (
               <span style={{ background: 'var(--red)', color: '#fff', borderRadius: 'var(--pill)', padding: '.4em .9em', fontFamily: 'var(--ff-mono)', fontSize: '.72rem', letterSpacing: '.1em', textTransform: 'uppercase' }}>Premium</span>
@@ -82,7 +82,7 @@ export default async function CourseDetailPage({ params }: Props) {
                     <h3 className="module__title">Module {mod.id}: {mod.title}</h3>
                   </div>
                   <div className="module__body">
-                    <p style={{ color: 'var(--ink-60)', fontSize: '.95rem' }}>{mod.description}</p>
+                    <p style={{ color: 'var(--ink-60)', fontSize: '.95rem' }}>{mod.desc}</p>
                   </div>
                 </Link>
               )

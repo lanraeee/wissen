@@ -14,13 +14,13 @@ interface Props {
 
 export default function CourseModule({ courseId, module, isCompleted, prevModuleId, nextModuleId }: Props) {
   const router = useRouter()
-  const [answers, setAnswers] = useState<Record<number, number>>({})
+  const [answers, setAnswers] = useState<Record<number, string>>({})
   const [result, setResult] = useState<{ passed: boolean; score: number } | null>(null)
   const [submitting, setSubmitting] = useState(false)
   const [completed, setCompleted] = useState(isCompleted)
 
-  function handleAnswer(qIdx: number, aIdx: number) {
-    setAnswers(prev => ({ ...prev, [qIdx]: aIdx }))
+  function handleAnswer(qIdx: number, key: string) {
+    setAnswers(prev => ({ ...prev, [qIdx]: key }))
     setResult(null)
   }
 
@@ -50,7 +50,7 @@ export default function CourseModule({ courseId, module, isCompleted, prevModule
     }
   }
 
-  const allAnswered = module.quiz ? module.quiz.every((_, i) => answers[i] !== undefined) : true
+  const allAnswered = module.quiz ? module.quiz.every((_, i) => answers[i] != null) : true
 
   return (
     <div className="module-single">
@@ -85,15 +85,15 @@ export default function CourseModule({ courseId, module, isCompleted, prevModule
                 <div key={qIdx} className="module__question">
                   <p className="module__question-text">{qIdx + 1}. {q.question}</p>
                   <div className="module__options">
-                    {q.options.map((opt, aIdx) => (
-                      <label key={aIdx} className="module__option">
+                    {(Object.entries(q.options) as [string, string][]).map(([key, text]) => (
+                      <label key={key} className="module__option">
                         <input
                           type="radio"
                           name={`q${qIdx}`}
-                          checked={answers[qIdx] === aIdx}
-                          onChange={() => handleAnswer(qIdx, aIdx)}
+                          checked={answers[qIdx] === key}
+                          onChange={() => handleAnswer(qIdx, key)}
                         />
-                        <span>{opt}</span>
+                        <span>{text}</span>
                       </label>
                     ))}
                   </div>
@@ -133,9 +133,7 @@ export default function CourseModule({ courseId, module, isCompleted, prevModule
             </div>
           )}
 
-          {module.reflection && (
-            <div className="module__reflection">{module.reflection}</div>
-          )}
+
         </div>
       </div>
 
