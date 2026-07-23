@@ -1,0 +1,29 @@
+# macOS
+.DS_Store
+._*
+.Spotlight-V100
+.Trashes
+
+# Editor
+*.swp
+*~
+
+# Logs / temp
+*.log
+_transform.py
+.vercel
+
+# Env
+.env*
+!.env.local.example
+
+# Next.js
+.next/
+out/
+
+# Dependencies
+node_modules/
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts

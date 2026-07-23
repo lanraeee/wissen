@@ -1,0 +1,89 @@
+/* Career Assessment Modal Styles */
+.assessment-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(10, 33, 21, 0.7);
+  backdrop-filter: blur(4px);
+  padding: 20px;
+}
+.assessment-modal__box {
+  background: var(--paper);
+  border-radius: var(--radius-lg);
+  padding: clamp(28px, 4vw, 48px);
+  max-width: 620px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+}
+.assessment-modal__close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: background 0.25s;
+}
+.assessment-modal__close:hover {
+  background: var(--green-100);
+}
+.assessment-q {
+  display: none;
+}
+.assessment-q.active {
+  display: block;
+}
+.assessment-progress {
+  height: 6px;
+  background: var(--line);
+  border-radius: var(--pill);
+  overflow: hidden;
+  margin-bottom: 2rem;
+}
+.assessment-progress__fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--red), var(--gold));
+  transition: width 0.4s var(--ease);
+}
+.assessment-opt {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 14px 16px;
+  border: 1.5px solid var(--line);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: border-color 0.25s, background 0.25s;
+  margin-bottom: 0.7rem;
+}
+.assessment-opt:hover {
+  border-color: var(--green-800);
+  background: var(--green-50);
+}
+.assessment-opt.selected {
+  border-color: var(--green-800);
+  background: var(--green-100);
+}
+.assessment-result {
+  text-align: center;
+  padding: 2rem 0;
+}
+.assessment-result__badge {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: var(--green-100);
+  display: grid;
+  place-items: center;
+  margin: 0 auto 1.5rem;
+  font-size: 2.4rem;
+}

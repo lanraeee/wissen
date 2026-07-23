@@ -1,0 +1,68 @@
+name: Deploy Frontend
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: List deployable files
+        run: |
+          echo "📦 Static files to deploy:"
+          find redesign -type f \( -name "*.html" -o -name "*.css" -o -name "*.js" -o -name "*.json" \) | wc -l
+          echo "files found"
+
+      - name: Validate HTML structure
+        run: |
+          cd redesign
+          for file in $(find . -name "*.html" -type f); do
+            if ! grep -q "<html" "$file" || ! grep -q "</html>" "$file"; then
+              echo "❌ Invalid HTML: $file"
+              exit 1
+            fi
+          done
+          echo "✅ All HTML files valid"
+
+      - name: Check for console errors in comments
+        run: |
+          cd redesign
+          if grep -r "console\.error\|console\.warn\|TODO:\|FIXME:" assets/js/*.js; then
+            echo "⚠️  Found debugging statements"
+          fi
+          echo "✅ Ready for deployment"
+
+  deploy:
+    needs: validate
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Deploy to Netlify
+        uses: nwtgck/actions-netlify@v1.2
+        with:
+          publish-dir: './redesign'
+          production-branch: main
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          deploy-message: "Deploy from GitHub Actions - ${{ github.sha }}"
+          enable-pull-request-comment: true
+          enable-commit-comment: true
+          overwrites-pull-request-comment: true
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+        if: github.event_name == 'push'
+
+  notify:
+    needs: deploy
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    steps:
+      - name: Deployment successful
+        run: echo "✅ Frontend deployed to production"
