@@ -9,6 +9,12 @@ export default async function AdminLayout({ children }: { children: React.ReactN
 
   return (
     <html lang="en">
+      <head>
+        <style>{`
+          .admin-nav-link { display:block;padding:9px 12px;border-radius:8px;color:rgba(244,240,231,.85);text-decoration:none;font-size:.88rem;margin-bottom:2px;font-weight:500;transition:background .15s }
+          .admin-nav-link:hover { background:rgba(244,240,231,.1) }
+        `}</style>
+      </head>
       <body style={{ margin: 0, fontFamily: 'system-ui,sans-serif', background: '#f4f0e7', color: '#1a2e24', minHeight: '100vh' }}>
         <div style={{ display: 'flex', minHeight: '100vh' }}>
           {/* Sidebar */}
@@ -24,10 +30,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
                 ['Submissions', '/admin/submissions'],
                 ['Opportunities', '/admin/opportunities'],
               ].map(([label, href]) => (
-                <a key={href} href={href} style={{ display: 'block', padding: '9px 12px', borderRadius: 8, color: 'rgba(244,240,231,.85)', textDecoration: 'none', fontSize: '.88rem', marginBottom: 2, fontWeight: 500 }}
-                  onMouseOver={e => (e.currentTarget.style.background = 'rgba(244,240,231,.1)')}
-                  onMouseOut={e => (e.currentTarget.style.background = 'transparent')}
-                >{label}</a>
+                <a key={href} href={href} className="admin-nav-link">{label}</a>
               ))}
             </nav>
             <div style={{ padding: '16px 24px', borderTop: '1px solid rgba(244,240,231,.12)', fontSize: '.78rem', color: 'rgba(244,240,231,.45)' }}>
