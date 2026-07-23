@@ -21,12 +21,6 @@ const ARROW = (
 export default function HomePage() {
   return (
     <>
-      {/* Page intro overlay */}
-      <div className="page-intro">
-        <Image className="page-intro__logo" src="/img/logo.png" alt="Wissen-Haus" width={74} height={74} />
-        <div className="page-intro__bar"><span /></div>
-      </div>
-
       {/* HERO */}
       <section className="hero">
         <span className="blob blob--green" />

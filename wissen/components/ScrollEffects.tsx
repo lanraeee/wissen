@@ -7,6 +7,15 @@ export default function ScrollEffects() {
   const pathname = usePathname()
 
   useEffect(() => {
+    // Dismiss any page-intro overlay (CSS animation is 1s, dismiss after it completes)
+    const intro = document.querySelector<HTMLElement>('.page-intro')
+    if (intro) {
+      const t = setTimeout(() => intro.classList.add('done'), 1100)
+      return () => clearTimeout(t)
+    }
+  }, [pathname])
+
+  useEffect(() => {
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
     // Back to top
