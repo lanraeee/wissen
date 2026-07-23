@@ -745,3 +745,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
   .page-intro{display:none}
   .reveal--left,.reveal--right,.reveal--scale,.reveal--blur{opacity:1;transform:none;filter:none}
 }
+
+/* ─── Admin panel ─────────────────────────────────────── */
+.admin-nav-link{display:block;padding:9px 12px;border-radius:8px;color:rgba(244,240,231,.85);text-decoration:none;font-size:.88rem;margin-bottom:2px;font-weight:500;transition:background .15s}
+.admin-nav-link:hover{background:rgba(244,240,231,.1)}

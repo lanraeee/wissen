@@ -1,9 +1,6 @@
 import type { Metadata } from 'next'
 import './globals.css'
-import Navigation from '@/components/Navigation'
-import Footer from '@/components/Footer'
-import ScrollEffects from '@/components/ScrollEffects'
-import PageLoader from '@/components/PageLoader'
+import SiteShell from '@/components/SiteShell'
 
 export const metadata: Metadata = {
   title: 'Wissen-Haus Youth Empowerment Foundation',
@@ -15,11 +12,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body>
-        <PageLoader />
-        <Navigation />
-        <main id="main">{children}</main>
-        <Footer />
-        <ScrollEffects />
+        <SiteShell>{children}</SiteShell>
       </body>
     </html>
   )
