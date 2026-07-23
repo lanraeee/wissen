@@ -6,10 +6,10 @@ import { dirname, join } from 'path'
 const __dirname = dirname(fileURLToPath(import.meta.url))
 
 async function main() {
-  const databaseUrl = process.env.DATABASE_URL
+  const databaseUrl = process.env.WISSENDB_DATABASE_URL_UNPOOLED ?? process.env.WISSENDB_DATABASE_URL ?? process.env.DATABASE_URL
   if (!databaseUrl) {
-    console.error('Error: DATABASE_URL environment variable is not set.')
-    console.error('Run: export DATABASE_URL="postgres://..." then try again.')
+    console.error('Error: WISSENDB_DATABASE_URL env var not found.')
+    console.error('Run: vercel env pull .env.local --yes  then try again.')
     process.exit(1)
   }
 
@@ -27,8 +27,8 @@ async function main() {
 
   for (const statement of statements) {
     try {
-      // neon() returns a tagged template function; use sql.query for dynamic strings
-      await sql.query(statement + ';')
+      // neon() can be called as a plain function with a string for dynamic SQL
+      await sql(statement)
       const match = statement.match(/CREATE (?:TABLE|EXTENSION) (?:IF NOT EXISTS )?"?(\w+)"?/i)
       if (match) console.log(`✓ ${match[0].replace('IF NOT EXISTS ', '')}`)
     } catch (err) {
