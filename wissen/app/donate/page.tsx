@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import Image from 'next/image'
+import DonateWidget from '@/components/DonateWidget'
 
 export const metadata: Metadata = {
   title: 'Donate · Wissen-Haus',
@@ -55,76 +56,18 @@ export default function DonatePage() {
       <section className="section" id="give">
         <div className="wrap">
           <div className="section-head center mb-l reveal">
-            <span className="eyebrow">Ways to Give</span>
+            <span className="eyebrow">Give Now</span>
             <h2>Choose a gift that changes a life.</h2>
-            <p className="lead">Pick a suggested amount, or give whatever you can. Every contribution goes directly to equipping students with practical, job-ready skills.</p>
+            <p className="lead">Pick a suggested amount or enter your own. Nigerian donors pay via Paystack; international donors via Stripe. Every contribution goes directly to equipping students.</p>
           </div>
-          <div className="grid grid-3">
-            <article className="plan reveal">
-              <div className="plan__price">₦5,000 <small>/ or your chosen amount</small></div>
-              <h3>The Spark</h3>
-              <p className="plan__desc">Gives a student access to one Wissen-Haus Career Discovery workshop — a single session that often changes everything.</p>
-              <ul className="plan__list">
-                <li>
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><polyline points="20 6 9 17 4 12" /></svg>
-                  Career Discovery workshop seat
-                </li>
-                <li>
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><polyline points="20 6 9 17 4 12" /></svg>
-                  Workbook &amp; resources
-                </li>
-              </ul>
-              <a href="https://paystack.com/pay/wissenhaus-5k" target="_blank" rel="noopener noreferrer" className="btn">Donate ₦5,000</a>
-            </article>
-
-            <article className="plan plan--feat reveal" data-d="1">
-              <div className="plan__flag">Most Popular</div>
-              <div className="plan__price">₦20,000 <small>/ or your chosen amount</small></div>
-              <h3>The Builder</h3>
-              <p className="plan__desc">Sponsors a student&#39;s full Trade Fair experience — skills assessment, coaching session, and certificate.</p>
-              <ul className="plan__list">
-                <li>
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><polyline points="20 6 9 17 4 12" /></svg>
-                  Full Trade Fair participation
-                </li>
-                <li>
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><polyline points="20 6 9 17 4 12" /></svg>
-                  1-on-1 coaching session
-                </li>
-                <li>
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><polyline points="20 6 9 17 4 12" /></svg>
-                  Certificate of participation
-                </li>
-              </ul>
-              <a href="https://paystack.com/pay/wissenhaus-20k" target="_blank" rel="noopener noreferrer" className="btn btn--light">Donate ₦20,000</a>
-            </article>
-
-            <article className="plan reveal" data-d="2">
-              <div className="plan__price">₦50,000 <small>/ or your chosen amount</small></div>
-              <h3>The Champion</h3>
-              <p className="plan__desc">Sponsors an entire school cohort&#39;s Trade Fair access and funds Wissen-Haus community hub for a month.</p>
-              <ul className="plan__list">
-                <li>
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><polyline points="20 6 9 17 4 12" /></svg>
-                  School cohort Trade Fair access
-                </li>
-                <li>
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><polyline points="20 6 9 17 4 12" /></svg>
-                  Community hub operating costs (1 month)
-                </li>
-                <li>
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><polyline points="20 6 9 17 4 12" /></svg>
-                  Named impact report
-                </li>
-              </ul>
-              <a href="https://paystack.com/pay/wissenhaus-50k" target="_blank" rel="noopener noreferrer" className="btn">Donate ₦50,000</a>
-            </article>
+          <div className="card reveal" style={{ padding: 'clamp(24px,4vw,48px)', maxWidth: 640, margin: '0 auto' }}>
+            <DonateWidget />
           </div>
 
-          <div style={{ textAlign: 'center', marginTop: '3rem' }} className="reveal">
-            <p className="lead" style={{ marginBottom: '1rem' }}>Prefer to transfer directly or donate from abroad?</p>
+          <div style={{ textAlign: 'center', marginTop: '2.5rem' }} className="reveal">
+            <p style={{ color: 'var(--ink-60)', marginBottom: '.75rem', fontSize: '.9rem' }}>Prefer a direct bank transfer?</p>
             <a href="mailto:info@wissenhaus.org?subject=Donation Enquiry" className="textlink">
-              Contact us for bank transfer details {ARROW}
+              Contact us for bank details {ARROW}
             </a>
           </div>
         </div>

@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import PartnerForm from '@/components/PartnerForm'
 
 export const metadata: Metadata = {
   title: 'Partner With Us · Wissen-Haus',
@@ -93,39 +94,7 @@ export default function PartnerPage() {
             <span className="eyebrow">Get in Touch</span>
             <h2>Start the conversation.</h2>
           </div>
-          <form className="form" style={{ maxWidth: 640, margin: '0 auto' }} data-demo>
-            <div className="form-row">
-              <div className="field">
-                <label htmlFor="p-name">Your Name</label>
-                <input id="p-name" name="name" required placeholder="Ada Lovelace" />
-              </div>
-              <div className="field">
-                <label htmlFor="p-org">Organisation</label>
-                <input id="p-org" name="org" placeholder="Company / School name" />
-              </div>
-            </div>
-            <div className="field">
-              <label htmlFor="p-email">Email</label>
-              <input id="p-email" name="email" type="email" required placeholder="you@example.com" />
-            </div>
-            <div className="field">
-              <label htmlFor="p-type">Partnership type</label>
-              <select id="p-type" name="type" required>
-                <option value="">Select…</option>
-                <option>School / University</option>
-                <option>Corporate / Company</option>
-                <option>Individual Mentor</option>
-                <option>NGO / Charity</option>
-                <option>Media / Press</option>
-                <option>Other</option>
-              </select>
-            </div>
-            <div className="field">
-              <label htmlFor="p-msg">Tell us about your goals</label>
-              <textarea id="p-msg" name="message" required placeholder="What do you hope to achieve through this partnership?" />
-            </div>
-            <button type="submit" className="btn btn--block">Send Enquiry</button>
-          </form>
+          <PartnerForm />
         </div>
       </section>
     </>

@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import ContactForm from '@/components/ContactForm'
 
 export const metadata: Metadata = {
   title: 'Contact Us · Wissen-Haus',
@@ -56,28 +57,7 @@ export default function ContactPage() {
             </div>
           </div>
 
-          <form className="feature form reveal" data-demo>
-            <h3 style={{ marginBottom: '1.2rem' }}>Send a Message</h3>
-            <div className="form-row">
-              <div className="field">
-                <label htmlFor="c-name">Name</label>
-                <input id="c-name" name="name" required placeholder="Your name" />
-              </div>
-              <div className="field">
-                <label htmlFor="c-email">Email</label>
-                <input id="c-email" name="email" type="email" required placeholder="you@example.com" />
-              </div>
-            </div>
-            <div className="field">
-              <label htmlFor="c-subject">Subject</label>
-              <input id="c-subject" name="subject" required placeholder="How can we help?" />
-            </div>
-            <div className="field">
-              <label htmlFor="c-msg">Message</label>
-              <textarea id="c-msg" name="message" required placeholder="Tell us more…" />
-            </div>
-            <button type="submit" className="btn">Send Message</button>
-          </form>
+          <ContactForm />
         </div>
 
         <div className="card reveal" style={{ padding: 'clamp(24px,4vw,40px)', textAlign: 'center' }}>

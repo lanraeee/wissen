@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import Image from 'next/image'
+import VolunteerForm from '@/components/VolunteerForm'
 
 export const metadata: Metadata = {
   title: 'Volunteer · Wissen-Haus',
@@ -89,38 +90,7 @@ export default function VolunteerPage() {
             <h2>Ready to give your time?</h2>
             <p className="lead">Fill out the form below and our team will reach out within 5 business days.</p>
           </div>
-          <form className="form" style={{ maxWidth: 640, margin: '0 auto' }} data-demo>
-            <div className="form-row">
-              <div className="field">
-                <label htmlFor="v-first">First Name</label>
-                <input id="v-first" name="firstName" required placeholder="Ada" />
-              </div>
-              <div className="field">
-                <label htmlFor="v-last">Last Name</label>
-                <input id="v-last" name="lastName" required placeholder="Lovelace" />
-              </div>
-            </div>
-            <div className="field">
-              <label htmlFor="v-email">Email</label>
-              <input id="v-email" name="email" type="email" required placeholder="you@example.com" />
-            </div>
-            <div className="field">
-              <label htmlFor="v-role">How do you want to contribute?</label>
-              <select id="v-role" name="role" required>
-                <option value="">Select an option…</option>
-                <option>Mentoring</option>
-                <option>Technical Training</option>
-                <option>Operations &amp; Events</option>
-                <option>Content Creation</option>
-                <option>Other</option>
-              </select>
-            </div>
-            <div className="field">
-              <label htmlFor="v-bio">Brief background (current role, skills, why you want to volunteer)</label>
-              <textarea id="v-bio" name="bio" required placeholder="Tell us about yourself…" />
-            </div>
-            <button type="submit" className="btn btn--block">Submit Application</button>
-          </form>
+          <VolunteerForm />
         </div>
       </section>
     </>

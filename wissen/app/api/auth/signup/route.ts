@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import sql from '@/lib/db'
 import { hashPassword, signToken, COOKIE_NAME } from '@/lib/auth'
+import { sendWelcomeEmail } from '@/lib/email'
 
 export async function POST(req: NextRequest) {
   try {
@@ -31,6 +32,9 @@ export async function POST(req: NextRequest) {
       name: `${user.first_name} ${user.last_name}`,
       membershipExpiry: user.membership_expiry,
     })
+
+    // Send welcome email (non-blocking)
+    sendWelcomeEmail(user.email as string, `${user.first_name} ${user.last_name}`).catch(e => console.error('[welcome email]', e))
 
     const res = NextResponse.json({ success: true, user: { id: user.id, email: user.email, name: `${user.first_name} ${user.last_name}` } })
     res.cookies.set(COOKIE_NAME, token, {
