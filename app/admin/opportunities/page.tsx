@@ -46,7 +46,7 @@ export default function AdminOpportunities() {
   function exportCSV() {
     const header = ['title', 'company', 'type', 'source', 'eligibility', 'url', 'date_posted']
     const lines = [header.join(','), ...filtered.map(o =>
-      header.map(k => `"${String((o as Record<string, unknown>)[k === 'eligibility' ? 'eligibility_label' : k] ?? '').replace(/"/g, '""')}"`).join(',')
+      header.map(k => `"${String((o as unknown as Record<string, unknown>)[k === 'eligibility' ? 'eligibility_label' : k] ?? '').replace(/"/g, '""')}"`).join(',')
     )]
     const blob = new Blob([lines.join('\n')], { type: 'text/csv' })
     const a = document.createElement('a')
