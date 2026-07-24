@@ -53,7 +53,7 @@ export default function ProgrammesPage() {
                 <span className="card__num">02</span>
                 <h3>Opportunity Blueprint</h3>
                 <p>Our flagship podcast featuring weekly career insights and guidance from professionals who&#39;ve walked the path. Launching soon.</p>
-                <Link href="/podcast" className="textlink">Find out more {ARROW}</Link>
+                <Link href="/opportunity-blueprint" className="textlink">Find out more {ARROW}</Link>
               </div>
             </article>
 

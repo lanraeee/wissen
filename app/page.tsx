@@ -136,7 +136,7 @@ export default async function HomePage() {
                 <span className="card__num">02</span>
                 <h3>Opportunity Blueprint</h3>
                 <p>Weekly insights and career guidance from our experts, bridging the skills gap through global exposure.</p>
-                <Link href="/podcast" className="textlink">Listen now {ARROW}</Link>
+                <Link href="/opportunity-blueprint" className="textlink">Listen now {ARROW}</Link>
               </div>
             </article>
             <article className="card reveal" data-d="2">
