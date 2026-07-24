@@ -12,7 +12,7 @@ interface Props {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { certId } = await params
   const [row] = await sql`
-    SELECT c.course_id, u.name FROM certificates c
+    SELECT c.course_id, u.first_name || ' ' || u.last_name AS name FROM certificates c
     JOIN users u ON u.id = c.user_id
     WHERE c.certificate_id = ${certId}
   `
@@ -28,7 +28,8 @@ export default async function VerifyCertPage({ params }: Props) {
   const { certId } = await params
 
   const [row] = await sql`
-    SELECT c.certificate_id, c.course_id, c.issued_at, u.name
+    SELECT c.certificate_id, c.course_id, c.issued_at,
+           u.first_name || ' ' || u.last_name AS name
     FROM certificates c
     JOIN users u ON u.id = c.user_id
     WHERE c.certificate_id = ${certId}
