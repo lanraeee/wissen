@@ -1,16 +1,8 @@
 import { redirect } from 'next/navigation'
 import { getSession } from '@/lib/auth'
+import AdminNav from '@/components/admin/AdminNav'
 
 const ADMIN_EMAIL = process.env.FOUNDER_EMAIL ?? 'director@wissenhaus.org'
-
-const NAV = [
-  ['Dashboard', '/admin'],
-  ['Users', '/admin/users'],
-  ['Submissions', '/admin/submissions'],
-  ['Opportunities', '/admin/opportunities'],
-  ['Courses & Certs', '/admin/courses'],
-  ['Content', '/admin/content'],
-]
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const session = await getSession()
@@ -23,16 +15,12 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           <div style={{ fontWeight: 700, fontSize: '.9rem', letterSpacing: '.06em', textTransform: 'uppercase' }}>Wissen-Haus</div>
           <div style={{ fontSize: '.72rem', color: 'rgba(244,240,231,.5)', marginTop: 2 }}>Admin Panel</div>
         </div>
-        <nav style={{ padding: '16px 12px', flex: 1, overflowY: 'auto' }}>
-          {NAV.map(([label, href]) => (
-            <a key={href} href={href} className="admin-nav-link">{label}</a>
-          ))}
-        </nav>
+        <AdminNav />
         <div style={{ padding: '16px 24px', borderTop: '1px solid rgba(244,240,231,.12)', fontSize: '.78rem', color: 'rgba(244,240,231,.45)' }}>
           {session.email}
         </div>
       </aside>
-      <main style={{ flex: 1, padding: '36px 40px', maxWidth: 1200, background: '#f4f0e7' }}>
+      <main style={{ flex: 1, padding: '36px 40px', maxWidth: 1200, background: '#f4f0e7', overflowX: 'auto' }}>
         {children}
       </main>
     </div>

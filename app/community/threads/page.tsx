@@ -1,22 +1,34 @@
 import type { Metadata } from 'next'
-import Link from 'next/link'
 import StreakBadge from '@/components/StreakBadge'
+import sql from '@/lib/db'
 
 export const metadata: Metadata = {
   title: 'Discussion Threads · Wissen-Haus Community',
   description: 'Discuss, share wins, ask questions — the Wissen-Haus community discussion board.',
 }
 
-const THREADS = [
+interface Thread { title: string; author: string; replies: number; tag: string }
+
+const DEFAULT_THREADS: Thread[] = [
   { title: 'How do I get my first remote job with no experience?', author: 'Adaeze O.', replies: 12, tag: 'Jobs' },
-  { title: 'Share your JAMB score and what you studied — let\'s see the range!', author: 'Kola A.', replies: 34, tag: 'Education' },
+  { title: "Share your JAMB score and what you studied — let's see the range!", author: 'Kola A.', replies: 34, tag: 'Education' },
   { title: 'Best free resources to learn Python in 2025', author: 'Emeka N.', replies: 8, tag: 'Tech' },
-  { title: 'I got a scholarship! Here\'s what I learned from the application process', author: 'Fatima A.', replies: 21, tag: 'Scholarships' },
+  { title: "I got a scholarship! Here's what I learned from the application process", author: 'Fatima A.', replies: 21, tag: 'Scholarships' },
   { title: 'Anyone else using AI tools to improve their CV?', author: 'Seun B.', replies: 15, tag: 'Career' },
   { title: 'Is Lagos really necessary for a tech career in Nigeria?', author: 'Yusuf I.', replies: 27, tag: 'Discussion' },
 ]
 
-export default function ThreadsPage() {
+async function getThreads(): Promise<Thread[]> {
+  try {
+    const rows = await sql`SELECT value FROM site_content WHERE key = 'community_threads'`
+    if (rows[0]?.value) return rows[0].value as Thread[]
+  } catch {}
+  return DEFAULT_THREADS
+}
+
+export default async function ThreadsPage() {
+  const threads = await getThreads()
+
   return (
     <>
       <StreakBadge />
@@ -31,7 +43,7 @@ export default function ThreadsPage() {
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1px', background: 'var(--line)', borderRadius: 'var(--radius)', overflow: 'hidden' }}>
-            {THREADS.map((thread, i) => (
+            {threads.map((thread, i) => (
               <div key={i} style={{ background: 'var(--paper)', padding: '20px 24px', display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
                 <div style={{ flex: 1, minWidth: 200 }}>
                   <div style={{ display: 'flex', gap: '.6rem', alignItems: 'center', marginBottom: '.4rem', flexWrap: 'wrap' }}>

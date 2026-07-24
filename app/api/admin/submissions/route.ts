@@ -12,8 +12,15 @@ async function guard() {
 
 export async function GET(req: NextRequest) {
   if (!await guard()) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
-  const type = new URL(req.url).searchParams.get('type') || 'contact'
-  const rows = await sql`SELECT id, type, data, created_at FROM submissions WHERE type = ${type} ORDER BY created_at DESC LIMIT 100`
+  const params = new URL(req.url).searchParams
+  const type = params.get('type') || 'contact'
+  const rows = await sql`
+    SELECT id, type, name, email, phone, data, status, created_at
+    FROM submissions
+    WHERE type = ${type}
+    ORDER BY created_at DESC
+    LIMIT 200
+  `
   return NextResponse.json(rows)
 }
 

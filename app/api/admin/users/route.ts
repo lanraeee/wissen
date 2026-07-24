@@ -17,7 +17,14 @@ export async function GET(req: NextRequest) {
   const offset = (page - 1) * limit
 
   const [rows, count] = await Promise.all([
-    sql`SELECT id, first_name, last_name, email, membership_expiry, created_at FROM users ORDER BY created_at DESC LIMIT ${limit} OFFSET ${offset}`,
+    sql`
+      SELECT u.id, u.first_name, u.last_name, u.email, u.membership_expiry, u.created_at,
+        (SELECT COUNT(*) FROM course_progress cp WHERE cp.user_id = u.id)::int AS modules_done,
+        (SELECT COUNT(*) FROM certificates c WHERE c.user_id = u.id)::int AS certs
+      FROM users u
+      ORDER BY u.created_at DESC
+      LIMIT ${limit} OFFSET ${offset}
+    `,
     sql`SELECT COUNT(*) AS c FROM users`,
   ])
   return NextResponse.json({ users: rows, total: Number(count[0].c), page, limit })
