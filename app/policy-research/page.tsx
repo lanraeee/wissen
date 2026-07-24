@@ -1,12 +1,23 @@
 import type { Metadata } from 'next'
-import PolicyTimeline from '@/components/PolicyTimeline'
+import PolicyTimeline, { type PolicyPaper } from '@/components/PolicyTimeline'
+import sql from '@/lib/db'
 
 export const metadata: Metadata = {
   title: 'Policy & Research · Wissen-Haus',
   description: 'Comprehensive policy papers and research reports on youth employment, skills gap, and economic independence in Nigeria.',
 }
 
-export default function PolicyResearchPage() {
+async function getPapers(): Promise<PolicyPaper[]> {
+  try {
+    const rows = await sql`SELECT value FROM site_content WHERE key = 'policy_papers'`
+    if (rows[0]?.value) return rows[0].value as PolicyPaper[]
+  } catch {}
+  return []
+}
+
+export default async function PolicyResearchPage() {
+  const papers = await getPapers()
+
   return (
     <>
       <section className="section section--tight" style={{ paddingTop: 'clamp(48px,6vw,84px)' }}>
@@ -47,7 +58,7 @@ export default function PolicyResearchPage() {
 
             <div className="reveal" data-d="1">
               <h3 className="h3 mb-m">Research Timeline</h3>
-              <PolicyTimeline />
+              <PolicyTimeline papers={papers.length ? papers : undefined} />
             </div>
           </div>
         </div>

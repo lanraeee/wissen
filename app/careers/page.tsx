@@ -1,12 +1,15 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import sql from '@/lib/db'
 
 export const metadata: Metadata = {
   title: 'Careers · Wissen-Haus',
   description: 'Join the Wissen-Haus team and help bridge the skills gap for Nigerian youth.',
 }
 
-const ROLES = [
+interface Role { title: string; type: string; desc: string }
+
+const DEFAULT_ROLES: Role[] = [
   { title: 'Programme Coordinator', type: 'Freelance & Volunteer · Part-time · Ibadan', desc: 'Help deliver our Trade Fair and community events. Background in education or youth work preferred.' },
   { title: 'Content Writer', type: 'Freelance & Volunteer · Remote', desc: 'Create impact stories, blog posts, and educational content that resonates with Nigerian youth.' },
   { title: 'Social Media Manager', type: 'Freelance & Volunteer · Remote · Part-time', desc: 'Grow our Instagram and LinkedIn presence. You know the algorithm and you understand our audience.' },
@@ -15,13 +18,29 @@ const ROLES = [
   { title: 'Data & Impact Analyst', type: 'Freelance & Volunteer · Remote · Part-time', desc: 'Help us measure what works. Build dashboards, analyse survey data, and write impact reports.' },
 ]
 
-const INTERNSHIPS = [
+const DEFAULT_INTERNSHIPS: Role[] = [
   { title: 'Communications Intern', type: '3 months · Remote', desc: 'Support our content team with writing, editing, and managing our newsletter and social posts.' },
   { title: 'Research Intern', type: '3-6 months · Remote', desc: 'Assist the policy team with desk research, literature reviews, and survey analysis.' },
   { title: 'Technology Intern', type: '3 months · Remote', desc: 'Help maintain and improve our web platform. Next.js, TypeScript, and Postgres experience helpful.' },
 ]
 
-export default function CareersPage() {
+async function getContent() {
+  try {
+    const rows = await sql`SELECT key, value FROM site_content WHERE key IN ('careers_roles', 'careers_internships')`
+    const map: Record<string, Role[]> = {}
+    for (const r of rows) map[r.key as string] = r.value as Role[]
+    return {
+      roles: map.careers_roles ?? DEFAULT_ROLES,
+      internships: map.careers_internships ?? DEFAULT_INTERNSHIPS,
+    }
+  } catch {
+    return { roles: DEFAULT_ROLES, internships: DEFAULT_INTERNSHIPS }
+  }
+}
+
+export default async function CareersPage() {
+  const { roles, internships } = await getContent()
+
   return (
     <>
       <section className="section section--tight" style={{ paddingTop: 'clamp(48px,6vw,84px)' }}>
@@ -45,7 +64,7 @@ export default function CareersPage() {
             </div>
           </div>
           <div className="grid grid-2 mb-l">
-            {ROLES.map((role, i) => (
+            {roles.map((role, i) => (
               <div key={role.title} className="card reveal" data-d={i % 2 as unknown as string}>
                 <div className="card__body">
                   <span className="card__num">{role.type}</span>
@@ -67,7 +86,7 @@ export default function CareersPage() {
             </div>
           </div>
           <div className="grid grid-3">
-            {INTERNSHIPS.map((role, i) => (
+            {internships.map((role, i) => (
               <div key={role.title} className="card reveal" data-d={i % 3 as unknown as string}>
                 <div className="card__body">
                   <span className="card__num">{role.type}</span>

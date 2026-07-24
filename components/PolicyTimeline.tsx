@@ -2,46 +2,24 @@
 
 import { useState } from 'react'
 
-const papers = [
-  {
-    date: 'Mar 2025',
-    tag: 'Published',
-    no: '001',
-    theme: 'Youth Employability',
-    title: 'Beyond Unemployment',
-    subtitle: 'A Skills-First Framework for Nigerian Youth Economic Independence',
-    status: 'completed',
-  },
-  {
-    date: 'May 2025',
-    tag: 'Upcoming',
-    no: '002',
-    theme: 'Artificial Intelligence',
-    title: "AI Won't Steal Nigeria's Future",
-    subtitle: 'Poor Preparation Will',
-    status: 'upcoming',
-  },
-  {
-    date: 'Jul 2025',
-    tag: 'Upcoming',
-    no: '003',
-    theme: 'Career Development',
-    title: 'Degrees Without Direction',
-    subtitle: 'Rethinking the Path from Education to Employment',
-    status: 'upcoming',
-  },
-  {
-    date: 'Sep 2025',
-    tag: 'Upcoming',
-    no: '004',
-    theme: 'Digital Skills',
-    title: 'Skills for Tomorrow',
-    subtitle: 'Building a Digitally-Ready Nigerian Workforce',
-    status: 'upcoming',
-  },
+export interface PolicyPaper {
+  date: string
+  tag: string
+  no: string
+  theme: string
+  title: string
+  subtitle: string
+  status: 'completed' | 'upcoming'
+}
+
+const DEFAULT_PAPERS: PolicyPaper[] = [
+  { date: 'Mar 2025', tag: 'Published', no: '001', theme: 'Youth Employability', title: 'Beyond Unemployment', subtitle: 'A Skills-First Framework for Nigerian Youth Economic Independence', status: 'completed' },
+  { date: 'May 2025', tag: 'Upcoming', no: '002', theme: 'Artificial Intelligence', title: "AI Won't Steal Nigeria's Future", subtitle: 'Poor Preparation Will', status: 'upcoming' },
+  { date: 'Jul 2025', tag: 'Upcoming', no: '003', theme: 'Career Development', title: 'Degrees Without Direction', subtitle: 'Rethinking the Path from Education to Employment', status: 'upcoming' },
+  { date: 'Sep 2025', tag: 'Upcoming', no: '004', theme: 'Digital Skills', title: 'Skills for Tomorrow', subtitle: 'Building a Digitally-Ready Nigerian Workforce', status: 'upcoming' },
 ]
 
-export default function PolicyTimeline() {
+export default function PolicyTimeline({ papers = DEFAULT_PAPERS }: { papers?: PolicyPaper[] }) {
   const [active, setActive] = useState<number | null>(0)
 
   return (
@@ -69,20 +47,17 @@ export default function PolicyTimeline() {
               <p style={{ fontSize: '.82rem', color: 'var(--muted)', marginBottom: isOpen ? '.75rem' : 0, lineHeight: 1.5 }}>
                 {p.theme}
               </p>
-              <div
-                style={{
-                  overflow: 'hidden',
-                  maxHeight: isOpen ? '120px' : '0',
-                  opacity: isOpen ? 1 : 0,
-                  transition: 'max-height .3s ease, opacity .25s ease',
-                }}
-              >
+              <div style={{
+                overflow: 'hidden',
+                maxHeight: isOpen ? '120px' : '0',
+                opacity: isOpen ? 1 : 0,
+                transition: 'max-height .3s ease, opacity .25s ease',
+              }}>
                 <p style={{ fontSize: '.9rem', paddingTop: '.25rem', borderTop: '1px solid var(--line)', paddingBottom: '.5rem' }}>
                   {p.subtitle}
                 </p>
               </div>
             </div>
-            <div style={{ position: 'absolute', right: 0, top: '50%', transform: 'translateY(-50%)', display: 'none' }} />
           </div>
         )
       })}
