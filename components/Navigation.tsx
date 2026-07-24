@@ -85,7 +85,8 @@ export default function Navigation() {
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
-      if (!(e.target as Element).closest('.has-menu')) setOpenGroup(null)
+      const t = e.target as Element
+      if (!t.closest('.has-menu') && !t.closest('.mobile-menu')) setOpenGroup(null)
     }
     const keyHandler = (e: KeyboardEvent) => { if (e.key === 'Escape') setOpenGroup(null) }
     document.addEventListener('click', handler)
