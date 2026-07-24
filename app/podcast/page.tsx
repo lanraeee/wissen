@@ -13,7 +13,7 @@ export default function PodcastPage() {
         <div className="wrap">
           <span className="eyebrow eyebrow--light reveal">Programmes · Podcast</span>
           <h1 className="display-lg mt-s reveal" style={{ color: '#fff' }}>Opportunity Blueprint</h1>
-          <p className="lead mt-m reveal" data-d="1" style={{ color: 'rgba(244,240,231,.78)', maxWidth: 60, marginInline: 'auto' }}>
+          <p className="lead mt-m reveal" data-d="1" style={{ color: 'rgba(244,240,231,.78)', maxWidth: 600, marginInline: 'auto' }}>
             Weekly career insights, real stories, and practical guidance from professionals building careers across Africa and beyond. Launching soon.
           </p>
           <div className="cta-actions mt-l reveal" data-d="2">
