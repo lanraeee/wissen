@@ -25,7 +25,7 @@ const NAV = [
       ['/career-clarity-trade-fair', 'Career Clarity Trade Fair', 'For all secondary school students'],
       ['/opportunity-blueprint', 'Opportunity Blueprint', 'Our flagship podcast'],
       ['/impact-content', 'Impact Content', 'Social-impact storytelling'],
-      ['/programmes#events', 'Events', 'Bootcamps, cafés & more'],
+      ['/events', 'Events & Cafés', 'Networking, workshops & more'],
     ]
   },
   {
@@ -60,6 +60,7 @@ const ACTIVE_MAP: Record<string, string> = {
   '/contact': 'about',
   '/programmes': 'programmes',
   '/career-clarity-trade-fair': 'programmes',
+  '/events': 'programmes',
   '/opportunity-blueprint': 'programmes',
   '/impact-content': 'programmes',
   '/community': 'community',

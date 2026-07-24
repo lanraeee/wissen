@@ -75,7 +75,7 @@ export default function ProgrammesPage() {
                 <span className="card__num">04</span>
                 <h3>Events &amp; Cafés</h3>
                 <p>Regular networking events, career cafés, and workshops that connect students with professionals in relaxed settings.</p>
-                <Link href="/community" className="textlink">Join the community {ARROW}</Link>
+                <Link href="/events" className="textlink">See events {ARROW}</Link>
               </div>
             </article>
 
