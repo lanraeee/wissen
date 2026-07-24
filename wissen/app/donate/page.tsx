@@ -29,7 +29,7 @@ export default function DonatePage() {
               </div>
             </div>
             <div className="split__media reveal" data-d="1">
-              <Image src="/img/hero-students.jpg" alt="Nigerian secondary school students in a Wissen-Haus career Trade Fair" fill style={{ objectFit: 'cover' }} />
+              <Image src="/img/community-2.jpg" alt="Wissen-Haus community members and students in Ibadan" fill style={{ objectFit: 'cover' }} />
             </div>
           </div>
         </div>
