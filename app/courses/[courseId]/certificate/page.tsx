@@ -92,8 +92,8 @@ export default async function CertificatePage({ params }: Props) {
             <Image
               src="/img/logo.png"
               alt="Wissen-Haus logo"
-              width={40}
-              height={40}
+              width={56}
+              height={56}
               className="cert-header__logo"
             />
             <div className="cert-header__name">

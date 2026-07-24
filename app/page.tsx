@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import Image from 'next/image'
+import sql from '@/lib/db'
 
 export const metadata: Metadata = {
   title: 'Wissen-Haus Youth Empowerment Foundation · Bridging the Skills Gap',
@@ -24,7 +25,16 @@ const ARROW = (
   </svg>
 )
 
-export default function HomePage() {
+export default async function HomePage() {
+  let tagline = 'Every young Nigerian deserves the tools to thrive.'
+  try {
+    const rows = await sql`SELECT value FROM site_content WHERE key = 'site_settings'`
+    const val = rows[0]?.value as { tagline?: string } | undefined
+    if (val?.tagline) tagline = val.tagline
+  } catch {
+    // use default tagline
+  }
+
   return (
     <>
       {/* HERO */}
@@ -78,7 +88,7 @@ export default function HomePage() {
           <div className="split">
             <div className="reveal--left">
               <span className="section-index">01 · Our Mission</span>
-              <h2 className="mt-s">Every young Nigerian deserves the tools to thrive.</h2>
+              <h2 className="mt-s">{tagline}</h2>
             </div>
             <div className="reveal--right">
               <p className="lead">We are dedicated to bridging the skills gap in Nigeria by equipping young people with practical career guidance and global exposure. Our mission is to empower the next generation through economic independence and social impact, ensuring every young Nigerian has the tools to thrive.</p>
