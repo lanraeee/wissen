@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import Link from 'next/link'
+import PolicyTimeline from '@/components/PolicyTimeline'
 
 export const metadata: Metadata = {
   title: 'Policy & Research · Wissen-Haus',
@@ -47,32 +47,7 @@ export default function PolicyResearchPage() {
 
             <div className="reveal" data-d="1">
               <h3 className="h3 mb-m">Research Timeline</h3>
-              <div className="timeline">
-                <div className="tl-item">
-                  <div className="tl-date">Jan 2025</div>
-                  <div className="tl-body">
-                    <span className="tl-tag">Fieldwork</span>
-                    <h3>Skills Gap Survey</h3>
-                    <p>Survey of 500+ secondary school students across Ibadan on career awareness and skills confidence.</p>
-                  </div>
-                </div>
-                <div className="tl-item">
-                  <div className="tl-date">Mar 2025</div>
-                  <div className="tl-body">
-                    <span className="tl-tag">Publication</span>
-                    <h3>Policy Paper 001</h3>
-                    <p>Beyond Unemployment — a framework for systemic change in youth employment.</p>
-                  </div>
-                </div>
-                <div className="tl-item">
-                  <div className="tl-date">Q3 2025</div>
-                  <div className="tl-body">
-                    <span className="tl-tag">Upcoming</span>
-                    <h3 className="tl-soon">Mentorship Impact Study</h3>
-                    <p>Longitudinal study measuring outcomes from our first cohort of mentored students.</p>
-                  </div>
-                </div>
-              </div>
+              <PolicyTimeline />
             </div>
           </div>
         </div>
