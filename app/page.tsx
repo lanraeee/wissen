@@ -34,7 +34,7 @@ export default function HomePage() {
                 Confused about what&#39;s next? Don&#39;t know where to start? We&#39;ve built resources that help you discover careers that match your interests, understand what it takes to succeed, and connect with people doing the work you&#39;re curious about.
               </p>
               <div className="hero-cta reveal" data-d="2">
-                <Link href="/career-assessment" className="btn btn--lg mag">
+                <Link href="/career-pathways" className="btn btn--lg mag">
                   Take the Career Assessment {ARROW}
                 </Link>
               </div>

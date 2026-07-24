@@ -618,7 +618,7 @@ export default function CareerAssessmentPage() {
         <div className="wrap ca-hero__inner">
           <div className="ca-hero__copy">
             <span className="eyebrow">Career Assessment</span>
-            <h1 className="display-lg ca-hero__h1">Discover Your Ideal<br />Career Path</h1>
+            <h1 className="display-lg ca-hero__h1">Career Assessment<br />Accelerator</h1>
             <p className="lead ca-hero__lead">
               Answer 10 quick questions. Get personalised career recommendations based on your interests, skills, and goals.
             </p>

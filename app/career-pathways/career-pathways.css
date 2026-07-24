@@ -1,0 +1,374 @@
+/* ── Career Pathways Assessment ─────────────────────────────────────────────── */
+
+.cp-page {
+  min-height: 100vh;
+}
+
+/* Hero */
+.cp-hero {
+  background: linear-gradient(135deg, rgba(34,197,94,0.10) 0%, rgba(184,134,11,0.05) 100%);
+  padding: clamp(60px,8vw,100px) 0;
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+}
+.cp-hero::before {
+  content: '';
+  position: absolute;
+  top: -50%; right: -20%;
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(34,197,94,0.08) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+.cp-hero__inner {
+  position: relative;
+  z-index: 1;
+  max-width: 700px;
+  margin: 0 auto;
+}
+.cp-audience-note {
+  color: var(--ink-60);
+  font-size: 14px;
+  margin-top: 16px;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Eligibility box */
+.cp-eligibility {
+  max-width: 650px;
+  margin: 0 auto 30px;
+  padding: 24px;
+  background: rgba(34,197,94,0.08);
+  border-radius: 12px;
+  border-left: 4px solid var(--green-800);
+}
+.cp-eligibility__title {
+  margin: 0 0 12px;
+  color: var(--green-800);
+  font-size: 15px;
+}
+.cp-eligibility__row {
+  margin: 0 0 10px;
+  color: var(--ink-60);
+  font-size: 13px;
+  line-height: 1.6;
+}
+.cp-eligibility__row:last-child { margin-bottom: 0; }
+
+/* Form card */
+.cp-form-card {
+  background: white;
+  border-radius: 16px;
+  padding: clamp(40px,6vw,60px);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  margin: 0 auto 60px;
+  max-width: 650px;
+}
+
+.cp-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 28px;
+}
+@media (max-width: 640px) {
+  .cp-form-row { grid-template-columns: 1fr; }
+  .cp-form-card { padding: 30px 20px; }
+}
+
+.cp-field {
+  margin-bottom: 28px;
+}
+.cp-field label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: var(--ink);
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.cp-form-row .cp-field { margin-bottom: 0; }
+.cp-field input,
+.cp-field textarea,
+.cp-field select {
+  width: 100%;
+  padding: 14px 16px;
+  border: 2px solid var(--line);
+  border-radius: 10px;
+  font-size: 15px;
+  font-family: inherit;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  box-sizing: border-box;
+}
+.cp-field input:focus,
+.cp-field textarea:focus {
+  outline: none;
+  border-color: var(--green-800);
+  box-shadow: 0 0 0 4px rgba(34,197,94,0.1);
+}
+.cp-field textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+/* Upload */
+.cp-upload-label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: var(--ink);
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.cp-upload-box {
+  border: 2px dashed var(--line);
+  border-radius: 10px;
+  padding: 28px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.3s, background 0.3s;
+  margin-bottom: 28px;
+}
+.cp-upload-box:hover {
+  border-color: var(--green-800);
+  background: rgba(34,197,94,0.05);
+}
+.cp-upload-icon { font-size: 32px; margin-bottom: 12px; }
+.cp-upload-box p { margin: 0 0 4px; color: var(--ink); font-weight: 600; }
+.cp-upload-box small { color: var(--ink-60); font-size: 13px; }
+.cp-upload-feedback { margin-top: 8px; font-size: 13px; }
+.cp-upload-feedback--ok { color: var(--green-800); }
+.cp-upload-feedback--err { color: #e74c3c; }
+
+/* Submit */
+.cp-submit-btn {
+  width: 100%;
+  padding: 16px;
+  background: var(--green-800);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.cp-submit-btn:hover:not(:disabled) {
+  background: var(--green-900, #14532d);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(34,197,94,0.2);
+}
+.cp-submit-btn:disabled { opacity: 0.7; cursor: not-allowed; }
+
+/* Results layout */
+.cp-results {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: clamp(40px,6vw,80px) 0;
+  display: grid;
+  gap: 32px;
+}
+
+.cp-welcome {
+  background: linear-gradient(135deg, rgba(34,197,94,0.15) 0%, rgba(184,134,11,0.10) 100%);
+  border-radius: 16px;
+  padding: 40px;
+  text-align: center;
+}
+.cp-welcome h2 { color: var(--green-800); margin-bottom: 12px; }
+.cp-welcome p { color: var(--ink-60); font-size: 16px; margin-bottom: 20px; }
+.cp-welcome__note { font-size: 13px !important; margin-top: 12px; }
+
+/* Section boxes */
+.cp-section-box {
+  background: white;
+  border-radius: 16px;
+  padding: 40px;
+  border: 1px solid var(--line);
+}
+.cp-section-box--tinted { background: var(--cream, #f9f7f3); }
+
+.cp-section-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--green-800);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.cp-section-sub {
+  color: var(--ink-60);
+  margin-bottom: 28px;
+  font-size: 14px;
+}
+
+/* Roadmap phases */
+.cp-phase-card {
+  background: linear-gradient(135deg, rgba(34,197,94,0.05) 0%, rgba(184,134,11,0.02) 100%);
+  border: 2px solid var(--line);
+  border-radius: 12px;
+  padding: 28px;
+  margin-bottom: 16px;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+.cp-phase-card:hover {
+  border-color: var(--green-800);
+  box-shadow: 0 8px 24px rgba(34,197,94,0.10);
+}
+.cp-phase-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.cp-phase-badge {
+  background: var(--green-800);
+  color: white;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.cp-phase-title { font-size: 16px; font-weight: 700; color: var(--ink); }
+.cp-phase-duration { color: var(--ink-60); font-size: 13px; }
+.cp-phase-list { list-style: none; padding: 0; margin: 0; }
+.cp-phase-item {
+  font-size: 13px;
+  color: var(--ink-60);
+  margin-bottom: 8px;
+  padding-left: 20px;
+  position: relative;
+}
+.cp-check {
+  position: absolute;
+  left: 0;
+  color: var(--green-800);
+  font-weight: bold;
+}
+
+/* Pathway grid */
+.cp-pathway-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
+.cp-pathway-card {
+  background: white;
+  border: 2px solid var(--line);
+  border-radius: 12px;
+  padding: 28px;
+  transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+  display: flex;
+  flex-direction: column;
+}
+.cp-pathway-card:hover {
+  border-color: var(--green-800);
+  transform: translateY(-6px);
+  box-shadow: 0 16px 40px rgba(34,197,94,0.15);
+}
+.cp-pathway-icon { font-size: 32px; margin-bottom: 12px; }
+.cp-pathway-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--green-800);
+  margin-bottom: 16px;
+}
+.cp-pathway-detail { margin-bottom: 14px; font-size: 13px; }
+.cp-pathway-label {
+  display: block;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  font-size: 11px;
+  letter-spacing: 0.5px;
+}
+.cp-pathway-value { color: var(--ink-60); line-height: 1.5; }
+.cp-pathway-salary { color: var(--green-800); font-weight: 700; }
+
+/* Opportunities */
+.cp-opp-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
+.cp-opp-card {
+  background: white;
+  border: 2px solid var(--line);
+  padding: 24px;
+  border-radius: 12px;
+  text-align: center;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+.cp-opp-card:hover {
+  border-color: var(--green-800);
+  box-shadow: 0 8px 20px rgba(34,197,94,0.1);
+}
+.cp-opp-icon { font-size: 36px; margin-bottom: 12px; }
+.cp-opp-title { font-size: 15px; font-weight: 700; color: var(--ink); margin-bottom: 8px; }
+.cp-opp-desc { color: var(--ink-60); font-size: 13px; line-height: 1.5; margin: 0; }
+
+/* Skills */
+.cp-skills-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+@media (max-width: 768px) {
+  .cp-skills-container { grid-template-columns: 1fr; }
+  .cp-pathway-grid { grid-template-columns: 1fr; }
+}
+.cp-skill-group {
+  background: var(--cream, #f9f7f3);
+  padding: 24px;
+  border-radius: 12px;
+}
+.cp-skill-group-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 16px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.cp-skill-badges { display: flex; flex-wrap: wrap; gap: 10px; }
+.cp-skill-tag {
+  background: white;
+  border: 2px solid var(--green-800);
+  color: var(--green-800);
+  padding: 8px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+.cp-skill-tag--critical {
+  background: var(--green-800);
+  color: white;
+  border-color: var(--green-800);
+}
+
+/* Mentorship CTA */
+.cp-mentorship {
+  background: linear-gradient(135deg, var(--green-800) 0%, #1a7d4f 100%);
+  color: white;
+  padding: 50px 40px;
+  border-radius: 16px;
+  text-align: center;
+}
+.cp-mentorship h3 { color: white; margin-bottom: 16px; font-size: 1.4rem; }
+.cp-mentorship p { color: rgba(255,255,255,0.9); margin-bottom: 24px; }
+
+/* Reset */
+.cp-reset { text-align: center; margin-top: 8px; }

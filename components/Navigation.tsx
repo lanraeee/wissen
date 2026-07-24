@@ -35,7 +35,13 @@ const NAV = [
       ['/community#learning', 'Learning Library', 'Free courses & toolkits'],
     ]
   },
-  { key: 'careers', label: 'Careers', href: '/careers' },
+  {
+    key: 'careers', label: 'Careers', menu: [
+      ['/careers', 'Careers Overview', 'Jobs, internships & opportunities'],
+      ['/career-pathways', 'Career Pathways Assessment', 'Get your personalised roadmap'],
+      ['/career-assessment', 'Career Assessment Accelerator', '10-question quiz · 12 career profiles'],
+    ]
+  },
   { key: 'policy', label: 'Policy', href: '/policy-research' },
   {
     key: 'involved', label: 'Get Involved', menu: [
@@ -62,6 +68,8 @@ const ACTIVE_MAP: Record<string, string> = {
   '/scholarships': 'community',
   '/competitions': 'community',
   '/careers': 'careers',
+  '/career-pathways': 'careers',
+  '/career-assessment': 'careers',
   '/policy-research': 'policy',
   '/volunteer': 'involved',
   '/partner': 'involved',
