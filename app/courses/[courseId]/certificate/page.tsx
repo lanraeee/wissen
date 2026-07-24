@@ -92,8 +92,8 @@ export default async function CertificatePage({ params }: Props) {
             <Image
               src="/img/logo.png"
               alt="Wissen-Haus logo"
-              width={52}
-              height={52}
+              width={40}
+              height={40}
               className="cert-header__logo"
             />
             <div className="cert-header__name">
@@ -145,7 +145,13 @@ export default async function CertificatePage({ params }: Props) {
           <div className="cert-issued">
             <div className="cert-issued__label">Date of Issue</div>
             <div className="cert-issued__value">{issuedFormatted}</div>
-            <div className="cert-issued__id">{cert.certificate_id as string}</div>
+            <Link
+              href={`/verify/${cert.certificate_id as string}`}
+              className="cert-issued__id"
+              title="Verify this certificate"
+            >
+              {cert.certificate_id as string}
+            </Link>
           </div>
 
           {/* Seal */}
@@ -154,8 +160,8 @@ export default async function CertificatePage({ params }: Props) {
               <Image
                 src="/img/logo.png"
                 alt="Wissen-Haus seal"
-                width={44}
-                height={44}
+                width={34}
+                height={34}
                 className="cert-seal__logo"
               />
             </div>

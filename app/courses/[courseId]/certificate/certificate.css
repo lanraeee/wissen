@@ -4,14 +4,14 @@
 .cert-page {
   background: #f4f0e8;
   min-height: 100vh;
-  padding: clamp(40px, 6vw, 80px) 16px;
+  padding: clamp(24px, 4vw, 48px) 16px;
 }
 
 /* ── The certificate document ─────────────────────────────────────────── */
 .cert-doc {
   position: relative;
-  max-width: 860px;
-  margin: 0 auto 48px;
+  max-width: 680px;
+  margin: 0 auto 32px;
   background: #FEFCF5;
   /* Double gold border effect */
   border: 3px solid #B8952A;
@@ -57,23 +57,23 @@
 /* ── Header band ──────────────────────────────────────────────────────── */
 .cert-header {
   background: linear-gradient(135deg, #0F2D1D 0%, #1a4a2e 60%, #0F2D1D 100%);
-  padding: 28px 48px;
+  padding: 18px 32px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 20px;
+  gap: 16px;
   border-bottom: 3px solid #B8952A;
 }
 
 .cert-header__brand {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 12px;
 }
 
 .cert-header__logo {
-  width: 52px;
-  height: 52px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   border: 2px solid rgba(184, 149, 42, 0.6);
   object-fit: cover;
@@ -83,7 +83,7 @@
 .cert-header__name {
   color: #fff;
   font-family: var(--ff-display);
-  font-size: 1.15rem;
+  font-size: 1rem;
   font-weight: 700;
   letter-spacing: .01em;
   line-height: 1.2;
@@ -114,7 +114,7 @@
 
 /* ── Body ─────────────────────────────────────────────────────────────── */
 .cert-body {
-  padding: clamp(36px,5vw,64px) clamp(32px,6vw,72px);
+  padding: clamp(24px,3vw,40px) clamp(24px,4vw,48px);
   text-align: center;
   position: relative;
 }
@@ -128,7 +128,7 @@
   align-items: center;
   justify-content: center;
   font-family: var(--ff-display);
-  font-size: 280px;
+  font-size: 200px;
   font-weight: 900;
   color: rgba(184,149,42,0.04);
   pointer-events: none;
@@ -142,7 +142,7 @@
   align-items: center;
   justify-content: center;
   gap: 12px;
-  margin-bottom: 28px;
+  margin-bottom: 18px;
 }
 .cert-eyebrow__line {
   flex: 1;
@@ -164,17 +164,17 @@
 /* Intro text */
 .cert-intro {
   color: #5a5a4a;
-  font-size: .88rem;
+  font-size: .82rem;
   letter-spacing: .06em;
   text-transform: uppercase;
-  margin-bottom: 16px;
+  margin-bottom: 10px;
 }
 
 /* Recipient name */
 .cert-name {
   font-family: Georgia, 'Times New Roman', serif;
   font-style: italic;
-  font-size: clamp(2.4rem, 5vw, 3.6rem);
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
   font-weight: 400;
   color: #0F2D1D;
   line-height: 1.1;
@@ -188,8 +188,8 @@
   align-items: center;
   justify-content: center;
   gap: 10px;
-  margin: 0 auto 24px;
-  max-width: 400px;
+  margin: 0 auto 16px;
+  max-width: 360px;
 }
 .cert-name-rule__bar {
   flex: 1;
@@ -207,29 +207,29 @@
 /* Completion text */
 .cert-completion {
   color: #5a5a4a;
-  font-size: .92rem;
+  font-size: .84rem;
   letter-spacing: .04em;
-  margin-bottom: 16px;
+  margin-bottom: 10px;
 }
 
 /* Course title */
 .cert-course {
   font-family: var(--ff-display);
-  font-size: clamp(1.3rem, 3vw, 1.8rem);
+  font-size: clamp(1.1rem, 2.5vw, 1.4rem);
   font-weight: 800;
   color: #0F2D1D;
   line-height: 1.2;
-  margin: 0 0 8px;
+  margin: 0 0 6px;
   letter-spacing: .01em;
 }
 
 /* Subtitle */
 .cert-subtitle {
   color: #7a7a6a;
-  font-size: .8rem;
+  font-size: .75rem;
   letter-spacing: .08em;
   text-transform: uppercase;
-  margin-bottom: 36px;
+  margin-bottom: 22px;
 }
 
 /* Divider */
@@ -238,8 +238,8 @@
   align-items: center;
   justify-content: center;
   gap: 14px;
-  margin: 0 auto 36px;
-  max-width: 480px;
+  margin: 0 auto 22px;
+  max-width: 400px;
 }
 .cert-divider__line {
   flex: 1;
@@ -260,8 +260,8 @@
   display: grid;
   grid-template-columns: 1fr auto 1fr;
   align-items: end;
-  gap: 24px;
-  padding: 24px clamp(32px,6vw,72px) 32px;
+  gap: 16px;
+  padding: 16px clamp(24px,4vw,48px) 20px;
   border-top: 1px solid rgba(184,149,42,0.25);
 }
 
@@ -283,10 +283,14 @@
 }
 .cert-issued__id {
   font-family: var(--ff-mono, monospace);
-  font-size: .7rem;
-  color: #9a9a8a;
-  margin-top: 6px;
+  font-size: .68rem;
+  color: #B8952A;
+  margin-top: 5px;
+  display: block;
+  text-decoration: none;
+  word-break: break-all;
 }
+.cert-issued__id:hover { text-decoration: underline; }
 
 /* Seal */
 .cert-seal {
@@ -297,27 +301,27 @@
   flex-shrink: 0;
 }
 .cert-seal__ring {
-  width: 88px;
-  height: 88px;
+  width: 68px;
+  height: 68px;
   border-radius: 50%;
-  border: 2.5px solid #B8952A;
+  border: 2px solid #B8952A;
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
   background: radial-gradient(circle at 40% 35%, rgba(184,149,42,0.12), rgba(184,149,42,0.04));
-  box-shadow: 0 0 0 4px rgba(184,149,42,0.08), inset 0 0 0 6px rgba(184,149,42,0.06);
+  box-shadow: 0 0 0 3px rgba(184,149,42,0.08), inset 0 0 0 5px rgba(184,149,42,0.06);
 }
 .cert-seal__ring::before {
   content: '';
   position: absolute;
-  inset: 6px;
+  inset: 5px;
   border-radius: 50%;
   border: 1px solid rgba(184,149,42,0.35);
 }
 .cert-seal__logo {
-  width: 44px;
-  height: 44px;
+  width: 34px;
+  height: 34px;
   border-radius: 50%;
   object-fit: cover;
   position: relative;
@@ -338,7 +342,7 @@
 .cert-sig__name {
   font-family: Georgia, 'Times New Roman', serif;
   font-style: italic;
-  font-size: 1.35rem;
+  font-size: 1.1rem;
   color: #0F2D1D;
   line-height: 1;
   margin-bottom: 4px;
@@ -357,7 +361,7 @@
 
 /* ── Share / action buttons below the cert ────────────────────────────── */
 .cert-actions {
-  max-width: 860px;
+  max-width: 680px;
   margin: 0 auto;
   text-align: center;
 }
@@ -418,14 +422,14 @@
 
 /* ── Mobile ───────────────────────────────────────────────────────────── */
 @media (max-width: 640px) {
-  .cert-header { padding: 20px 24px; }
+  .cert-header { padding: 14px 20px; }
   .cert-header__badge { display: none; }
-  .cert-body { padding: 32px 24px; }
+  .cert-body { padding: 20px 20px; }
   .cert-footer {
     grid-template-columns: 1fr;
-    gap: 20px;
+    gap: 16px;
     text-align: center;
-    padding: 20px 24px 28px;
+    padding: 16px 20px 20px;
   }
   .cert-issued { text-align: center; }
   .cert-sig    { text-align: center; }
