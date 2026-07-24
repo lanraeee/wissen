@@ -2,6 +2,8 @@ import type { Metadata } from 'next'
 import PolicyTimeline, { type PolicyPaper } from '@/components/PolicyTimeline'
 import sql from '@/lib/db'
 
+export const dynamic = 'force-dynamic'
+
 export const metadata: Metadata = {
   title: 'Policy & Research · Wissen-Haus',
   description: 'Comprehensive policy papers and research reports on youth employment, skills gap, and economic independence in Nigeria.',
