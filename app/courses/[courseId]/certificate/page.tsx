@@ -1,12 +1,30 @@
 import { notFound } from 'next/navigation'
+import type { Metadata } from 'next'
+import Image from 'next/image'
+import Link from 'next/link'
 import { COURSES } from '@/lib/courseData'
 import { getSession } from '@/lib/auth'
 import sql from '@/lib/db'
-import Link from 'next/link'
-import PrintCertButton from '@/components/PrintCertButton'
+import CertShareButtons from '@/components/CertShareButtons'
+import './certificate.css'
 
 interface Props {
   params: Promise<{ courseId: string }>
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { courseId } = await params
+  const course = COURSES.find(c => c.id === courseId)
+  if (!course) return {}
+  return {
+    title: `Certificate of Completion — ${course.title} | Wissen-Haus`,
+    description: `Official certificate of completion for ${course.title}, issued by Wissen-Haus Youth Empowerment Foundation.`,
+    openGraph: {
+      title: `Certificate of Completion — ${course.title}`,
+      description: `Issued by Wissen-Haus Youth Empowerment Foundation · wissenhaus.org`,
+      images: ['/img/logo.png'],
+    },
+  }
 }
 
 export default async function CertificatePage({ params }: Props) {
@@ -53,39 +71,119 @@ export default async function CertificatePage({ params }: Props) {
     )
   }
 
-  const issuedDate = new Date(cert.issued_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
+  const issuedDate = new Date(cert.issued_at as string)
+  const issuedFormatted = issuedDate.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
+  const issuedYear = issuedDate.getFullYear()
+  const issuedMonth = issuedDate.getMonth() + 1
 
   return (
-    <section className="section" style={{ paddingTop: 'clamp(48px,6vw,84px)' }}>
-      <div className="wrap" style={{ maxWidth: 720 }}>
-        <div className="certificate">
-          <h2>Certificate of Completion</h2>
-          <h3>{course.title}</h3>
-          <h4>Awarded to {session.name}</h4>
-          <p style={{ color: 'var(--ink-60)', marginBottom: '1.5rem' }}>
-            This is to certify that <strong>{session.name}</strong> has successfully completed all {course.modules.length} modules of <strong>{course.title}</strong> on the Wissen-Haus Learning Platform.
-          </p>
-          <p style={{ fontFamily: 'var(--ff-mono)', fontSize: '.8rem', color: 'var(--ink-60)', marginBottom: '2rem' }}>
-            Certificate ID: {cert.certificate_id} · Issued: {issuedDate}
-          </p>
-          <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-            <a
-              href={`https://www.linkedin.com/shareArticle?mini=true&url=https://wissenhaus.org/courses/${courseId}/certificate&title=${encodeURIComponent(`I completed ${course.title} on Wissen-Haus!`)}&summary=${encodeURIComponent(`Certificate ID: ${cert.certificate_id}`)}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn"
-              style={{ background: '#0A66C2', borderColor: '#0A66C2' }}
-            >
-              Share on LinkedIn
-            </a>
-            <PrintCertButton />
+    <div className="cert-page">
+
+      {/* ── Certificate document ── */}
+      <div className="cert-doc" id="certificate">
+
+        {/* Corner ornaments */}
+        <span className="cert-corner-bl" aria-hidden="true">✦</span>
+        <span className="cert-corner-br" aria-hidden="true">✦</span>
+
+        {/* Header band */}
+        <div className="cert-header">
+          <div className="cert-header__brand">
+            <Image
+              src="/img/logo.png"
+              alt="Wissen-Haus logo"
+              width={52}
+              height={52}
+              className="cert-header__logo"
+            />
+            <div className="cert-header__name">
+              Wissen-Haus
+              <small>Youth Empowerment Foundation</small>
+            </div>
           </div>
+          <div className="cert-header__badge">Official Certificate</div>
         </div>
 
-        <div style={{ textAlign: 'center', marginTop: '2rem' }}>
-          <Link href="/courses" className="textlink">Browse more courses</Link>
+        {/* Body */}
+        <div className="cert-body">
+
+          {/* Eyebrow */}
+          <div className="cert-eyebrow">
+            <span className="cert-eyebrow__line" />
+            <span className="cert-eyebrow__text">Certificate of Completion</span>
+            <span className="cert-eyebrow__line cert-eyebrow__line--r" />
+          </div>
+
+          <p className="cert-intro">This is to proudly certify that</p>
+
+          <h1 className="cert-name">{session.name}</h1>
+
+          <div className="cert-name-rule">
+            <span className="cert-name-rule__bar" />
+            <span className="cert-name-rule__dot" />
+            <span className="cert-name-rule__bar" />
+          </div>
+
+          <p className="cert-completion">has successfully completed all {course.modules.length} modules of</p>
+
+          <h2 className="cert-course">{course.title}</h2>
+
+          <p className="cert-subtitle">A programme of the Wissen-Haus Learning Platform</p>
+
+          <div className="cert-divider">
+            <span className="cert-divider__line" />
+            <span className="cert-divider__ornament">❧</span>
+            <span className="cert-divider__line cert-divider__line--r" />
+          </div>
+
+        </div>
+
+        {/* Footer row */}
+        <div className="cert-footer">
+
+          {/* Issued info */}
+          <div className="cert-issued">
+            <div className="cert-issued__label">Date of Issue</div>
+            <div className="cert-issued__value">{issuedFormatted}</div>
+            <div className="cert-issued__id">{cert.certificate_id as string}</div>
+          </div>
+
+          {/* Seal */}
+          <div className="cert-seal">
+            <div className="cert-seal__ring">
+              <Image
+                src="/img/logo.png"
+                alt="Wissen-Haus seal"
+                width={44}
+                height={44}
+                className="cert-seal__logo"
+              />
+            </div>
+            <span className="cert-seal__label">Verified</span>
+          </div>
+
+          {/* Signature */}
+          <div className="cert-sig">
+            <div className="cert-sig__name">Benz Olagbaye</div>
+            <div className="cert-sig__rule" />
+            <div className="cert-sig__title">Founder &amp; Director · Wissen-Haus</div>
+          </div>
+
         </div>
       </div>
-    </section>
+
+      {/* ── Share actions ── */}
+      <CertShareButtons
+        courseId={courseId}
+        courseTitle={course.title}
+        certId={cert.certificate_id as string}
+        recipientName={session.name}
+        issuedYear={issuedYear}
+        issuedMonth={issuedMonth}
+      />
+
+      <Link href="/courses" className="cert-back">← Browse more courses</Link>
+
+    </div>
   )
 }
