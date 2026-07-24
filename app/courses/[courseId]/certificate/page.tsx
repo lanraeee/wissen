@@ -82,77 +82,20 @@ export default async function CertificatePage({ params }: Props) {
       {/* ── Certificate document ── */}
       <div className="cert-doc" id="certificate">
 
-        {/* Corner ornaments */}
-        <span className="cert-corner-bl" aria-hidden="true">✦</span>
-        <span className="cert-corner-br" aria-hidden="true">✦</span>
+        {/* ── Left panel ── */}
+        <div className="cert-left">
+          <Image
+            src="/img/logo.png"
+            alt="Wissen-Haus logo"
+            width={96}
+            height={96}
+            className="cert-left__logo"
+          />
+          <div className="cert-left__name">Wissen-Haus</div>
+          <div className="cert-left__sub">Youth Empowerment<br />Foundation</div>
 
-        {/* Header band */}
-        <div className="cert-header">
-          <div className="cert-header__brand">
-            <Image
-              src="/img/logo.png"
-              alt="Wissen-Haus logo"
-              width={80}
-              height={80}
-              className="cert-header__logo"
-            />
-            <div className="cert-header__name">
-              Wissen-Haus
-              <small>Youth Empowerment Foundation</small>
-            </div>
-          </div>
-          <div className="cert-header__badge">Official Certificate</div>
-        </div>
-
-        {/* Body */}
-        <div className="cert-body">
-
-          {/* Eyebrow */}
-          <div className="cert-eyebrow">
-            <span className="cert-eyebrow__line" />
-            <span className="cert-eyebrow__text">Certificate of Completion</span>
-            <span className="cert-eyebrow__line cert-eyebrow__line--r" />
-          </div>
-
-          <p className="cert-intro">This is to proudly certify that</p>
-
-          <h1 className="cert-name">{session.name}</h1>
-
-          <div className="cert-name-rule">
-            <span className="cert-name-rule__bar" />
-            <span className="cert-name-rule__dot" />
-            <span className="cert-name-rule__bar" />
-          </div>
-
-          <p className="cert-completion">has successfully completed all {course.modules.length} modules of</p>
-
-          <h2 className="cert-course">{course.title}</h2>
-
-          <p className="cert-subtitle">A programme of the Wissen-Haus Learning Platform</p>
-
-          <div className="cert-divider">
-            <span className="cert-divider__line" />
-            <span className="cert-divider__ornament">❧</span>
-            <span className="cert-divider__line cert-divider__line--r" />
-          </div>
-
-        </div>
-
-        {/* Footer row */}
-        <div className="cert-footer">
-
-          {/* Issued info */}
-          <div className="cert-issued">
-            <div className="cert-issued__label">Date of Issue</div>
-            <div className="cert-issued__value">{issuedFormatted}</div>
-            <Link
-              href={`/verify/${cert.certificate_id as string}`}
-              className="cert-issued__id"
-              title="Verify this certificate"
-            >
-              {cert.certificate_id as string}
-            </Link>
-          </div>
+          <div className="cert-left__rule" />
+          <div className="cert-left__spacer" />
 
           {/* Seal */}
           <div className="cert-seal">
@@ -160,19 +103,82 @@ export default async function CertificatePage({ params }: Props) {
               <Image
                 src="/img/logo.png"
                 alt="Wissen-Haus seal"
-                width={34}
-                height={34}
+                width={36}
+                height={36}
                 className="cert-seal__logo"
               />
             </div>
             <span className="cert-seal__label">Verified</span>
           </div>
 
+          <div className="cert-left__rule" />
+
           {/* Signature */}
           <div className="cert-sig">
             <div className="cert-sig__name">Benz Olagbaye</div>
             <div className="cert-sig__rule" />
-            <div className="cert-sig__title">Founder &amp; Director · Wissen-Haus</div>
+            <div className="cert-sig__title">Founder &amp; Director</div>
+          </div>
+        </div>
+
+        {/* ── Right panel ── */}
+        <div className="cert-right">
+
+          {/* Corner ornaments */}
+          <span className="cert-corner cert-corner--tl" aria-hidden="true">✦</span>
+          <span className="cert-corner cert-corner--tr" aria-hidden="true">✦</span>
+          <span className="cert-corner cert-corner--bl" aria-hidden="true">✦</span>
+          <span className="cert-corner cert-corner--br" aria-hidden="true">✦</span>
+
+          {/* Main body */}
+          <div className="cert-body">
+
+            <div className="cert-eyebrow">
+              <span className="cert-eyebrow__line" />
+              <span className="cert-eyebrow__text">Certificate of Completion</span>
+              <span className="cert-eyebrow__line cert-eyebrow__line--r" />
+            </div>
+
+            <p className="cert-intro">This is to proudly certify that</p>
+
+            <h1 className="cert-name">{session.name}</h1>
+
+            <div className="cert-name-rule">
+              <span className="cert-name-rule__bar" />
+              <span className="cert-name-rule__dot" />
+              <span className="cert-name-rule__bar" />
+            </div>
+
+            <p className="cert-completion">
+              has successfully completed all {course.modules.length} modules of
+            </p>
+
+            <h2 className="cert-course">{course.title}</h2>
+
+            <p className="cert-subtitle">A programme of the Wissen-Haus Learning Platform</p>
+
+          </div>
+
+          {/* Footer strip */}
+          <div className="cert-footer">
+            <div className="cert-issued">
+              <div className="cert-issued__label">Date of Issue</div>
+              <div className="cert-issued__value">{issuedFormatted}</div>
+            </div>
+
+            <span className="cert-footer__ornament" aria-hidden="true">❧</span>
+
+            <div className="cert-issued" style={{ textAlign: 'right' }}>
+              <div className="cert-issued__label">Certificate ID</div>
+              <Link
+                href={`/verify/${cert.certificate_id as string}`}
+                className="cert-issued__id"
+                title="Verify this certificate"
+                style={{ marginTop: 0 }}
+              >
+                {cert.certificate_id as string}
+              </Link>
+            </div>
           </div>
 
         </div>
