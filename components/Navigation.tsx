@@ -22,7 +22,7 @@ const NAV = [
   {
     key: 'programmes', label: 'Programmes', menu: [
       ['/programmes', 'All Programmes', 'The full overview'],
-      ['/bootcamp', 'Career Clarity Trade Fair', 'Skills for JS3-SS1 students'],
+      ['/career-clarity-trade-fair', 'Career Clarity Trade Fair', 'For all secondary school students'],
       ['/podcast', 'Opportunity Blueprint', 'Our flagship podcast'],
       ['/impact-content', 'Impact Content', 'Social-impact storytelling'],
       ['/programmes#events', 'Events', 'Bootcamps, cafés & more'],
@@ -59,7 +59,7 @@ const ACTIVE_MAP: Record<string, string> = {
   '/impact': 'about',
   '/contact': 'about',
   '/programmes': 'programmes',
-  '/bootcamp': 'programmes',
+  '/career-clarity-trade-fair': 'programmes',
   '/podcast': 'programmes',
   '/impact-content': 'programmes',
   '/community': 'community',

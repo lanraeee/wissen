@@ -16,7 +16,7 @@ export default function BootcampPage() {
             <div className="reveal">
               <span className="eyebrow">Programmes · Trade Fair</span>
               <h1 className="display-lg mt-s">Career Clarity Trade Fair</h1>
-              <p className="lead mt-m">A one-day career exploration fair designed specifically for secondary school students in Ibadan — JS3, SS1 and beyond. Meet real professionals, explore careers you&#39;ve never heard of, and leave with a clear direction.</p>
+              <p className="lead mt-m">A one-day career exploration fair open to all secondary school students in Ibadan — from JS1 to SS3. Meet real professionals, explore careers you&#39;ve never heard of, and leave with a clear direction.</p>
               <div className="hero-cta mt-m">
                 <Link href="/volunteer" className="btn btn--lg">Bring it to your school</Link>
                 <Link href="/donate" className="btn btn--ghost">Support the Fair</Link>
@@ -40,8 +40,8 @@ export default function BootcampPage() {
           <div className="grid grid-3">
             <div className="feature reveal">
               <div className="feature__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M3 7l9-4 9 4-9 4-9-4z" /><path d="M6 12v4c0 1 2.7 3 6 3s6-2 6-3v-4" /></svg></div>
-              <h3>Students in JS3–SS3</h3>
-              <p>Anyone at the point of choosing subjects, universities, or their first career steps. The earlier, the better.</p>
+              <h3>All Secondary School Students</h3>
+              <p>From JS1 to SS3 — whether you&apos;re choosing subjects, thinking about university, or taking your first career steps. The earlier, the better.</p>
             </div>
             <div className="feature reveal" data-d="1">
               <div className="feature__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><circle cx="9" cy="8" r="3.2" /><path d="M3.5 20a5.5 5.5 0 0 1 11 0" /><path d="M16 5.5a3.2 3.2 0 0 1 0 6M17.5 20a5.5 5.5 0 0 0-3-4.9" /></svg></div>
