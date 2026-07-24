@@ -40,7 +40,7 @@ export default async function PolicyResearchPage() {
               <h3>Beyond Unemployment: A Skills-First Framework for Nigerian Youth Economic Independence</h3>
               <p className="paper-cover__sub">Nigeria&#39;s youth unemployment crisis is not merely an employment problem—it is a skills access problem. This paper proposes a three-pillar framework for systemic change.</p>
               <div className="paper-cover__meta">
-                <strong>Authors:</strong> Wissen-Haus Research Team · <strong>Published:</strong> 2025
+                <strong>Authors:</strong> Wissen-Haus Research Team · <strong>Published:</strong> 2026
               </div>
               <div className="sdg-row">
                 <span className="sdg">SDG 4 · Quality Education</span>
