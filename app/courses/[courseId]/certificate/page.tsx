@@ -3,6 +3,7 @@ import { COURSES } from '@/lib/courseData'
 import { getSession } from '@/lib/auth'
 import sql from '@/lib/db'
 import Link from 'next/link'
+import PrintCertButton from '@/components/PrintCertButton'
 
 interface Props {
   params: Promise<{ courseId: string }>
@@ -77,9 +78,7 @@ export default async function CertificatePage({ params }: Props) {
             >
               Share on LinkedIn
             </a>
-            <button onClick={() => window.print()} className="btn" style={{ background: 'var(--green-800)', borderColor: 'var(--green-800)' }}>
-              Print Certificate
-            </button>
+            <PrintCertButton />
           </div>
         </div>
 
