@@ -123,8 +123,8 @@ export default async function DonationReceiptPage({ params }: Props) {
             gap: 16,
           }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-              <Image src="/img/logo.png" alt="Wissen-Haus" width={64} height={64}
-                style={{ borderRadius: 8, filter: 'drop-shadow(0 2px 6px rgba(0,0,0,0.18))' }} />
+              <Image src="/img/logo.png" alt="Wissen-Haus" width={80} height={80}
+                style={{ borderRadius: 12, filter: 'drop-shadow(0 3px 8px rgba(0,0,0,0.22))' }} />
               <div>
                 <div style={{ color: '#2a1a00', fontWeight: 800, fontSize: '1rem', lineHeight: 1.2 }}>
                   {foundation.legal_name}

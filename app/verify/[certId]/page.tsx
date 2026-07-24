@@ -69,7 +69,7 @@ export default async function VerifyCertPage({ params }: Props) {
           gap: 16,
           borderBottom: '3px solid #7A5510',
         }}>
-          <Image src="/img/logo.png" alt="Wissen-Haus" width={60} height={60} style={{ borderRadius: 8, filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.18))' }} />
+          <Image src="/img/logo.png" alt="Wissen-Haus" width={80} height={80} style={{ borderRadius: 12, filter: 'drop-shadow(0 3px 8px rgba(0,0,0,0.22))' }} />
           <div>
             <div style={{ color: '#2a1a00', fontWeight: 800, fontSize: '1rem', lineHeight: 1.2 }}>Wissen-Haus</div>
             <div style={{ color: 'rgba(42,26,0,0.65)', fontSize: '.68rem', letterSpacing: '.12em', textTransform: 'uppercase', fontWeight: 600 }}>Youth Empowerment Foundation</div>
