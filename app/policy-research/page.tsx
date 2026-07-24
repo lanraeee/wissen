@@ -37,7 +37,7 @@ export default function PolicyResearchPage() {
                 <span className="sdg">SDG 10 · Reduced Inequalities</span>
               </div>
               <div className="paper-cover__cta">
-                <a href="/files/beyond-unemployment-001.pdf" className="paper-dl" target="_blank" rel="noopener noreferrer">
+                <a href="/Wissen-Haus_Policy_Position_Paper_No_001.pdf" className="paper-dl" target="_blank" rel="noopener noreferrer">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" style={{ width: '1.1em', height: '1.1em' }}><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" /></svg>
                   Download PDF
                 </a>
