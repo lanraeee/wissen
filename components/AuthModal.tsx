@@ -27,6 +27,7 @@ export default function AuthModal({ onClose, defaultTab = 'login' }: Props) {
     setLoading(false)
     if (!res.ok) { setError(data.error || 'Login failed'); return }
     onClose()
+    router.push('/community')
     router.refresh()
   }
 
@@ -48,6 +49,7 @@ export default function AuthModal({ onClose, defaultTab = 'login' }: Props) {
     setLoading(false)
     if (!res.ok) { setError(data.error || 'Signup failed'); return }
     onClose()
+    router.push('/community')
     router.refresh()
   }
 

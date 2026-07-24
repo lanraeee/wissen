@@ -2,14 +2,16 @@
 
 import { useState } from 'react'
 
-export default function RevokeCert({ id, name }: { id: string; name: string }) {
+export default function RevokeCert({ id, name, onRefresh }: { id: string; name: string; onRefresh?: () => void }) {
   const [busy, setBusy] = useState(false)
 
   async function revoke() {
     if (!confirm(`Revoke certificate for ${name}? This cannot be undone.`)) return
     setBusy(true)
     await fetch(`/api/admin/certificates/${id}`, { method: 'DELETE' })
-    window.location.reload()
+    if (onRefresh) onRefresh()
+    else window.location.reload()
+    setBusy(false)
   }
 
   return (

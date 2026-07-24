@@ -17,7 +17,7 @@ export async function middleware(req: NextRequest) {
 
   const token = req.cookies.get(COOKIE_NAME)?.value
   if (!token) {
-    const target = pathname.startsWith('/community') ? '/community/landing' : '/login'
+    const target = '/login'
     return NextResponse.redirect(new URL(target, req.url))
   }
 
