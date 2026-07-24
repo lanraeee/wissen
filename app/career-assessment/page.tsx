@@ -574,6 +574,7 @@ export default function CareerAssessmentPage() {
     setPhase('quiz')
     setStep(0)
     setAnswers([])
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
   function handleAnswer(answerIdx: number) {
