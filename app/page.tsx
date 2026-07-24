@@ -6,9 +6,15 @@ export const metadata: Metadata = {
   title: 'Wissen-Haus Youth Empowerment Foundation · Bridging the Skills Gap',
   description: 'We equip Nigerian youth with practical skills, mentorship and global exposure for economic independence. 500+ students reached in our first year across Ibadan.',
   openGraph: {
-    title: 'Wissen-Haus Youth Empowerment Foundation - Bridging the Skills Gap',
+    title: 'Wissen-Haus — Bridging the Skills Gap in Nigeria',
+    description: 'Empowering young Nigerians with practical career skills, mentorship, and global exposure. 500+ students reached across Ibadan.',
+    images: [{ url: '/opengraph-image', width: 1200, height: 630, alt: 'Wissen-Haus Youth Empowerment Foundation' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Wissen-Haus — Bridging the Skills Gap in Nigeria',
     description: 'Empowering young Nigerians with practical career skills, mentorship, and global exposure.',
-    images: ['/img/hero-students.jpg'],
+    images: ['/opengraph-image'],
   },
 }
 
