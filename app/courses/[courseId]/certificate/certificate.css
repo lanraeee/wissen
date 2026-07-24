@@ -72,13 +72,12 @@
 }
 
 .cert-header__logo {
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  border: 3px solid rgba(255,255,255,0.7);
+  width: 68px;
+  height: 68px;
+  border-radius: 10px;
   object-fit: cover;
   flex-shrink: 0;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+  filter: drop-shadow(0 2px 6px rgba(0,0,0,0.18));
 }
 
 .cert-header__name {

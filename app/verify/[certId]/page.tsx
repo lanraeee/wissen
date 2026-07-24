@@ -61,20 +61,20 @@ export default async function VerifyCertPage({ params }: Props) {
 
         {/* Verified banner */}
         <div style={{
-          background: '#0F2D1D',
+          background: 'linear-gradient(135deg, #A07820 0%, #C9A030 40%, #B8952A 70%, #8B6914 100%)',
           borderRadius: '12px 12px 0 0',
           padding: '20px 32px',
           display: 'flex',
           alignItems: 'center',
           gap: 16,
-          borderBottom: '3px solid #B8952A',
+          borderBottom: '3px solid #7A5510',
         }}>
-          <Image src="/img/logo.png" alt="Wissen-Haus" width={44} height={44} style={{ borderRadius: '50%', border: '2px solid rgba(184,149,42,0.6)' }} />
+          <Image src="/img/logo.png" alt="Wissen-Haus" width={60} height={60} style={{ borderRadius: 8, filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.18))' }} />
           <div>
-            <div style={{ color: '#fff', fontWeight: 700, fontSize: '1rem', lineHeight: 1.2 }}>Wissen-Haus</div>
-            <div style={{ color: 'rgba(255,255,255,0.55)', fontSize: '.7rem', letterSpacing: '.1em', textTransform: 'uppercase' }}>Youth Empowerment Foundation</div>
+            <div style={{ color: '#2a1a00', fontWeight: 800, fontSize: '1rem', lineHeight: 1.2 }}>Wissen-Haus</div>
+            <div style={{ color: 'rgba(42,26,0,0.65)', fontSize: '.68rem', letterSpacing: '.12em', textTransform: 'uppercase', fontWeight: 600 }}>Youth Empowerment Foundation</div>
           </div>
-          <div style={{ marginLeft: 'auto', background: '#22c55e', color: '#fff', borderRadius: 20, padding: '4px 14px', fontSize: '.75rem', fontWeight: 700, letterSpacing: '.08em', display: 'flex', alignItems: 'center', gap: 6 }}>
+          <div style={{ marginLeft: 'auto', background: '#16a34a', color: '#fff', borderRadius: 20, padding: '5px 16px', fontSize: '.75rem', fontWeight: 700, letterSpacing: '.08em', display: 'flex', alignItems: 'center', gap: 6, boxShadow: '0 1px 4px rgba(0,0,0,0.2)' }}>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" width="14" height="14"><path d="M20 6L9 17l-5-5" strokeLinecap="round" strokeLinejoin="round"/></svg>
             VERIFIED
           </div>
