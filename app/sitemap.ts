@@ -9,6 +9,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: BASE, lastModified: now, changeFrequency: 'weekly', priority: 1.0 },
     { url: `${BASE}/about/story`, lastModified: now, changeFrequency: 'monthly', priority: 0.8 },
     { url: `${BASE}/founder`, lastModified: now, changeFrequency: 'monthly', priority: 0.8 },
+    { url: `${BASE}/team`, lastModified: now, changeFrequency: 'monthly', priority: 0.8 },
     { url: `${BASE}/contact`, lastModified: now, changeFrequency: 'monthly', priority: 0.6 },
     { url: `${BASE}/programmes`, lastModified: now, changeFrequency: 'weekly', priority: 0.9 },
     { url: `${BASE}/career-clarity-trade-fair`, lastModified: now, changeFrequency: 'weekly', priority: 0.8 },
