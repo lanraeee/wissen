@@ -1,0 +1,20 @@
+# Exclude sibling projects in this repo — only wissen Next.js app should build
+PGx/
+Belloiteholdings/
+lanrae-studio/
+lanraeee/
+mdc/
+paypaful/
+reemote/
+strattontips/
+theoakstratton/
+trove/
+ucbm/
+wissen/
+*.mp4
+*.zip
+*.html
+vercel-recovery-codes.txt
+.claude/
+.vscode/
+copy/
