@@ -1,89 +1,835 @@
-/* Career Assessment Modal Styles */
-.assessment-modal {
-  position: fixed;
-  inset: 0;
-  z-index: 200;
+/* ============================================================
+   CAREER ASSESSMENT — Full-page styles
+   Imports site design tokens from globals.css
+   ============================================================ */
+
+.ca-page {
+  position: relative;
+  z-index: 2;
+}
+
+/* ── Hero ─────────────────────────────────────────────────── */
+
+.ca-hero {
+  position: relative;
+  overflow: hidden;
+  padding-block: clamp(64px, 9vw, 120px);
+  background: var(--cream);
+}
+
+.ca-hero__blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  pointer-events: none;
+}
+.ca-hero__blob--1 {
+  width: 560px;
+  height: 560px;
+  background: var(--green-100);
+  top: -160px;
+  right: -120px;
+  opacity: 0.6;
+}
+.ca-hero__blob--2 {
+  width: 400px;
+  height: 400px;
+  background: var(--red-50);
+  bottom: -140px;
+  left: -100px;
+  opacity: 0.5;
+}
+
+.ca-hero__inner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(40px, 6vw, 96px);
+  align-items: center;
+  position: relative;
+  z-index: 1;
+}
+
+.ca-hero__copy {
   display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.ca-hero__h1 {
+  margin: 0;
+}
+
+.ca-hero__lead {
+  max-width: 46ch;
+  margin: 0;
+}
+
+.ca-trust {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.ca-trust__pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  padding: 0.4em 0.9em;
+  border-radius: var(--pill);
+  border: 1.5px solid var(--line);
+  background: var(--paper);
+  font-family: var(--ff-mono);
+  font-size: 0.74rem;
+  letter-spacing: 0.04em;
+  color: var(--ink-60);
+}
+
+.ca-hero__cta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+/* Visual card cluster */
+
+.ca-hero__visual {
+  position: relative;
+  height: 420px;
+}
+
+.ca-visual-centerpiece {
+  position: absolute;
+  inset: 50%;
+  transform: translate(-50%, -50%);
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  background: var(--green-800);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: rgba(10, 33, 21, 0.7);
-  backdrop-filter: blur(4px);
-  padding: 20px;
+  font-family: var(--ff-display);
+  font-weight: 900;
+  box-shadow: 0 24px 60px -16px rgba(15, 45, 29, 0.5);
 }
-.assessment-modal__box {
-  background: var(--paper);
-  border-radius: var(--radius-lg);
-  padding: clamp(28px, 4vw, 48px);
-  max-width: 620px;
-  width: 100%;
-  max-height: 90vh;
-  overflow-y: auto;
-  position: relative;
+
+.ca-visual-centerpiece span {
+  font-size: 2.8rem;
+  line-height: 1;
 }
-.assessment-modal__close {
+
+.ca-visual-centerpiece small {
+  font-size: 0.7rem;
+  font-family: var(--ff-mono);
+  letter-spacing: 0.06em;
+  text-align: center;
+  opacity: 0.7;
+  text-transform: uppercase;
+  line-height: 1.3;
+}
+
+.ca-visual-card {
   position: absolute;
-  top: 16px;
-  right: 16px;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  border: 1px solid var(--line);
+  background: var(--paper);
+  border-radius: 14px;
+  box-shadow: 0 8px 32px -8px rgba(15, 45, 29, 0.16);
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: var(--ff-body);
+  font-weight: 600;
+  font-size: 0.88rem;
+  color: var(--green-800);
+  border: 1.5px solid var(--line);
+  white-space: nowrap;
+  animation: ca-float 4s ease-in-out infinite;
+}
+
+.ca-visual-card__icon {
+  font-size: 1.4rem;
+}
+
+.ca-visual-card--1 { top: 4%;  left: 0;    animation-delay: 0s }
+.ca-visual-card--2 { top: 4%;  right: 0;   animation-delay: 1s }
+.ca-visual-card--3 { bottom: 4%; left: 0;  animation-delay: 0.5s }
+.ca-visual-card--4 { bottom: 4%; right: 0; animation-delay: 1.5s }
+
+@keyframes ca-float {
+  0%, 100% { transform: translateY(0) }
+  50%       { transform: translateY(-8px) }
+}
+
+@media (max-width: 860px) {
+  .ca-hero__inner {
+    grid-template-columns: 1fr;
+  }
+  .ca-hero__visual {
+    display: none;
+  }
+}
+
+/* ── How It Works ─────────────────────────────────────────── */
+
+.ca-how {
+  background: var(--paper);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.ca-how__head {
+  text-align: center;
+  margin-bottom: clamp(32px, 4vw, 56px);
+}
+
+.ca-how__h2 {
+  font-size: clamp(1.7rem, 3.5vw, 2.6rem);
+  margin-top: 0.5rem;
+}
+
+.ca-how__steps {
   display: grid;
-  place-items: center;
-  cursor: pointer;
-  transition: background 0.25s;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(20px, 3vw, 48px);
 }
-.assessment-modal__close:hover {
-  background: var(--green-100);
+
+.ca-step {
+  padding: clamp(24px, 3vw, 36px);
+  border-radius: var(--radius-lg);
+  border: 1.5px solid var(--line);
+  background: var(--cream);
 }
-.assessment-q {
-  display: none;
+
+.ca-step__num {
+  font-family: var(--ff-display);
+  font-size: 2.8rem;
+  font-weight: 900;
+  color: var(--red);
+  line-height: 1;
+  margin-bottom: 0.75rem;
+  opacity: 0.35;
 }
-.assessment-q.active {
-  display: block;
+
+.ca-step__title {
+  font-family: var(--ff-display);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--green-800);
+  margin-bottom: 0.5rem;
 }
-.assessment-progress {
+
+.ca-step__body {
+  font-size: 0.96rem;
+  color: var(--ink-60);
+  line-height: 1.55;
+}
+
+.ca-how__cta {
+  margin-top: clamp(32px, 4vw, 56px);
+  text-align: center;
+}
+
+@media (max-width: 680px) {
+  .ca-how__steps {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Quiz ─────────────────────────────────────────────────── */
+
+.ca-quiz {
+  min-height: 80vh;
+  padding-block: clamp(40px, 6vw, 80px);
+  background: var(--cream);
+}
+
+.ca-quiz__wrap {
+  max-width: 720px;
+}
+
+/* Progress bar */
+
+.ca-progress {
+  margin-bottom: 2.5rem;
+}
+
+.ca-progress__bar {
   height: 6px;
   background: var(--line);
   border-radius: var(--pill);
   overflow: hidden;
-  margin-bottom: 2rem;
+  margin-bottom: 0.85rem;
 }
-.assessment-progress__fill {
+
+.ca-progress__fill {
   height: 100%;
   background: linear-gradient(90deg, var(--red), var(--gold));
-  transition: width 0.4s var(--ease);
+  border-radius: var(--pill);
+  transition: width 0.4s cubic-bezier(0.22, 0.61, 0.36, 1);
 }
-.assessment-opt {
+
+.ca-progress__meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.ca-progress__label {
+  font-family: var(--ff-mono);
+  font-size: 0.76rem;
+  letter-spacing: 0.12em;
+  color: var(--ink-60);
+  text-transform: uppercase;
+}
+
+.ca-back {
+  font-family: var(--ff-mono);
+  font-size: 0.76rem;
+  letter-spacing: 0.08em;
+  color: var(--ink-60);
+  text-transform: uppercase;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.3em 0;
+  transition: color 0.2s;
+}
+
+.ca-back:hover {
+  color: var(--green-800);
+}
+
+/* Question */
+
+.ca-question {
+  margin-bottom: 2rem;
+}
+
+.ca-question__hint {
+  font-family: var(--ff-mono);
+  font-size: 0.76rem;
+  letter-spacing: 0.1em;
+  color: var(--red);
+  text-transform: uppercase;
+  margin-bottom: 0.6rem;
+}
+
+.ca-question__q {
+  font-size: clamp(1.55rem, 3.5vw, 2.2rem);
+  font-family: var(--ff-display);
+  font-weight: 800;
+  color: var(--green-800);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+}
+
+/* Answer options */
+
+.ca-options {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.ca-options--3 { grid-template-columns: 1fr }
+.ca-options--4 { grid-template-columns: 1fr }
+.ca-options--5 { grid-template-columns: 1fr }
+
+@media (min-width: 520px) {
+  .ca-options--4 { grid-template-columns: 1fr 1fr }
+  .ca-options--5 { grid-template-columns: 1fr 1fr }
+}
+
+.ca-opt {
   display: flex;
   align-items: center;
   gap: 1rem;
-  padding: 14px 16px;
-  border: 1.5px solid var(--line);
+  padding: 16px 20px;
   border-radius: var(--radius);
+  border: 1.5px solid var(--line);
+  background: var(--paper);
   cursor: pointer;
-  transition: border-color 0.25s, background 0.25s;
-  margin-bottom: 0.7rem;
+  text-align: left;
+  font-family: var(--ff-body);
+  font-size: 1rem;
+  color: var(--ink);
+  font-weight: 500;
+  transition: border-color 0.22s, background 0.22s, transform 0.22s, box-shadow 0.22s;
+  width: 100%;
 }
-.assessment-opt:hover {
-  border-color: var(--green-800);
+
+.ca-opt:hover {
+  border-color: var(--green-600);
   background: var(--green-50);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px -6px rgba(15, 45, 29, 0.14);
 }
-.assessment-opt.selected {
-  border-color: var(--green-800);
-  background: var(--green-100);
+
+.ca-opt:active {
+  transform: translateY(0);
 }
-.assessment-result {
+
+.ca-opt__icon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+  width: 2rem;
   text-align: center;
-  padding: 2rem 0;
 }
-.assessment-result__badge {
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  background: var(--green-100);
+
+.ca-opt__label {
+  flex: 1;
+  line-height: 1.35;
+}
+
+.ca-opt__arrow {
+  flex-shrink: 0;
+  color: var(--green-600);
+  opacity: 0;
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+.ca-opt:hover .ca-opt__arrow {
+  opacity: 1;
+  transform: translateX(3px);
+}
+
+/* ── Results Hero ─────────────────────────────────────────── */
+
+.ca-results-hero {
+  background: var(--green-800);
+  padding-block: clamp(56px, 7vw, 100px);
+}
+
+.ca-results-hero__inner {
+  text-align: center;
+}
+
+.ca-results-hero__h1 {
+  font-size: clamp(2rem, 5vw, 3.8rem);
+  color: #fff;
+  margin: 0.5rem 0;
+}
+
+.ca-results-hero__sub {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: clamp(1rem, 1.8vw, 1.2rem);
+  max-width: 52ch;
+  margin: 0 auto;
+}
+
+/* ── Career Cards ─────────────────────────────────────────── */
+
+.ca-results {
+  background: var(--cream);
+}
+
+.ca-career-card {
+  background: var(--paper);
+  border-radius: var(--radius-lg);
+  border: 1.5px solid var(--line);
+  margin-bottom: 1.5rem;
+  overflow: hidden;
+  position: relative;
+  transition: box-shadow 0.3s;
+}
+
+.ca-career-card:hover {
+  box-shadow: var(--shadow);
+}
+
+.ca-career-card--top {
+  border-color: var(--gold);
+  border-width: 2px;
+}
+
+.ca-career-card__badge {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: var(--gold);
+  color: var(--green-800);
+  font-family: var(--ff-mono);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 0.3em 0.8em;
+  border-radius: var(--pill);
+}
+
+.ca-career-card__header {
   display: grid;
-  place-items: center;
-  margin: 0 auto 1.5rem;
-  font-size: 2.4rem;
+  grid-template-columns: auto 1fr auto;
+  gap: 1.25rem;
+  align-items: start;
+  padding: clamp(20px, 3vw, 36px);
+  border-bottom: 1px solid var(--line);
+  background: var(--cream);
+}
+
+.ca-career-card__icon {
+  font-size: 3rem;
+  line-height: 1;
+  width: 64px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.ca-career-card__meta {
+  min-width: 0;
+}
+
+.ca-career-card__rank {
+  font-family: var(--ff-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--red);
+  display: block;
+  margin-bottom: 0.3rem;
+}
+
+.ca-career-card__title {
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  color: var(--green-800);
+  margin: 0 0 0.25rem;
+  line-height: 1;
+}
+
+.ca-career-card__tagline {
+  color: var(--ink-60);
+  font-size: 0.94rem;
+  margin: 0;
+}
+
+.ca-career-card__salary-block {
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.ca-career-card__salary-label {
+  display: block;
+  font-family: var(--ff-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-60);
+  margin-bottom: 0.2rem;
+}
+
+.ca-career-card__salary {
+  display: block;
+  font-family: var(--ff-display);
+  font-weight: 800;
+  font-size: 1rem;
+  color: var(--green-800);
+  line-height: 1.2;
+}
+
+.ca-career-card__salary-note {
+  display: block;
+  font-size: 0.72rem;
+  color: var(--ink-60);
+  max-width: 22ch;
+  line-height: 1.35;
+  margin-top: 0.2rem;
+}
+
+.ca-career-card__body {
+  padding: clamp(20px, 3vw, 36px);
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
+.ca-career-card__section-title {
+  font-family: var(--ff-display);
+  font-size: 0.88rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--brown-600);
+  margin-bottom: 0.65rem;
+}
+
+.ca-career-card__desc {
+  color: var(--ink-60);
+  line-height: 1.65;
+  font-size: 0.97rem;
+}
+
+.ca-career-card__cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.ca-career-card__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  padding-top: 0.25rem;
+  border-top: 1px solid var(--line);
+}
+
+/* Why it matches */
+
+.ca-reasons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.ca-reason {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  font-size: 0.95rem;
+  color: var(--ink);
+  line-height: 1.55;
+}
+
+.ca-reason__dot {
+  flex-shrink: 0;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--gold);
+  margin-top: 0.5em;
+}
+
+/* Skills */
+
+.ca-skills {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.ca-skill {
+  font-size: 0.9rem;
+  color: var(--ink);
+  padding: 0.3em 0.75em;
+  background: var(--green-50);
+  border-radius: var(--pill);
+  display: inline-flex;
+  width: fit-content;
+}
+
+/* Growth */
+
+.ca-growth {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--ff-display);
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.ca-growth__dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+@media (max-width: 680px) {
+  .ca-career-card__header {
+    grid-template-columns: auto 1fr;
+  }
+  .ca-career-card__salary-block {
+    grid-column: 1 / -1;
+    text-align: left;
+  }
+  .ca-career-card__cols {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Next Steps ─────────────────────────────────────────────── */
+
+.ca-next {
+  background: var(--green-800);
+}
+
+/* re-use panel-dark class from globals — additional overrides: */
+
+.ca-next__head {
+  text-align: center;
+  margin-bottom: clamp(32px, 4vw, 56px);
+}
+
+.ca-next__h2 {
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  color: #fff;
+  margin-top: 0.5rem;
+}
+
+.ca-next__grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.25rem;
+}
+
+.ca-next-card {
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-lg);
+  padding: clamp(20px, 2.5vw, 32px);
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  transition: background 0.25s, transform 0.25s;
+}
+
+.ca-next-card:hover {
+  background: rgba(255, 255, 255, 0.11);
+  transform: translateY(-3px);
+}
+
+.ca-next-card__icon {
+  font-size: 2rem;
+}
+
+.ca-next-card__title {
+  font-family: var(--ff-display);
+  font-size: 1.1rem;
+  color: #fff;
+  font-weight: 700;
+}
+
+.ca-next-card__body {
+  font-size: 0.88rem;
+  color: rgba(255, 255, 255, 0.65);
+  line-height: 1.5;
+  flex: 1;
+}
+
+@media (max-width: 860px) {
+  .ca-next__grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 500px) {
+  .ca-next__grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Footer Section ─────────────────────────────────────────── */
+
+.ca-footer-section {
+  background: var(--paper);
+  border-top: 1px solid var(--line);
+}
+
+.ca-footer-section__inner {
+  max-width: 760px;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(48px, 6vw, 72px);
+}
+
+/* Testimonial */
+
+.ca-testimonial {
+  text-align: center;
+  padding: clamp(28px, 4vw, 48px) clamp(24px, 4vw, 56px);
+  border-radius: var(--radius-lg);
+  background: var(--green-50);
+  border: 1.5px solid var(--line);
+}
+
+.ca-testimonial__quote {
+  font-size: clamp(1.05rem, 2vw, 1.25rem);
+  color: var(--green-800);
+  font-style: italic;
+  line-height: 1.65;
+  margin-bottom: 1.25rem;
+}
+
+.ca-testimonial__author {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  font-size: 0.88rem;
+  color: var(--ink-60);
+}
+
+.ca-testimonial__author strong {
+  color: var(--green-800);
+  font-size: 0.96rem;
+}
+
+/* FAQ */
+
+.ca-faq__h2 {
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  margin-bottom: 1.25rem;
+}
+
+.ca-faq__item {
+  border-bottom: 1px solid var(--line);
+}
+
+.ca-faq__q {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  width: 100%;
+  text-align: left;
+  padding: 1.1rem 0;
+  font-family: var(--ff-display);
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--green-800);
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.ca-faq__q:hover {
+  color: var(--red);
+}
+
+.ca-faq__chevron {
+  font-size: 1.3rem;
+  flex-shrink: 0;
+  color: var(--red);
+  font-family: var(--ff-mono);
+}
+
+.ca-faq__a {
+  padding-bottom: 1.1rem;
+  font-size: 0.96rem;
+  color: var(--ink-60);
+  line-height: 1.65;
+}
+
+/* Retake */
+
+.ca-retake {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  text-align: center;
+  padding-bottom: 1rem;
+}
+
+.ca-retake p {
+  color: var(--ink-60);
+  font-size: 0.94rem;
 }
