@@ -1,18 +1,19 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
 
 export default function LoginPage() {
   const router = useRouter()
-  const [tab, setTab] = useState<'signup' | 'login'>(() => {
-    if (typeof window !== 'undefined') {
-      return new URLSearchParams(window.location.search).get('mode') === 'login' ? 'login' : 'signup'
+  const [tab, setTab] = useState<'signup' | 'login'>('signup')
+
+  useEffect(() => {
+    if (new URLSearchParams(window.location.search).get('mode') === 'login') {
+      setTab('login')
     }
-    return 'signup'
-  })
+  }, [])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [showPw, setShowPw] = useState(false)
