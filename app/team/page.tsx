@@ -133,7 +133,7 @@ export default async function TeamPage() {
                   Founder &amp; Executive Director
                 </div>
                 <p style={{ fontSize: '.88rem', color: 'var(--muted)', lineHeight: 1.6, margin: '0 0 1rem' }}>
-                  Benz founded Wissen-Haus after seeing firsthand that Nigeria&apos;s youth gap is not a talent problem — it&apos;s an access problem. He has personally mentored over 50 young people and leads every programme with that conviction.
+                  Benz founded Wissen-Haus after seeing firsthand that Nigeria&apos;s youth gap is not a talent problem — it&apos;s an access problem. She has personally mentored over 50 young people and leads every programme with that conviction.
                 </p>
                 <Link href="/founder" style={{ fontSize: '.82rem', fontWeight: 600, color: 'var(--green-700)' }}>
                   Full profile &rarr;
