@@ -1,14 +1,18 @@
 'use client'
 
-import { useState, Suspense } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
 
-function LoginForm() {
+export default function LoginPage() {
   const router = useRouter()
-  const searchParams = useSearchParams()
-  const [tab, setTab] = useState<'signup' | 'login'>(searchParams.get('mode') === 'login' ? 'login' : 'signup')
+  const [tab, setTab] = useState<'signup' | 'login'>(() => {
+    if (typeof window !== 'undefined') {
+      return new URLSearchParams(window.location.search).get('mode') === 'login' ? 'login' : 'signup'
+    }
+    return 'signup'
+  })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [showPw, setShowPw] = useState(false)
@@ -128,13 +132,5 @@ function LoginForm() {
         </div>
       </div>
     </div>
-  )
-}
-
-export default function LoginPage() {
-  return (
-    <Suspense fallback={<div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, var(--green-800), var(--green-900))' }} />}>
-      <LoginForm />
-    </Suspense>
   )
 }
