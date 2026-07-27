@@ -1,12 +1,21 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import sql from '@/lib/db'
+
+export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
   title: 'Impact Content · Wissen-Haus',
   description: 'Social-impact storytelling that highlights Nigerian youth doing extraordinary things.',
 }
 
-const STORIES = [
+interface Story {
+  name: string
+  role: string
+  desc: string
+}
+
+const FALLBACK_STORIES: Story[] = [
   { name: 'Ose Kaye', role: 'Software Engineer', desc: 'From Ibadan to a remote tech job — how Ose built skills that crossed borders.' },
   { name: 'Emeka Nwosu', role: 'Social Entrepreneur', desc: 'The 19-year-old turning agricultural waste into income for his community.' },
   { name: 'Aisha Jarrett', role: 'Medical Student', desc: 'How mentorship helped Aisha navigate the JAMB maze and secure a scholarship.' },
@@ -20,7 +29,18 @@ const STORIES = [
   { name: 'Yusuf Ibrahim', role: 'Civil Engineer', desc: 'Infrastructure dreams and international study — how Yusuf funded it without loans.' },
 ]
 
-export default function ImpactContentPage() {
+async function getStories(): Promise<Story[]> {
+  try {
+    const rows = await sql`SELECT value FROM site_content WHERE key = 'impact_stories'`
+    const stories = rows[0]?.value
+    if (Array.isArray(stories) && stories.length > 0) return stories
+  } catch {}
+  return FALLBACK_STORIES
+}
+
+export default async function ImpactContentPage() {
+  const stories = await getStories()
+
   return (
     <>
       <section className="section section--tight" style={{ paddingTop: 'clamp(48px,6vw,84px)' }}>
@@ -38,7 +58,7 @@ export default function ImpactContentPage() {
       <section className="section">
         <div className="wrap">
           <div className="grid grid-3">
-            {STORIES.map((s, i) => (
+            {stories.map((s, i) => (
               <article key={s.name} className="card reveal" data-d={i % 3 as unknown as string}>
                 <div className="card__body">
                   <div className="testi__av" style={{ marginBottom: '1rem' }}>
