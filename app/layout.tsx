@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import './globals.css'
 import SiteShell from '@/components/SiteShell'
+import { Analytics } from '@vercel/analytics/next'
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://www.wissenhaus.org'),
@@ -48,6 +49,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body>
         <SiteShell>{children}</SiteShell>
+        <Analytics />
       </body>
     </html>
   )
