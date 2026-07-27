@@ -26,50 +26,22 @@ export default function ScrollEffects() {
       toTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' }))
     }
 
-    // Reveal on scroll — double RAF so layout is fully settled after hydration
-    let io: IntersectionObserver | null = null
-    let fallback: ReturnType<typeof setTimeout>
-
-    const setupReveal = () => {
-      const revealEls = document.querySelectorAll<Element>('.reveal, .reveal--left, .reveal--right, .reveal--scale, .reveal--blur, .stagger')
-      if (!revealEls.length) return
-
-      if ('IntersectionObserver' in window && !reduce) {
-        io = new IntersectionObserver((entries) => {
-          entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io!.unobserve(e.target) } })
-        }, { threshold: 0.08, rootMargin: '0px 0px -4% 0px' })
-
-        revealEls.forEach(el => {
-          const r = el.getBoundingClientRect()
-          if (r.top < window.innerHeight && r.bottom > 0) {
-            el.classList.add('in')
-          } else {
-            io!.observe(el)
-          }
-        })
-
-        // Fallback: catch any missed in-viewport elements after 500ms
-        fallback = setTimeout(() => {
-          revealEls.forEach(el => {
-            if (!el.classList.contains('in')) {
-              const r = el.getBoundingClientRect()
-              if (r.top < window.innerHeight && r.bottom > 0) el.classList.add('in')
-            }
-          })
-        }, 500)
-      } else {
-        revealEls.forEach(el => el.classList.add('in'))
+    // Reveal on scroll
+    const revealEls = document.querySelectorAll('.reveal, .reveal--left, .reveal--right, .reveal--scale, .reveal--blur, .stagger')
+    if ('IntersectionObserver' in window && revealEls.length && !reduce) {
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target) } })
+      }, { threshold: 0.12, rootMargin: '0px 0px -6% 0px' })
+      revealEls.forEach(el => io.observe(el))
+      return () => {
+        io.disconnect()
+        window.removeEventListener('scroll', onScroll)
       }
+    } else {
+      revealEls.forEach(el => el.classList.add('in'))
     }
 
-    const raf = requestAnimationFrame(() => requestAnimationFrame(setupReveal))
-
-    return () => {
-      cancelAnimationFrame(raf)
-      clearTimeout(fallback)
-      io?.disconnect()
-      window.removeEventListener('scroll', onScroll)
-    }
+    return () => window.removeEventListener('scroll', onScroll)
   }, [pathname])
 
   useEffect(() => {

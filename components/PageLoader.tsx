@@ -1,37 +1,24 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { usePathname } from 'next/navigation'
 
 export default function PageLoader() {
   const pathname = usePathname()
   const [visible, setVisible] = useState(true)
   const [fading, setFading] = useState(false)
-  const mounted = useRef(false)
 
-  // Initial page load — fires after React hydrates (DOMContentLoaded already past)
+  // Initial page load
   useEffect(() => {
-    const mountedAt = Date.now()
-    const MIN_MS = 500
-
-    const elapsed = Date.now() - mountedAt
-    const delay = Math.max(0, MIN_MS - elapsed)
-
-    const t1 = setTimeout(() => {
+    const t = setTimeout(() => {
       setFading(true)
-      const t2 = setTimeout(() => setVisible(false), 500)
-      return () => clearTimeout(t2)
-    }, delay)
-
-    return () => clearTimeout(t1)
+      setTimeout(() => setVisible(false), 500)
+    }, 600)
+    return () => clearTimeout(t)
   }, [])
 
-  // Route transitions — skip on initial mount
+  // Route transitions
   useEffect(() => {
-    if (!mounted.current) {
-      mounted.current = true
-      return
-    }
     setVisible(true)
     setFading(false)
     const t = setTimeout(() => {
