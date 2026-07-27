@@ -2,11 +2,10 @@
 
 import { usePathname } from 'next/navigation'
 import Navigation from '@/components/Navigation'
-import Footer from '@/components/Footer'
 import ScrollEffects from '@/components/ScrollEffects'
 import PageLoader from '@/components/PageLoader'
 
-export default function SiteShell({ children }: { children: React.ReactNode }) {
+export default function SiteShell({ children, footer }: { children: React.ReactNode; footer: React.ReactNode }) {
   const pathname = usePathname()
   const isAdmin = pathname.startsWith('/admin')
 
@@ -17,7 +16,7 @@ export default function SiteShell({ children }: { children: React.ReactNode }) {
       <PageLoader />
       <Navigation />
       <main id="main">{children}</main>
-      <Footer />
+      {footer}
       <ScrollEffects />
     </>
   )
