@@ -31,8 +31,16 @@ export default function ScrollEffects() {
     if ('IntersectionObserver' in window && revealEls.length && !reduce) {
       const io = new IntersectionObserver((entries) => {
         entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target) } })
-      }, { threshold: 0.12, rootMargin: '0px 0px -6% 0px' })
-      revealEls.forEach(el => io.observe(el))
+      }, { threshold: 0.08, rootMargin: '0px 0px -4% 0px' })
+      revealEls.forEach(el => {
+        const r = el.getBoundingClientRect()
+        // Elements already in viewport on load: add 'in' immediately
+        if (r.top < window.innerHeight && r.bottom > 0) {
+          el.classList.add('in')
+        } else {
+          io.observe(el)
+        }
+      })
       return () => {
         io.disconnect()
         window.removeEventListener('scroll', onScroll)
