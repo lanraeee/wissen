@@ -1,4 +1,4 @@
-﻿import { Resend } from 'resend'
+import { Resend } from 'resend'
 
 let _resend: Resend | null = null
 function getResend() {
@@ -9,7 +9,16 @@ function getResend() {
 const FROM = 'Wissen-Haus <noreply@wissenhaus.org>'
 const ADMIN = process.env.FOUNDER_EMAIL ?? 'director@wissenhaus.org'
 
-// â”€â”€â”€ Shared HTML shell â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+function esc(s: string) {
+  return String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+}
+
+// ─── Shared HTML shell ─────────────────────────────────────────────────────
 function shell(body: string) {
   return `<!DOCTYPE html>
 <html lang="en">
@@ -45,39 +54,39 @@ function shell(body: string) {
   </div>
   <div class="body">${body}</div>
   <div class="foot">
-    Wissen-Haus Youth Empowerment Foundation Â· Ibadan, Nigeria<br/>
-    <a href="https://wissenhaus.org">wissenhaus.org</a> Â· <a href="mailto:info@wissenhaus.org">info@wissenhaus.org</a>
+    Wissen-Haus Youth Empowerment Foundation · Ibadan, Nigeria<br/>
+    <a href="https://wissenhaus.org">wissenhaus.org</a> · <a href="mailto:info@wissenhaus.org">info@wissenhaus.org</a>
   </div>
 </div>
 </body>
 </html>`
 }
 
-// â”€â”€â”€ Welcome email â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Welcome email ──────────────────────────────────────────────────────────
 export async function sendWelcomeEmail(to: string, name: string) {
-  const firstName = name.split(' ')[0]
+  const firstName = esc(name.split(' ')[0])
   return getResend().emails.send({
     from: FROM,
     to,
-    subject: `Welcome to Wissen-Haus, ${firstName} ðŸŒ±`,
+    subject: `Welcome to Wissen-Haus, ${name.split(' ')[0]} 🌱`,
     html: shell(`
       <span class="badge">Welcome</span>
       <h2>You're in, ${firstName}!</h2>
-      <p>Thank you for joining the Wissen-Haus community â€” a space built to help young Nigerians discover their path, build real skills, and access global opportunities.</p>
+      <p>Thank you for joining the Wissen-Haus community — a space built to help young Nigerians discover their path, build real skills, and access global opportunities.</p>
       <p>Here's what you can do now:</p>
       <ul>
         <li>Take free certificate courses in the <strong>Learning Library</strong></li>
         <li>Browse remote jobs, internships &amp; scholarships in the <strong>Opportunity Hub</strong></li>
         <li>Connect with peers and mentors in the <strong>Community Hub</strong></li>
       </ul>
-      <a href="https://wissenhaus.org/community" class="btn">Explore the Community â†’</a>
+      <a href="https://wissenhaus.org/community" class="btn">Explore the Community →</a>
       <div class="divider"></div>
       <p style="font-size:.85rem;color:#8a9a8f">If you have any questions, reply to this email or reach us at <a href="mailto:info@wissenhaus.org" style="color:#1a3c2e">info@wissenhaus.org</a>.</p>
     `),
   })
 }
 
-// â”€â”€â”€ Contact form notification (to admin) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Contact form notification (to admin) ──────────────────────────────────
 export async function sendContactNotification(data: {
   name: string; email: string; subject: string; message: string
 }) {
@@ -85,37 +94,37 @@ export async function sendContactNotification(data: {
     from: FROM,
     to: ADMIN,
     replyTo: data.email,
-    subject: `[Contact] ${data.subject} â€” from ${data.name}`,
+    subject: `[Contact] ${data.subject} — from ${data.name}`,
     html: shell(`
       <span class="badge">New Contact</span>
       <h2>New message received</h2>
-      <div class="field"><div class="k">Name</div><div class="v">${data.name}</div></div>
-      <div class="field"><div class="k">Email</div><div class="v"><a href="mailto:${data.email}" style="color:#1a3c2e">${data.email}</a></div></div>
-      <div class="field"><div class="k">Subject</div><div class="v">${data.subject}</div></div>
-      <div class="field"><div class="k">Message</div><div class="v" style="white-space:pre-wrap">${data.message}</div></div>
-      <a href="mailto:${data.email}" class="btn">Reply to ${data.name} â†’</a>
+      <div class="field"><div class="k">Name</div><div class="v">${esc(data.name)}</div></div>
+      <div class="field"><div class="k">Email</div><div class="v"><a href="mailto:${esc(data.email)}" style="color:#1a3c2e">${esc(data.email)}</a></div></div>
+      <div class="field"><div class="k">Subject</div><div class="v">${esc(data.subject)}</div></div>
+      <div class="field"><div class="k">Message</div><div class="v" style="white-space:pre-wrap">${esc(data.message)}</div></div>
+      <a href="mailto:${esc(data.email)}" class="btn">Reply to ${esc(data.name)} →</a>
     `),
   })
 }
 
-// â”€â”€â”€ Contact confirmation (to user) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Contact confirmation (to user) ────────────────────────────────────────
 export async function sendContactConfirmation(to: string, name: string) {
-  const firstName = name.split(' ')[0]
+  const firstName = esc(name.split(' ')[0])
   return getResend().emails.send({
     from: FROM,
     to,
-    subject: `We got your message, ${firstName} â€” Wissen-Haus`,
+    subject: `We got your message, ${name.split(' ')[0]} — Wissen-Haus`,
     html: shell(`
       <span class="badge">Message Received</span>
       <h2>Thanks for reaching out, ${firstName}!</h2>
-      <p>We've received your message and will get back to you within 2â€“3 working days.</p>
+      <p>We've received your message and will get back to you within 2–3 working days.</p>
       <p>In the meantime, explore what we're building:</p>
-      <a href="https://wissenhaus.org" class="btn">Visit Wissen-Haus â†’</a>
+      <a href="https://wissenhaus.org" class="btn">Visit Wissen-Haus →</a>
     `),
   })
 }
 
-// â”€â”€â”€ Volunteer application (to admin) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Volunteer application (to admin) ──────────────────────────────────────
 export async function sendVolunteerNotification(data: {
   name: string; email: string; role: string; message: string
 }) {
@@ -123,58 +132,58 @@ export async function sendVolunteerNotification(data: {
     from: FROM,
     to: ADMIN,
     replyTo: data.email,
-    subject: `[Volunteer] New application â€” ${data.name} (${data.role})`,
+    subject: `[Volunteer] New application — ${data.name} (${data.role})`,
     html: shell(`
       <span class="badge">Volunteer Application</span>
       <h2>New volunteer application</h2>
-      <div class="field"><div class="k">Name</div><div class="v">${data.name}</div></div>
-      <div class="field"><div class="k">Email</div><div class="v"><a href="mailto:${data.email}" style="color:#1a3c2e">${data.email}</a></div></div>
-      <div class="field"><div class="k">Role</div><div class="v">${data.role}</div></div>
-      <div class="field"><div class="k">Message</div><div class="v" style="white-space:pre-wrap">${data.message}</div></div>
-      <a href="mailto:${data.email}" class="btn">Reply to ${data.name} â†’</a>
+      <div class="field"><div class="k">Name</div><div class="v">${esc(data.name)}</div></div>
+      <div class="field"><div class="k">Email</div><div class="v"><a href="mailto:${esc(data.email)}" style="color:#1a3c2e">${esc(data.email)}</a></div></div>
+      <div class="field"><div class="k">Role</div><div class="v">${esc(data.role)}</div></div>
+      <div class="field"><div class="k">Message</div><div class="v" style="white-space:pre-wrap">${esc(data.message)}</div></div>
+      <a href="mailto:${esc(data.email)}" class="btn">Reply to ${esc(data.name)} →</a>
     `),
   })
 }
 
-// â”€â”€â”€ Volunteer confirmation (to user) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Volunteer confirmation (to user) ──────────────────────────────────────
 export async function sendVolunteerConfirmation(to: string, name: string, role: string) {
-  const firstName = name.split(' ')[0]
+  const firstName = esc(name.split(' ')[0])
   return getResend().emails.send({
     from: FROM,
     to,
-    subject: `Application received, ${firstName} â€” Wissen-Haus`,
+    subject: `Application received, ${name.split(' ')[0]} — Wissen-Haus`,
     html: shell(`
       <span class="badge">Application Received</span>
       <h2>Thank you, ${firstName}!</h2>
-      <p>We've received your volunteer application for the <strong>${role}</strong> role.</p>
+      <p>We've received your volunteer application for the <strong>${esc(role)}</strong> role.</p>
       <p>Our team reviews applications within 5 working days. We'll be in touch soon!</p>
-      <a href="https://wissenhaus.org/volunteer" class="btn">Learn more about volunteering â†’</a>
+      <a href="https://wissenhaus.org/volunteer" class="btn">Learn more about volunteering →</a>
     `),
   })
 }
 
-// â”€â”€â”€ Donation receipt â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Donation receipt ───────────────────────────────────────────────────────
 export async function sendDonationReceipt(to: string, name: string, amount: number, currency: string, ref: string) {
-  const firstName = name.split(' ')[0]
+  const firstName = esc(name.split(' ')[0])
   const formatted = new Intl.NumberFormat('en-NG', { style: 'currency', currency }).format(amount)
   return getResend().emails.send({
     from: FROM,
     to,
-    subject: `Donation received â€” thank you, ${firstName}!`,
+    subject: `Donation received — thank you, ${name.split(' ')[0]}!`,
     html: shell(`
       <span class="badge">Donation Confirmed</span>
       <h2>Thank you for your gift, ${firstName}!</h2>
       <p>Your generous donation has been received. Every naira (and pound) goes directly toward empowering young Nigerians.</p>
       <div class="field"><div class="k">Amount</div><div class="v"><strong>${formatted}</strong></div></div>
-      <div class="field"><div class="k">Reference</div><div class="v" style="font-family:monospace;font-size:.85rem">${ref}</div></div>
+      <div class="field"><div class="k">Reference</div><div class="v" style="font-family:monospace;font-size:.85rem">${esc(ref)}</div></div>
       <div class="divider"></div>
       <p>Your support helps us run free career Trade Fairs, mentorship programmes and global exposure events for students who need it most.</p>
-      <a href="https://wissenhaus.org/impact" class="btn">See our impact â†’</a>
+      <a href="https://wissenhaus.org/impact" class="btn">See our impact →</a>
     `),
   })
 }
 
-// â”€â”€â”€ Donation notification (to admin) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Donation notification (to admin) ──────────────────────────────────────
 export async function sendDonationNotification(data: {
   name: string; email: string; amount: number; currency: string; ref: string; provider: string
 }) {
@@ -186,34 +195,34 @@ export async function sendDonationNotification(data: {
     html: shell(`
       <span class="badge">New Donation</span>
       <h2>New donation received</h2>
-      <div class="field"><div class="k">Donor</div><div class="v">${data.name}</div></div>
-      <div class="field"><div class="k">Email</div><div class="v"><a href="mailto:${data.email}" style="color:#1a3c2e">${data.email}</a></div></div>
+      <div class="field"><div class="k">Donor</div><div class="v">${esc(data.name)}</div></div>
+      <div class="field"><div class="k">Email</div><div class="v"><a href="mailto:${esc(data.email)}" style="color:#1a3c2e">${esc(data.email)}</a></div></div>
       <div class="field"><div class="k">Amount</div><div class="v"><strong>${formatted}</strong></div></div>
-      <div class="field"><div class="k">Provider</div><div class="v">${data.provider}</div></div>
-      <div class="field"><div class="k">Reference</div><div class="v" style="font-family:monospace;font-size:.85rem">${data.ref}</div></div>
+      <div class="field"><div class="k">Provider</div><div class="v">${esc(data.provider)}</div></div>
+      <div class="field"><div class="k">Reference</div><div class="v" style="font-family:monospace;font-size:.85rem">${esc(data.ref)}</div></div>
     `),
   })
 }
 
-// â”€â”€â”€ Certificate email â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Certificate email ──────────────────────────────────────────────────────
 export async function sendCertificateEmail(to: string, name: string, courseName: string, certId: string) {
-  const firstName = name.split(' ')[0]
+  const firstName = esc(name.split(' ')[0])
   return getResend().emails.send({
     from: FROM,
     to,
-    subject: `ðŸŽ“ You've earned your ${courseName} certificate!`,
+    subject: `🎓 You've earned your ${courseName} certificate!`,
     html: shell(`
       <span class="badge">Certificate Earned</span>
-      <h2>Congratulations, ${firstName}! ðŸŽ“</h2>
-      <p>You've successfully completed <strong>${courseName}</strong> and earned your Wissen-Haus certificate.</p>
-      <div class="field"><div class="k">Certificate ID</div><div class="v" style="font-family:monospace;font-size:.85rem">${certId}</div></div>
-      <p>Share this achievement with your network â€” it's a real credential that shows commitment to your career development.</p>
-      <a href="https://wissenhaus.org/courses" class="btn">Explore more courses â†’</a>
+      <h2>Congratulations, ${firstName}! 🎓</h2>
+      <p>You've successfully completed <strong>${esc(courseName)}</strong> and earned your Wissen-Haus certificate.</p>
+      <div class="field"><div class="k">Certificate ID</div><div class="v" style="font-family:monospace;font-size:.85rem">${esc(certId)}</div></div>
+      <p>Share this achievement with your network — it's a real credential that shows commitment to your career development.</p>
+      <a href="https://wissenhaus.org/courses" class="btn">Explore more courses →</a>
     `),
   })
 }
 
-// â”€â”€â”€ Partner inquiry (to admin) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Partner inquiry (to admin) ────────────────────────────────────────────
 export async function sendPartnerNotification(data: {
   name: string; email: string; organisation: string; message: string
 }) {
@@ -221,16 +230,15 @@ export async function sendPartnerNotification(data: {
     from: FROM,
     to: ADMIN,
     replyTo: data.email,
-    subject: `[Partner] Inquiry from ${data.organisation} â€” ${data.name}`,
+    subject: `[Partner] Inquiry from ${data.organisation} — ${data.name}`,
     html: shell(`
       <span class="badge">Partnership Inquiry</span>
       <h2>New partnership inquiry</h2>
-      <div class="field"><div class="k">Name</div><div class="v">${data.name}</div></div>
-      <div class="field"><div class="k">Email</div><div class="v"><a href="mailto:${data.email}" style="color:#1a3c2e">${data.email}</a></div></div>
-      <div class="field"><div class="k">Organisation</div><div class="v">${data.organisation}</div></div>
-      <div class="field"><div class="k">Message</div><div class="v" style="white-space:pre-wrap">${data.message}</div></div>
-      <a href="mailto:${data.email}" class="btn">Reply to ${data.name} â†’</a>
+      <div class="field"><div class="k">Name</div><div class="v">${esc(data.name)}</div></div>
+      <div class="field"><div class="k">Email</div><div class="v"><a href="mailto:${esc(data.email)}" style="color:#1a3c2e">${esc(data.email)}</a></div></div>
+      <div class="field"><div class="k">Organisation</div><div class="v">${esc(data.organisation)}</div></div>
+      <div class="field"><div class="k">Message</div><div class="v" style="white-space:pre-wrap">${esc(data.message)}</div></div>
+      <a href="mailto:${esc(data.email)}" class="btn">Reply to ${esc(data.name)} →</a>
     `),
   })
 }
-
