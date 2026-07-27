@@ -1,50 +1,31 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import { usePathname } from 'next/navigation'
 
 export default function PageLoader() {
+  const ref = useRef<HTMLDivElement>(null)
   const pathname = usePathname()
-  const [visible, setVisible] = useState(true)
-  const [fading, setFading] = useState(false)
 
+  // Initial load: dismiss after 600ms
   useEffect(() => {
-    const t = setTimeout(() => {
-      setFading(true)
-      setTimeout(() => setVisible(false), 500)
-    }, 600)
+    const el = ref.current
+    if (!el) return
+    const t = setTimeout(() => el.classList.add('wh-out'), 600)
     return () => clearTimeout(t)
   }, [])
 
+  // Route change: reset then dismiss after 300ms
   useEffect(() => {
-    setVisible(true)
-    setFading(false)
-    const t = setTimeout(() => {
-      setFading(true)
-      setTimeout(() => setVisible(false), 400)
-    }, 300)
+    const el = ref.current
+    if (!el) return
+    el.classList.remove('wh-out')
+    const t = setTimeout(() => el.classList.add('wh-out'), 300)
     return () => clearTimeout(t)
   }, [pathname])
 
-  if (!visible) return null
-
   return (
-    <div
-      style={{
-        position: 'fixed',
-        inset: 0,
-        zIndex: 9999,
-        background: 'var(--green-800, #1a3c2e)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        flexDirection: 'column',
-        gap: '1.2rem',
-        opacity: fading ? 0 : 1,
-        transition: 'opacity 0.45s ease',
-        pointerEvents: fading ? 'none' : 'all',
-      }}
-    >
+    <div ref={ref} className="wh-loader" aria-hidden="true">
       <svg width="52" height="52" viewBox="0 0 52 52" fill="none">
         <circle cx="26" cy="26" r="22" stroke="rgba(244,240,231,0.15)" strokeWidth="3" />
         <circle
@@ -66,7 +47,36 @@ export default function PageLoader() {
       }}>
         Wissen-Haus
       </span>
-      <style>{`@keyframes wh-spin { to { transform: rotate(360deg); } }`}</style>
+      <style>{`
+        .wh-loader {
+          position: fixed;
+          inset: 0;
+          z-index: 9999;
+          background: var(--green-800, #1a3c2e);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-direction: column;
+          gap: 1.2rem;
+          opacity: 1;
+          pointer-events: all;
+          transition: opacity 0.45s ease, visibility 0s linear 0.45s;
+          /* CSS fallback: if JS bundle is slow, auto-dismiss after 5s */
+          animation: wh-auto-out 5s ease forwards;
+        }
+        .wh-loader.wh-out {
+          opacity: 0;
+          pointer-events: none;
+          visibility: hidden;
+          transition: opacity 0.45s ease, visibility 0s linear 0.45s;
+          animation: none;
+        }
+        @keyframes wh-auto-out {
+          0%, 70% { opacity: 1; pointer-events: all; }
+          100% { opacity: 0; pointer-events: none; visibility: hidden; }
+        }
+        @keyframes wh-spin { to { transform: rotate(360deg); } }
+      `}</style>
     </div>
   )
 }
