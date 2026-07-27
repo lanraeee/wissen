@@ -3,30 +3,30 @@
 import { useEffect, useState } from 'react'
 import { usePathname } from 'next/navigation'
 
-// Cached per-session so route transitions don't re-fetch
+// Cached per session so route transitions don't re-fetch
 let loaderEnabledCache: boolean | null = null
 
 export default function PageLoader() {
   const pathname = usePathname()
-  const [visible, setVisible] = useState(loaderEnabledCache !== false)
+  const [visible, setVisible] = useState(true)
   const [fading, setFading] = useState(false)
 
-  // Fetch loader_enabled once; if false, hide immediately
+  // Fetch loader setting once — public endpoint, no auth required
   useEffect(() => {
     if (loaderEnabledCache !== null) {
       if (!loaderEnabledCache) setVisible(false)
       return
     }
-    fetch('/api/admin/content/site_settings')
+    fetch('/api/site/loader')
       .then(r => r.json())
       .then(res => {
-        loaderEnabledCache = res.value?.loader_enabled !== false
+        loaderEnabledCache = res.enabled !== false
         if (!loaderEnabledCache) setVisible(false)
       })
       .catch(() => { loaderEnabledCache = true })
   }, [])
 
-  // Initial page load dismiss
+  // Initial page load — original 88a8f30 logic unchanged
   useEffect(() => {
     const t = setTimeout(() => {
       setFading(true)
@@ -35,9 +35,8 @@ export default function PageLoader() {
     return () => clearTimeout(t)
   }, [])
 
-  // Route transition dismiss
+  // Route transitions — original 88a8f30 logic unchanged
   useEffect(() => {
-    if (loaderEnabledCache === false) return
     setVisible(true)
     setFading(false)
     const t = setTimeout(() => {
