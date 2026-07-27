@@ -10,6 +10,7 @@ interface Settings {
   twitter_url: string
   tagline: string
   footer_note: string
+  loader_enabled: boolean
 }
 
 const DEFAULTS: Settings = {
@@ -20,6 +21,7 @@ const DEFAULTS: Settings = {
   twitter_url: '',
   tagline: 'Building the bridge young Nigerians deserve.',
   footer_note: '',
+  loader_enabled: true,
 }
 
 const inp = { padding: '8px 12px', fontSize: '.88rem', border: '1px solid #d0ccc4', borderRadius: 6, width: '100%', boxSizing: 'border-box' as const }
@@ -52,7 +54,7 @@ export default function SettingsEditor() {
 
   if (!loaded) return <div style={{ padding: 24, color: '#8a9a8f' }}>Loading…</div>
 
-  const fields: [keyof Settings, string, string][] = [
+  const fields: [keyof Omit<Settings, 'loader_enabled'>, string, string][] = [
     ['contact_email', 'Contact Email', 'email'],
     ['whatsapp_url', 'WhatsApp Community URL', 'url'],
     ['instagram_url', 'Instagram URL', 'url'],
@@ -76,11 +78,39 @@ export default function SettingsEditor() {
           </button>
         </div>
       </div>
+
+      {/* Page Loader toggle */}
+      <div style={{ marginBottom: 24, padding: '14px 16px', background: '#f9f8f5', borderRadius: 8, border: '1px solid #e8e4dc', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <div>
+          <div style={{ fontSize: '.88rem', fontWeight: 600, color: '#1a2e24' }}>Page Loader</div>
+          <div style={{ fontSize: '.78rem', color: '#8a9a8f', marginTop: 2 }}>Show the full-screen loading animation on every page visit.</div>
+        </div>
+        <button
+          onClick={() => setSettings(s => ({ ...s, loader_enabled: !s.loader_enabled }))}
+          style={{
+            width: 44, height: 24, borderRadius: 99, border: 'none', cursor: 'pointer', flexShrink: 0,
+            background: settings.loader_enabled ? '#1a3c2e' : '#d0ccc4',
+            position: 'relative', transition: 'background .2s',
+          }}
+          aria-label={settings.loader_enabled ? 'Disable page loader' : 'Enable page loader'}
+        >
+          <span style={{
+            position: 'absolute', top: 3, width: 18, height: 18, borderRadius: '50%', background: '#fff',
+            left: settings.loader_enabled ? 23 : 3, transition: 'left .2s',
+          }} />
+        </button>
+      </div>
+
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
         {fields.map(([key, label, type]) => (
           <div key={key} style={key === 'tagline' || key === 'footer_note' ? { gridColumn: '1/-1' } : {}}>
             <label style={lbl}>{label}</label>
-            <input type={type} style={inp} value={settings[key]} onChange={e => setSettings(s => ({ ...s, [key]: e.target.value }))} />
+            <input
+              type={type}
+              style={inp}
+              value={settings[key] as string}
+              onChange={e => setSettings(s => ({ ...s, [key]: e.target.value }))}
+            />
           </div>
         ))}
       </div>

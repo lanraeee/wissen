@@ -3,12 +3,30 @@
 import { useEffect, useState } from 'react'
 import { usePathname } from 'next/navigation'
 
+// Cached per-session so route transitions don't re-fetch
+let loaderEnabledCache: boolean | null = null
+
 export default function PageLoader() {
   const pathname = usePathname()
-  const [visible, setVisible] = useState(true)
+  const [visible, setVisible] = useState(loaderEnabledCache !== false)
   const [fading, setFading] = useState(false)
 
-  // Initial page load
+  // Fetch loader_enabled once; if false, hide immediately
+  useEffect(() => {
+    if (loaderEnabledCache !== null) {
+      if (!loaderEnabledCache) setVisible(false)
+      return
+    }
+    fetch('/api/admin/content/site_settings')
+      .then(r => r.json())
+      .then(res => {
+        loaderEnabledCache = res.value?.loader_enabled !== false
+        if (!loaderEnabledCache) setVisible(false)
+      })
+      .catch(() => { loaderEnabledCache = true })
+  }, [])
+
+  // Initial page load dismiss
   useEffect(() => {
     const t = setTimeout(() => {
       setFading(true)
@@ -17,8 +35,9 @@ export default function PageLoader() {
     return () => clearTimeout(t)
   }, [])
 
-  // Route transitions
+  // Route transition dismiss
   useEffect(() => {
+    if (loaderEnabledCache === false) return
     setVisible(true)
     setFading(false)
     const t = setTimeout(() => {
