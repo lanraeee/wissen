@@ -165,6 +165,7 @@ export default function Navigation() {
             </ul>
 
             <div className="nav-cta">
+              <Link href="/volunteer" className="btn btn--ghost btn--sm">Get Involved</Link>
               <Link href="/donate" className="btn btn--sm">Donate</Link>
             </div>
 
@@ -212,6 +213,7 @@ export default function Navigation() {
             )
           })}
           <div className="m-cta">
+            <Link className="btn btn--outline-light" href="/volunteer">Get Involved</Link>
             <Link className="btn btn--light" href="/donate">Donate</Link>
           </div>
         </nav>

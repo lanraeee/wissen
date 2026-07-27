@@ -1,7 +1,6 @@
 import type { Metadata } from 'next'
 import './globals.css'
 import SiteShell from '@/components/SiteShell'
-import LoaderWrapper from '@/components/LoaderWrapper'
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://www.wissenhaus.org'),
@@ -48,7 +47,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body>
-        <SiteShell loader={<LoaderWrapper />}>{children}</SiteShell>
+        <SiteShell>{children}</SiteShell>
       </body>
     </html>
   )
