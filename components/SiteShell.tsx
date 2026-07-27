@@ -4,9 +4,8 @@ import { usePathname } from 'next/navigation'
 import Navigation from '@/components/Navigation'
 import Footer from '@/components/Footer'
 import ScrollEffects from '@/components/ScrollEffects'
-import PageLoader from '@/components/PageLoader'
 
-export default function SiteShell({ children, loaderEnabled }: { children: React.ReactNode; loaderEnabled?: boolean }) {
+export default function SiteShell({ children, loader }: { children: React.ReactNode; loader?: React.ReactNode }) {
   const pathname = usePathname()
   const isAdmin = pathname.startsWith('/admin')
 
@@ -14,7 +13,7 @@ export default function SiteShell({ children, loaderEnabled }: { children: React
 
   return (
     <>
-      {loaderEnabled !== false && <PageLoader />}
+      {loader}
       <Navigation />
       <main id="main">{children}</main>
       <Footer />
