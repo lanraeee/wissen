@@ -44,6 +44,13 @@ const NAV = [
     ]
   },
   { key: 'policy', label: 'Policy', href: '/policy-research' },
+  {
+    key: 'involved', label: 'Get Involved', menu: [
+      ['/volunteer', 'Volunteer', 'Mentor & give your time'],
+      ['/partner', 'Partner With Us', 'For institutions'],
+      ['/donate', 'Donate', 'Fuel the mission'],
+    ]
+  },
 ]
 
 const ACTIVE_MAP: Record<string, string> = {
