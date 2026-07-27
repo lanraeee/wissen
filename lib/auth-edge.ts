@@ -1,6 +1,5 @@
 import { jwtVerify, type JWTPayload } from 'jose'
 
-const secret = new TextEncoder().encode(process.env.JWT_SECRET!)
 export const COOKIE_NAME = 'wh_token'
 
 export interface UserPayload extends JWTPayload {
@@ -11,6 +10,7 @@ export interface UserPayload extends JWTPayload {
 }
 
 export async function verifyToken(token: string): Promise<UserPayload> {
+  const secret = new TextEncoder().encode(process.env.JWT_SECRET!)
   const { payload } = await jwtVerify(token, secret)
   return payload as UserPayload
 }
