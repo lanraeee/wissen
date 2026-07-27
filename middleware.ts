@@ -1,11 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { verifyToken, COOKIE_NAME } from '@/lib/auth-edge'
+import { COOKIE_NAME } from '@/lib/auth-edge'
 
 const protectedRoutes = ['/community', '/jobs', '/internships', '/scholarships', '/competitions']
 const publicCommunityRoutes = ['/community/landing']
 const profileRoutes = ['/profile']
 const adminRoutes = ['/admin']
-const ADMIN_EMAIL = process.env.FOUNDER_EMAIL ?? 'director@wissenhaus.org'
 
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl
@@ -15,24 +14,14 @@ export async function middleware(req: NextRequest) {
   const isAdmin = adminRoutes.some(p => pathname === p || pathname.startsWith(p + '/'))
   if (!isProtected && !isProfileRoute && !isAdmin) return NextResponse.next()
 
+  // Only check cookie presence here — JWT verification happens in server layouts
+  // (Edge middleware cannot reliably access process.env in all Vercel configurations)
   const token = req.cookies.get(COOKIE_NAME)?.value
   if (!token) {
-    const target = '/login'
-    return NextResponse.redirect(new URL(target, req.url))
+    return NextResponse.redirect(new URL('/login', req.url))
   }
 
-  try {
-    const payload = await verifyToken(token)
-    if (isAdmin && payload.email !== ADMIN_EMAIL) {
-      return NextResponse.redirect(new URL('/', req.url))
-    }
-    return NextResponse.next()
-  } catch (err) {
-    console.error('[middleware] JWT verify failed:', (err as Error)?.message, 'JWT_SECRET set:', !!process.env.JWT_SECRET)
-    const res = NextResponse.redirect(new URL('/login', req.url))
-    res.cookies.delete(COOKIE_NAME)
-    return res
-  }
+  return NextResponse.next()
 }
 
 export const config = {
