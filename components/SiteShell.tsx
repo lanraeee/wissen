@@ -6,7 +6,7 @@ import Footer from '@/components/Footer'
 import ScrollEffects from '@/components/ScrollEffects'
 import PageLoader from '@/components/PageLoader'
 
-export default function SiteShell({ children }: { children: React.ReactNode }) {
+export default function SiteShell({ children, loaderEnabled }: { children: React.ReactNode; loaderEnabled?: boolean }) {
   const pathname = usePathname()
   const isAdmin = pathname.startsWith('/admin')
 
@@ -14,7 +14,7 @@ export default function SiteShell({ children }: { children: React.ReactNode }) {
 
   return (
     <>
-      <PageLoader />
+      {loaderEnabled !== false && <PageLoader />}
       <Navigation />
       <main id="main">{children}</main>
       <Footer />

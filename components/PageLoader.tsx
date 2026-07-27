@@ -8,13 +8,33 @@ export default function PageLoader() {
   const [visible, setVisible] = useState(true)
   const [fading, setFading] = useState(false)
 
-  // Initial page load
+  // Initial page load — dismiss when browser signals everything is loaded
   useEffect(() => {
-    const t = setTimeout(() => {
+    const MIN_MS = 400 // avoid flash on fast connections
+    const mountedAt = Date.now()
+
+    const dismiss = () => {
       setFading(true)
       setTimeout(() => setVisible(false), 500)
-    }, 600)
-    return () => clearTimeout(t)
+    }
+
+    const tryDismiss = () => {
+      const elapsed = Date.now() - mountedAt
+      const delay = Math.max(0, MIN_MS - elapsed)
+      setTimeout(dismiss, delay)
+    }
+
+    if (document.readyState === 'complete') {
+      tryDismiss()
+    } else {
+      window.addEventListener('load', tryDismiss, { once: true })
+      // Safety net — never stay stuck longer than 8 s
+      const fallback = setTimeout(dismiss, 8000)
+      return () => {
+        window.removeEventListener('load', tryDismiss)
+        clearTimeout(fallback)
+      }
+    }
   }, [])
 
   // Route transitions

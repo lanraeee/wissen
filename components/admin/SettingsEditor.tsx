@@ -10,6 +10,7 @@ interface Settings {
   twitter_url: string
   tagline: string
   footer_note: string
+  loader_enabled: boolean
 }
 
 const DEFAULTS: Settings = {
@@ -20,6 +21,7 @@ const DEFAULTS: Settings = {
   twitter_url: '',
   tagline: 'Building the bridge young Nigerians deserve.',
   footer_note: '',
+  loader_enabled: true,
 }
 
 const inp = { padding: '8px 12px', fontSize: '.88rem', border: '1px solid #d0ccc4', borderRadius: 6, width: '100%', boxSizing: 'border-box' as const }
@@ -83,6 +85,33 @@ export default function SettingsEditor() {
             <input type={type} style={inp} value={settings[key]} onChange={e => setSettings(s => ({ ...s, [key]: e.target.value }))} />
           </div>
         ))}
+      </div>
+
+      <div style={{ marginTop: 24, paddingTop: 20, borderTop: '1px solid #eee' }}>
+        <h3 style={{ margin: '0 0 16px', fontSize: '.95rem', fontWeight: 600 }}>Display</h3>
+        <label style={{ display: 'flex', alignItems: 'center', gap: 12, cursor: 'pointer', userSelect: 'none' }}>
+          <div
+            onClick={() => setSettings(s => ({ ...s, loader_enabled: !s.loader_enabled }))}
+            style={{
+              width: 44, height: 24, borderRadius: 12, position: 'relative', flexShrink: 0,
+              background: settings.loader_enabled ? '#1a3c2e' : '#d1d5db',
+              transition: 'background .2s',
+              cursor: 'pointer',
+            }}
+          >
+            <span style={{
+              position: 'absolute', top: 3, left: settings.loader_enabled ? 23 : 3,
+              width: 18, height: 18, borderRadius: '50%', background: '#fff',
+              transition: 'left .2s', boxShadow: '0 1px 3px rgba(0,0,0,.2)',
+            }} />
+          </div>
+          <div>
+            <div style={{ fontSize: '.88rem', fontWeight: 600, color: '#1a3c2e' }}>Page Loader</div>
+            <div style={{ fontSize: '.78rem', color: '#8a9a8f', marginTop: 2 }}>
+              {settings.loader_enabled ? 'Enabled — spinner shows on every page visit' : 'Disabled — pages open instantly'}
+            </div>
+          </div>
+        </label>
       </div>
     </div>
   )

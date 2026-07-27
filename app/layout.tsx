@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import './globals.css'
 import SiteShell from '@/components/SiteShell'
+import sql from '@/lib/db'
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://www.wissenhaus.org'),
@@ -43,11 +44,20 @@ export const metadata: Metadata = {
   },
 }
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  let loaderEnabled = true
+  try {
+    const rows = await sql`SELECT value FROM site_content WHERE key = 'site_settings'`
+    const val = rows[0]?.value as { loader_enabled?: boolean } | undefined
+    if (val?.loader_enabled === false) loaderEnabled = false
+  } catch {
+    // keep default
+  }
+
   return (
     <html lang="en">
       <body>
-        <SiteShell>{children}</SiteShell>
+        <SiteShell loaderEnabled={loaderEnabled}>{children}</SiteShell>
       </body>
     </html>
   )
