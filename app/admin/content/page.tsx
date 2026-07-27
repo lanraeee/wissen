@@ -6,11 +6,13 @@ import ThreadsEditor from '@/components/admin/ThreadsEditor'
 import TeamEditor from '@/components/admin/TeamEditor'
 import DonationCertEditor from '@/components/admin/DonationCertEditor'
 import FoundationDetailsEditor from '@/components/admin/FoundationDetailsEditor'
+import ImpactStoriesEditor from '@/components/admin/ImpactStoriesEditor'
 
 export const metadata: Metadata = { title: 'Content · Admin · Wissen-Haus' }
 
 const TABS = [
   { key: 'careers', label: 'Careers Roles' },
+  { key: 'impact', label: 'Impact Stories' },
   { key: 'policy', label: 'Policy Timeline' },
   { key: 'team', label: 'Team Members' },
   { key: 'founder', label: 'Founder Bio' },
@@ -42,6 +44,7 @@ export default async function AdminContent({ searchParams }: { searchParams: Pro
 
       <div style={{ background: '#fff', borderRadius: 10, padding: 24, boxShadow: '0 1px 4px rgba(0,0,0,.06)' }}>
         {tab === 'careers' && <CareersEditor />}
+        {tab === 'impact' && <ImpactStoriesEditor />}
         {tab === 'policy' && <PolicyEditor />}
         {tab === 'team' && <TeamEditor />}
         {tab === 'founder' && <FounderEditor />}
