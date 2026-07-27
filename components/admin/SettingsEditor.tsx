@@ -54,7 +54,8 @@ export default function SettingsEditor() {
 
   if (!loaded) return <div style={{ padding: 24, color: '#8a9a8f' }}>Loading…</div>
 
-  const fields: [keyof Settings, string, string][] = [
+  type StringKey = { [K in keyof Settings]: Settings[K] extends string ? K : never }[keyof Settings]
+  const fields: [StringKey, string, string][] = [
     ['contact_email', 'Contact Email', 'email'],
     ['whatsapp_url', 'WhatsApp Community URL', 'url'],
     ['instagram_url', 'Instagram URL', 'url'],
