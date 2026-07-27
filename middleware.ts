@@ -27,7 +27,8 @@ export async function middleware(req: NextRequest) {
       return NextResponse.redirect(new URL('/', req.url))
     }
     return NextResponse.next()
-  } catch {
+  } catch (err) {
+    console.error('[middleware] JWT verify failed:', (err as Error)?.message, 'JWT_SECRET set:', !!process.env.JWT_SECRET)
     const res = NextResponse.redirect(new URL('/login', req.url))
     res.cookies.delete(COOKIE_NAME)
     return res
