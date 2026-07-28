@@ -4,9 +4,15 @@ import AdminNav from '@/components/admin/AdminNav'
 
 const ADMIN_EMAIL = process.env.FOUNDER_EMAIL || 'director@wissenhaus.org'
 
+export function isDirectorSession(email?: string) {
+  return email === ADMIN_EMAIL
+}
+
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const session = await getSession()
-  if (!session || session.email !== ADMIN_EMAIL) redirect('/login?mode=login')
+  const isDirector = session?.email === ADMIN_EMAIL
+  const hasAccess = isDirector || session?.role === 'admin' || session?.role === 'editor'
+  if (!session || !hasAccess) redirect('/login?mode=login')
 
   return (
     <div style={{ display: 'flex', minHeight: '100vh', marginTop: -1 }}>

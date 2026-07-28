@@ -11,7 +11,7 @@ export async function POST(req: NextRequest) {
     }
 
     const [user] = await sql`
-      SELECT id, email, password_hash, first_name, last_name, membership_expiry
+      SELECT id, email, password_hash, first_name, last_name, membership_expiry, role
       FROM users WHERE email = ${email.toLowerCase()}
     `
     if (!user) {
@@ -27,6 +27,7 @@ export async function POST(req: NextRequest) {
       id: user.id,
       email: user.email,
       name: `${user.first_name} ${user.last_name}`,
+      role: user.role ?? 'user',
       membershipExpiry: user.membership_expiry,
     })
 

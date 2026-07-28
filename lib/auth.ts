@@ -9,6 +9,7 @@ export interface UserPayload extends JWTPayload {
   id: string
   email: string
   name: string
+  role?: string
   membershipExpiry?: string | null
 }
 

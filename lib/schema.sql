@@ -6,9 +6,13 @@ CREATE TABLE IF NOT EXISTS users (
   password_hash TEXT NOT NULL,
   first_name TEXT NOT NULL,
   last_name TEXT NOT NULL,
+  role TEXT NOT NULL DEFAULT 'user',
   membership_expiry TIMESTAMPTZ,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
+
+-- Migration (run once on existing DBs):
+-- ALTER TABLE users ADD COLUMN IF NOT EXISTS role TEXT NOT NULL DEFAULT 'user';
 
 CREATE TABLE IF NOT EXISTS course_progress (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),

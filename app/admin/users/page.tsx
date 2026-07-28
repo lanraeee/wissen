@@ -8,6 +8,7 @@ interface User {
   first_name: string
   last_name: string
   email: string
+  role: string
   membership_expiry: string | null
   modules_done: number
   certs: number
@@ -19,6 +20,7 @@ export default function AdminUsers() {
   const [total, setTotal] = useState(0)
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
+  const [isDirector, setIsDirector] = useState(false)
 
   const load = useCallback(async () => {
     setLoading(true)
@@ -26,6 +28,7 @@ export default function AdminUsers() {
     const data = await res.json()
     setUsers(data.users ?? [])
     setTotal(data.total ?? 0)
+    setIsDirector(data.viewerIsDirector ?? false)
     setLoading(false)
   }, [])
 
@@ -70,7 +73,7 @@ export default function AdminUsers() {
                     <span style={{ fontSize: '.75rem', color: '#8a9a8f' }}>Joined {new Date(u.created_at).toLocaleDateString('en-GB')}</span>
                   </div>
                 </div>
-                <UserActions user={u} onRefresh={load} />
+                <UserActions user={u} onRefresh={load} isDirector={isDirector} />
               </div>
             </div>
           ))}
