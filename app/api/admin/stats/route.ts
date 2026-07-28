@@ -1,13 +1,9 @@
 import { NextResponse } from 'next/server'
-import { getSession } from '@/lib/auth'
+import { adminGuard } from '@/lib/admin-guard'
 import sql from '@/lib/db'
 
-const ADMIN_EMAIL = process.env.FOUNDER_EMAIL ?? 'director@wissenhaus.org'
-
 export async function GET() {
-  const session = await getSession()
-  if (!session || session.email !== ADMIN_EMAIL)
-    return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+  if (!await adminGuard()) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 
   const [users, subs, certs, progress, opps] = await Promise.all([
     sql`SELECT COUNT(*) AS c FROM users`,

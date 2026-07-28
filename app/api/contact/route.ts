@@ -8,7 +8,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'All fields required' }, { status: 400 })
 
   try {
-    await sql`INSERT INTO submissions (type, data) VALUES ('contact', ${JSON.stringify({ name, email, subject, message })})`
+    await sql`INSERT INTO submissions (type, name, email, data) VALUES ('contact', ${name}, ${email}, ${JSON.stringify({ subject, message })})`
   } catch { /* non-fatal if DB unavailable */ }
 
   try {

@@ -1,19 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getSession } from '@/lib/auth'
+import { adminGuard } from '@/lib/admin-guard'
 import sql from '@/lib/db'
-
-const ADMIN_EMAIL = process.env.FOUNDER_EMAIL ?? 'director@wissenhaus.org'
-async function guard() {
-  const s = await getSession()
-  return s?.email === ADMIN_EMAIL ? s : null
-}
 
 function slugify(t: string) {
   return t.toLowerCase().replace(/[^a-z0-9]+/g, '-').slice(0, 40)
 }
 
 export async function POST(req: NextRequest) {
-  if (!await guard()) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+  if (!await adminGuard()) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   const body = await req.json()
   const id = `manual-${slugify(body.title)}-${Date.now()}`
   const eligLabel = body.eligibility === 'nigeria' ? 'Open to Nigeria'

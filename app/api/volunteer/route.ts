@@ -8,7 +8,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Name, email and role are required' }, { status: 400 })
 
   try {
-    await sql`INSERT INTO submissions (type, data) VALUES ('volunteer', ${JSON.stringify({ name, email, role, message })})`
+    await sql`INSERT INTO submissions (type, name, email, data) VALUES ('volunteer', ${name}, ${email}, ${JSON.stringify({ role, message })})`
   } catch { /* non-fatal */ }
 
   try {

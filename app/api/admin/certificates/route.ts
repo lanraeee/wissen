@@ -1,16 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getSession } from '@/lib/auth'
+import { adminGuard } from '@/lib/admin-guard'
 import sql from '@/lib/db'
 import { COURSES } from '@/lib/courseData'
 
-const ADMIN_EMAIL = process.env.FOUNDER_EMAIL ?? 'director@wissenhaus.org'
-async function guard() {
-  const s = await getSession()
-  return s?.email === ADMIN_EMAIL ? s : null
-}
-
 export async function POST(req: NextRequest) {
-  if (!await guard()) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+  if (!await adminGuard()) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 
   const { email, courseId, markComplete } = await req.json() as {
     email: string
