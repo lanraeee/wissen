@@ -2,11 +2,10 @@ import { redirect } from 'next/navigation'
 import { getSession } from '@/lib/auth'
 import AdminNav from '@/components/admin/AdminNav'
 
-const ADMIN_EMAIL = process.env.FOUNDER_EMAIL ?? 'director@wissenhaus.org'
+const ADMIN_EMAIL = process.env.FOUNDER_EMAIL || 'director@wissenhaus.org'
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const session = await getSession()
-  console.error('[admin-debug] session.email=%s ADMIN_EMAIL=%s', session?.email ?? 'null', ADMIN_EMAIL)
   if (!session || session.email !== ADMIN_EMAIL) redirect('/login?mode=login')
 
   return (
