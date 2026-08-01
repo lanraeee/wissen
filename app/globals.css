@@ -735,19 +735,10 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
   .certificate{border:1px solid #000;page-break-inside:avoid}
   .certificate button{display:none}
 
-  /* Donation receipt — force single A4 landscape page */
-  .receipt-outer { background: white !important; padding: 0 !important; min-height: unset !important; display: flex !important; align-items: center !important; justify-content: center !important; width: 277mm !important; height: 190mm !important; overflow: hidden !important; }
-  .receipt-wrapper { width: 100% !important; max-width: 100% !important; margin: 0 !important; }
+  /* Donation receipt — single A4 landscape page, scaled to fit */
+  .receipt-outer { background: white !important; padding: 0 !important; min-height: unset !important; display: flex !important; align-items: center !important; justify-content: center !important; }
+  .receipt-wrapper { zoom: 0.68 !important; width: 680px !important; max-width: 680px !important; margin: 0 auto !important; }
   .receipt-doc { box-shadow: none !important; border: 1.5px solid #B8952A !important; page-break-inside: avoid !important; break-inside: avoid !important; }
-  .receipt-header { padding: 10px 24px !important; }
-  .receipt-body { padding: 12px 24px !important; }
-  .receipt-title { margin-bottom: 10px !important; }
-  .receipt-title h1 { font-size: 1.3rem !important; }
-  .receipt-ack { margin-bottom: 12px !important; font-size: 0.78rem !important; }
-  .receipt-box { margin-bottom: 10px !important; }
-  .receipt-box-inner { padding: 10px 14px !important; gap: 8px 20px !important; }
-  .receipt-tax { padding: 8px 14px !important; margin-bottom: 12px !important; }
-  .receipt-sig { gap: 16px !important; }
   .receipt-actions { display: none !important; }
 }
 
