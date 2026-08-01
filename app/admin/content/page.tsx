@@ -7,6 +7,7 @@ import TeamEditor from '@/components/admin/TeamEditor'
 import DonationCertEditor from '@/components/admin/DonationCertEditor'
 import FoundationDetailsEditor from '@/components/admin/FoundationDetailsEditor'
 import ImpactStoriesEditor from '@/components/admin/ImpactStoriesEditor'
+import WhatsAppEditor from '@/components/admin/WhatsAppEditor'
 
 export const metadata: Metadata = { title: 'Content · Admin · Wissen-Haus' }
 
@@ -16,6 +17,7 @@ const TABS = [
   { key: 'team', label: 'Team Members' },
   { key: 'founder', label: 'Founder Bio' },
   { key: 'threads', label: 'Community Threads' },
+  { key: 'whatsapp', label: 'WhatsApp Channel' },
   { key: 'impact-stories', label: 'Impact Stories' },
   { key: 'donation-certs', label: '🧾 Donation Receipts' },
   { key: 'foundation', label: 'Foundation Details' },
@@ -48,6 +50,7 @@ export default async function AdminContent({ searchParams }: { searchParams: Pro
         {tab === 'team' && <TeamEditor />}
         {tab === 'founder' && <FounderEditor />}
         {tab === 'threads' && <ThreadsEditor />}
+        {tab === 'whatsapp' && <WhatsAppEditor />}
         {tab === 'impact-stories' && <ImpactStoriesEditor />}
         {tab === 'donation-certs' && <DonationCertEditor />}
         {tab === 'foundation' && <FoundationDetailsEditor />}

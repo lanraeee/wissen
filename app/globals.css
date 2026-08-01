@@ -736,9 +736,9 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
   .certificate button{display:none}
 
   /* Donation receipt */
-  @page { size: A4; margin: 10mm; }
+  @page { size: A4 landscape; margin: 10mm; }
   .receipt-outer { background: white !important; padding: 0 !important; min-height: unset !important; display: flex !important; align-items: center !important; justify-content: center !important; }
-  .receipt-wrapper { zoom: 0.68; max-width: 680px !important; margin: 0 auto !important; }
+  .receipt-wrapper { zoom: 0.82; max-width: 680px !important; margin: 0 auto !important; }
   .receipt-doc { box-shadow: none !important; border: 1.5px solid #B8952A !important; }
   .receipt-actions { display: none !important; }
 }
