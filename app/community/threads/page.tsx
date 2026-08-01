@@ -41,14 +41,6 @@ function formatWADate(iso: string) {
   return new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
 }
 
-function ago(iso: string) {
-  const diff = (Date.now() - new Date(iso).getTime()) / 1000
-  if (diff < 3600) return `${Math.floor(diff / 60)}m ago`
-  if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`
-  if (diff < 86400 * 7) return `${Math.floor(diff / 86400)}d ago`
-  return new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })
-}
-
 const TAG_COLOR: Record<string, string> = {
   Jobs: '#1d4ed8', Education: '#7c3aed', Tech: '#0891b2',
   Scholarships: '#b45309', Career: '#15803d', Finance: '#c026d3',
@@ -102,7 +94,7 @@ export default async function ThreadsPage() {
 
           {/* Thread board */}
           <div className="reveal">
-            <ThreadsClient threads={threads as never} tags={TAGS} tagColors={TAG_COLOR} ago={ago} channelUrl={channelUrl} />
+            <ThreadsClient threads={threads as never} tags={TAGS} tagColors={TAG_COLOR} />
           </div>
 
           {/* WhatsApp channel feed */}

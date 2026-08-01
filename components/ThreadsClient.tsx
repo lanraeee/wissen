@@ -17,18 +17,22 @@ interface Me { id: string; name: string; role?: string }
 
 const THREAD_TAGS = ['Jobs', 'Education', 'Tech', 'Scholarships', 'Career', 'Finance', 'Discussion', 'General']
 
+function ago(iso: string) {
+  const diff = (Date.now() - new Date(iso).getTime()) / 1000
+  if (diff < 3600) return `${Math.floor(diff / 60)}m ago`
+  if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`
+  if (diff < 86400 * 7) return `${Math.floor(diff / 86400)}d ago`
+  return new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })
+}
+
 export default function ThreadsClient({
   threads: initial,
   tags,
   tagColors,
-  ago,
-  channelUrl: _channelUrl,
 }: {
   threads: Thread[]
   tags: string[]
   tagColors: Record<string, string>
-  ago: (iso: string) => string
-  channelUrl: string
 }) {
   const [threads, setThreads] = useState<Thread[]>(initial)
   const [activeTag, setActiveTag] = useState('All')
