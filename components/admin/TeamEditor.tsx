@@ -11,7 +11,7 @@ const GROUP_OPTIONS: { value: TeamMember['group']; label: string }[] = [
 ]
 
 const DEFAULT_MEMBERS: TeamMember[] = []
-const BLANK: TeamMember = { name: '', role: '', group: 'leadership', bio: '', linkedin: '' }
+const BLANK: TeamMember = { name: '', role: '', group: 'leadership', bio: '', linkedin: '', photo: undefined }
 
 const s = (bg: string, color = '#fff') => ({
   padding: '5px 12px', borderRadius: 6, fontSize: '.75rem', fontWeight: 600,
@@ -99,6 +99,27 @@ export default function TeamEditor() {
                       {GROUP_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
                     </select>
                   </div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                    <label style={{ fontSize: '.7rem', fontWeight: 700, textTransform: 'uppercase', color: '#8a9a8f', letterSpacing: '.06em' }}>Photo</label>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                      {draft.photo
+                        ? <img src={draft.photo} alt={draft.name} style={{ width: 44, height: 44, borderRadius: '50%', objectFit: 'cover', border: '1px solid #d0ccc4' }} />
+                        : <div style={{ width: 44, height: 44, borderRadius: '50%', background: 'linear-gradient(135deg,#0F2D1D,#1a4a2e)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '.95rem', fontWeight: 800, color: '#B8952A' }}>
+                            {draft.name.split(' ').map(n => n[0]).slice(0, 2).join('') || '?'}
+                          </div>
+                      }
+                      <label style={{ ...s('#1a3c2e'), cursor: 'pointer' }}>
+                        {draft.photo ? 'Change' : 'Upload'}
+                        <input type="file" accept="image/*" style={{ display: 'none' }} onChange={e => {
+                          const file = e.target.files?.[0]; if (!file) return
+                          const reader = new FileReader()
+                          reader.onload = () => setDraft(d => ({ ...d, photo: reader.result as string }))
+                          reader.readAsDataURL(file)
+                        }} />
+                      </label>
+                      {draft.photo && <button style={s('#dc2626')} onClick={() => setDraft(d => ({ ...d, photo: undefined }))}>✕</button>}
+                    </div>
+                  </div>
                 </div>
                 <div style={{ display: 'flex', gap: 6 }}>
                   <button style={s('#1a3c2e')} onClick={commit}>Save</button>
@@ -107,6 +128,13 @@ export default function TeamEditor() {
               </div>
             ) : (
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                  {m.photo
+                    ? <img src={m.photo} alt={m.name} style={{ width: 36, height: 36, borderRadius: '50%', objectFit: 'cover', flexShrink: 0 }} />
+                    : <div style={{ width: 36, height: 36, borderRadius: '50%', background: 'linear-gradient(135deg,#0F2D1D,#1a4a2e)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '.8rem', fontWeight: 800, color: '#B8952A', flexShrink: 0 }}>
+                        {m.name.split(' ').map(n => n[0]).slice(0, 2).join('')}
+                      </div>
+                  }
                 <div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                     <strong style={{ fontSize: '.9rem' }}>{m.name}</strong>
@@ -115,6 +143,7 @@ export default function TeamEditor() {
                     </span>
                   </div>
                   <div style={{ fontSize: '.75rem', color: '#8a9a8f', marginTop: 2 }}>{m.role}</div>
+                </div>
                 </div>
                 <div style={{ display: 'flex', gap: 5, alignItems: 'center' }}>
                   <button style={{ ...s('#e8e4dc', '#3a4a3f'), padding: '4px 8px' }} onClick={() => move(i, -1)} disabled={i === 0}>↑</button>
@@ -144,6 +173,27 @@ export default function TeamEditor() {
                 <select style={inp} value={draft.group} onChange={e => setDraft(d => ({ ...d, group: e.target.value as TeamMember['group'] }))}>
                   {GROUP_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
                 </select>
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                <label style={{ fontSize: '.7rem', fontWeight: 700, textTransform: 'uppercase', color: '#8a9a8f', letterSpacing: '.06em' }}>Photo</label>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                  {draft.photo
+                    ? <img src={draft.photo} alt={draft.name} style={{ width: 44, height: 44, borderRadius: '50%', objectFit: 'cover', border: '1px solid #d0ccc4' }} />
+                    : <div style={{ width: 44, height: 44, borderRadius: '50%', background: 'linear-gradient(135deg,#0F2D1D,#1a4a2e)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '.95rem', fontWeight: 800, color: '#B8952A' }}>
+                        {draft.name.split(' ').map(n => n[0]).slice(0, 2).join('') || '?'}
+                      </div>
+                  }
+                  <label style={{ ...s('#1a3c2e'), cursor: 'pointer' }}>
+                    {draft.photo ? 'Change' : 'Upload'}
+                    <input type="file" accept="image/*" style={{ display: 'none' }} onChange={e => {
+                      const file = e.target.files?.[0]; if (!file) return
+                      const reader = new FileReader()
+                      reader.onload = () => setDraft(d => ({ ...d, photo: reader.result as string }))
+                      reader.readAsDataURL(file)
+                    }} />
+                  </label>
+                  {draft.photo && <button style={s('#dc2626')} onClick={() => setDraft(d => ({ ...d, photo: undefined }))}>✕</button>}
+                </div>
               </div>
             </div>
             <div style={{ display: 'flex', gap: 6 }}>

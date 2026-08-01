@@ -13,6 +13,7 @@ interface FounderContent {
   role: string
   quote: string
   paragraphs: string[]
+  photo?: string
 }
 
 const DEFAULT: FounderContent = {
@@ -52,7 +53,12 @@ export default async function FounderPage() {
               <b>{founder.name}</b>
               <span>{founder.role}</span>
             </div>
-            <Image src="/img/Benzz.jpg" alt={`${founder.name}, ${founder.role}`} fill style={{ objectFit: 'cover', objectPosition: 'center 22%' }} />
+            {founder.photo ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={founder.photo} alt={`${founder.name}, ${founder.role}`} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 22%' }} />
+            ) : (
+              <Image src="/img/Benzz.jpg" alt={`${founder.name}, ${founder.role}`} fill style={{ objectFit: 'cover', objectPosition: 'center 22%' }} />
+            )}
           </div>
           <div className="founder__body reveal--right">
             <span className="quote-mark">&ldquo;</span>

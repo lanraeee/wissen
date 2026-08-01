@@ -7,6 +7,7 @@ interface FounderContent {
   role: string
   quote: string
   paragraphs: string[]
+  photo?: string
 }
 
 const DEFAULTS: FounderContent = {
@@ -80,6 +81,27 @@ export default function FounderEditor() {
             <input style={inp} value={data[k]} onChange={e => setData(d => ({ ...d, [k]: e.target.value }))} />
           </div>
         ))}
+        <div style={{ gridColumn: '1/-1' }}>
+          <label style={lbl}>Photo</label>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            {data.photo
+              ? <img src={data.photo} alt="Founder" style={{ width: 64, height: 64, borderRadius: '50%', objectFit: 'cover', border: '2px solid #d0ccc4' }} />
+              : <div style={{ width: 64, height: 64, borderRadius: '50%', background: 'linear-gradient(135deg,#0F2D1D,#1a4a2e)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.4rem', fontWeight: 800, color: '#B8952A' }}>BO</div>
+            }
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+              <label style={{ ...s('#1a3c2e'), display: 'inline-block', cursor: 'pointer' }}>
+                Upload photo
+                <input type="file" accept="image/*" style={{ display: 'none' }} onChange={e => {
+                  const file = e.target.files?.[0]; if (!file) return
+                  const reader = new FileReader()
+                  reader.onload = () => setData(d => ({ ...d, photo: reader.result as string }))
+                  reader.readAsDataURL(file)
+                }} />
+              </label>
+              {data.photo && <button style={s('#dc2626')} onClick={() => setData(d => ({ ...d, photo: undefined }))}>Remove</button>}
+            </div>
+          </div>
+        </div>
         <div style={{ gridColumn: '1/-1' }}>
           <label style={lbl}>Opening Quote</label>
           <textarea style={{ ...inp, minHeight: 80, resize: 'vertical' }} value={data.quote} onChange={e => setData(d => ({ ...d, quote: e.target.value }))} />

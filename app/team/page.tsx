@@ -16,6 +16,7 @@ export interface TeamMember {
   group: 'leadership' | 'advisor' | 'mentor' | 'volunteer'
   bio: string
   linkedin?: string
+  photo?: string
 }
 
 const GROUP_META: Record<TeamMember['group'], { heading: string; eyebrow: string }> = {
@@ -45,20 +46,37 @@ async function getMembers(): Promise<TeamMember[]> {
   return []
 }
 
+async function getFounderPhoto(): Promise<string | null> {
+  try {
+    const rows = await sql`SELECT value FROM site_content WHERE key = 'founder_bio'`
+    const val = rows[0]?.value as { photo?: string } | undefined
+    return val?.photo ?? null
+  } catch {}
+  return null
+}
+
 function MemberCard({ m, delay }: { m: TeamMember; delay?: number }) {
   const initials = m.name.split(' ').map(n => n[0]).slice(0, 2).join('')
   return (
     <div className="card reveal" data-d={delay ? String(delay) : undefined}>
       <div className="card__body">
-        <div style={{
-          width: 52, height: 52, borderRadius: '50%',
-          background: 'linear-gradient(135deg, #0F2D1D, #1a4a2e)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          marginBottom: '1rem', fontSize: '1.15rem', fontWeight: 800,
-          color: '#B8952A', letterSpacing: '-0.02em', flexShrink: 0,
-        }}>
-          {initials}
-        </div>
+        {m.photo ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={m.photo} alt={m.name} style={{
+            width: 52, height: 52, borderRadius: '50%', objectFit: 'cover',
+            marginBottom: '1rem', flexShrink: 0, display: 'block',
+          }} />
+        ) : (
+          <div style={{
+            width: 52, height: 52, borderRadius: '50%',
+            background: 'linear-gradient(135deg, #0F2D1D, #1a4a2e)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            marginBottom: '1rem', fontSize: '1.15rem', fontWeight: 800,
+            color: '#B8952A', letterSpacing: '-0.02em', flexShrink: 0,
+          }}>
+            {initials}
+          </div>
+        )}
         <h3 style={{ fontSize: '1rem', marginBottom: '.15rem' }}>{m.name}</h3>
         <div style={{ fontSize: '.72rem', fontWeight: 700, letterSpacing: '.07em', textTransform: 'uppercase', color: 'var(--green-700)', marginBottom: '.75rem' }}>
           {m.role}
@@ -76,7 +94,7 @@ function MemberCard({ m, delay }: { m: TeamMember; delay?: number }) {
 }
 
 export default async function TeamPage() {
-  const members = await getMembers()
+  const [members, founderPhoto] = await Promise.all([getMembers(), getFounderPhoto()])
 
   const grouped = (['leadership', 'advisor', 'mentor', 'volunteer'] as TeamMember['group'][])
     .map(g => ({ group: g, items: members.filter(m => m.group === g) }))
@@ -125,9 +143,14 @@ export default async function TeamPage() {
             {/* Founder — static card */}
             <div className="card reveal" style={{ position: 'relative' }}>
               <div className="card__body">
-                <div style={{ position: 'relative', width: 52, height: 52, borderRadius: '50%', overflow: 'hidden', marginBottom: '1rem', flexShrink: 0 }}>
-                  <Image src="/img/Benzz.jpg" alt="Benz Olagbaye" fill style={{ objectFit: 'cover', objectPosition: 'center 20%' }} />
-                </div>
+                {founderPhoto ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={founderPhoto} alt="Benz Olagbaye" style={{ width: 52, height: 52, borderRadius: '50%', objectFit: 'cover', marginBottom: '1rem', display: 'block' }} />
+                ) : (
+                  <div style={{ position: 'relative', width: 52, height: 52, borderRadius: '50%', overflow: 'hidden', marginBottom: '1rem', flexShrink: 0 }}>
+                    <Image src="/img/Benzz.jpg" alt="Benz Olagbaye" fill style={{ objectFit: 'cover', objectPosition: 'center 20%' }} />
+                  </div>
+                )}
                 <h3 style={{ fontSize: '1rem', marginBottom: '.15rem' }}>Benz Olagbaye</h3>
                 <div style={{ fontSize: '.72rem', fontWeight: 700, letterSpacing: '.07em', textTransform: 'uppercase', color: 'var(--green-700)', marginBottom: '.75rem' }}>
                   Founder &amp; Executive Director

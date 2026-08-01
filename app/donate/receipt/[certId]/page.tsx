@@ -100,11 +100,12 @@ export default async function DonationReceiptPage({ params }: Props) {
   }
 
   return (
-    <div style={{ background: '#f4f0e8', minHeight: '100vh', padding: 'clamp(32px,5vw,64px) 16px' }}>
-      <div style={{ maxWidth: 680, margin: '0 auto' }}>
+    <>
+      <div className="receipt-outer" style={{ background: '#f4f0e8', minHeight: '100vh', padding: 'clamp(32px,5vw,64px) 16px' }}>
+      <div className="receipt-wrapper" style={{ maxWidth: 680, margin: '0 auto' }}>
 
         {/* Document */}
-        <div style={{
+        <div className="receipt-doc" style={{
           background: '#FEFCF5',
           border: '2px solid #B8952A',
           borderRadius: 6,
@@ -113,7 +114,7 @@ export default async function DonationReceiptPage({ params }: Props) {
         }}>
 
           {/* Gold header */}
-          <div style={{
+          <div className="receipt-header" style={{
             background: 'linear-gradient(135deg, #A07820 0%, #C9A030 40%, #B8952A 70%, #8B6914 100%)',
             padding: '20px 36px',
             display: 'flex',
@@ -147,10 +148,10 @@ export default async function DonationReceiptPage({ params }: Props) {
           </div>
 
           {/* Body */}
-          <div style={{ padding: 'clamp(28px,4vw,48px) clamp(28px,5vw,56px)' }}>
+          <div className="receipt-body" style={{ padding: 'clamp(28px,4vw,48px) clamp(28px,5vw,56px)' }}>
 
             {/* Title */}
-            <div style={{ textAlign: 'center', marginBottom: 32 }}>
+            <div className="receipt-title" style={{ textAlign: 'center', marginBottom: 32 }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12, marginBottom: 10 }}>
                 <span style={{ flex: 1, maxWidth: 80, height: 1, background: 'linear-gradient(to right, transparent, #B8952A)' }} />
                 <span style={{ color: '#B8952A', fontSize: '.65rem', fontWeight: 700, letterSpacing: '.22em', textTransform: 'uppercase' }}>
@@ -164,13 +165,13 @@ export default async function DonationReceiptPage({ params }: Props) {
             </div>
 
             {/* Acknowledgement */}
-            <p style={{ color: '#3a3a2a', fontSize: '.92rem', lineHeight: 1.7, marginBottom: 28, textAlign: 'center' }}>
+            <p className="receipt-ack" style={{ color: '#3a3a2a', fontSize: '.92rem', lineHeight: 1.7, marginBottom: 28, textAlign: 'center' }}>
               This certifies that <strong>{foundation.legal_name}</strong> gratefully acknowledges
               the following donation received in support of our youth empowerment mission.
             </p>
 
             {/* Donor & donation details box */}
-            <div style={{
+            <div className="receipt-box" style={{
               border: '1px solid rgba(184,149,42,0.35)',
               borderRadius: 8,
               overflow: 'hidden',
@@ -181,7 +182,7 @@ export default async function DonationReceiptPage({ params }: Props) {
                   Donor Details
                 </span>
               </div>
-              <div style={{ padding: '20px 20px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px 32px' }}>
+              <div className="receipt-box-inner" style={{ padding: '20px 20px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px 32px' }}>
                 <div style={{ gridColumn: '1 / -1' }}>
                   <div style={{ fontSize: '.62rem', letterSpacing: '.12em', textTransform: 'uppercase', color: '#9a9a8a', marginBottom: 3 }}>Donor Name</div>
                   <div style={{ fontFamily: 'Georgia, serif', fontStyle: 'italic', fontSize: '1.3rem', color: '#0F2D1D', lineHeight: 1.2 }}>{cert.donor_name}</div>
@@ -202,7 +203,7 @@ export default async function DonationReceiptPage({ params }: Props) {
             </div>
 
             {/* Donation details box */}
-            <div style={{
+            <div className="receipt-box" style={{
               border: '1px solid rgba(184,149,42,0.35)',
               borderRadius: 8,
               overflow: 'hidden',
@@ -213,7 +214,7 @@ export default async function DonationReceiptPage({ params }: Props) {
                   Donation Details
                 </span>
               </div>
-              <div style={{ padding: '20px 20px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px 32px' }}>
+              <div className="receipt-box-inner" style={{ padding: '20px 20px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px 32px' }}>
                 <div>
                   <div style={{ fontSize: '.62rem', letterSpacing: '.12em', textTransform: 'uppercase', color: '#9a9a8a', marginBottom: 3 }}>Amount</div>
                   <div style={{ fontSize: '1.4rem', fontWeight: 800, color: '#0F2D1D', letterSpacing: '-.01em' }}>
@@ -238,7 +239,7 @@ export default async function DonationReceiptPage({ params }: Props) {
             </div>
 
             {/* Tax statement */}
-            <div style={{
+            <div className="receipt-tax" style={{
               background: 'rgba(15,45,29,0.04)',
               border: '1px solid rgba(15,45,29,0.12)',
               borderRadius: 8,
@@ -254,7 +255,7 @@ export default async function DonationReceiptPage({ params }: Props) {
             </div>
 
             {/* Signature & issue info */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', alignItems: 'end', gap: 24 }}>
+            <div className="receipt-sig" style={{ display: 'grid', gridTemplateColumns: '1fr auto', alignItems: 'end', gap: 24 }}>
               <div>
                 <div style={{ fontSize: '.62rem', letterSpacing: '.12em', textTransform: 'uppercase', color: '#9a9a8a', marginBottom: 4 }}>Issued on</div>
                 <div style={{ fontSize: '.88rem', color: '#3a3a2a', fontWeight: 600, marginBottom: 8 }}>{formatted.issued}</div>
@@ -285,7 +286,7 @@ export default async function DonationReceiptPage({ params }: Props) {
         </div>
 
         {/* Print / back actions */}
-        <div style={{ textAlign: 'center', marginTop: 24, display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
+        <div className="receipt-actions" style={{ textAlign: 'center', marginTop: 24, display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
           <PrintReceiptButton />
           <Link href="/donate" style={{ display: 'inline-flex', alignItems: 'center', padding: '10px 22px', background: '#fff', color: '#3a3a2a', border: '1.5px solid #d0ccbf', borderRadius: 8, fontSize: '.85rem', fontWeight: 600, textDecoration: 'none' }}>
             ← Back to Donate
@@ -293,6 +294,7 @@ export default async function DonationReceiptPage({ params }: Props) {
         </div>
 
       </div>
-    </div>
+      </div>
+    </>
   )
 }
