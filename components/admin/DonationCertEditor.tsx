@@ -5,7 +5,9 @@ import type { DonationCert } from '@/app/donate/receipt/[certId]/page'
 
 const CURRENCIES: DonationCert['currency'][] = ['NGN', 'USD', 'GBP', 'EUR']
 
-const BLANK: Omit<DonationCert, 'cert_id' | 'issued_at'> = {
+type DraftCert = Omit<DonationCert, 'cert_id'>
+
+const BLANK: DraftCert = {
   donor_name: '',
   donor_email: '',
   donor_address: '',
@@ -14,6 +16,16 @@ const BLANK: Omit<DonationCert, 'cert_id' | 'issued_at'> = {
   date: new Date().toISOString().slice(0, 10),
   purpose: 'General donation to youth empowerment programmes',
   notes: '',
+  issued_at: new Date().toISOString().slice(0, 10),
+}
+
+function toIso(dateStr: string) {
+  if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) return new Date(dateStr).toISOString()
+  return dateStr
+}
+
+function toDateInput(isoStr: string) {
+  return isoStr.slice(0, 10)
 }
 
 function genId() {
@@ -30,6 +42,70 @@ const s = (bg: string, color = '#fff') => ({
 } as const)
 
 const inp = { padding: '7px 10px', fontSize: '.85rem', border: '1px solid #d0ccc4', borderRadius: 6, width: '100%', boxSizing: 'border-box' as const }
+const lbl = { fontSize: '.7rem', fontWeight: 700, textTransform: 'uppercase' as const, color: '#8a9a8f', letterSpacing: '.06em' }
+
+function CertForm({ title, draft, setDraft, onSave, onCancel, saveLabel, saving, disabled, currencies, currencySym }: {
+  title: string
+  draft: DraftCert
+  setDraft: React.Dispatch<React.SetStateAction<DraftCert>>
+  onSave: () => void
+  onCancel: () => void
+  saveLabel: string
+  saving: boolean
+  disabled: boolean
+  currencies: DonationCert['currency'][]
+  currencySym: Record<string, string>
+}) {
+  return (
+    <div style={{ background: '#f0f7f3', border: '1px solid #c8e0d0', borderRadius: 10, padding: 20, marginBottom: 16 }}>
+      <h3 style={{ margin: '0 0 16px', fontSize: '1rem', color: '#0F2D1D' }}>{title}</h3>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+        <div style={{ gridColumn: '1 / -1' }}>
+          <label style={lbl}>Donor Full Name *</label>
+          <input style={inp} value={draft.donor_name} onChange={e => setDraft(d => ({ ...d, donor_name: e.target.value }))} placeholder="e.g. Adebayo Okafor" />
+        </div>
+        <div>
+          <label style={lbl}>Donor Email</label>
+          <input style={inp} type="email" value={draft.donor_email ?? ''} onChange={e => setDraft(d => ({ ...d, donor_email: e.target.value }))} placeholder="donor@example.com" />
+        </div>
+        <div>
+          <label style={lbl}>Donor Address</label>
+          <input style={inp} value={draft.donor_address ?? ''} onChange={e => setDraft(d => ({ ...d, donor_address: e.target.value }))} placeholder="City, State, Country" />
+        </div>
+        <div>
+          <label style={lbl}>Amount *</label>
+          <input style={inp} type="number" min="0" step="0.01" value={draft.amount || ''} onChange={e => setDraft(d => ({ ...d, amount: parseFloat(e.target.value) || 0 }))} placeholder="0.00" />
+        </div>
+        <div>
+          <label style={lbl}>Currency *</label>
+          <select style={inp} value={draft.currency} onChange={e => setDraft(d => ({ ...d, currency: e.target.value as DonationCert['currency'] }))}>
+            {currencies.map(c => <option key={c} value={c}>{c} ({currencySym[c]})</option>)}
+          </select>
+        </div>
+        <div>
+          <label style={lbl}>Date of Donation *</label>
+          <input style={inp} type="date" value={draft.date} onChange={e => setDraft(d => ({ ...d, date: e.target.value }))} />
+        </div>
+        <div>
+          <label style={lbl}>Issue Date *</label>
+          <input style={inp} type="date" value={toDateInput(draft.issued_at)} onChange={e => setDraft(d => ({ ...d, issued_at: e.target.value }))} />
+        </div>
+        <div style={{ gridColumn: '1 / -1' }}>
+          <label style={lbl}>Purpose *</label>
+          <input style={inp} value={draft.purpose} onChange={e => setDraft(d => ({ ...d, purpose: e.target.value }))} placeholder="General donation to youth empowerment programmes" />
+        </div>
+        <div style={{ gridColumn: '1 / -1' }}>
+          <label style={lbl}>Additional Notes (optional)</label>
+          <textarea style={{ ...inp, minHeight: 60, resize: 'vertical' }} value={draft.notes ?? ''} onChange={e => setDraft(d => ({ ...d, notes: e.target.value }))} placeholder="Any additional details to include on the receipt…" />
+        </div>
+      </div>
+      <div style={{ display: 'flex', gap: 8, marginTop: 16 }}>
+        <button style={s('#1a3c2e')} onClick={onSave} disabled={saving || disabled}>{saveLabel}</button>
+        <button style={s('#e8e4dc', '#3a4a3f')} onClick={onCancel}>Cancel</button>
+      </div>
+    </div>
+  )
+}
 
 export default function DonationCertEditor() {
   const [certs, setCerts] = useState<DonationCert[]>([])
@@ -37,8 +113,10 @@ export default function DonationCertEditor() {
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
   const [showForm, setShowForm] = useState(false)
-  const [draft, setDraft] = useState<Omit<DonationCert, 'cert_id' | 'issued_at'>>(BLANK)
+  const [draft, setDraft] = useState<DraftCert>(BLANK)
   const [newCertId, setNewCertId] = useState<string | null>(null)
+  const [editId, setEditId] = useState<string | null>(null)
+  const [editDraft, setEditDraft] = useState<DraftCert>(BLANK)
 
   useEffect(() => {
     fetch('/api/admin/content/donation_certificates')
@@ -48,8 +126,7 @@ export default function DonationCertEditor() {
 
   async function issue() {
     const cert_id = genId()
-    const issued_at = new Date().toISOString()
-    const newCert: DonationCert = { ...draft, cert_id, issued_at }
+    const newCert: DonationCert = { ...draft, cert_id, issued_at: toIso(draft.issued_at) }
     const updated = [newCert, ...certs]
     setSaving(true)
     await fetch('/api/admin/content/donation_certificates', {
@@ -64,6 +141,28 @@ export default function DonationCertEditor() {
     setShowForm(false)
     setDraft(BLANK)
     setTimeout(() => setSaved(false), 5000)
+  }
+
+  function startEdit(cert: DonationCert) {
+    setEditId(cert.cert_id)
+    setEditDraft({ ...cert, issued_at: toDateInput(cert.issued_at) })
+    setShowForm(false)
+  }
+
+  async function saveEdit() {
+    if (!editId) return
+    const updated = certs.map(c =>
+      c.cert_id === editId ? { ...editDraft, cert_id: editId, issued_at: toIso(editDraft.issued_at) } : c
+    )
+    setSaving(true)
+    await fetch('/api/admin/content/donation_certificates', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ value: updated }),
+    })
+    setCerts(updated)
+    setSaving(false)
+    setEditId(null)
   }
 
   async function revoke(certId: string) {
@@ -95,7 +194,7 @@ export default function DonationCertEditor() {
               ✓ Issued — View receipt ↗
             </a>
           )}
-          {!showForm && (
+          {!showForm && !editId && (
             <button style={s('#1a3c2e')} onClick={() => setShowForm(true)}>+ Issue Certificate</button>
           )}
         </div>
@@ -103,55 +202,18 @@ export default function DonationCertEditor() {
 
       {/* Issue form */}
       {showForm && (
-        <div style={{ background: '#f0f7f3', border: '1px solid #c8e0d0', borderRadius: 10, padding: 20, marginBottom: 24 }}>
-          <h3 style={{ margin: '0 0 16px', fontSize: '1rem', color: '#0F2D1D' }}>New Donation Certificate</h3>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
-            <div style={{ gridColumn: '1 / -1' }}>
-              <label style={{ fontSize: '.7rem', fontWeight: 700, textTransform: 'uppercase', color: '#8a9a8f', letterSpacing: '.06em' }}>Donor Full Name *</label>
-              <input style={inp} value={draft.donor_name} onChange={e => setDraft(d => ({ ...d, donor_name: e.target.value }))} placeholder="e.g. Adebayo Okafor" />
-            </div>
-            <div>
-              <label style={{ fontSize: '.7rem', fontWeight: 700, textTransform: 'uppercase', color: '#8a9a8f', letterSpacing: '.06em' }}>Donor Email</label>
-              <input style={inp} type="email" value={draft.donor_email ?? ''} onChange={e => setDraft(d => ({ ...d, donor_email: e.target.value }))} placeholder="donor@example.com" />
-            </div>
-            <div>
-              <label style={{ fontSize: '.7rem', fontWeight: 700, textTransform: 'uppercase', color: '#8a9a8f', letterSpacing: '.06em' }}>Donor Address</label>
-              <input style={inp} value={draft.donor_address ?? ''} onChange={e => setDraft(d => ({ ...d, donor_address: e.target.value }))} placeholder="City, State, Country" />
-            </div>
-            <div>
-              <label style={{ fontSize: '.7rem', fontWeight: 700, textTransform: 'uppercase', color: '#8a9a8f', letterSpacing: '.06em' }}>Amount *</label>
-              <input style={inp} type="number" min="0" step="0.01" value={draft.amount || ''} onChange={e => setDraft(d => ({ ...d, amount: parseFloat(e.target.value) || 0 }))} placeholder="0.00" />
-            </div>
-            <div>
-              <label style={{ fontSize: '.7rem', fontWeight: 700, textTransform: 'uppercase', color: '#8a9a8f', letterSpacing: '.06em' }}>Currency *</label>
-              <select style={inp} value={draft.currency} onChange={e => setDraft(d => ({ ...d, currency: e.target.value as DonationCert['currency'] }))}>
-                {CURRENCIES.map(c => <option key={c} value={c}>{c} ({CURRENCY_SYM[c]})</option>)}
-              </select>
-            </div>
-            <div>
-              <label style={{ fontSize: '.7rem', fontWeight: 700, textTransform: 'uppercase', color: '#8a9a8f', letterSpacing: '.06em' }}>Date of Donation *</label>
-              <input style={inp} type="date" value={draft.date} onChange={e => setDraft(d => ({ ...d, date: e.target.value }))} />
-            </div>
-            <div style={{ gridColumn: '1 / -1' }}>
-              <label style={{ fontSize: '.7rem', fontWeight: 700, textTransform: 'uppercase', color: '#8a9a8f', letterSpacing: '.06em' }}>Purpose *</label>
-              <input style={inp} value={draft.purpose} onChange={e => setDraft(d => ({ ...d, purpose: e.target.value }))} placeholder="General donation to youth empowerment programmes" />
-            </div>
-            <div style={{ gridColumn: '1 / -1' }}>
-              <label style={{ fontSize: '.7rem', fontWeight: 700, textTransform: 'uppercase', color: '#8a9a8f', letterSpacing: '.06em' }}>Additional Notes (optional)</label>
-              <textarea style={{ ...inp, minHeight: 60, resize: 'vertical' }} value={draft.notes ?? ''} onChange={e => setDraft(d => ({ ...d, notes: e.target.value }))} placeholder="Any additional details to include on the receipt…" />
-            </div>
-          </div>
-          <div style={{ display: 'flex', gap: 8, marginTop: 16 }}>
-            <button
-              style={s('#1a3c2e')}
-              onClick={issue}
-              disabled={saving || !draft.donor_name || !draft.amount || !draft.date || !draft.purpose}
-            >
-              {saving ? 'Issuing…' : 'Issue Certificate'}
-            </button>
-            <button style={s('#e8e4dc', '#3a4a3f')} onClick={() => { setShowForm(false); setDraft(BLANK) }}>Cancel</button>
-          </div>
-        </div>
+        <CertForm
+          title="New Donation Certificate"
+          draft={draft}
+          setDraft={setDraft}
+          onSave={issue}
+          onCancel={() => { setShowForm(false); setDraft(BLANK) }}
+          saveLabel={saving ? 'Issuing…' : 'Issue Certificate'}
+          saving={saving}
+          disabled={!draft.donor_name || !draft.amount || !draft.date || !draft.purpose}
+          currencies={CURRENCIES}
+          currencySym={CURRENCY_SYM}
+        />
       )}
 
       {/* Issued certificates list */}
@@ -160,21 +222,39 @@ export default function DonationCertEditor() {
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
           {certs.map(c => (
-            <div key={c.cert_id} style={{ background: '#f9f7f3', borderRadius: 8, padding: '12px 16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12 }}>
-              <div style={{ minWidth: 0 }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 2 }}>
-                  <strong style={{ fontSize: '.9rem' }}>{c.donor_name}</strong>
-                  <span style={{ fontFamily: 'monospace', fontSize: '.68rem', color: '#B8952A', background: 'rgba(184,149,42,0.1)', padding: '1px 6px', borderRadius: 4 }}>{c.cert_id}</span>
+            <div key={c.cert_id}>
+              {editId === c.cert_id ? (
+                <CertForm
+                  title={`Edit · ${c.cert_id}`}
+                  draft={editDraft}
+                  setDraft={setEditDraft}
+                  onSave={saveEdit}
+                  onCancel={() => setEditId(null)}
+                  saveLabel={saving ? 'Saving…' : 'Save Changes'}
+                  saving={saving}
+                  disabled={!editDraft.donor_name || !editDraft.amount || !editDraft.date || !editDraft.purpose}
+                  currencies={CURRENCIES}
+                  currencySym={CURRENCY_SYM}
+                />
+              ) : (
+                <div style={{ background: '#f9f7f3', borderRadius: 8, padding: '12px 16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12 }}>
+                  <div style={{ minWidth: 0 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 2 }}>
+                      <strong style={{ fontSize: '.9rem' }}>{c.donor_name}</strong>
+                      <span style={{ fontFamily: 'monospace', fontSize: '.68rem', color: '#B8952A', background: 'rgba(184,149,42,0.1)', padding: '1px 6px', borderRadius: 4 }}>{c.cert_id}</span>
+                    </div>
+                    <div style={{ fontSize: '.75rem', color: '#8a9a8f' }}>
+                      {CURRENCY_SYM[c.currency]}{c.amount.toLocaleString()} · Donated {new Date(c.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })} · Issued {new Date(c.issued_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+                    </div>
+                  </div>
+                  <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
+                    <a href={`/donate/receipt/${c.cert_id}`} target="_blank" rel="noopener noreferrer"
+                      style={{ ...s('#1d4ed8'), textDecoration: 'none', display: 'inline-block' }}>View</a>
+                    <button style={s('#0F2D1D')} onClick={() => startEdit(c)}>Edit</button>
+                    <button style={s('#dc2626')} onClick={() => revoke(c.cert_id)}>Revoke</button>
+                  </div>
                 </div>
-                <div style={{ fontSize: '.75rem', color: '#8a9a8f' }}>
-                  {CURRENCY_SYM[c.currency]}{c.amount.toLocaleString()} · {new Date(c.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
-                </div>
-              </div>
-              <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
-                <a href={`/donate/receipt/${c.cert_id}`} target="_blank" rel="noopener noreferrer"
-                  style={{ ...s('#1d4ed8'), textDecoration: 'none', display: 'inline-block' }}>View</a>
-                <button style={s('#dc2626')} onClick={() => revoke(c.cert_id)}>Revoke</button>
-              </div>
+              )}
             </div>
           ))}
         </div>
