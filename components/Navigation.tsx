@@ -124,7 +124,7 @@ export default function Navigation() {
         <div className="wrap wrap-wide">
           <nav className="nav" aria-label="Primary">
             <Link className="brand" href="/">
-              <Image src="/img/logo.png" alt="Wissen-Haus logo" width={40} height={40} />
+              <Image src="/img/logo.png" alt="Wissen-Haus logo" width={52} height={52} />
               <span>Wissen-Haus<small>Youth Empowerment</small></span>
             </Link>
 

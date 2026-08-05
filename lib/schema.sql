@@ -71,3 +71,21 @@ CREATE TABLE IF NOT EXISTS site_content (
   value JSONB NOT NULL,
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
+
+CREATE TABLE IF NOT EXISTS page_views (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  pathname TEXT NOT NULL,
+  referrer TEXT,
+  country TEXT,
+  city TEXT,
+  device_type TEXT,
+  browser TEXT,
+  utm_source TEXT,
+  utm_medium TEXT,
+  utm_campaign TEXT,
+  session_id TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+CREATE INDEX IF NOT EXISTS idx_pv_created_at ON page_views(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_pv_pathname   ON page_views(pathname);
+CREATE INDEX IF NOT EXISTS idx_pv_session    ON page_views(session_id);

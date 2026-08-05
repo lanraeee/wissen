@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import './globals.css'
 import SiteShell from '@/components/SiteShell'
 import Footer from '@/components/Footer'
+import AnalyticsTracker from '@/components/AnalyticsTracker'
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://www.wissenhaus.org'),
@@ -14,7 +15,14 @@ export const metadata: Metadata = {
   authors: [{ name: 'Wissen-Haus Youth Empowerment Foundation' }],
   creator: 'Wissen-Haus Youth Empowerment Foundation',
   publisher: 'Wissen-Haus Youth Empowerment Foundation',
-  icons: { icon: '/img/logo.png', apple: '/img/logo.png' },
+  icons: {
+    icon: [
+      { url: '/img/logo.png', sizes: '32x32', type: 'image/png' },
+      { url: '/img/logo.png', sizes: '192x192', type: 'image/png' },
+    ],
+    apple: { url: '/img/logo.png', sizes: '180x180', type: 'image/png' },
+    shortcut: '/img/logo.png',
+  },
   openGraph: {
     type: 'website',
     locale: 'en_NG',
@@ -48,6 +56,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body>
+        <AnalyticsTracker />
         <SiteShell footer={<Footer />}>{children}</SiteShell>
       </body>
     </html>
