@@ -21,9 +21,25 @@ export const metadata: Metadata = {
 const TOC = [
   { id: 'background', label: 'Background' },
   { id: 'programmes', label: 'Programmes' },
+  { id: 'personnel', label: 'Key Personnel' },
   { id: 'policy', label: 'Policy Research' },
   { id: 'involvement', label: 'Volunteer & Partnership' },
   { id: 'references', label: 'References' },
+]
+
+const PERSONNEL = [
+  {
+    name: 'Benz Olagbaye',
+    role: 'Founder & Executive Director',
+    group: 'Leadership',
+    note: 'Founded Wissen-Haus after identifying Nigeria\'s youth gap as an access problem rather than a talent deficit. Has personally mentored over 50 young people.',
+    href: '/founder',
+  },
+  { name: 'Lanre', role: 'IT Operations Consultant', group: 'Volunteer', note: null, href: null },
+  { name: 'Gbemisola', role: 'Programme Manager', group: 'Volunteer', note: null, href: null },
+  { name: 'Damola', role: 'Business Operations Manager', group: 'Volunteer', note: null, href: null },
+  { name: 'Ope', role: 'Programme Co-ordinator', group: 'Volunteer', note: null, href: null },
+  { name: 'Zaki', role: 'Programme Co-ordinator', group: 'Volunteer', note: null, href: null },
 ]
 
 const REFS = [
@@ -142,17 +158,47 @@ export default function WikiPage() {
               Wissen-Haus provides two self-assessment tools: the Career Pathways Assessment, which generates a personalised career roadmap, and the Career Assessment Accelerator, a ten-question quiz mapping users to one of twelve career profiles.<Ref n={7} />
             </p>
 
-            {/* 3. Policy Research */}
+            {/* 3. Key Personnel */}
+            <h2 id="personnel" style={{ fontSize: '1.25rem', fontWeight: 800, borderBottom: '1px solid #ddd9d0', paddingBottom: 6, marginTop: 32, color: '#0f2d1d' }}>
+              3. Key Personnel
+            </h2>
+            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '.88rem', marginBottom: 8 }}>
+              <thead>
+                <tr style={{ background: '#f0ece4' }}>
+                  {['Name', 'Role', 'Group'].map(h => (
+                    <th key={h} style={{ padding: '8px 12px', textAlign: 'left', fontWeight: 700, fontSize: '.75rem', letterSpacing: '.08em', textTransform: 'uppercase', color: '#4a5a4f', border: '1px solid #ddd9d0' }}>{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {PERSONNEL.map((p, i) => (
+                  <tr key={p.name} style={{ background: i % 2 === 0 ? '#fff' : '#fafaf7' }}>
+                    <td style={{ padding: '9px 12px', border: '1px solid #ddd9d0', fontWeight: 600 }}>
+                      {p.href ? <Link href={p.href} style={{ color: '#1a3c2e' }}>{p.name}</Link> : p.name}
+                    </td>
+                    <td style={{ padding: '9px 12px', border: '1px solid #ddd9d0', color: '#1a2e24' }}>{p.role}</td>
+                    <td style={{ padding: '9px 12px', border: '1px solid #ddd9d0', color: '#4a5a4f' }}>{p.group}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            {PERSONNEL.filter(p => p.note).map(p => (
+              <p key={p.name} style={{ fontSize: '.86rem', color: '#4a5a4f', marginTop: 8 }}>
+                <strong>{p.name}</strong> — {p.note}
+              </p>
+            ))}
+
+            {/* 4. Policy Research */}
             <h2 id="policy" style={{ fontSize: '1.25rem', fontWeight: 800, borderBottom: '1px solid #ddd9d0', paddingBottom: 6, marginTop: 32, color: '#0f2d1d' }}>
-              3. Policy Research
+              4. Policy Research
             </h2>
             <p>
               The foundation conducts and publishes policy research relevant to youth employment, skills development, and education in Nigeria, contributing to public discourse on human capital development.<Ref n={8} />
             </p>
 
-            {/* 4. Volunteer & Partnership */}
+            {/* 5. Volunteer & Partnership */}
             <h2 id="involvement" style={{ fontSize: '1.25rem', fontWeight: 800, borderBottom: '1px solid #ddd9d0', paddingBottom: 6, marginTop: 32, color: '#0f2d1d' }}>
-              4. Volunteer &amp; Partnership Initiatives
+              5. Volunteer &amp; Partnership Initiatives
             </h2>
             <p>
               Wissen-Haus actively recruits volunteers to serve as mentors and engages institutional partners including schools, businesses, and civil society organisations. It accepts donations to support its free-to-access programmes.<Ref n={9} />
@@ -212,6 +258,7 @@ export default function WikiPage() {
               {[
                 ['/programmes', 'All Programmes'],
                 ['/founder', 'Meet the Founder'],
+                ['/team', 'Our Team'],
                 ['/policy-research', 'Policy Research'],
                 ['/community', 'Community Hub'],
                 ['/about/story', 'Our Story'],
