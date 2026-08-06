@@ -90,6 +90,7 @@ export default async function Footer() {
               <Link href="/competitions">Competitions</Link>
               <Link href="/impact-content">Impact Stories</Link>
               <Link href="/policy-research">Policy &amp; Research</Link>
+              <Link href="/wiki">Foundation Overview</Link>
             </div>
 
             <div className="footer-col">

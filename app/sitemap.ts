@@ -28,6 +28,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${BASE}/internships`, lastModified: now, changeFrequency: 'daily', priority: 0.8 },
     { url: `${BASE}/scholarships`, lastModified: now, changeFrequency: 'daily', priority: 0.8 },
     { url: `${BASE}/competitions`, lastModified: now, changeFrequency: 'weekly', priority: 0.7 },
+    { url: `${BASE}/wiki`, lastModified: now, changeFrequency: 'monthly', priority: 0.8 },
   ]
 
   return staticRoutes
