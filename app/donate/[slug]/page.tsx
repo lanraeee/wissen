@@ -89,7 +89,7 @@ export default async function DonationProjectPage({ params }: { params: Promise<
       {/* ── Hero ── */}
       <section className="section section--tight panel-dark" style={{ paddingTop: 'clamp(48px,6vw,84px)' }}>
         <div className="wrap">
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr min(380px,42%)', gap: 'clamp(40px,6vw,72px)', alignItems: 'center' }}>
+          <div className="rgrid-hero" style={{ gap: 'clamp(40px,6vw,72px)', alignItems: 'center' }}>
             <div className="reveal">
               <div style={{ display: 'flex', gap: 10, alignItems: 'center', marginBottom: 20, flexWrap: 'wrap' }}>
                 <span className="eyebrow eyebrow--light">Donation Drive</span>

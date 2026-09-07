@@ -244,6 +244,24 @@ strong{font-weight:600}
 @media(max-width:960px){.grid-3,.grid-4{grid-template-columns:1fr 1fr}}
 @media(max-width:620px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr}}
 
+/* ---------- Responsive grids for inline-style-heavy pages (campaign pages, admin editors) ---------- */
+/* Plain 2-col / 3-col form and content grids */
+.rgrid-2{display:grid;grid-template-columns:1fr 1fr}
+.rgrid-3{display:grid;grid-template-columns:1fr 1fr 1fr}
+@media(max-width:640px){.rgrid-2,.rgrid-3{grid-template-columns:1fr}}
+/* Row editors: two/three inputs plus a trailing remove button */
+.rgrid-row-a{display:grid;grid-template-columns:1fr 1fr auto}
+.rgrid-row-b{display:grid;grid-template-columns:2fr 1fr auto}
+.rgrid-row-c{display:grid;grid-template-columns:1fr auto}
+@media(max-width:560px){.rgrid-row-a,.rgrid-row-b{grid-template-columns:1fr 1fr;row-gap:6px}.rgrid-row-a>*:last-child,.rgrid-row-b>*:last-child{grid-column:1 / -1;justify-self:end}}
+/* Hero split: copy + fixed-max-width media, stacks below 760px */
+.rgrid-hero{display:grid;grid-template-columns:1fr min(380px,42%)}
+@media(max-width:760px){.rgrid-hero{grid-template-columns:1fr}}
+/* Five-stage campaign grid: steps down as space shrinks */
+.rgrid-5{display:grid;grid-template-columns:repeat(5,1fr)}
+@media(max-width:860px){.rgrid-5{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:480px){.rgrid-5{grid-template-columns:1fr}}
+
 .card{
   background:var(--paper);border:1px solid var(--line);border-radius:var(--radius-lg);
   overflow:hidden;position:relative;display:flex;flex-direction:column;

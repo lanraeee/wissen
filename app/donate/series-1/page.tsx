@@ -60,12 +60,12 @@ const STAGES = [
 ]
 
 const BUDGET_LINES = [
-  { item: 'Student resource packs (Passport, Workbook, Action Card, Badge)', amount: '₦450,000' },
-  { item: 'Facilitator & volunteer coordination, transport', amount: '₦280,000' },
-  { item: 'Event environment — signage, banners, stage backdrop', amount: '₦220,000' },
-  { item: 'Measurement tools — pre/during/after surveys, quiz printing', amount: '₦180,000' },
-  { item: 'Photography & videography — student voice capture', amount: '₦250,000' },
-  { item: 'Logistics & contingency', amount: '₦120,000' },
+  { item: 'Student resource packs (Passport, Workbook, Action Card, Badge)', amount: '₦15,000,000' },
+  { item: 'Facilitator & volunteer coordination, transport', amount: '₦9,500,000' },
+  { item: 'Event environment — signage, banners, stage backdrop', amount: '₦7,500,000' },
+  { item: 'Measurement tools — pre/during/after surveys, quiz printing', amount: '₦6,000,000' },
+  { item: 'Photography & videography — student voice capture', amount: '₦8,000,000' },
+  { item: 'Logistics & contingency', amount: '₦4,000,000' },
 ]
 
 const FAQ = [
@@ -93,7 +93,7 @@ export default function DonationDriveSeries1Page() {
       {/* ── Hero ── */}
       <section className="section section--tight panel-dark" style={{ paddingTop: 'clamp(48px,6vw,84px)' }}>
         <div className="wrap">
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr min(380px,42%)', gap: 'clamp(40px,6vw,72px)', alignItems: 'center' }}>
+          <div className="rgrid-hero" style={{ gap: 'clamp(40px,6vw,72px)', alignItems: 'center' }}>
             <div className="reveal">
               <div style={{ display: 'flex', gap: 10, alignItems: 'center', marginBottom: 20, flexWrap: 'wrap' }}>
                 <span className="eyebrow eyebrow--light">Donation Drive · Series 1</span>
@@ -190,7 +190,7 @@ export default function DonationDriveSeries1Page() {
                 and photo/video permissions already built in.
               </p>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginTop: '1.75rem' }}>
+              <div className="rgrid-2" style={{ gap: 14, marginTop: '1.75rem' }}>
                 {[
                   { label: 'Design', value: '70% hands-on, 30% talks' },
                   { label: 'Age tracks', value: 'JSS1–JSS2 · JSS3 · SS1–SS3' },
@@ -229,10 +229,10 @@ export default function DonationDriveSeries1Page() {
           </div>
 
           {/* Partner callout */}
-          <div className="reveal" style={{
+          <div className="reveal rgrid-2" style={{
             background: 'var(--green-800)', borderRadius: 'var(--radius-lg)',
             padding: 'clamp(28px,5vw,48px)', marginBottom: '3rem',
-            display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'clamp(24px,4vw,48px)',
+            gap: 'clamp(24px,4vw,48px)',
             alignItems: 'center',
           }}>
             <div>
@@ -269,7 +269,7 @@ export default function DonationDriveSeries1Page() {
             <p className="lead mt-m">Not a screening with a logo attached. A sequence where every stage produces evidence for the next.</p>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 12, marginBottom: 16 }}>
+          <div className="rgrid-5" style={{ gap: 12, marginBottom: 16 }}>
             {STAGES.map((s, i) => (
               <div
                 key={s.n}
@@ -327,7 +327,7 @@ export default function DonationDriveSeries1Page() {
                   background: 'var(--green-800)',
                 }}>
                   <span style={{ fontFamily: 'var(--ff-display)', fontWeight: 800, color: '#fff', fontSize: '1rem' }}>Total campaign target</span>
-                  <span style={{ fontFamily: 'var(--ff-display)', fontWeight: 900, fontSize: '1.1rem', color: 'var(--gold)' }}>₦1,500,000</span>
+                  <span style={{ fontFamily: 'var(--ff-display)', fontWeight: 900, fontSize: '1.1rem', color: 'var(--gold)' }}>₦50,000,000</span>
                 </div>
               </div>
             </div>
@@ -382,7 +382,7 @@ export default function DonationDriveSeries1Page() {
           </div>
 
           {/* Illustrative equivalents */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 12, maxWidth: 680, margin: '0 auto 2.5rem', textAlign: 'center' }}>
+          <div className="rgrid-3" style={{ gap: 12, maxWidth: 680, margin: '0 auto 2.5rem', textAlign: 'center' }}>
             {[
               { amount: '₦5,000', equiv: 'A student\'s workbook, passport & action card' },
               { amount: '₦20,000', equiv: 'All materials for four students for the full day' },

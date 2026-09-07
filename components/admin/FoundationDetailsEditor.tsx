@@ -89,7 +89,7 @@ export default function FoundationDetailsEditor() {
         <strong style={{ color: '#0F2D1D' }}>💡 Important:</strong> Fill in your CAC registration number and TIN before issuing donation receipts. These are required for the receipts to be valid for tax purposes.
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
+      <div className="rgrid-2" style={{ gap: 14 }}>
         {FIELDS.map(([key, label, placeholder]) => (
           <div key={key} style={key === 'legal_name' || key === 'address' ? { gridColumn: '1 / -1' } : undefined}>
             <label style={{ display: 'block', fontSize: '.7rem', fontWeight: 700, textTransform: 'uppercase', color: '#8a9a8f', letterSpacing: '.06em', marginBottom: 4 }}>
@@ -110,7 +110,7 @@ export default function FoundationDetailsEditor() {
         <p style={{ margin: '0 0 14px', fontSize: '.8rem', color: '#8a9a8f' }}>
           Leave blank until you register a separate international entity (e.g. a UK Community Interest Company). Once filled in, non-Naira donation receipts will be issued under these details instead of the Nigerian entity above.
         </p>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
+        <div className="rgrid-2" style={{ gap: 14 }}>
           {INTL_FIELDS.map(([key, label, placeholder]) => (
             <div key={key} style={key === 'intl_legal_name' || key === 'intl_address' ? { gridColumn: '1 / -1' } : undefined}>
               <label style={{ display: 'block', fontSize: '.7rem', fontWeight: 700, textTransform: 'uppercase', color: '#8a9a8f', letterSpacing: '.06em', marginBottom: 4 }}>

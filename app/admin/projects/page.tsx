@@ -206,7 +206,7 @@ export default function AdminProjects() {
             </div>
 
             {sectionHead('Core Details')}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 12 }}>
+            <div className="rgrid-2" style={{ gap: 12, marginBottom: 12 }}>
               <div>
                 {label('Title')}
                 <input style={inp()} value={e.title ?? ''} onChange={ev => {
@@ -224,7 +224,7 @@ export default function AdminProjects() {
               {label('Subtitle (short tagline below title)')}
               <input style={inp()} value={e.subtitle ?? ''} onChange={ev => setField('subtitle', ev.target.value || null)} />
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 12 }}>
+            <div className="rgrid-2" style={{ gap: 12, marginBottom: 12 }}>
               <div>
                 {label('Status')}
                 <select style={inp()} value={e.status ?? 'draft'} onChange={ev => setField('status', ev.target.value as Project['status'])}>
@@ -239,7 +239,7 @@ export default function AdminProjects() {
             <textarea style={{ ...inp(), height: 90, resize: 'vertical' }} value={e.hero_desc ?? ''} onChange={ev => setField('hero_desc', ev.target.value || null)} placeholder="The main lead paragraph on the campaign page…" />
 
             {sectionHead('Event Details')}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 12 }}>
+            <div className="rgrid-2" style={{ gap: 12, marginBottom: 12 }}>
               <div>
                 {label('Event Name')}
                 <input style={inp()} value={e.event_name ?? ''} onChange={ev => setField('event_name', ev.target.value || null)} placeholder="Career Clarity Fair" />
@@ -259,7 +259,7 @@ export default function AdminProjects() {
             </div>
 
             {sectionHead('Campaign Window')}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 12 }}>
+            <div className="rgrid-2" style={{ gap: 12, marginBottom: 12 }}>
               <div>
                 {label('Campaign Start Date')}
                 <input type="date" style={inp()} value={e.campaign_start?.slice(0, 10) ?? ''} onChange={ev => setField('campaign_start', ev.target.value || null)} />
@@ -271,7 +271,7 @@ export default function AdminProjects() {
             </div>
 
             {sectionHead('Funding Numbers')}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 12, marginBottom: 12 }}>
+            <div className="rgrid-3" style={{ gap: 12, marginBottom: 12 }}>
               <div>
                 {label('Goal (₦)')}
                 <input type="number" style={inp()} value={e.goal_ngn ?? 0} onChange={ev => setField('goal_ngn', Number(ev.target.value))} />
@@ -288,7 +288,7 @@ export default function AdminProjects() {
 
             {sectionHead('Hero Stats Panel (4 figures shown in the sidebar)')}
             {(e.highlights ?? []).map((h, i) => (
-              <div key={i} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr auto', gap: 8, marginBottom: 8, alignItems: 'center' }}>
+              <div key={i} className="rgrid-row-a" style={{ gap: 8, marginBottom: 8, alignItems: 'center' }}>
                 <input style={inp()} placeholder="Label e.g. Students expected" value={h.label} onChange={ev => setField('highlights', updateArrayItem(e.highlights!, i, { label: ev.target.value }))} />
                 <input style={inp()} placeholder="Value e.g. 500–1,000" value={h.value} onChange={ev => setField('highlights', updateArrayItem(e.highlights!, i, { value: ev.target.value }))} />
                 {removeBtn(() => setField('highlights', removeArrayItem(e.highlights!, i)))}
@@ -298,7 +298,7 @@ export default function AdminProjects() {
 
             {sectionHead('What Your Donation Funds (budget lines)')}
             {(e.what_funded ?? []).map((w, i) => (
-              <div key={i} style={{ display: 'grid', gridTemplateColumns: '2fr 1fr auto', gap: 8, marginBottom: 8, alignItems: 'center' }}>
+              <div key={i} className="rgrid-row-b" style={{ gap: 8, marginBottom: 8, alignItems: 'center' }}>
                 <input style={inp()} placeholder="Line item description" value={w.item} onChange={ev => setField('what_funded', updateArrayItem(e.what_funded!, i, { item: ev.target.value }))} />
                 <input style={inp()} placeholder="₦250,000" value={w.amount} onChange={ev => setField('what_funded', updateArrayItem(e.what_funded!, i, { amount: ev.target.value }))} />
                 {removeBtn(() => setField('what_funded', removeArrayItem(e.what_funded!, i)))}
@@ -308,7 +308,7 @@ export default function AdminProjects() {
 
             {sectionHead('Impact Points (bullet list in the "Why" section)')}
             {(e.impact_points ?? []).map((pt, i) => (
-              <div key={i} style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: 8, marginBottom: 8, alignItems: 'center' }}>
+              <div key={i} className="rgrid-row-c" style={{ gap: 8, marginBottom: 8, alignItems: 'center' }}>
                 <input style={inp()} placeholder="Impact statement…" value={pt} onChange={ev => {
                   const arr = [...(e.impact_points ?? [])]
                   arr[i] = ev.target.value
@@ -320,7 +320,7 @@ export default function AdminProjects() {
             {addBtn(() => setField('impact_points', [...(e.impact_points ?? []), '']), '+ Add point')}
 
             {sectionHead('Partnership (optional featured partner section)')}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 12 }}>
+            <div className="rgrid-2" style={{ gap: 12, marginBottom: 12 }}>
               <div>
                 {label('Partner Name')}
                 <input style={inp()} value={e.partnership_name ?? ''} onChange={ev => setField('partnership_name', ev.target.value || null)} placeholder="Creele Animation Studios" />

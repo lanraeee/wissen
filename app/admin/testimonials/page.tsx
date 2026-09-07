@@ -192,7 +192,7 @@ export default function AdminTestimonials() {
               <button onClick={() => setEditing(null)} style={{ background: '#f0ece4', border: 'none', borderRadius: 8, padding: '6px 14px', fontWeight: 700, cursor: 'pointer' }}>✕ Close</button>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 12 }}>
+            <div className="rgrid-2" style={{ gap: 12, marginBottom: 12 }}>
               <div>
                 {label('Name')}
                 <input style={inp()} value={e.name ?? ''} onChange={ev => setField('name', ev.target.value)} />
@@ -208,7 +208,7 @@ export default function AdminTestimonials() {
               <textarea style={{ ...inp(), height: 100, resize: 'vertical' }} value={e.quote ?? ''} onChange={ev => setField('quote', ev.target.value)} />
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 12, marginBottom: 12 }}>
+            <div className="rgrid-3" style={{ gap: 12, marginBottom: 12 }}>
               <div>
                 {label('Rating (1-5)')}
                 <input type="number" min={1} max={5} style={inp()} value={e.rating ?? ''} onChange={ev => setField('rating', ev.target.value ? Number(ev.target.value) : null)} />
