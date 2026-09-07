@@ -74,12 +74,12 @@ const FAQ = [
     a: 'A one-day career discovery marketplace for secondary school students in Ibadan — hands-on exploration across 15+ career sectors, in three age-appropriate tracks (JSS1–JSS2, JSS3, SS1–SS3). Design principle: 70% hands-on participation, 30% talks. Scheduled for Saturday 5 December 2026.',
   },
   {
-    q: 'Who is Creele Animation Studios and what role do they play?',
-    a: 'Creele is a Nigerian animation studio behind SOPO (a Yoruba-English animated series) and YES I CAN (a personal development series for children). At the Fair, their content becomes the centrepiece of two designed activations: a SOPO cultural screening with discussion and quiz, and the YES I CAN Confidence Challenge, where students publicly name one thing they believe they can do.',
+    q: 'Who is the animation studio partner and what role do they play?',
+    a: 'Our animation studio partner (name withheld until the partnership is fully confirmed) is a Nigerian animation studio behind SOPO (a Yoruba-English animated series) and YES I CAN (a personal development series for children). At the Fair, their content becomes the centrepiece of two designed activations: a SOPO cultural screening with discussion and quiz, and the YES I CAN Confidence Challenge, where students publicly name one thing they believe they can do.',
   },
   {
     q: 'What does my donation specifically fund?',
-    a: 'This Donation Drive covers the community delivery costs: student resource packs, facilitator coordination, event environment (signage, banners, backdrop), measurement tools (pre/during/after surveys), and photography and video documentation. The core content partnership with Creele is funded separately.',
+    a: 'This Donation Drive covers the community delivery costs: student resource packs, facilitator coordination, event environment (signage, banners, backdrop), measurement tools (pre/during/after surveys), and photography and video documentation. The core content partnership is funded separately.',
   },
   {
     q: 'Will I receive an update on impact?',
@@ -216,19 +216,19 @@ export default function DonationDriveSeries1Page() {
         </div>
       </section>
 
-      {/* ── Creele Partnership ── */}
+      {/* ── Content Partnership (partner name withheld pending confirmation) ── */}
       <section className="section" style={{ background: 'var(--cream-2)' }}>
         <div className="wrap">
           <div className="section-head center mb-l reveal">
             <span className="eyebrow">Featured Partnership</span>
-            <h2>Career Clarity Fair × Creele Animation Studios</h2>
+            <h2>Career Clarity Fair × Animation Studio Partner</h2>
             <p className="lead mt-m" style={{ maxWidth: 640, marginInline: 'auto' }}>
               We are not screening their films and moving on. We have designed a multi-stage
               activation that starts with content and ends with measurable evidence of what it did.
             </p>
           </div>
 
-          {/* Creele callout */}
+          {/* Partner callout */}
           <div className="reveal" style={{
             background: 'var(--green-800)', borderRadius: 'var(--radius-lg)',
             padding: 'clamp(28px,5vw,48px)', marginBottom: '3rem',
@@ -237,11 +237,11 @@ export default function DonationDriveSeries1Page() {
           }}>
             <div>
               <div style={{ fontFamily: 'var(--ff-mono)', fontSize: '.7rem', letterSpacing: '.18em', textTransform: 'uppercase', color: 'var(--gold)', marginBottom: 12 }}>
-                In partnership with
+                In partnership with (name to be confirmed)
               </div>
-              <h3 style={{ color: '#fff', marginBottom: 12, lineHeight: 1.05 }}>Creele Animation Studios</h3>
+              <h3 style={{ color: '#fff', marginBottom: 12, lineHeight: 1.05 }}>Animation Studio Partner</h3>
               <p style={{ color: 'rgba(244,240,231,.75)', lineHeight: 1.65, fontSize: '.95rem' }}>
-                Creele brings <strong style={{ color: '#fff' }}>SOPO</strong> (a Yoruba-English animated series exploring cultural identity and
+                Our partner brings <strong style={{ color: '#fff' }}>SOPO</strong> (a Yoruba-English animated series exploring cultural identity and
                 storytelling) and <strong style={{ color: '#fff' }}>YES I CAN</strong> (a personal development series for children aged 10–17).
                 Two pieces of content. Hundreds of students. One day to understand what happens
                 after they watch it.
@@ -305,7 +305,7 @@ export default function DonationDriveSeries1Page() {
               <span className="eyebrow">Your Gift Covers</span>
               <h2 className="mt-s">The community delivery costs.</h2>
               <p className="lead mt-m">
-                The core content partnership with Creele is funded separately. This campaign
+                The core content partnership is funded separately. This campaign
                 covers everything that turns one day of content into an evidence-producing,
                 student-first experience.
               </p>
@@ -336,8 +336,8 @@ export default function DonationDriveSeries1Page() {
               <span className="eyebrow">The Impact</span>
               <h2 className="mt-s">What the day produces.</h2>
               <p style={{ color: 'var(--ink-60)', marginTop: '1rem', lineHeight: 1.65 }}>
-                After the Fair, we publish the <strong>Career Clarity Fair × Creele Impact Snapshot</strong> —
-                a co-branded report both organisations can use with funders, brands, and school
+                After the Fair, we publish the <strong>Career Clarity Fair Impact Snapshot</strong> —
+                a report both organisations can use with funders, brands, and school
                 partners.
               </p>
               <div style={{ marginTop: '1.75rem', display: 'flex', flexDirection: 'column', gap: 16 }}>
@@ -429,7 +429,7 @@ export default function DonationDriveSeries1Page() {
               {
                 icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z" strokeLinecap="round" strokeLinejoin="round" /></svg>,
                 title: 'Impact Snapshot',
-                desc: 'After the Fair, all donors receive the Career Clarity Fair × Creele Impact Snapshot — real numbers, real student voices.',
+                desc: 'After the Fair, all donors receive the Career Clarity Fair Impact Snapshot — real numbers, real student voices.',
               },
               {
                 icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><rect x="3" y="11" width="18" height="11" rx="2" /><path d="M7 11V7a5 5 0 0110 0v4" strokeLinecap="round" /></svg>,
