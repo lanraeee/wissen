@@ -30,7 +30,7 @@ const STAGES = [
   {
     n: '1',
     title: 'Reach',
-    desc: 'SOPO and YES I CAN animations screened in front of 500–1,000 Ibadan students — JSS1 through SS3 — in a single day, in one room.',
+    desc: 'Animated content screened in front of 500–1,000 Ibadan students — JSS1 through SS3 — in a single day, in one room.',
     color: '#E0A83E',
   },
   {
@@ -75,7 +75,7 @@ const FAQ = [
   },
   {
     q: 'Who is the animation studio partner and what role do they play?',
-    a: 'Our animation studio partner (name withheld until the partnership is fully confirmed) is a Nigerian animation studio behind SOPO (a Yoruba-English animated series) and YES I CAN (a personal development series for children). At the Fair, their content becomes the centrepiece of two designed activations: a SOPO cultural screening with discussion and quiz, and the YES I CAN Confidence Challenge, where students publicly name one thing they believe they can do.',
+    a: 'Our animation studio partner (name withheld until the partnership is fully confirmed) is a Nigerian animation studio. At the Fair, their content becomes the centrepiece of a designed activation — a screening with guided discussion, built around a confidence-building challenge where students publicly name one thing they believe they can do.',
   },
   {
     q: 'What does my donation specifically fund?',
@@ -241,18 +241,16 @@ export default function DonationDriveSeries1Page() {
               </div>
               <h3 style={{ color: '#fff', marginBottom: 12, lineHeight: 1.05 }}>Animation Studio Partner</h3>
               <p style={{ color: 'rgba(244,240,231,.75)', lineHeight: 1.65, fontSize: '.95rem' }}>
-                Our partner brings <strong style={{ color: '#fff' }}>SOPO</strong> (a Yoruba-English animated series exploring cultural identity and
-                storytelling) and <strong style={{ color: '#fff' }}>YES I CAN</strong> (a personal development series for children aged 10–17).
-                Two pieces of content. Hundreds of students. One day to understand what happens
-                after they watch it.
+                Our partner brings youth-focused animated storytelling to the Fair — content chosen
+                to build cultural pride and self-belief. Hundreds of students. One day to understand
+                what happens after they watch it.
               </p>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               {[
-                'SOPO screening, discussion, quiz and student reactions',
-                'YES I CAN Confidence Challenge — students name one thing they believe they can do',
-                'Cultural insight: how young Nigerians respond to Yoruba-language storytelling',
-                'Creative challenge — student submissions captured and celebrated',
+                'Animated content screening with guided discussion',
+                'Confidence Challenge — students name one thing they believe they can do',
+                'Creative response captured and celebrated on the day',
               ].map(t => (
                 <div key={t} style={{ display: 'flex', gap: 10, alignItems: 'flex-start', color: 'rgba(244,240,231,.8)', fontSize: '.9rem', lineHeight: 1.5 }}>
                   <span style={{ color: 'var(--gold)', marginTop: 3, flexShrink: 0 }}>{CHECK}</span>
