@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import Image from 'next/image'
 import sql from '@/lib/db'
+import TestimonialCarousel from '@/components/TestimonialCarousel'
 
 export const metadata: Metadata = {
   title: 'Wissen-Haus Youth Empowerment Foundation · Bridging the Skills Gap',
@@ -242,16 +243,17 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* TESTIMONIAL */}
+      {/* TESTIMONIALS */}
       <section className="section panel-dark">
-        <div className="wrap center">
-          <span className="quote-mark reveal">&ldquo;</span>
-          <p className="quote-lg reveal" style={{ color: '#fff', maxWidth: '20ch', marginInline: 'auto' }}>The search for real results is over at last.</p>
-          <div className="mt-m reveal" data-d="1">
-            <div className="testi__name" style={{ color: 'var(--gold)' }}>Chidi Okoro</div>
-            <div className="testi__role">Senior Secondary Student &amp; Volunteer</div>
+        <div className="wrap">
+          <div className="section-head mb-l reveal" style={{ textAlign: 'center' }}>
+            <span className="eyebrow eyebrow--light" style={{ justifyContent: 'center' }}>Student Impact Stories</span>
+            <h2>Real students. Real results.</h2>
           </div>
-          <div className="cta-actions reveal" data-d="2">
+          <div className="reveal" data-d="1">
+            <TestimonialCarousel />
+          </div>
+          <div className="cta-actions mt-l reveal" data-d="2" style={{ justifyContent: 'center' }}>
             <Link href="/impact" className="btn btn--light">Read impact stories</Link>
           </div>
         </div>

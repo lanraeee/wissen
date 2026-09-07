@@ -304,6 +304,20 @@ strong{font-weight:600}
 .testi__role{font-family:var(--ff-mono);font-size:.72rem;letter-spacing:.06em;color:var(--ink-60)}
 .stars{color:var(--gold);letter-spacing:2px;font-size:.9rem}
 
+/* ---------- Testimonial carousel ---------- */
+.tcarousel__track{display:flex;gap:20px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;-ms-overflow-style:none;padding-bottom:2px}
+.tcarousel__track::-webkit-scrollbar{display:none}
+.tcarousel__card{flex:0 0 100%;scroll-snap-align:start}
+@media(min-width:760px){.tcarousel__card{flex:0 0 calc(50% - 10px)}}
+@media(min-width:1080px){.tcarousel__card{flex:0 0 calc(33.333% - 14px)}}
+.tcarousel__nav{display:flex;align-items:center;justify-content:center;gap:18px;margin-top:28px}
+.tcarousel__arrow{width:38px;height:38px;border-radius:50%;border:1px solid rgba(244,240,231,.3);background:transparent;color:#f4f0e7;display:grid;place-items:center;cursor:pointer;transition:background .2s var(--ease),border-color .2s var(--ease)}
+.tcarousel__arrow:hover{background:rgba(244,240,231,.12);border-color:rgba(244,240,231,.6)}
+.tcarousel__arrow svg{width:16px;height:16px}
+.tcarousel__dots{display:flex;gap:8px}
+.tcarousel__dot{width:8px;height:8px;border-radius:50%;border:none;background:rgba(244,240,231,.3);cursor:pointer;padding:0;transition:background .2s var(--ease),transform .2s var(--ease)}
+.tcarousel__dot.is-active{background:var(--gold);transform:scale(1.3)}
+
 /* ---------- Timeline (policy) ---------- */
 .timeline{display:flex;flex-direction:column;gap:0}
 .tl-item{display:grid;grid-template-columns:150px 1fr;gap:clamp(16px,3vw,40px);padding:28px 0;border-top:1px solid var(--line);align-items:start}

@@ -3,6 +3,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import OpportunityGrid from '@/components/OpportunityGrid'
 import StreakBadge from '@/components/StreakBadge'
+import TestimonialForm from '@/components/TestimonialForm'
 
 export const metadata: Metadata = {
   title: 'Community Hub · Wissen-Haus',
@@ -45,6 +46,7 @@ export default function CommunityPage() {
             <Link className="p p--active" href="#opportunities">Opportunity Hub</Link>
             <Link className="p" href="#learning">Learning Library</Link>
             <Link className="p" href="/community/threads">Discussion Threads</Link>
+            <Link className="p" href="#share-story">Share Your Story</Link>
           </div>
         </div>
       </section>
@@ -136,6 +138,20 @@ export default function CommunityPage() {
               <h4>Give back</h4>
               <p>Share your wins, mentor others, and keep the cycle of empowerment going.</p>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* SHARE YOUR STORY */}
+      <section className="section" id="share-story">
+        <div className="wrap" style={{ maxWidth: 640 }}>
+          <div className="section-head mb-m reveal">
+            <span className="eyebrow">Your Impact Story</span>
+            <h2>Share what Wissen-Haus has meant for you.</h2>
+            <p className="lead mt-s">Your story could inspire the next student. Approved stories are featured on our homepage.</p>
+          </div>
+          <div className="reveal" data-d="1">
+            <TestimonialForm />
           </div>
         </div>
       </section>

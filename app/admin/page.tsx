@@ -138,6 +138,7 @@ export default async function AdminDashboard() {
         <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
           {[
             ['Donation Projects', '/admin/projects'],
+            ['Testimonials', '/admin/testimonials'],
             ['Edit Careers Roles', '/admin/content?tab=careers'],
             ['Edit Policy Timeline', '/admin/content?tab=policy'],
             ['Edit Founder Bio', '/admin/content?tab=founder'],
