@@ -382,8 +382,8 @@ export default function DonationDriveSeries1Page() {
           {/* Illustrative equivalents */}
           <div className="rgrid-3" style={{ gap: 12, maxWidth: 680, margin: '0 auto 2.5rem', textAlign: 'center' }}>
             {[
-              { amount: '₦5,000', equiv: 'A student\'s workbook, passport & action card' },
-              { amount: '₦20,000', equiv: 'All materials for four students for the full day' },
+              { amount: '₦15,000', equiv: 'A student\'s workbook, passport & action card' },
+              { amount: '₦60,000', equiv: 'All materials for four students for the full day' },
               { amount: '₦50,000', equiv: 'Sponsors one facilitator\'s transport and day rate' },
             ].map(({ amount, equiv }) => (
               <div key={amount} className="reveal" style={{
