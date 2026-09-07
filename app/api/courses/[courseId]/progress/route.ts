@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getSession } from '@/lib/auth'
 import sql from '@/lib/db'
 import { COURSES } from '@/lib/courseData'
+import { getPostHogClient } from '@/lib/posthog-server'
 
 export async function GET(
   _req: NextRequest,
@@ -60,6 +61,19 @@ export async function POST(
         VALUES (${session.id}, ${courseId}, ${certId})
         ON CONFLICT (user_id, course_id) DO NOTHING
       `
+      // Track certificate award server-side
+      const posthog = getPostHogClient()
+      posthog.capture({
+        distinctId: session.id,
+        event: 'course_certificate_awarded',
+        properties: {
+          course_id: courseId,
+          course_title: course.title,
+          certificate_id: certId,
+          module_count: course.modules.length,
+        },
+      })
+      await posthog.flush()
       return NextResponse.json({ success: true, certificateAwarded: true, certificateId: certId })
     }
   }

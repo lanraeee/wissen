@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { sendDonationReceipt, sendDonationNotification } from '@/lib/email'
 import sql from '@/lib/db'
+import { getPostHogClient } from '@/lib/posthog-server'
 
 const PAYSTACK_SECRET = process.env.PAYSTACK_SECRET_KEY!
 
@@ -56,6 +57,20 @@ export async function PUT(req: NextRequest) {
       sendDonationNotification({ name: name || email, email, amount, currency, ref: reference, provider: 'Paystack' }),
     ])
   } catch (err) { console.error('[paystack email]', err) }
+
+  // Track completed donation server-side
+  const posthog = getPostHogClient()
+  posthog.capture({
+    distinctId: reference,
+    event: 'donation_completed',
+    properties: {
+      amount,
+      currency,
+      provider: 'paystack',
+      reference,
+    },
+  })
+  await posthog.flush()
 
   return NextResponse.json({ success: true, amount, currency })
 }

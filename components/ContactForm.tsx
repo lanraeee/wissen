@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, FormEvent } from 'react'
+import posthog from 'posthog-js'
 
 export default function ContactForm() {
   const [status, setStatus] = useState<'idle' | 'sending' | 'done' | 'error'>('idle')
@@ -26,6 +27,9 @@ export default function ContactForm() {
         const d = await res.json().catch(() => ({}))
         throw new Error(d.error || 'Something went wrong')
       }
+      posthog.capture('contact_form_submitted', {
+        subject_length: (fd.get('subject') as string | null)?.length ?? 0,
+      })
       setStatus('done')
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Something went wrong')

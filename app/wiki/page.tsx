@@ -45,7 +45,7 @@ const PERSONNEL = [
 const REFS = [
   { id: 1, label: 'Wissen-Haus Youth Empowerment Foundation', url: 'https://www.wissenhaus.org' },
   { id: 2, label: 'Our Story – Wissen-Haus', url: 'https://www.wissenhaus.org/about/story' },
-  { id: 3, label: 'Career Clarity Trade Fair – Wissen-Haus', url: 'https://www.wissenhaus.org/career-clarity-trade-fair' },
+  { id: 3, label: 'Career Clarity Fair – Wissen-Haus', url: 'https://www.wissenhaus.org/career-clarity-trade-fair' },
   { id: 4, label: 'Opportunity Blueprint – Wissen-Haus', url: 'https://www.wissenhaus.org/opportunity-blueprint' },
   { id: 5, label: 'Impact Content – Wissen-Haus', url: 'https://www.wissenhaus.org/impact-content' },
   { id: 6, label: 'Community Hub – Wissen-Haus', url: 'https://www.wissenhaus.org/community' },
@@ -124,10 +124,10 @@ export default function WikiPage() {
             </h2>
 
             <h3 style={{ fontSize: '1.05rem', fontWeight: 700, marginTop: 20, color: '#1a2e24' }}>
-              2.1 Career Clarity Trade Fair
+              2.1 Career Clarity Fair
             </h3>
             <p>
-              The Career Clarity Trade Fair is a flagship event designed for secondary school students across Nigeria. It brings together professionals from various industries to expose students to career options and pathways available after secondary education.<Ref n={3} />
+              The Career Clarity Fair is a flagship event designed for secondary school students across Nigeria. It brings together professionals from various industries to expose students to career options and pathways available after secondary education.<Ref n={3} />
             </p>
 
             <h3 style={{ fontSize: '1.05rem', fontWeight: 700, marginTop: 20, color: '#1a2e24' }}>

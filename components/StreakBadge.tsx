@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import posthog from 'posthog-js'
 
 export default function StreakBadge() {
   const router = useRouter()
@@ -15,6 +16,8 @@ export default function StreakBadge() {
   }, [])
 
   async function handleLogout() {
+    posthog.capture('user_logged_out', { streak_count: data?.streak })
+    posthog.reset()
     await fetch('/api/auth/logout', { method: 'POST' })
     router.push('/')
     router.refresh()

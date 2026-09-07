@@ -2,6 +2,7 @@
 import Stripe from 'stripe'
 import { sendDonationReceipt, sendDonationNotification } from '@/lib/email'
 import sql from '@/lib/db'
+import { getPostHogClient } from '@/lib/posthog-server'
 
 let _stripe: Stripe | null = null
 function getStripe() {
@@ -49,6 +50,20 @@ export async function PUT(req: NextRequest) {
       sendDonationNotification({ name: name || email, email, amount, currency, ref: reference, provider: 'Stripe' }),
     ])
   } catch (err) { console.error('[stripe email]', err) }
+
+  // Track completed donation server-side
+  const posthog = getPostHogClient()
+  posthog.capture({
+    distinctId: reference,
+    event: 'donation_completed',
+    properties: {
+      amount,
+      currency,
+      provider: 'stripe',
+      reference,
+    },
+  })
+  await posthog.flush()
 
   return NextResponse.json({ success: true, amount, currency })
 }

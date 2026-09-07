@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, FormEvent } from 'react'
+import posthog from 'posthog-js'
 
 export default function PartnerForm() {
   const [status, setStatus] = useState<'idle' | 'sending' | 'done' | 'error'>('idle')
@@ -26,6 +27,9 @@ export default function PartnerForm() {
         const d = await res.json().catch(() => ({}))
         throw new Error(d.error || 'Something went wrong')
       }
+      posthog.capture('partner_inquiry_submitted', {
+        partnership_type: fd.get('type') as string | null,
+      })
       setStatus('done')
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Something went wrong')

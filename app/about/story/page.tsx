@@ -52,7 +52,7 @@ export default function AboutStoryPage() {
             </div>
             <div className="reveal" data-d="1">
               <p className="lead">We&#39;ve learned from mentoring 50+ young people that real transformation happens through three things:</p>
-              <p className="lead mt-m"><strong style={{ color: '#fff' }}>Trade Fair</strong> — Intensive, practical training in the skills employers actually need. Not textbooks. Real tools for landing jobs and building careers.</p>
+              <p className="lead mt-m"><strong style={{ color: '#fff' }}>Career Clarity Fair</strong> — Intensive, practical training in the skills employers actually need. Not textbooks. Real tools for landing jobs and building careers.</p>
               <p className="lead mt-m"><strong style={{ color: '#fff' }}>Opportunity Blueprint Podcast</strong> — Direct access to the stories of people who&#39;ve built what you dream about. Proof that it&#39;s possible. Inspiration that sticks.</p>
               <p className="lead mt-m"><strong style={{ color: '#fff' }}>Community &amp; Mentorship</strong> — A network where you&#39;re not alone. Real mentors. Real peers. Real accountability. This is where lasting change happens.</p>
               <p className="lead mt-m">We&#39;re just getting started. Every person we mentor teaches us how to build this better. Every success story shows us we&#39;re on the right path.</p>

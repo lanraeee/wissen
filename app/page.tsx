@@ -117,12 +117,12 @@ export default async function HomePage() {
           <div className="grid grid-3">
             <article className="card reveal">
               <div className="card__media">
-                <span className="card__tag">Trade Fair</span>
-                <Image src="/img/prog-bootcamp.jpg" alt="Trade Fair students" fill style={{ objectFit: 'cover' }} />
+                <span className="card__tag">Career Clarity Fair</span>
+                <Image src="/img/prog-bootcamp.jpg" alt="Career Clarity Fair students" fill style={{ objectFit: 'cover' }} />
               </div>
               <div className="card__body">
                 <span className="card__num">01</span>
-                <h3>Trade Fair</h3>
+                <h3>Career Clarity Fair</h3>
                 <p>A one-day career exploration fair for all secondary school students in Ibadan. Meet professionals, explore diverse careers, and discover your path forward.</p>
                 <Link href="/programmes" className="textlink">Learn more {ARROW}</Link>
               </div>

@@ -4,7 +4,7 @@ import Image from 'next/image'
 
 export const metadata: Metadata = {
   title: 'Programmes · Wissen-Haus',
-  description: 'Trade Fair, Opportunity Blueprint Podcast, Impact Content, Events, and Career Hub — all our programmes in one place.',
+  description: 'Career Clarity Fair, Opportunity Blueprint Podcast, Impact Content, Events, and Career Hub — all our programmes in one place.',
 }
 
 const ARROW = (
@@ -34,11 +34,11 @@ export default function ProgrammesPage() {
             <article className="card reveal">
               <div className="card__media">
                 <span className="card__tag">In-Person</span>
-                <Image src="/img/prog-bootcamp.jpg" alt="Career Clarity Trade Fair" fill style={{ objectFit: 'cover' }} />
+                <Image src="/img/prog-bootcamp.jpg" alt="Career Clarity Fair" fill style={{ objectFit: 'cover' }} />
               </div>
               <div className="card__body">
                 <span className="card__num">01</span>
-                <h3>Career Clarity Trade Fair</h3>
+                <h3>Career Clarity Fair</h3>
                 <p>A one-day career exploration fair for secondary school students in Ibadan. Meet professionals, explore diverse careers, and discover your path forward.</p>
                 <Link href="/career-clarity-trade-fair" className="textlink">Learn more {ARROW}</Link>
               </div>

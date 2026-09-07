@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, FormEvent } from 'react'
+import posthog from 'posthog-js'
 
 const AMOUNTS_NGN = [5000, 10000, 20000, 50000]
 const AMOUNTS_USD = [5, 10, 25, 50]
@@ -46,6 +47,13 @@ export default function DonateWidget() {
       })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error || 'Payment initialisation failed')
+
+      // Capture donation initiation before redirect (browser unloads immediately after)
+      posthog.capture('donation_initiated', {
+        amount: finalAmount,
+        currency,
+        provider: currency === 'NGN' ? 'paystack' : 'stripe',
+      })
 
       if (currency === 'NGN' && data.authorizationUrl) {
         window.location.href = data.authorizationUrl

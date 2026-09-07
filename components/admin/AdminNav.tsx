@@ -9,6 +9,7 @@ const NAV = [
   ['Submissions', '/admin/submissions'],
   ['Opportunities', '/admin/opportunities'],
   ['Courses & Certs', '/admin/courses'],
+  ['Donation Projects', '/admin/projects'],
   ['Content', '/admin/content'],
   ['Settings', '/admin/settings'],
 ]

@@ -3,8 +3,8 @@ import Link from 'next/link'
 import Image from 'next/image'
 
 export const metadata: Metadata = {
-  title: 'Career Clarity Trade Fair · Wissen-Haus',
-  description: 'A one-day career exploration fair for secondary school students. Meet professionals, explore careers, and discover your path.',
+  title: 'Career Clarity Fair · Wissen-Haus',
+  description: 'A one-day career exploration fair for secondary school students in Ibadan. Meet professionals, explore careers, and discover your path.',
 }
 
 export default function BootcampPage() {
@@ -14,8 +14,8 @@ export default function BootcampPage() {
         <div className="wrap">
           <div className="split">
             <div className="reveal">
-              <span className="eyebrow">Programmes · Trade Fair</span>
-              <h1 className="display-lg mt-s">Career Clarity Trade Fair</h1>
+              <span className="eyebrow">Programmes · Career Clarity Fair</span>
+              <h1 className="display-lg mt-s">Career Clarity Fair</h1>
               <p className="lead mt-m">A one-day career exploration fair open to all secondary school students in Ibadan — from JS1 to SS3. Meet real professionals, explore careers you&#39;ve never heard of, and leave with a clear direction.</p>
               <div className="hero-cta mt-m">
                 <Link href="/volunteer" className="btn btn--lg">Bring it to your school</Link>
@@ -23,7 +23,7 @@ export default function BootcampPage() {
               </div>
             </div>
             <div className="split__media reveal" data-d="1">
-              <Image src="/img/prog-bootcamp.jpg" alt="Students at the Wissen-Haus Career Clarity Trade Fair" fill style={{ objectFit: 'cover' }} />
+              <Image src="/img/prog-bootcamp.jpg" alt="Students at the Wissen-Haus Career Clarity Fair" fill style={{ objectFit: 'cover' }} />
             </div>
           </div>
         </div>
@@ -51,7 +51,7 @@ export default function BootcampPage() {
             <div className="feature reveal" data-d="2">
               <div className="feature__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><circle cx="12" cy="12" r="9" /><path d="M12 6v6l4 2" /></svg></div>
               <h3>The Ambitious</h3>
-              <p>You know what you want but don&#39;t know how to get there. The Trade Fair connects you with professionals who have already walked the path.</p>
+              <p>You know what you want but don&#39;t know how to get there. The Career Clarity Fair connects you with professionals who have already walked the path.</p>
             </div>
           </div>
         </div>
@@ -61,7 +61,7 @@ export default function BootcampPage() {
         <div className="wrap">
           <div className="section-head mb-l reveal">
             <span className="eyebrow eyebrow--light">How It Works</span>
-            <h2>What happens at the Trade Fair</h2>
+            <h2>What happens at the Career Clarity Fair</h2>
           </div>
           <div className="steps">
             <div className="step reveal">
@@ -91,11 +91,11 @@ export default function BootcampPage() {
       <section className="section section--tight">
         <div className="wrap">
           <div className="cta-band reveal">
-            <h2>Bring the Trade Fair to your school.</h2>
+            <h2>Bring the Career Clarity Fair to your school.</h2>
             <p className="lead">We partner with schools across Ibadan and beyond. If you&#39;re a teacher, administrator, or parent — reach out and let&#39;s talk.</p>
             <div className="cta-actions">
               <Link href="/partner" className="btn btn--light btn--lg">Partner with us</Link>
-              <Link href="/donate" className="btn btn--outline-light btn--lg">Sponsor a Fair</Link>
+              <Link href="/donate" className="btn btn--outline-light btn--lg">Sponsor the Fair</Link>
             </div>
           </div>
         </div>

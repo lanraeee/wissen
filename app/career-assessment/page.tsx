@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
+import posthog from 'posthog-js'
 import '../career-assessment.css'
 
 // ─── Types ──────────────────────────────────────────────────────────────────
@@ -571,6 +572,7 @@ export default function CareerAssessmentPage() {
   }, [results, answers, mounted])
 
   function handleStart() {
+    posthog.capture('career_assessment_started')
     setPhase('quiz')
     setStep(0)
     setAnswers([])
@@ -587,6 +589,10 @@ export default function CareerAssessmentPage() {
       const r = computeResults(newAnswers)
       setResults(r)
       setPhase('results')
+      posthog.capture('career_assessment_completed', {
+        top_career_match: r[0]?.key ?? null,
+        question_count: newAnswers.length,
+      })
       window.scrollTo({ top: 0, behavior: 'smooth' })
     }
   }
@@ -598,6 +604,7 @@ export default function CareerAssessmentPage() {
   }
 
   const handleRetake = useCallback(() => {
+    posthog.capture('career_assessment_retaken')
     try { localStorage.removeItem('wh_assessmentResults'); localStorage.removeItem('wh_assessmentAnswers') } catch {}
     setResults(null)
     setAnswers([])

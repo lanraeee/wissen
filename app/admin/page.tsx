@@ -137,6 +137,7 @@ export default async function AdminDashboard() {
         <h3 style={{ margin: '0 0 12px', fontSize: '.8rem', letterSpacing: '.1em', textTransform: 'uppercase', color: '#8a9a8f' }}>Quick Actions</h3>
         <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
           {[
+            ['Donation Projects', '/admin/projects'],
             ['Edit Careers Roles', '/admin/content?tab=careers'],
             ['Edit Policy Timeline', '/admin/content?tab=policy'],
             ['Edit Founder Bio', '/admin/content?tab=founder'],

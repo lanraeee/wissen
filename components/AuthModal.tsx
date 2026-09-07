@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import posthog from 'posthog-js'
 
 interface Props {
   onClose: () => void
@@ -26,6 +27,9 @@ export default function AuthModal({ onClose, defaultTab = 'login' }: Props) {
     const data = await res.json()
     setLoading(false)
     if (!res.ok) { setError(data.error || 'Login failed'); return }
+    // Identify the user and capture login event
+    posthog.identify(data.user.id, { role: data.user.role ?? 'user' })
+    posthog.capture('user_logged_in', { source: 'auth_modal' })
     onClose()
     router.push('/community')
     router.refresh()
@@ -48,6 +52,9 @@ export default function AuthModal({ onClose, defaultTab = 'login' }: Props) {
     const data = await res.json()
     setLoading(false)
     if (!res.ok) { setError(data.error || 'Signup failed'); return }
+    // Identify the new user and capture signup event
+    posthog.identify(data.user.id, { role: 'user' })
+    posthog.capture('user_signed_up', { source: 'auth_modal' })
     onClose()
     router.push('/community')
     router.refresh()

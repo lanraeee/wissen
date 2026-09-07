@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import posthog from 'posthog-js'
 import type { Module } from '@/lib/courseData'
 
 interface Props {
@@ -35,15 +36,23 @@ export default function CourseModule({ courseId, module, isCompleted, prevModule
     if (passed && !completed) {
       setSubmitting(true)
       try {
-        await fetch(`/api/courses/${courseId}/progress`, {
+        const res = await fetch(`/api/courses/${courseId}/progress`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ moduleId: module.id })
+        })
+        const progressData = await res.json()
+        posthog.capture('course_module_completed', {
+          course_id: courseId,
+          module_id: module.id,
+          quiz_score: score,
+          certificate_awarded: progressData.certificateAwarded ?? false,
         })
         setCompleted(true)
         router.refresh()
       } catch (e) {
         console.error(e)
+        posthog.captureException(e)
       } finally {
         setSubmitting(false)
       }
