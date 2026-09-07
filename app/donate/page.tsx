@@ -5,7 +5,7 @@ import DonateWidget from '@/components/DonateWidget'
 
 export const metadata: Metadata = {
   title: 'Donate · Wissen-Haus',
-  description: 'Fuel a young Nigerian\'s future. Your gift funds free career Trade Fairs, mentorship and global exposure for students who need it most.',
+  description: 'Fuel a young African or diaspora changemaker\'s future. Your gift funds free Career Clarity Fairs, mentorship and global exposure for students who need it most.',
 }
 
 const ARROW = (
@@ -22,8 +22,8 @@ export default function DonatePage() {
           <div className="split">
             <div className="reveal">
               <span className="eyebrow">Donate</span>
-              <h1 className="display-lg mt-s">Fuel a young Nigerian&#39;s future.</h1>
-              <p className="lead mt-m">Every gift helps us deliver free career Trade Fairs, mentorship and global exposure to students who need it most. Bridge the skills gap with us.</p>
+              <h1 className="display-lg mt-s">Fuel a young African or diaspora changemaker&#39;s future.</h1>
+              <p className="lead mt-m">Every gift helps us deliver free Career Clarity Fairs, mentorship and global exposure to students who need it most. Bridge the skills gap with us.</p>
               <div className="hero-cta mt-m">
                 <a href="#give" className="btn btn--lg">Give now {ARROW}</a>
               </div>
@@ -42,7 +42,7 @@ export default function DonatePage() {
           <div className="section-head mb-l reveal">
             <span className="eyebrow">Your Impact</span>
             <h2>Every naira builds a career-ready future.</h2>
-            <p className="lead">Since our launch in 2025, gifts from people like you have reached young Nigerians across Ibadan and beyond.</p>
+            <p className="lead">Since our launch in 2025, gifts from people like you have reached young people across Ibadan, Nigeria, and are now extending to Africa and the diaspora.</p>
           </div>
           <div className="stats reveal" data-d="1">
             <div className="stat"><div className="num" data-count="500" data-suffix="+">500+</div><div className="lbl">Students Reached</div></div>
@@ -84,7 +84,7 @@ export default function DonatePage() {
             <div className="feature reveal">
               <div className="feature__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12" /></svg></div>
               <h3>70% Programmes</h3>
-              <p>Directly funds workshops, Trade Fairs, and student resources.</p>
+              <p>Directly funds workshops, Career Clarity Fairs, and student resources.</p>
             </div>
             <div className="feature reveal" data-d="1">
               <div className="feature__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><circle cx="12" cy="12" r="9" /><path d="M12 6v6l4 2" /></svg></div>
@@ -94,7 +94,7 @@ export default function DonatePage() {
             <div className="feature reveal" data-d="2">
               <div className="feature__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><line x1="12" y1="5" x2="12" y2="19" /><polyline points="19 12 12 19 5 12" /></svg></div>
               <h3>10% Growth</h3>
-              <p>Reserved to expand to new schools and communities across Nigeria.</p>
+              <p>Reserved to expand to new schools and communities across Nigeria, Africa, and the diaspora.</p>
             </div>
           </div>
         </div>

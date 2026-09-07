@@ -4,7 +4,7 @@ import Image from 'next/image'
 
 export const metadata: Metadata = {
   title: 'Our Story · Wissen-Haus',
-  description: 'The Wissen-Haus journey: bridging the classroom and the world so every young Nigerian can achieve economic independence.',
+  description: 'The Wissen-Haus journey: bridging the classroom and the world so every young African and diaspora changemaker can achieve economic independence.',
 }
 
 export default function AboutStoryPage() {
@@ -15,8 +15,8 @@ export default function AboutStoryPage() {
           <div className="split">
             <div className="reveal">
               <span className="eyebrow">Our Story</span>
-              <h1 className="display-lg mt-s">Building the bridge young Nigerians deserve.</h1>
-              <p className="lead mt-m">We started small—mentoring and counselling young people one by one, seeing firsthand how transformative real guidance can be. What we discovered is that this problem is bigger than one person can solve. So we&#39;re building Wissen-Haus to scale what we&#39;ve learned and help thousands of talented young Nigerians access the opportunities that should be available to everyone.</p>
+              <h1 className="display-lg mt-s">Building the bridge young Africans and the diaspora deserve.</h1>
+              <p className="lead mt-m">We started small in Ibadan, Nigeria—mentoring and counselling young people one by one, seeing firsthand how transformative real guidance can be. What we discovered is that this problem is bigger than one country or one person can solve. So we&#39;re building Wissen-Haus to scale what we&#39;ve learned and help thousands of talented young people—across Nigeria, Africa, and the diaspora—access the opportunities that should be available to everyone.</p>
             </div>
             <div className="split__media reveal" data-d="1">
               <Image src="/img/about-hero.jpg" alt="Wissen-Haus students and mentors" fill style={{ objectFit: 'cover' }} />
@@ -36,7 +36,7 @@ export default function AboutStoryPage() {
             </div>
             <div className="reveal" data-d="1">
               <p className="lead">Imagine graduating with excellent grades, only to discover that employers want something your school never taught you. Imagine having a brilliant idea for a business but not knowing a single person in the industry. Imagine being talented but invisible because you grew up outside the circles where opportunities flow.</p>
-              <p className="lead mt-m">This is the reality for millions of young Nigerians. Not because they lack talent. Not because they don&#39;t work hard. But because the bridge between what they learn and what the world needs simply doesn&#39;t exist.</p>
+              <p className="lead mt-m">This is the reality for millions of young Africans and diaspora youth. Not because they lack talent. Not because they don&#39;t work hard. But because the bridge between what they learn and what the world needs simply doesn&#39;t exist.</p>
               <p className="lead mt-m" style={{ fontWeight: 600, color: 'var(--green-800)' }}>We saw this gap. And we decided to build a bridge.</p>
             </div>
           </div>
@@ -97,7 +97,7 @@ export default function AboutStoryPage() {
         <div className="wrap">
           <div className="cta-band reveal">
             <h2>Be part of the story.</h2>
-            <p className="lead">Whether you mentor, partner or give, you help a young Nigerian bridge the gap between potential and opportunity.</p>
+            <p className="lead">Whether you mentor, partner or give, you help a young African or diaspora changemaker bridge the gap between potential and opportunity.</p>
             <div className="cta-actions">
               <Link href="/volunteer" className="btn btn--light btn--lg">Volunteer with us</Link>
               <Link href="/founder" className="btn btn--outline-light btn--lg">Meet the Founder</Link>

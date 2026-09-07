@@ -4,7 +4,7 @@ import StreakBadge from '@/components/StreakBadge'
 
 export const metadata: Metadata = {
   title: 'Remote Jobs · Wissen-Haus Community',
-  description: 'Remote job opportunities curated for Nigerian and African youth. Updated daily.',
+  description: 'Remote job opportunities curated for Nigerian, African, and diaspora youth. Updated daily.',
 }
 
 export default function JobsPage() {
@@ -15,7 +15,7 @@ export default function JobsPage() {
         <div className="wrap">
           <span className="eyebrow reveal">Community Hub · Jobs</span>
           <h1 className="display-lg mt-s reveal">Remote Jobs</h1>
-          <p className="lead mt-s reveal" data-d="1">Remote job opportunities open to Nigerian and African candidates, updated daily from the best sources.</p>
+          <p className="lead mt-s reveal" data-d="1">Remote job opportunities open to Nigerian, African, and diaspora candidates, updated daily from the best sources.</p>
           <div className="mt-l">
             <OpportunityGrid type="job" showFilter={true} />
           </div>

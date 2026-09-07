@@ -45,7 +45,7 @@ export default async function Footer() {
                 <Image src="/img/logo.png" alt="Wissen-Haus logo" width={40} height={40} />
                 <span>Wissen-Haus<small>Youth Empowerment</small></span>
               </Link>
-              <p>Bridging the skills gap in Nigeria, equipping young people with practical guidance, mentorship and global exposure for economic independence.</p>
+              <p>Bridging the skills gap for African youth and the diaspora, equipping young people with practical guidance, mentorship and global exposure for economic independence.</p>
               <div className="footer-social">
                 {settings.instagram_url && (
                   <a href={settings.instagram_url} aria-label="Instagram" target="_blank" rel="noopener noreferrer">

@@ -7,7 +7,7 @@ export const metadata: Metadata = {
 }
 
 const TESTIMONIALS = [
-  { name: 'Adaeze Obi', role: 'SS3 Student, Ibadan', quote: 'Before Wissen-Haus, I had no idea what I wanted to do after school. The Trade Fair changed everything. I met a product designer who looked exactly like me, doing work I\'d never heard of. I applied for an internship the same week.' },
+  { name: 'Adaeze Obi', role: 'SS3 Student, Ibadan', quote: 'Before Wissen-Haus, I had no idea what I wanted to do after school. The Career Clarity Fair changed everything. I met a product designer who looked exactly like me, doing work I\'d never heard of. I applied for an internship the same week.' },
   { name: 'Emeka Nwosu', role: 'Graduate, University of Ibadan', quote: 'The soft skills course helped me write a CV that actually got responses. Within three months of graduating I had my first remote job. I genuinely don\'t think that happens without Wissen-Haus.' },
   { name: 'Fatima Aliyu', role: 'Final Year, Accounting', quote: 'The scholarship database alone was worth joining. I applied to four scholarships I found through the community hub. Two came back to me. One of them is fully funding my master\'s degree.' },
   { name: 'Kola Adegoke', role: 'Data Analyst, Lagos', quote: 'I was a biology graduate with no clue how to pivot. My mentor through Wissen-Haus spent six months helping me build a portfolio. I\'m now working as a data analyst for a company in the UK — remotely from Lagos.' },

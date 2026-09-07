@@ -26,6 +26,15 @@ export interface FoundationDetails {
   email: string
   signatory_name: string
   signatory_role: string
+  // Optional international entity — used for non-Naira donations when filled in.
+  // Left blank until a real international entity (e.g. a UK CIC) is registered.
+  intl_legal_name?: string
+  intl_company_number?: string
+  intl_tax_id?: string
+  intl_address?: string
+  intl_email?: string
+  intl_signatory_name?: string
+  intl_signatory_role?: string
 }
 
 const DEFAULT_FOUNDATION: FoundationDetails = {
@@ -35,6 +44,28 @@ const DEFAULT_FOUNDATION: FoundationDetails = {
   email: 'director@wissenhaus.org',
   signatory_name: 'Benz Olagbaye',
   signatory_role: 'Founder & Executive Director',
+  intl_legal_name: '',
+  intl_company_number: '',
+  intl_tax_id: '',
+  intl_address: '',
+  intl_email: '',
+  intl_signatory_name: '',
+  intl_signatory_role: '',
+}
+
+// For non-Naira donations, use the international entity details if they've been filled in;
+// otherwise fall back to the primary entity so receipts never show blank fields.
+function resolveIssuingEntity(foundation: FoundationDetails, currency: string): FoundationDetails {
+  if (currency === 'NGN' || !foundation.intl_legal_name) return foundation
+  return {
+    legal_name: foundation.intl_legal_name,
+    rc_number: foundation.intl_company_number || '',
+    tax_id: foundation.intl_tax_id || undefined,
+    address: foundation.intl_address || foundation.address,
+    email: foundation.intl_email || foundation.email,
+    signatory_name: foundation.intl_signatory_name || foundation.signatory_name,
+    signatory_role: foundation.intl_signatory_role || foundation.signatory_role,
+  }
 }
 
 const CURRENCY_SYMBOL: Record<string, string> = {
@@ -56,9 +87,10 @@ async function getData(certId: string) {
   ])
   const certs: DonationCert[] = (certsRow[0]?.value as DonationCert[]) ?? []
   const cert = certs.find(c => c.cert_id === certId) ?? null
-  const foundation: FoundationDetails = foundationRow[0]?.value
+  const savedFoundation: FoundationDetails = foundationRow[0]?.value
     ? { ...DEFAULT_FOUNDATION, ...(foundationRow[0].value as Partial<FoundationDetails>) }
     : DEFAULT_FOUNDATION
+  const foundation = cert ? resolveIssuingEntity(savedFoundation, cert.currency) : savedFoundation
   return { cert, foundation }
 }
 
@@ -132,7 +164,7 @@ export default async function DonationReceiptPage({ params }: Props) {
                 </div>
                 {foundation.rc_number && (
                   <div style={{ color: 'rgba(42,26,0,0.65)', fontSize: '.65rem', letterSpacing: '.1em', textTransform: 'uppercase', fontWeight: 600, marginTop: 2 }}>
-                    RC No. {foundation.rc_number}
+                    {cert.currency === 'NGN' ? 'RC No.' : 'Company No.'} {foundation.rc_number}
                   </div>
                 )}
               </div>

@@ -6,7 +6,7 @@ export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
   title: 'Policy & Research · Wissen-Haus',
-  description: 'Comprehensive policy papers and research reports on youth employment, skills gap, and economic independence in Nigeria.',
+  description: 'Comprehensive policy papers and research reports on youth employment, skills gap, and economic independence across Nigeria, Africa, and the diaspora.',
 }
 
 async function getPapers(): Promise<PolicyPaper[]> {
@@ -27,7 +27,7 @@ export default async function PolicyResearchPage() {
           <div className="section-head reveal">
             <span className="eyebrow">Policy &amp; Research</span>
             <h1 className="display-lg mt-s">Evidence for the future of work.</h1>
-            <p className="lead mt-m">We publish comprehensive policy papers and research focused on youth economic independence, the skills gap, and the future of work in Nigeria.</p>
+            <p className="lead mt-m">We publish comprehensive policy papers and research focused on youth economic independence, the skills gap, and the future of work across Nigeria, Africa, and the diaspora.</p>
           </div>
         </div>
       </section>

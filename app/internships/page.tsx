@@ -4,7 +4,7 @@ import StreakBadge from '@/components/StreakBadge'
 
 export const metadata: Metadata = {
   title: 'Internships · Wissen-Haus Community',
-  description: 'Internship opportunities open to Nigerian and African youth.',
+  description: 'Internship opportunities open to Nigerian, African, and diaspora youth.',
 }
 
 export default function InternshipsPage() {
@@ -15,7 +15,7 @@ export default function InternshipsPage() {
         <div className="wrap">
           <span className="eyebrow reveal">Community Hub · Internships</span>
           <h1 className="display-lg mt-s reveal">Internships</h1>
-          <p className="lead mt-s reveal" data-d="1">Internship opportunities from top companies, open to Nigerian and African candidates.</p>
+          <p className="lead mt-s reveal" data-d="1">Internship opportunities from top companies, open to Nigerian, African, and diaspora candidates.</p>
           <div className="mt-l">
             <OpportunityGrid type="internship" showFilter={true} />
           </div>

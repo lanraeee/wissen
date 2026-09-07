@@ -11,6 +11,13 @@ const DEFAULT: FoundationDetails = {
   email: 'director@wissenhaus.org',
   signatory_name: 'Benz Olagbaye',
   signatory_role: 'Founder & Executive Director',
+  intl_legal_name: '',
+  intl_company_number: '',
+  intl_tax_id: '',
+  intl_address: '',
+  intl_email: '',
+  intl_signatory_name: '',
+  intl_signatory_role: '',
 }
 
 const inp = { padding: '7px 10px', fontSize: '.85rem', border: '1px solid #d0ccc4', borderRadius: 6, width: '100%', boxSizing: 'border-box' as const }
@@ -24,6 +31,16 @@ const FIELDS: [keyof FoundationDetails, string, string][] = [
   ['email', 'Official Email', 'director@wissenhaus.org'],
   ['signatory_name', 'Authorised Signatory Name', 'Benz Olagbaye'],
   ['signatory_role', 'Signatory Role / Title', 'Founder & Executive Director'],
+]
+
+const INTL_FIELDS: [keyof FoundationDetails, string, string][] = [
+  ['intl_legal_name', 'International Legal Entity Name', 'e.g. Wissen-Haus Foundation CIC'],
+  ['intl_company_number', 'Company / Registration Number', 'e.g. Companies House number'],
+  ['intl_tax_id', 'Tax / Charity Reference — optional', ''],
+  ['intl_address', 'Registered Address', ''],
+  ['intl_email', 'Official Email', ''],
+  ['intl_signatory_name', 'Authorised Signatory Name', ''],
+  ['intl_signatory_role', 'Signatory Role / Title', ''],
 ]
 
 export default function FoundationDetailsEditor() {
@@ -86,6 +103,28 @@ export default function FoundationDetailsEditor() {
             />
           </div>
         ))}
+      </div>
+
+      <div style={{ marginTop: 32, paddingTop: 20, borderTop: '1px solid #e8e4dc' }}>
+        <h3 style={{ margin: '0 0 4px', fontSize: '1rem' }}>International Entity — Optional</h3>
+        <p style={{ margin: '0 0 14px', fontSize: '.8rem', color: '#8a9a8f' }}>
+          Leave blank until you register a separate international entity (e.g. a UK Community Interest Company). Once filled in, non-Naira donation receipts will be issued under these details instead of the Nigerian entity above.
+        </p>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
+          {INTL_FIELDS.map(([key, label, placeholder]) => (
+            <div key={key} style={key === 'intl_legal_name' || key === 'intl_address' ? { gridColumn: '1 / -1' } : undefined}>
+              <label style={{ display: 'block', fontSize: '.7rem', fontWeight: 700, textTransform: 'uppercase', color: '#8a9a8f', letterSpacing: '.06em', marginBottom: 4 }}>
+                {label}
+              </label>
+              <input
+                style={inp}
+                value={(details[key] ?? '') as string}
+                onChange={e => setDetails(d => ({ ...d, [key]: e.target.value }))}
+                placeholder={placeholder}
+              />
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   )

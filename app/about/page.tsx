@@ -4,7 +4,7 @@ import Image from 'next/image'
 
 export const metadata: Metadata = {
   title: 'About Us · Wissen-Haus',
-  description: 'The Wissen-Haus journey: bridging the classroom and the world so every young Nigerian can achieve economic independence.',
+  description: 'The Wissen-Haus journey: bridging the classroom and the world so every young African and diaspora changemaker can achieve economic independence.',
 }
 
 export default function AboutPage() {
@@ -14,7 +14,7 @@ export default function AboutPage() {
         <div className="wrap">
           <div className="section-head reveal">
             <span className="eyebrow">About Wissen-Haus</span>
-            <h1 className="display-lg mt-s">Bridging the skills gap in Nigeria.</h1>
+            <h1 className="display-lg mt-s">Bridging the skills gap for African youth and the diaspora.</h1>
             <p className="lead mt-m">Explore our story, meet our founder, discover impact stories from our community, and get in touch with us.</p>
           </div>
         </div>
@@ -44,7 +44,7 @@ export default function AboutPage() {
         <div className="wrap">
           <div className="cta-band reveal">
             <h2>Be part of the story.</h2>
-            <p className="lead">Whether you mentor, partner or give, you help a young Nigerian bridge the gap between potential and opportunity.</p>
+            <p className="lead">Whether you mentor, partner or give, you help a young African or diaspora changemaker bridge the gap between potential and opportunity.</p>
             <div className="cta-actions">
               <Link href="/volunteer" className="btn btn--light btn--lg">Volunteer with us</Link>
               <Link href="/partner" className="btn btn--outline-light btn--lg">Partner with us</Link>

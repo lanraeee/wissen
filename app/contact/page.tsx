@@ -41,7 +41,7 @@ export default function ContactPage() {
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
                 </div>
                 <div>
-                  <div className="k">Location</div>
+                  <div className="k">Headquarters</div>
                   <span className="v">Ibadan, Nigeria</span>
                 </div>
               </div>
@@ -50,8 +50,8 @@ export default function ContactPage() {
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
                 </div>
                 <div>
-                  <div className="k">Headquarters</div>
-                  <span className="v">London, United Kingdom</span>
+                  <div className="k">International</div>
+                  <span className="v">Serving communities in the UK and across the diaspora</span>
                 </div>
               </div>
             </div>

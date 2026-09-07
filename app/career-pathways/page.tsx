@@ -233,7 +233,7 @@ export default function CareerPathwaysPage() {
               {/* Opportunities */}
               <div className="cp-section-box cp-section-box--tinted">
                 <div className="cp-section-title">🌍 Global Opportunities Await</div>
-                <p className="cp-section-sub">Access opportunities beyond borders while building your career in Nigeria.</p>
+                <p className="cp-section-sub">Access opportunities beyond borders while building your career in Nigeria, elsewhere in Africa, or in the diaspora.</p>
                 <div className="cp-opp-grid">
                   {OPPORTUNITIES.map(o => (
                     <div key={o.title} className="cp-opp-card">

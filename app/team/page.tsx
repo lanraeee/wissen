@@ -114,7 +114,7 @@ export default async function TeamPage() {
                 The people who hold everything together.
               </h1>
               <p className="lead mt-m" style={{ color: 'rgba(244,240,231,.78)' }}>
-                Wissen-Haus runs on the belief that young Nigerians deserve better. Every person on this
+                Wissen-Haus runs on the belief that young Africans and diaspora youth deserve better. Every person on this
                 team holds that belief — and turns it into something real, every single day.
               </p>
               <div className="cta-actions mt-l">
@@ -156,7 +156,7 @@ export default async function TeamPage() {
                   Founder &amp; Executive Director
                 </div>
                 <p style={{ fontSize: '.88rem', color: 'var(--muted)', lineHeight: 1.6, margin: '0 0 1rem' }}>
-                  Benz founded Wissen-Haus after seeing firsthand that Nigeria&apos;s youth gap is not a talent problem — it&apos;s an access problem. She has personally mentored over 50 young people and leads every programme with that conviction.
+                  Benz founded Wissen-Haus after seeing firsthand that the youth gap across Nigeria, Africa and the diaspora is not a talent problem — it&apos;s an access problem. She has personally mentored over 50 young people and leads every programme with that conviction.
                 </p>
                 <Link href="/founder" style={{ fontSize: '.82rem', fontWeight: 600, color: 'var(--green-700)' }}>
                   Full profile &rarr;

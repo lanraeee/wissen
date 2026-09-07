@@ -5,10 +5,10 @@ import { useState, useEffect } from 'react'
 interface Role { title: string; type: string; desc: string }
 
 const DEFAULT_ROLES: Role[] = [
-  { title: 'Programme Coordinator', type: 'Freelance & Volunteer · Part-time · Ibadan', desc: 'Help deliver our Trade Fair and community events. Background in education or youth work preferred.' },
-  { title: 'Content Writer', type: 'Freelance & Volunteer · Remote', desc: 'Create impact stories, blog posts, and educational content that resonates with Nigerian youth.' },
+  { title: 'Programme Coordinator', type: 'Freelance & Volunteer · Part-time · Ibadan', desc: 'Help deliver our Career Clarity Fair and community events. Background in education or youth work preferred.' },
+  { title: 'Content Writer', type: 'Freelance & Volunteer · Remote', desc: 'Create impact stories, blog posts, and educational content that resonates with African youth and the diaspora.' },
   { title: 'Social Media Manager', type: 'Freelance & Volunteer · Remote · Part-time', desc: 'Grow our Instagram and LinkedIn presence. You know the algorithm and you understand our audience.' },
-  { title: 'Partnerships Lead', type: 'Freelance & Volunteer · Hybrid · Lagos or Ibadan', desc: 'Build relationships with schools, companies, and NGOs who want to reach and empower Nigerian youth.' },
+  { title: 'Partnerships Lead', type: 'Freelance & Volunteer · Hybrid · Lagos, Ibadan or Remote', desc: 'Build relationships with schools, companies, and NGOs who want to reach and empower African youth and the diaspora.' },
   { title: 'Course Curriculum Developer', type: 'Freelance & Volunteer · Remote · Project-based', desc: 'Design practical, engaging course content for our online learning library.' },
   { title: 'Data & Impact Analyst', type: 'Freelance & Volunteer · Remote · Part-time', desc: 'Help us measure what works. Build dashboards, analyse survey data, and write impact reports.' },
 ]

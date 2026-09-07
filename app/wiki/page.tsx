@@ -3,17 +3,17 @@ import Link from 'next/link'
 
 export const metadata: Metadata = {
   title: 'About Wissen-Haus · Encyclopedia Entry',
-  description: 'An encyclopedic overview of the Wissen-Haus Youth Empowerment Foundation — its history, programmes, and mission to bridge the skills gap in Nigeria.',
+  description: 'An encyclopedic overview of the Wissen-Haus Youth Empowerment Foundation — its history, programmes, and mission to bridge the skills gap for African youth and the diaspora.',
   openGraph: {
     title: 'Wissen-Haus Youth Empowerment Foundation — Overview',
-    description: 'An encyclopedic overview of the Wissen-Haus Youth Empowerment Foundation — its history, programmes, and mission to bridge the skills gap in Nigeria.',
+    description: 'An encyclopedic overview of the Wissen-Haus Youth Empowerment Foundation — its history, programmes, and mission to bridge the skills gap for African youth and the diaspora.',
     url: 'https://www.wissenhaus.org/wiki',
     images: [{ url: '/wiki/opengraph-image', width: 1200, height: 630 }],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Wissen-Haus Youth Empowerment Foundation — Overview',
-    description: 'An encyclopedic overview of the Wissen-Haus Youth Empowerment Foundation — its history, programmes, and mission to bridge the skills gap in Nigeria.',
+    description: 'An encyclopedic overview of the Wissen-Haus Youth Empowerment Foundation — its history, programmes, and mission to bridge the skills gap for African youth and the diaspora.',
     images: ['/wiki/opengraph-image'],
   },
 }
@@ -78,7 +78,7 @@ export default function WikiPage() {
             Wissen-Haus Youth Empowerment Foundation
           </h1>
           <p style={{ margin: '10px 0 0', color: '#4a5a4f', fontSize: '.95rem' }}>
-            Non-profit organisation · Ibadan, Oyo State, Nigeria · Est. 2025
+            Non-profit organisation · Founded in Ibadan, Oyo State, Nigeria · Est. 2025 · Serving Africa &amp; the diaspora
           </p>
         </div>
 
@@ -88,9 +88,9 @@ export default function WikiPage() {
           <article style={{ color: '#1a2e24', lineHeight: 1.8, fontSize: '.97rem' }}>
 
             <p>
-              <strong>Wissen-Haus Youth Empowerment Foundation</strong> is a Nigerian non-profit organisation based in{' '}
+              <strong>Wissen-Haus Youth Empowerment Foundation</strong> is a non-profit organisation founded in{' '}
               <a href="https://en.wikipedia.org/wiki/Ibadan" target="_blank" rel="noopener noreferrer" style={{ color: '#1a3c2e' }}>Ibadan</a>,{' '}
-              <a href="https://en.wikipedia.org/wiki/Oyo_State" target="_blank" rel="noopener noreferrer" style={{ color: '#1a3c2e' }}>Oyo State</a>, focused on bridging the skills gap among young people in Nigeria through career guidance, mentorship, and access to global opportunities. The foundation was established with a mission to equip Nigerian youth with practical knowledge and exposure needed for economic independence.<Ref n={1} />
+              <a href="https://en.wikipedia.org/wiki/Oyo_State" target="_blank" rel="noopener noreferrer" style={{ color: '#1a3c2e' }}>Oyo State</a>, Nigeria, focused on bridging the skills gap among African youth and the diaspora through career guidance, mentorship, and access to global opportunities. The foundation was established with a mission to equip young people — in Nigeria, across the wider African continent, and in diaspora communities including the United Kingdom — with the practical knowledge and exposure needed for economic independence.<Ref n={1} />
             </p>
 
             {/* TOC */}
@@ -112,10 +112,10 @@ export default function WikiPage() {
               1. Background
             </h2>
             <p>
-              The foundation operates under the belief that many Nigerian youths lack access to structured career guidance and exposure to opportunities available to their global peers. Wissen-Haus was founded by <Link href="/founder" style={{ color: '#1a3c2e' }}>Benz Olagbaye</Link>, who serves as its director, with the aim of addressing this gap through structured programmes, a digital learning platform, and community-based engagements. The organisation has reported reaching over 500 students across Ibadan.<Ref n={2} />
+              The foundation operates under the belief that many African youths and diaspora communities lack access to structured career guidance and exposure to opportunities available to their global peers. Wissen-Haus was founded by <Link href="/founder" style={{ color: '#1a3c2e' }}>Benz Olagbaye</Link>, who serves as its director, with the aim of addressing this gap through structured programmes, a digital learning platform, and community-based engagements. The organisation has reported reaching over 500 students since launching in Ibadan, and is expanding its programmes across Africa and to diaspora communities internationally, including the United Kingdom.<Ref n={2} />
             </p>
             <p>
-              The name <em>Wissen-Haus</em> draws from the German word <em>Wissen</em>, meaning "knowledge", and <em>Haus</em>, meaning "house" — reflecting the organisation's vision of being a house of knowledge for Nigerian youth.
+              The name <em>Wissen-Haus</em> draws from the German word <em>Wissen</em>, meaning "knowledge", and <em>Haus</em>, meaning "house" — reflecting the organisation's vision of being a house of knowledge for African youth and the diaspora.
             </p>
 
             {/* 2. Programmes */}
@@ -134,7 +134,7 @@ export default function WikiPage() {
               2.2 Opportunity Blueprint
             </h3>
             <p>
-              The Opportunity Blueprint is a podcast produced by the foundation. It provides guidance on scholarships, internships, grants, and other opportunities available to Nigerian youth locally and internationally.<Ref n={4} />
+              The Opportunity Blueprint is a podcast produced by the foundation. It provides guidance on scholarships, internships, grants, and other opportunities available to African youth and the diaspora, locally and internationally.<Ref n={4} />
             </p>
 
             <h3 style={{ fontSize: '1.05rem', fontWeight: 700, marginTop: 20, color: '#1a2e24' }}>
@@ -148,7 +148,7 @@ export default function WikiPage() {
               2.4 Community Hub and Learning Library
             </h3>
             <p>
-              The foundation operates an online Community Hub offering free courses, toolkits, and an Opportunity Hub that aggregates scholarships, jobs, and grants relevant to Nigerian youth. Members who complete courses are issued digital certificates.<Ref n={6} />
+              The foundation operates an online Community Hub offering free courses, toolkits, and an Opportunity Hub that aggregates scholarships, jobs, and grants relevant to African youth and the diaspora. Members who complete courses are issued digital certificates.<Ref n={6} />
             </p>
 
             <h3 style={{ fontSize: '1.05rem', fontWeight: 700, marginTop: 20, color: '#1a2e24' }}>
@@ -193,7 +193,7 @@ export default function WikiPage() {
               4. Policy Research
             </h2>
             <p>
-              The foundation conducts and publishes policy research relevant to youth employment, skills development, and education in Nigeria, contributing to public discourse on human capital development.<Ref n={8} />
+              The foundation conducts and publishes policy research relevant to youth employment, skills development, and education across Nigeria and the wider African and diaspora context, contributing to public discourse on human capital development.<Ref n={8} />
             </p>
 
             {/* 5. Volunteer & Partnership */}
@@ -238,8 +238,8 @@ export default function WikiPage() {
                 ['Founded', '2025'],
                 ['Founder', 'Benz Olagbaye'],
                 ['Headquarters', 'Ibadan, Oyo State, Nigeria'],
-                ['Focus', 'Youth empowerment, career guidance, skills development'],
-                ['Reach', '500+ students'],
+                ['Focus', 'Youth empowerment, career guidance, skills development — for African youth and the diaspora'],
+                ['Reach', '500+ students, expanding across Africa and internationally'],
                 ['Website', 'wissenhaus.org'],
               ].map(([label, value]) => (
                 <div key={label} style={{ display: 'grid', gridTemplateColumns: '90px 1fr', borderBottom: '1px solid #f0ece4' }}>

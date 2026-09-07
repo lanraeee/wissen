@@ -10,8 +10,8 @@ export const metadata: Metadata = {
     default: 'Wissen-Haus Youth Empowerment Foundation',
     template: '%s · Wissen-Haus',
   },
-  description: 'Bridging the skills gap in Nigeria — practical guidance, mentorship and global exposure for economic independence. 500+ students reached across Ibadan.',
-  keywords: ['youth empowerment Nigeria', 'career guidance Nigeria', 'skills gap Nigeria', 'Ibadan youth foundation', 'mentorship Nigeria', 'Wissen-Haus'],
+  description: 'Bridging the skills gap for African youth and the diaspora — practical guidance, mentorship and global exposure for economic independence. Founded in Ibadan, Nigeria, now reaching young people across Africa and internationally, including the UK.',
+  keywords: ['youth empowerment Africa', 'career guidance Nigeria', 'skills gap Africa', 'African diaspora youth', 'Ibadan youth foundation', 'mentorship Nigeria UK', 'Wissen-Haus'],
   authors: [{ name: 'Wissen-Haus Youth Empowerment Foundation' }],
   creator: 'Wissen-Haus Youth Empowerment Foundation',
   publisher: 'Wissen-Haus Youth Empowerment Foundation',
@@ -29,7 +29,7 @@ export const metadata: Metadata = {
     url: 'https://www.wissenhaus.org',
     siteName: 'Wissen-Haus Youth Empowerment Foundation',
     title: 'Wissen-Haus Youth Empowerment Foundation',
-    description: 'Bridging the skills gap in Nigeria — practical guidance, mentorship and global exposure for economic independence.',
+    description: 'Bridging the skills gap for African youth and the diaspora — practical guidance, mentorship and global exposure for economic independence.',
     images: [
       {
         url: '/opengraph-image',
@@ -42,7 +42,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'Wissen-Haus Youth Empowerment Foundation',
-    description: 'Bridging the skills gap in Nigeria — practical guidance, mentorship and global exposure for economic independence.',
+    description: 'Bridging the skills gap for African youth and the diaspora — practical guidance, mentorship and global exposure for economic independence.',
     images: ['/opengraph-image'],
   },
   robots: {

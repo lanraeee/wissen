@@ -6,7 +6,7 @@ export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
   title: 'Impact Content · Wissen-Haus',
-  description: 'Social-impact storytelling that highlights Nigerian youth doing extraordinary things.',
+  description: 'Social-impact storytelling that highlights African youth and diaspora changemakers doing extraordinary things.',
 }
 
 interface Story {
@@ -48,7 +48,7 @@ export default async function ImpactContentPage() {
           <div className="section-head reveal">
             <span className="eyebrow">Programmes · Impact Content</span>
             <h1 className="display-lg mt-s">Stories that inspire action.</h1>
-            <p className="lead mt-m">Nigerian youth doing extraordinary things. We tell their stories so the next generation knows what&#39;s possible.</p>
+            <p className="lead mt-m">African youth and diaspora changemakers doing extraordinary things. We tell their stories so the next generation knows what&#39;s possible.</p>
           </div>
         </div>
       </section>
@@ -78,7 +78,7 @@ export default async function ImpactContentPage() {
         <div className="wrap">
           <div className="cta-band reveal">
             <h2>Have a story to tell?</h2>
-            <p className="lead">We&#39;re always looking for young Nigerians doing extraordinary things. If that&#39;s you — or if you know someone whose story deserves to be heard — reach out.</p>
+            <p className="lead">We&#39;re always looking for young Africans and diaspora changemakers doing extraordinary things. If that&#39;s you — or if you know someone whose story deserves to be heard — reach out.</p>
             <div className="cta-actions">
               <Link href="/contact" className="btn btn--light btn--lg">Submit a story</Link>
             </div>

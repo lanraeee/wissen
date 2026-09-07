@@ -4,7 +4,7 @@ import PartnerForm from '@/components/PartnerForm'
 
 export const metadata: Metadata = {
   title: 'Partner With Us · Wissen-Haus',
-  description: 'Partner with Wissen-Haus to empower Nigerian youth. For schools, companies, and individuals.',
+  description: 'Partner with Wissen-Haus to empower African youth and the diaspora. For schools, companies, and individuals.',
 }
 
 export default function PartnerPage() {
@@ -32,7 +32,7 @@ export default function PartnerPage() {
             <div className="feature reveal">
               <div className="feature__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M3 7l9-4 9 4-9 4-9-4z" /><path d="M6 12v4c0 1 2.7 3 6 3s6-2 6-3v-4" /></svg></div>
               <h3>Schools &amp; Universities</h3>
-              <p>Host Wissen-Haus events on campus. Give your students access to our community hub. Let us deliver Trade Fair skills sessions in your classrooms.</p>
+              <p>Host Wissen-Haus events on campus. Give your students access to our community hub. Let us deliver Career Clarity Fair skills sessions in your classrooms.</p>
               <a href="mailto:info@wissenhaus.org?subject=School Partnership Enquiry" className="textlink">Enquire now
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><path d="M5 12h14M13 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" /></svg>
               </a>
@@ -40,7 +40,7 @@ export default function PartnerPage() {
             <div className="feature reveal" data-d="1">
               <div className="feature__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><rect x="2" y="7" width="20" height="14" rx="2" /><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2" /></svg></div>
               <h3>Companies</h3>
-              <p>Sponsor a Trade Fair cohort, offer internships through our platform, or send your employees as volunteer mentors. Meet your CSR goals while creating real impact.</p>
+              <p>Sponsor a Career Clarity Fair cohort, offer internships through our platform, or send your employees as volunteer mentors. Meet your CSR goals while creating real impact.</p>
               <a href="mailto:info@wissenhaus.org?subject=Corporate Partnership Enquiry" className="textlink">Discuss a partnership
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><path d="M5 12h14M13 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" /></svg>
               </a>

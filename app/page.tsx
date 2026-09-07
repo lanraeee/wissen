@@ -6,16 +6,16 @@ import TestimonialCarousel from '@/components/TestimonialCarousel'
 
 export const metadata: Metadata = {
   title: 'Wissen-Haus Youth Empowerment Foundation · Bridging the Skills Gap',
-  description: 'We equip Nigerian youth with practical skills, mentorship and global exposure for economic independence. 500+ students reached in our first year across Ibadan.',
+  description: 'We equip African youth and the diaspora with practical skills, mentorship and global exposure for economic independence. 500+ students reached since launching in Ibadan, Nigeria.',
   openGraph: {
-    title: 'Wissen-Haus — Bridging the Skills Gap in Nigeria',
-    description: 'Empowering young Nigerians with practical career skills, mentorship, and global exposure. 500+ students reached across Ibadan.',
+    title: 'Wissen-Haus — Bridging the Skills Gap for African Youth',
+    description: 'Empowering young Africans and the diaspora with practical career skills, mentorship, and global exposure. 500+ students reached since launching in Ibadan, Nigeria.',
     images: [{ url: '/opengraph-image', width: 1200, height: 630, alt: 'Wissen-Haus Youth Empowerment Foundation' }],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Wissen-Haus — Bridging the Skills Gap in Nigeria',
-    description: 'Empowering young Nigerians with practical career skills, mentorship, and global exposure.',
+    title: 'Wissen-Haus — Bridging the Skills Gap for African Youth',
+    description: 'Empowering young Africans and the diaspora with practical career skills, mentorship, and global exposure.',
     images: ['/opengraph-image'],
   },
 }
@@ -27,7 +27,7 @@ const ARROW = (
 )
 
 export default async function HomePage() {
-  let tagline = 'Every young Nigerian deserves the tools to thrive.'
+  let tagline = 'Every young African and diaspora changemaker deserves the tools to thrive.'
   try {
     const rows = await sql`SELECT value FROM site_content WHERE key = 'site_settings'`
     const val = rows[0]?.value as { tagline?: string } | undefined
@@ -92,7 +92,7 @@ export default async function HomePage() {
               <h2 className="mt-s">{tagline}</h2>
             </div>
             <div className="reveal--right">
-              <p className="lead">We are dedicated to bridging the skills gap in Nigeria by equipping young people with practical career guidance and global exposure. Our mission is to empower the next generation through economic independence and social impact, ensuring every young Nigerian has the tools to thrive.</p>
+              <p className="lead">We are dedicated to bridging the skills gap for African youth and the diaspora by equipping young people with practical career guidance and global exposure. Founded in Ibadan, Nigeria, our mission is to empower the next generation — in Nigeria, across Africa, and internationally — through economic independence and social impact.</p>
               <Link href="/about" className="textlink mt-m">Read our story {ARROW}</Link>
             </div>
           </div>
@@ -148,7 +148,7 @@ export default async function HomePage() {
               <div className="card__body">
                 <span className="card__num">03</span>
                 <h3>Impact Content</h3>
-                <p>Empowering Nigerian youth through social-impact storytelling and community-driven initiatives.</p>
+                <p>Empowering African youth and the diaspora through social-impact storytelling and community-driven initiatives.</p>
                 <Link href="/impact-content" className="textlink">Explore more {ARROW}</Link>
               </div>
             </article>
@@ -176,7 +176,7 @@ export default async function HomePage() {
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><circle cx="12" cy="12" r="9" /><path d="M3 12h18M12 3c2.5 2.5 3.8 5.7 3.8 9s-1.3 6.5-3.8 9c-2.5-2.5-3.8-5.7-3.8-9S9.5 5.5 12 3z" /></svg>
               </div>
               <h3>See Global Opportunities</h3>
-              <p>Remote jobs, international scholarships, visa-sponsored roles. Learn how to position yourself to compete globally—all while building your career in Nigeria.</p>
+              <p>Remote jobs, international scholarships, visa-sponsored roles. Learn how to position yourself to compete globally—whether you&#39;re building your career in Nigeria, elsewhere in Africa, or in the diaspora.</p>
             </div>
             <div className="feature reveal" data-d="2">
               <div className="feature__ic">
@@ -234,7 +234,7 @@ export default async function HomePage() {
             <div className="reveal">
               <span className="section-index">02 · Policy &amp; Research</span>
               <h2 className="mt-s">Evidence for the future of work.</h2>
-              <p className="lead mt-s">We publish comprehensive policy papers and research reports focused on the future of work, youth economic independence, and global exposure for Nigerian students.</p>
+              <p className="lead mt-s">We publish comprehensive policy papers and research reports focused on the future of work, youth economic independence, and global exposure for African and diaspora students.</p>
               <Link href="/policy-research" className="btn mt-m">
                 View papers {ARROW}
               </Link>
@@ -264,7 +264,7 @@ export default async function HomePage() {
         <div className="wrap">
           <div className="cta-band reveal">
             <span className="eyebrow" style={{ color: '#fff' }}><span style={{ background: '#fff' }} />Get Involved</span>
-            <h2 className="mt-s">Help us empower Nigeria&#39;s next generation.</h2>
+            <h2 className="mt-s">Help us empower the next generation of African and diaspora youth.</h2>
             <p className="lead">Mentor a student, partner your institution, or fuel the mission with a gift. Every hour and every naira moves a young person closer to economic independence.</p>
             <div className="cta-actions">
               <Link href="/volunteer" className="btn btn--light btn--lg">Volunteer with us</Link>

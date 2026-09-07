@@ -3,7 +3,7 @@ import Link from 'next/link'
 
 export const metadata: Metadata = {
   title: 'Events & Cafés · Wissen-Haus',
-  description: 'Networking events, career cafés, and workshops that connect Nigerian youth with professionals in relaxed, inspiring settings.',
+  description: 'Networking events, career cafés, and workshops that connect African youth and the diaspora with professionals in relaxed, inspiring settings.',
 }
 
 const ARROW = (
@@ -64,7 +64,7 @@ export default function EventsPage() {
           <span className="eyebrow eyebrow--light reveal">Programmes · Events</span>
           <h1 className="display-lg mt-s reveal" style={{ color: '#fff' }}>Events &amp; Cafés</h1>
           <p className="lead mt-m reveal" data-d="1" style={{ color: 'rgba(244,240,231,.78)', maxWidth: 620, marginInline: 'auto' }}>
-            Networking events, career cafés, and workshops that connect Nigerian youth with professionals — in real spaces, with real conversations.
+            Networking events, career cafés, and workshops that connect African youth and the diaspora with professionals — in real spaces, with real conversations.
           </p>
           <div className="cta-actions mt-l reveal" data-d="2">
             <a href="#upcoming" className="btn btn--light btn--lg">See upcoming events</a>

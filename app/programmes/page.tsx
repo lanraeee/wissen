@@ -21,7 +21,7 @@ export default function ProgrammesPage() {
           <div className="section-head reveal">
             <span className="eyebrow">Our Programmes</span>
             <h1 className="display-lg mt-s">Everything we build, built for you.</h1>
-            <p className="lead mt-m">From one-day career fairs to podcasts to digital courses—every Wissen-Haus programme is designed to bridge a real gap in a young Nigerian&#39;s journey.</p>
+            <p className="lead mt-m">From one-day career fairs to podcasts to digital courses—every Wissen-Haus programme is designed to bridge a real gap in a young African or diaspora changemaker&#39;s journey.</p>
           </div>
         </div>
       </section>
@@ -65,7 +65,7 @@ export default function ProgrammesPage() {
               <div className="card__body">
                 <span className="card__num">03</span>
                 <h3>Impact Content</h3>
-                <p>Social-impact storytelling that highlights Nigerian youth doing extraordinary things. Your story matters and deserves to be told.</p>
+                <p>Social-impact storytelling that highlights African youth and diaspora changemakers doing extraordinary things. Your story matters and deserves to be told.</p>
                 <Link href="/impact-content" className="textlink">Explore stories {ARROW}</Link>
               </div>
             </article>
