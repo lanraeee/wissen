@@ -36,7 +36,7 @@ export default function TestimonialCarousel() {
     const track = trackRef.current
     if (track) {
       const card = track.children[next] as HTMLElement | undefined
-      card?.scrollIntoView({ behavior: 'smooth', inline: 'start', block: 'nearest' })
+      if (card) track.scrollTo({ left: card.offsetLeft, behavior: 'smooth' })
     }
   }, [items.length])
 
