@@ -41,8 +41,8 @@ export async function PUT(req: NextRequest) {
   const reference = intent.id
 
   try {
-    await sql`INSERT INTO submissions (type, data) VALUES ('donation', ${JSON.stringify({ name, email, amount, currency, reference, provider: 'Stripe' })})`
-  } catch { /* non-fatal */ }
+    await sql`INSERT INTO submissions (type, name, email, data) VALUES ('donation', ${name || email || 'Unknown Donor'}, ${email || 'unknown@wissenhaus.org'}, ${JSON.stringify({ name, email, amount, currency, reference, provider: 'Stripe' })})`
+  } catch (err) { console.error('[stripe submission insert]', err) }
 
   try {
     await Promise.all([

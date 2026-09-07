@@ -48,8 +48,8 @@ export async function PUT(req: NextRequest) {
   const currency = data.data.currency
 
   try {
-    await sql`INSERT INTO submissions (type, data) VALUES ('donation', ${JSON.stringify({ name, email, amount, currency, reference, provider: 'Paystack' })})`
-  } catch { /* non-fatal */ }
+    await sql`INSERT INTO submissions (type, name, email, data) VALUES ('donation', ${name || email || 'Unknown Donor'}, ${email || 'unknown@wissenhaus.org'}, ${JSON.stringify({ name, email, amount, currency, reference, provider: 'Paystack' })})`
+  } catch (err) { console.error('[paystack submission insert]', err) }
 
   try {
     await Promise.all([
