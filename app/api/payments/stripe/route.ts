@@ -19,9 +19,11 @@ export async function POST(req: NextRequest) {
   try {
     const session = await getStripe().checkout.sessions.create({
       mode: 'payment',
-      // Payment methods are controlled by this Stripe account's Managed
-      // Payments settings (dashboard), not an explicit list here — passing
-      // payment_method_types is rejected when Managed Payments is enabled.
+      // Managed Payments (Stripe's merchant-of-record mode) requires a tax
+      // code on every line item, which doesn't apply to a donation — no
+      // goods or services are exchanged. Opt this session out of it so
+      // payment methods fall back to the account's normal configuration.
+      managed_payments: { enabled: false },
       customer_email: email,
       line_items: [{
         price_data: {
