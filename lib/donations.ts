@@ -9,7 +9,7 @@ export interface VerifiedDonation {
   name: string
   email: string
   reference: string
-  provider: 'Stripe' | 'Paystack'
+  provider: 'Stripe'
 }
 
 async function alreadyRecorded(reference: string): Promise<boolean> {
@@ -74,19 +74,4 @@ export async function verifyStripeSession(sessionId: string): Promise<VerifiedDo
   const name = session.metadata?.name || email
 
   return { amount, currency, name, email, reference: session.id, provider: 'Stripe' }
-}
-
-export async function verifyPaystackTransaction(reference: string): Promise<VerifiedDonation | null> {
-  const res = await fetch(`https://api.paystack.co/transaction/verify/${reference}`, {
-    headers: { Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}` },
-  })
-  const data = await res.json()
-  if (!data.status || data.data?.status !== 'success') return null
-
-  const amount = data.data.amount / 100
-  const currency = data.data.currency
-  const email = data.data.customer?.email || 'unknown@wissenhaus.org'
-  const name = data.data.metadata?.name || email
-
-  return { amount, currency, name, email, reference, provider: 'Paystack' }
 }

@@ -58,7 +58,7 @@ export default function DonatePage() {
           <div className="section-head center mb-l reveal">
             <span className="eyebrow">Give Now</span>
             <h2>Choose a gift that changes a life.</h2>
-            <p className="lead">Pick a suggested amount or enter your own. Nigerian donors pay via Paystack; international donors via Stripe. Every contribution goes directly to equipping students.</p>
+            <p className="lead">Pick a suggested amount or enter your own. All donations — in Naira, Dollars or Pounds — are processed securely by Stripe. Every contribution goes directly to equipping students.</p>
           </div>
           <div className="card reveal" style={{ padding: 'clamp(24px,4vw,48px)', maxWidth: 640, margin: '0 auto' }}>
             <DonateWidget />

@@ -3,10 +3,20 @@
 import { useState, FormEvent } from 'react'
 import posthog from 'posthog-js'
 
-const AMOUNTS_NGN = [5000, 10000, 20000, 50000]
-const AMOUNTS_USD = [5, 10, 25, 50]
+type Currency = 'NGN' | 'USD' | 'GBP'
 
-type Currency = 'NGN' | 'USD'
+const AMOUNTS: Record<Currency, number[]> = {
+  NGN: [5000, 10000, 20000, 50000],
+  USD: [5, 10, 25, 50],
+  GBP: [5, 10, 25, 50],
+}
+const SYMBOL: Record<Currency, string> = { NGN: '₦', USD: '$', GBP: '£' }
+const TOGGLE_LABEL: Record<Currency, string> = {
+  NGN: '🇳🇬 Naira (₦)',
+  USD: '🇺🇸 US Dollar ($)',
+  GBP: '🇬🇧 British Pound (£)',
+}
+const CUSTOM_PLACEHOLDER: Record<Currency, string> = { NGN: '15000', USD: '30', GBP: '25' }
 
 export default function DonateWidget() {
   const [currency, setCurrency] = useState<Currency>('NGN')
@@ -17,8 +27,8 @@ export default function DonateWidget() {
   const [status, setStatus] = useState<'idle' | 'loading' | 'error'>('idle')
   const [error, setError] = useState('')
 
-  const amounts = currency === 'NGN' ? AMOUNTS_NGN : AMOUNTS_USD
-  const symbol = currency === 'NGN' ? '₦' : '$'
+  const amounts = AMOUNTS[currency]
+  const symbol = SYMBOL[currency]
 
   const finalAmount = custom ? parseFloat(custom) : selected
 
@@ -30,11 +40,10 @@ export default function DonateWidget() {
     setStatus('loading')
     setError('')
 
-    const endpoint = currency === 'NGN' ? '/api/payments/paystack' : '/api/payments/stripe'
     const siteUrl = window.location.origin
 
     try {
-      const res = await fetch(endpoint, {
+      const res = await fetch('/api/payments/stripe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -49,17 +58,9 @@ export default function DonateWidget() {
       if (!res.ok) throw new Error(data.error || 'Payment initialisation failed')
 
       // Capture donation initiation before redirect (browser unloads immediately after)
-      posthog.capture('donation_initiated', {
-        amount: finalAmount,
-        currency,
-        provider: currency === 'NGN' ? 'paystack' : 'stripe',
-      })
+      posthog.capture('donation_initiated', { amount: finalAmount, currency, provider: 'stripe' })
 
-      if (currency === 'NGN' && data.authorizationUrl) {
-        window.location.href = data.authorizationUrl
-      } else if (currency === 'USD' && data.url) {
-        window.location.href = data.url
-      }
+      if (data.url) window.location.href = data.url
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Something went wrong')
       setStatus('error')
@@ -69,21 +70,21 @@ export default function DonateWidget() {
   return (
     <form onSubmit={handleSubmit} style={{ maxWidth: 560, margin: '0 auto' }}>
       {/* Currency toggle */}
-      <div style={{ display: 'flex', gap: 8, marginBottom: 28 }}>
-        {(['NGN', 'USD'] as Currency[]).map(c => (
+      <div style={{ display: 'flex', gap: 8, marginBottom: 28, flexWrap: 'wrap' }}>
+        {(['NGN', 'USD', 'GBP'] as Currency[]).map(c => (
           <button
             key={c}
             type="button"
             onClick={() => { setCurrency(c); setSelected(null); setCustom('') }}
             style={{
-              flex: 1, padding: '10px 0', borderRadius: 8, border: '2px solid',
+              flex: '1 1 140px', padding: '10px 0', borderRadius: 8, border: '2px solid',
               borderColor: currency === c ? 'var(--green-800,#1a3c2e)' : '#e8e4dc',
               background: currency === c ? 'var(--green-800,#1a3c2e)' : '#fff',
               color: currency === c ? '#f4f0e7' : '#3a4a3f',
               fontWeight: 700, fontSize: '.88rem', cursor: 'pointer', transition: 'all .15s',
             }}
           >
-            {c === 'NGN' ? '🇳🇬 Nigerian Naira (₦)' : '🌍 International (USD $)'}
+            {TOGGLE_LABEL[c]}
           </button>
         ))}
       </div>
@@ -115,7 +116,7 @@ export default function DonateWidget() {
           type="number"
           min="1"
           step="any"
-          placeholder={`e.g. ${symbol}${currency === 'NGN' ? '15000' : '30'}`}
+          placeholder={`e.g. ${symbol}${CUSTOM_PLACEHOLDER[currency]}`}
           value={custom}
           onChange={e => { setCustom(e.target.value); setSelected(null) }}
         />
@@ -147,7 +148,7 @@ export default function DonateWidget() {
       </button>
 
       <p style={{ textAlign: 'center', fontSize: '.78rem', color: 'var(--ink-60,#8a9a8f)', marginTop: '1rem' }}>
-        {currency === 'NGN' ? 'Powered by Paystack · Secure Nigerian payment gateway' : 'Powered by Stripe · Secure international payments'}
+        Powered by Stripe · Secure payments in Naira, Dollars or Pounds
       </p>
     </form>
   )

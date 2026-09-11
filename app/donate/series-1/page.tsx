@@ -375,7 +375,7 @@ export default function DonationDriveSeries1Page() {
             <span className="eyebrow">Give Now</span>
             <h2>Fund a student's day.</h2>
             <p className="lead mt-m" style={{ maxWidth: 560, marginInline: 'auto' }}>
-              Nigerian supporters give via Paystack. International supporters via Stripe. Every contribution — of any size — fills a seat at the Fair.
+              All donations — in Naira, Dollars or Pounds — are processed securely by Stripe. Every contribution — of any size — fills a seat at the Fair.
             </p>
           </div>
 
@@ -432,7 +432,7 @@ export default function DonationDriveSeries1Page() {
               {
                 icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><rect x="3" y="11" width="18" height="11" rx="2" /><path d="M7 11V7a5 5 0 0110 0v4" strokeLinecap="round" /></svg>,
                 title: 'Secure Payments',
-                desc: 'Processed by Paystack (Nigeria) and Stripe (international) — PCI-compliant and encrypted. Payment details never stored by Wissen-Haus.',
+                desc: 'Processed by Stripe — PCI-compliant and encrypted, for Naira, Dollar and Pound gifts alike. Payment details never stored by Wissen-Haus.',
               },
             ].map((f, i) => (
               <div key={f.title} className="feature reveal" data-d={i > 0 ? String(i) : undefined}>

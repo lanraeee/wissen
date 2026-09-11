@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { verifyStripeSession, verifyPaystackTransaction, recordDonation } from '@/lib/donations'
+import { verifyStripeSession, recordDonation } from '@/lib/donations'
 
 export const metadata: Metadata = {
   title: 'Thank You · Wissen-Haus',
@@ -8,23 +8,16 @@ export const metadata: Metadata = {
 }
 
 interface Props {
-  searchParams: Promise<{ provider?: string; session_id?: string; reference?: string; trxref?: string }>
+  searchParams: Promise<{ session_id?: string }>
 }
 
 async function verifyAndRecord(sp: Awaited<Props['searchParams']>) {
+  if (!sp.session_id) return null
   try {
-    if (sp.provider === 'stripe' && sp.session_id) {
-      const donation = await verifyStripeSession(sp.session_id)
-      if (donation) {
-        await recordDonation(donation)
-        return donation
-      }
-    } else if (sp.provider === 'paystack' && (sp.reference || sp.trxref)) {
-      const donation = await verifyPaystackTransaction(sp.reference ?? sp.trxref!)
-      if (donation) {
-        await recordDonation(donation)
-        return donation
-      }
+    const donation = await verifyStripeSession(sp.session_id)
+    if (donation) {
+      await recordDonation(donation)
+      return donation
     }
   } catch (err) {
     console.error('[donate/success verify]', err)
