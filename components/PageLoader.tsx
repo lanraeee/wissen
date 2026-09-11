@@ -5,18 +5,36 @@ import { usePathname } from 'next/navigation'
 
 export default function PageLoader() {
   const ref = useRef<HTMLDivElement>(null)
+  const firstRun = useRef(true)
   const pathname = usePathname()
 
-  // Initial load: dismiss after 600ms
+  // Initial load: dismiss as soon as the document is ready, with a short cap
+  // so the overlay never traps the viewport for seconds.
   useEffect(() => {
     const el = ref.current
     if (!el) return
-    const t = setTimeout(() => el.classList.add('wh-out'), 600)
-    return () => clearTimeout(t)
+    const dismiss = () => el.classList.add('wh-out')
+
+    if (document.readyState === 'complete') requestAnimationFrame(dismiss)
+    const cap = setTimeout(dismiss, 1500)
+    // `pageshow` fires on load and, crucially, when iOS Safari restores the
+    // page from the back/forward cache. Dismiss then so returning users and
+    // slow first loads are never blocked.
+    window.addEventListener('pageshow', dismiss)
+
+    return () => {
+      clearTimeout(cap)
+      window.removeEventListener('pageshow', dismiss)
+    }
   }, [])
 
-  // Route change: reset then dismiss after 300ms
+  // Route change: reset then dismiss after a brief moment. Skip the first run,
+  // which the initial-load effect already handles.
   useEffect(() => {
+    if (firstRun.current) {
+      firstRun.current = false
+      return
+    }
     const el = ref.current
     if (!el) return
     el.classList.remove('wh-out')
@@ -61,8 +79,8 @@ export default function PageLoader() {
           opacity: 1;
           pointer-events: all;
           transition: opacity 0.45s ease, visibility 0s linear 0.45s;
-          /* CSS fallback: if JS bundle is slow, auto-dismiss after 5s */
-          animation: wh-auto-out 5s ease forwards;
+          /* CSS fallback: if the JS bundle never runs, auto-dismiss after 2s */
+          animation: wh-auto-out 2s ease forwards;
         }
         .wh-loader.wh-out {
           opacity: 0;
