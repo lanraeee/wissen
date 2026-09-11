@@ -72,7 +72,7 @@ export async function sendWelcomeEmail(to: string, name: string) {
     html: shell(`
       <span class="badge">Welcome</span>
       <h2>You're in, ${firstName}!</h2>
-      <p>Thank you for joining the Wissen-Haus community — a space built to help young Nigerians discover their path, build real skills, and access global opportunities.</p>
+      <p>Thank you for joining the Wissen-Haus community — a space built to help young Africans and diaspora changemakers discover their path, build real skills, and access global opportunities.</p>
       <p>Here's what you can do now:</p>
       <ul>
         <li>Take free certificate courses in the <strong>Learning Library</strong></li>
@@ -173,11 +173,11 @@ export async function sendDonationReceipt(to: string, name: string, amount: numb
     html: shell(`
       <span class="badge">Donation Confirmed</span>
       <h2>Thank you for your gift, ${firstName}!</h2>
-      <p>Your generous donation has been received. Every naira (and pound) goes directly toward empowering young Nigerians.</p>
+      <p>Your generous donation has been received. Every naira (and pound) goes directly toward empowering young people across Africa and the diaspora.</p>
       <div class="field"><div class="k">Amount</div><div class="v"><strong>${formatted}</strong></div></div>
       <div class="field"><div class="k">Reference</div><div class="v" style="font-family:monospace;font-size:.85rem">${esc(ref)}</div></div>
       <div class="divider"></div>
-      <p>Your support helps us run free career Trade Fairs, mentorship programmes and global exposure events for students who need it most.</p>
+      <p>Your support helps us run free Career Clarity Fairs, mentorship programmes and global exposure events for students who need it most.</p>
       <a href="https://wissenhaus.org/impact" class="btn">See our impact →</a>
     `),
   })

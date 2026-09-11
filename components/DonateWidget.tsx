@@ -57,9 +57,8 @@ export default function DonateWidget() {
 
       if (currency === 'NGN' && data.authorizationUrl) {
         window.location.href = data.authorizationUrl
-      } else if (currency === 'USD' && data.clientSecret) {
-        // Redirect to Stripe-hosted checkout isn't set up yet; open success with ref
-        window.location.href = `/donate/success?ref=${data.reference}&provider=stripe`
+      } else if (currency === 'USD' && data.url) {
+        window.location.href = data.url
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Something went wrong')

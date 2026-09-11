@@ -1,70 +1,47 @@
-﻿import { NextRequest, NextResponse } from 'next/server'
-import Stripe from 'stripe'
-import { sendDonationReceipt, sendDonationNotification } from '@/lib/email'
-import sql from '@/lib/db'
-import { getPostHogClient } from '@/lib/posthog-server'
+import { NextRequest, NextResponse } from 'next/server'
+import { getStripe } from '@/lib/stripe'
+import { verifyStripeSession, recordDonation } from '@/lib/donations'
 
-let _stripe: Stripe | null = null
-function getStripe() {
-  if (!_stripe) _stripe = new Stripe(process.env.STRIPE_SECRET_KEY ?? 'placeholder', { apiVersion: '2026-06-24.dahlia' })
-  return _stripe
-}
-
-// Create payment intent
+// Create a Stripe Checkout session for an international donation
 export async function POST(req: NextRequest) {
-  const { amount, currency = 'gbp', name, email } = await req.json()
-  if (!amount || amount < 1)
-    return NextResponse.json({ error: 'Amount required (min Â£1)' }, { status: 400 })
+  const { amount, currency = 'usd', name, email, callbackUrl } = await req.json()
+  if (!amount || amount < 1 || !email)
+    return NextResponse.json({ error: 'Email and amount (min 1) required' }, { status: 400 })
 
-  const intent = await getStripe().paymentIntents.create({
-    amount: Math.round(amount * 100),
-    currency,
-    metadata: { name: name || '', email: email || '' },
-    receipt_email: email || undefined,
-    description: 'Wissen-Haus donation',
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://wissenhaus.org'
+  const base = callbackUrl ?? `${siteUrl}/donate/success`
+  const successUrl = `${base}${base.includes('?') ? '&' : '?'}provider=stripe&session_id={CHECKOUT_SESSION_ID}`
+  const cancelUrl = `${siteUrl}/donate`
+
+  const session = await getStripe().checkout.sessions.create({
+    mode: 'payment',
+    payment_method_types: ['card'],
+    customer_email: email,
+    line_items: [{
+      price_data: {
+        currency: String(currency).toLowerCase(),
+        product_data: { name: 'Donation to Wissen-Haus Youth Empowerment Foundation' },
+        unit_amount: Math.round(amount * 100),
+      },
+      quantity: 1,
+    }],
+    metadata: { name: name || '', email },
+    success_url: successUrl,
+    cancel_url: cancelUrl,
   })
 
-  return NextResponse.json({ clientSecret: intent.client_secret, intentId: intent.id })
+  return NextResponse.json({ url: session.url })
 }
 
-// Confirm and record payment
+// Verify and record a completed Checkout session — called by the success page,
+// but kept as its own endpoint so it can also be triggered manually/via webhook.
 export async function PUT(req: NextRequest) {
-  const { intentId, name, email } = await req.json()
-  if (!intentId) return NextResponse.json({ error: 'intentId required' }, { status: 400 })
+  const { sessionId } = await req.json()
+  if (!sessionId) return NextResponse.json({ error: 'sessionId required' }, { status: 400 })
 
-  const intent = await getStripe().paymentIntents.retrieve(intentId)
-  if (intent.status !== 'succeeded')
-    return NextResponse.json({ error: 'Payment not completed' }, { status: 400 })
+  const donation = await verifyStripeSession(sessionId)
+  if (!donation) return NextResponse.json({ error: 'Payment not verified' }, { status: 400 })
 
-  const amount = intent.amount / 100
-  const currency = intent.currency.toUpperCase()
-  const reference = intent.id
-
-  try {
-    await sql`INSERT INTO submissions (type, name, email, data) VALUES ('donation', ${name || email || 'Unknown Donor'}, ${email || 'unknown@wissenhaus.org'}, ${JSON.stringify({ name, email, amount, currency, reference, provider: 'Stripe' })})`
-  } catch (err) { console.error('[stripe submission insert]', err) }
-
-  try {
-    await Promise.all([
-      sendDonationReceipt(email, name || email, amount, currency, reference),
-      sendDonationNotification({ name: name || email, email, amount, currency, ref: reference, provider: 'Stripe' }),
-    ])
-  } catch (err) { console.error('[stripe email]', err) }
-
-  // Track completed donation server-side
-  const posthog = getPostHogClient()
-  posthog.capture({
-    distinctId: reference,
-    event: 'donation_completed',
-    properties: {
-      amount,
-      currency,
-      provider: 'stripe',
-      reference,
-    },
-  })
-  await posthog.flush()
-
-  return NextResponse.json({ success: true, amount, currency })
+  await recordDonation(donation)
+  return NextResponse.json({ success: true, amount: donation.amount, currency: donation.currency })
 }
-

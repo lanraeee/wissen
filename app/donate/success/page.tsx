@@ -1,12 +1,41 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import { verifyStripeSession, verifyPaystackTransaction, recordDonation } from '@/lib/donations'
 
 export const metadata: Metadata = {
   title: 'Thank You · Wissen-Haus',
-  description: 'Your donation to Wissen-Haus has been received. Thank you for empowering Nigerian youth.',
+  description: 'Your donation to Wissen-Haus has been received. Thank you for empowering youth across Africa and the diaspora.',
 }
 
-export default function DonateSuccess() {
+interface Props {
+  searchParams: Promise<{ provider?: string; session_id?: string; reference?: string; trxref?: string }>
+}
+
+async function verifyAndRecord(sp: Awaited<Props['searchParams']>) {
+  try {
+    if (sp.provider === 'stripe' && sp.session_id) {
+      const donation = await verifyStripeSession(sp.session_id)
+      if (donation) {
+        await recordDonation(donation)
+        return donation
+      }
+    } else if (sp.provider === 'paystack' && (sp.reference || sp.trxref)) {
+      const donation = await verifyPaystackTransaction(sp.reference ?? sp.trxref!)
+      if (donation) {
+        await recordDonation(donation)
+        return donation
+      }
+    }
+  } catch (err) {
+    console.error('[donate/success verify]', err)
+  }
+  return null
+}
+
+export default async function DonateSuccess({ searchParams }: Props) {
+  const sp = await searchParams
+  const donation = await verifyAndRecord(sp)
+
   return (
     <section className="section" style={{ paddingTop: 'clamp(64px,8vw,120px)', minHeight: '70vh', display: 'flex', alignItems: 'center' }}>
       <div className="wrap" style={{ textAlign: 'center' }}>
@@ -16,9 +45,15 @@ export default function DonateSuccess() {
           </svg>
         </div>
         <h1 className="display-lg" style={{ marginBottom: '1rem' }}>Thank you for giving.</h1>
-        <p className="lead" style={{ maxWidth: '38ch', margin: '0 auto 2rem', color: 'var(--ink-60)' }}>
-          Your donation is on its way to changing a young Nigerian&apos;s life. A receipt has been sent to your email.
-        </p>
+        {donation ? (
+          <p className="lead" style={{ maxWidth: '38ch', margin: '0 auto 2rem', color: 'var(--ink-60)' }}>
+            Your gift of {new Intl.NumberFormat('en-NG', { style: 'currency', currency: donation.currency }).format(donation.amount)} is on its way to changing a young person&apos;s life. A receipt has been sent to your email.
+          </p>
+        ) : (
+          <p className="lead" style={{ maxWidth: '38ch', margin: '0 auto 2rem', color: 'var(--ink-60)' }}>
+            Your donation is on its way to changing a young person&apos;s life. If your payment completed successfully, a receipt has been sent to your email.
+          </p>
+        )}
         <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
           <Link href="/impact" className="btn">See Our Impact</Link>
           <Link href="/" className="btn btn--ghost">Back to Home</Link>
