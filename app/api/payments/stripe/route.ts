@@ -19,7 +19,9 @@ export async function POST(req: NextRequest) {
   try {
     const session = await getStripe().checkout.sessions.create({
       mode: 'payment',
-      payment_method_types: ['card'],
+      // Payment methods are controlled by this Stripe account's Managed
+      // Payments settings (dashboard), not an explicit list here — passing
+      // payment_method_types is rejected when Managed Payments is enabled.
       customer_email: email,
       line_items: [{
         price_data: {
