@@ -3,6 +3,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import sql from '@/lib/db'
 import TestimonialCarousel from '@/components/TestimonialCarousel'
+import InstagramReel from '@/components/InstagramReel'
 
 export const metadata: Metadata = {
   title: 'Wissen-Haus Youth Empowerment Foundation · Bridging the Skills Gap',
@@ -208,17 +209,7 @@ export default async function HomePage() {
               </div>
             </div>
             <div className="reveal--right">
-              <div className="reel-frame">
-                <span className="reel-frame__ring" />
-                <iframe
-                  src="https://www.instagram.com/reel/DaGV76FIV2u/embed/"
-                  title="Wissen-Haus on Instagram"
-                  loading="lazy"
-                  scrolling="no"
-                  allowTransparency={true}
-                  allow="encrypted-media; clipboard-write"
-                />
-              </div>
+              <InstagramReel />
             </div>
           </div>
         </div>
