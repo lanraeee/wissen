@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import posthog from 'posthog-js'
 
 interface Props {
@@ -103,6 +104,9 @@ export default function AuthModal({ onClose, defaultTab = 'login' }: Props) {
             <div className="field">
               <label htmlFor="login-password">Password</label>
               <input id="login-password" name="password" type="password" required placeholder="••••••••" />
+              <div style={{ textAlign: 'right', marginTop: 6 }}>
+                <Link href="/forgot-password" onClick={onClose} style={{ color: 'var(--ink-60)', fontSize: '.82rem' }}>Forgot password?</Link>
+              </div>
             </div>
             <button type="submit" className="btn btn--block" disabled={loading}>
               {loading ? 'Logging in…' : 'Log In'}

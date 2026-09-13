@@ -276,3 +276,36 @@ export async function sendTestimonialNotification(data: { name: string; role: st
     `),
   })
 }
+
+// ─── Password reset request (to user) ──────────────────────────────────────
+export async function sendPasswordResetEmail(to: string, name: string, resetUrl: string) {
+  const firstName = esc(name.split(' ')[0])
+  return getResend().emails.send({
+    from: FROM,
+    to,
+    subject: 'Reset your Wissen-Haus password',
+    html: shell(`
+      <span class="badge">Password Reset</span>
+      <h2>Hi ${firstName},</h2>
+      <p>We received a request to reset your Wissen-Haus password. Click the button below to choose a new one. This link expires in 1 hour.</p>
+      <a href="${esc(resetUrl)}" class="btn">Reset your password →</a>
+      <p style="font-size:.85rem;color:#8a9a8f">If you didn't request this, you can safely ignore this email — your password will not be changed.</p>
+    `),
+  })
+}
+
+// ─── Password changed confirmation (to user) ───────────────────────────────
+export async function sendPasswordChangedEmail(to: string, name: string) {
+  const firstName = esc(name.split(' ')[0])
+  return getResend().emails.send({
+    from: FROM,
+    to,
+    subject: 'Your Wissen-Haus password was changed',
+    html: shell(`
+      <span class="badge">Security Alert</span>
+      <h2>Hi ${firstName},</h2>
+      <p>This confirms that your Wissen-Haus account password was just changed. If this was you, no action is needed.</p>
+      <p style="font-size:.85rem;color:#8a9a8f">If you didn't make this change, please contact us immediately at <a href="mailto:info@wissenhaus.org" style="color:#1a3c2e">info@wissenhaus.org</a>.</p>
+    `),
+  })
+}
