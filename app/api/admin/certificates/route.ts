@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { adminGuard } from '@/lib/admin-guard'
 import sql from '@/lib/db'
 import { COURSES } from '@/lib/courseData'
+import { sendCertificateEmail } from '@/lib/email'
 
 export async function POST(req: NextRequest) {
   if (!await adminGuard()) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
@@ -19,10 +20,11 @@ export async function POST(req: NextRequest) {
   const course = COURSES.find(c => c.id === courseId)
   if (!course) return NextResponse.json({ error: 'Unknown course' }, { status: 400 })
 
-  const users = await sql`SELECT id FROM users WHERE email = ${email.toLowerCase().trim()}`
+  const users = await sql`SELECT id, first_name, last_name FROM users WHERE email = ${email.toLowerCase().trim()}`
   if (!users[0]) return NextResponse.json({ error: 'User not found' }, { status: 404 })
 
   const userId = users[0].id as string
+  const userName = `${users[0].first_name} ${users[0].last_name}`
 
   // Optionally mark all modules as complete first
   if (markComplete) {
@@ -48,6 +50,9 @@ export async function POST(req: NextRequest) {
     INSERT INTO certificates (user_id, course_id, certificate_id)
     VALUES (${userId}, ${courseId}, ${certId})
   `
+
+  sendCertificateEmail(email, userName, course.title, certId)
+    .catch(err => console.error('[admin certificate email]', err))
 
   return NextResponse.json({ success: true, certificateId: certId, alreadyExisted: false })
 }

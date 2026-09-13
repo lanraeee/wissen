@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import sql from '@/lib/db'
 import { getSession } from '@/lib/auth'
 import { ensureTestimonialsTable } from '@/lib/testimonials-db'
+import { sendTestimonialNotification } from '@/lib/email'
 
 export async function GET() {
   await ensureTestimonialsTable()
@@ -32,5 +33,9 @@ export async function POST(req: NextRequest) {
     VALUES (${session.name}, ${role}, ${quote}, 'candidate', 'pending', ${session.id})
     RETURNING id, name, role, quote, status, created_at
   `
+
+  sendTestimonialNotification({ name: session.name, role, quote })
+    .catch(err => console.error('[testimonial notification]', err))
+
   return NextResponse.json({ testimonial: row }, { status: 201 })
 }

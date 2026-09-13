@@ -25,6 +25,37 @@ async function alreadyRecorded(reference: string): Promise<boolean> {
   }
 }
 
+// Appends a certificate to the donation_certificates JSONB array (a single
+// atomic UPDATE, safe under concurrent donations) and returns its cert_id
+// so the receipt email can link straight to /donate/receipt/[certId].
+async function issueCertificate(d: VerifiedDonation): Promise<string | null> {
+  const certId = `WH-DON-${d.reference.replace(/[^a-zA-Z0-9]/g, '').slice(-10).toUpperCase()}`
+  const cert = {
+    cert_id: certId,
+    donor_name: d.name,
+    donor_email: d.email,
+    amount: d.amount,
+    currency: d.currency,
+    date: new Date().toISOString(),
+    purpose: 'General Donation',
+    issued_at: new Date().toISOString(),
+  }
+
+  try {
+    await sql`
+      INSERT INTO site_content (key, value)
+      VALUES ('donation_certificates', jsonb_build_array(${JSON.stringify(cert)}::jsonb))
+      ON CONFLICT (key) DO UPDATE
+      SET value = site_content.value || jsonb_build_array(${JSON.stringify(cert)}::jsonb),
+          updated_at = NOW()
+    `
+    return certId
+  } catch (err) {
+    console.error(`[${d.provider} certificate issue]`, err)
+    return null
+  }
+}
+
 // Records a verified donation exactly once (safe to call again if the donor
 // reloads the success page — later calls are a no-op) and fires off the
 // receipt/notification emails and analytics event.
@@ -40,9 +71,13 @@ export async function recordDonation(d: VerifiedDonation): Promise<{ recorded: b
     console.error(`[${d.provider} submission insert]`, err)
   }
 
+  const certId = await issueCertificate(d)
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://wissenhaus.org'
+  const certUrl = certId ? `${siteUrl}/donate/receipt/${certId}` : undefined
+
   try {
     await Promise.all([
-      sendDonationReceipt(d.email, d.name, d.amount, d.currency, d.reference),
+      sendDonationReceipt(d.email, d.name, d.amount, d.currency, d.reference, certUrl),
       sendDonationNotification({ name: d.name, email: d.email, amount: d.amount, currency: d.currency, ref: d.reference, provider: d.provider }),
     ])
   } catch (err) {

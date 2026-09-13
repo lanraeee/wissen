@@ -163,7 +163,7 @@ export async function sendVolunteerConfirmation(to: string, name: string, role: 
 }
 
 // ─── Donation receipt ───────────────────────────────────────────────────────
-export async function sendDonationReceipt(to: string, name: string, amount: number, currency: string, ref: string) {
+export async function sendDonationReceipt(to: string, name: string, amount: number, currency: string, ref: string, certUrl?: string) {
   const firstName = esc(name.split(' ')[0])
   const formatted = new Intl.NumberFormat('en-NG', { style: 'currency', currency }).format(amount)
   return getResend().emails.send({
@@ -176,6 +176,7 @@ export async function sendDonationReceipt(to: string, name: string, amount: numb
       <p>Your generous donation has been received. Every naira (and pound) goes directly toward empowering young people across Africa and the diaspora.</p>
       <div class="field"><div class="k">Amount</div><div class="v"><strong>${formatted}</strong></div></div>
       <div class="field"><div class="k">Reference</div><div class="v" style="font-family:monospace;font-size:.85rem">${esc(ref)}</div></div>
+      ${certUrl ? `<a href="${esc(certUrl)}" class="btn">View &amp; print your donation certificate →</a>` : ''}
       <div class="divider"></div>
       <p>Your support helps us run free Career Clarity Fairs, mentorship programmes and global exposure events for students who need it most.</p>
       <a href="https://wissenhaus.org/impact" class="btn">See our impact →</a>
@@ -255,6 +256,23 @@ export async function sendPartnerConfirmation(to: string, name: string) {
       <h2>Thank you, ${firstName}!</h2>
       <p>We've received your partnership inquiry and someone from our team will be in touch within 5 working days to discuss next steps.</p>
       <a href="https://wissenhaus.org/partner" class="btn">Learn more about partnering with us →</a>
+    `),
+  })
+}
+
+// ─── Testimonial submitted for moderation (to admin) ───────────────────────
+export async function sendTestimonialNotification(data: { name: string; role: string | null; quote: string }) {
+  return getResend().emails.send({
+    from: FROM,
+    to: ADMIN,
+    subject: `[Testimonial] New story from ${data.name} awaiting review`,
+    html: shell(`
+      <span class="badge">Pending Review</span>
+      <h2>New impact story submitted</h2>
+      <div class="field"><div class="k">Name</div><div class="v">${esc(data.name)}</div></div>
+      ${data.role ? `<div class="field"><div class="k">Role</div><div class="v">${esc(data.role)}</div></div>` : ''}
+      <div class="field"><div class="k">Quote</div><div class="v" style="white-space:pre-wrap">${esc(data.quote)}</div></div>
+      <a href="https://wissenhaus.org/admin/testimonials" class="btn">Review in admin →</a>
     `),
   })
 }
