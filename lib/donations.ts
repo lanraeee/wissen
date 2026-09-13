@@ -25,23 +25,33 @@ async function alreadyRecorded(reference: string): Promise<boolean> {
   }
 }
 
+export function certIdForReference(reference: string): string {
+  return `WH-DON-${reference.replace(/[^a-zA-Z0-9]/g, '').slice(-10).toUpperCase()}`
+}
+
 // Appends a certificate to the donation_certificates JSONB array (a single
 // atomic UPDATE, safe under concurrent donations) and returns its cert_id
 // so the receipt email can link straight to /donate/receipt/[certId].
-async function issueCertificate(d: VerifiedDonation): Promise<string | null> {
-  const certId = `WH-DON-${d.reference.replace(/[^a-zA-Z0-9]/g, '').slice(-10).toUpperCase()}`
-  const cert = {
-    cert_id: certId,
-    donor_name: d.name,
-    donor_email: d.email,
-    amount: d.amount,
-    currency: d.currency,
-    date: new Date().toISOString(),
-    purpose: 'General Donation',
-    issued_at: new Date().toISOString(),
-  }
+// Idempotent: reuses the existing certificate if this reference already has one.
+export async function issueOrGetCertificate(d: VerifiedDonation): Promise<string | null> {
+  const certId = certIdForReference(d.reference)
 
   try {
+    const [row] = await sql`SELECT value FROM site_content WHERE key = 'donation_certificates'`
+    const existing = (row?.value as Array<{ cert_id: string }>) ?? []
+    if (existing.some(c => c.cert_id === certId)) return certId
+
+    const cert = {
+      cert_id: certId,
+      donor_name: d.name,
+      donor_email: d.email,
+      amount: d.amount,
+      currency: d.currency,
+      date: new Date().toISOString(),
+      purpose: 'General Donation',
+      issued_at: new Date().toISOString(),
+    }
+
     await sql`
       INSERT INTO site_content (key, value)
       VALUES ('donation_certificates', jsonb_build_array(${JSON.stringify(cert)}::jsonb))
@@ -71,7 +81,7 @@ export async function recordDonation(d: VerifiedDonation): Promise<{ recorded: b
     console.error(`[${d.provider} submission insert]`, err)
   }
 
-  const certId = await issueCertificate(d)
+  const certId = await issueOrGetCertificate(d)
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://wissenhaus.org'
   const certUrl = certId ? `${siteUrl}/donate/receipt/${certId}` : undefined
 
