@@ -242,3 +242,19 @@ export async function sendPartnerNotification(data: {
     `),
   })
 }
+
+// ─── Partner confirmation (to inquirer) ────────────────────────────────────
+export async function sendPartnerConfirmation(to: string, name: string) {
+  const firstName = esc(name.split(' ')[0])
+  return getResend().emails.send({
+    from: FROM,
+    to,
+    subject: `Thanks for reaching out, ${name.split(' ')[0]} — Wissen-Haus`,
+    html: shell(`
+      <span class="badge">Inquiry Received</span>
+      <h2>Thank you, ${firstName}!</h2>
+      <p>We've received your partnership inquiry and someone from our team will be in touch within 5 working days to discuss next steps.</p>
+      <a href="https://wissenhaus.org/partner" class="btn">Learn more about partnering with us →</a>
+    `),
+  })
+}

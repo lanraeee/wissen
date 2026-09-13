@@ -3,6 +3,7 @@ import { getSession } from '@/lib/auth'
 import sql from '@/lib/db'
 import { COURSES } from '@/lib/courseData'
 import { getPostHogClient } from '@/lib/posthog-server'
+import { sendCertificateEmail } from '@/lib/email'
 
 export async function GET(
   _req: NextRequest,
@@ -56,24 +57,33 @@ export async function POST(
 
     if (allComplete) {
       const certId = `WH-${courseId.toUpperCase()}-${session.id.slice(0, 8).toUpperCase()}`
-      await sql`
+      const [inserted] = await sql`
         INSERT INTO certificates (user_id, course_id, certificate_id)
         VALUES (${session.id}, ${courseId}, ${certId})
         ON CONFLICT (user_id, course_id) DO NOTHING
+        RETURNING id
       `
-      // Track certificate award server-side
-      const posthog = getPostHogClient()
-      posthog.capture({
-        distinctId: session.id,
-        event: 'course_certificate_awarded',
-        properties: {
-          course_id: courseId,
-          course_title: course.title,
-          certificate_id: certId,
-          module_count: course.modules.length,
-        },
-      })
-      await posthog.flush()
+
+      // Only the first time this certificate is actually issued — avoids
+      // re-emailing/re-tracking on every subsequent completion request.
+      if (inserted) {
+        sendCertificateEmail(session.email, session.name, course.title, certId)
+          .catch(err => console.error('[certificate email]', err))
+
+        const posthog = getPostHogClient()
+        posthog.capture({
+          distinctId: session.id,
+          event: 'course_certificate_awarded',
+          properties: {
+            course_id: courseId,
+            course_title: course.title,
+            certificate_id: certId,
+            module_count: course.modules.length,
+          },
+        })
+        await posthog.flush()
+      }
+
       return NextResponse.json({ success: true, certificateAwarded: true, certificateId: certId })
     }
   }

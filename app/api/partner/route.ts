@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { sendPartnerNotification } from '@/lib/email'
+import { sendPartnerNotification, sendPartnerConfirmation } from '@/lib/email'
 import sql from '@/lib/db'
 
 export async function POST(req: NextRequest) {
@@ -12,7 +12,10 @@ export async function POST(req: NextRequest) {
   } catch { /* non-fatal */ }
 
   try {
-    await sendPartnerNotification({ name, email, organisation, message: message || '' })
+    await Promise.all([
+      sendPartnerNotification({ name, email, organisation, message: message || '' }),
+      sendPartnerConfirmation(email, name),
+    ])
   } catch (err) {
     console.error('[partner email]', err)
   }

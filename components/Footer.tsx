@@ -116,6 +116,10 @@ export default async function Footer() {
         <div className="wrap wrap-wide">
           <div className="footer-bottom">
             <span>© {year} Wissen-Haus Youth Empowerment Foundation. All rights reserved.</span>
+            <span style={{ display: 'flex', gap: 16, alignItems: 'center', flexWrap: 'wrap' }}>
+              <Link href="/privacy">Privacy Policy</Link>
+              <Link href="/terms">Terms &amp; Conditions</Link>
+            </span>
             <span>{settings.tagline || 'Empowering youth · Educating for all · Opportunity for all'}</span>
           </div>
           {settings.footer_note && (
