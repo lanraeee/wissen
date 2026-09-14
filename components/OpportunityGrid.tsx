@@ -82,7 +82,7 @@ export default function OpportunityGrid({ type, showFilter = true }: Props) {
                 </div>
                 {opp.date_posted && (
                   <p style={{ fontSize: '.78rem', color: 'var(--ink-60)', marginTop: '.6rem', fontFamily: 'var(--ff-mono)' }}>
-                    {new Date(opp.date_posted).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+                    {new Date(opp.date_posted).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'Africa/Lagos' })}
                   </p>
                 )}
               </div>

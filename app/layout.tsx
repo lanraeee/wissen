@@ -15,6 +15,10 @@ export const metadata: Metadata = {
   authors: [{ name: 'Wissen-Haus Youth Empowerment Foundation' }],
   creator: 'Wissen-Haus Youth Empowerment Foundation',
   publisher: 'Wissen-Haus Youth Empowerment Foundation',
+  // Stop iOS Safari data detectors from rewriting dates, amounts, addresses and
+  // emails before React hydrates. That rewrite changes the server-rendered text
+  // and triggers hydration error #418 (seen on the donation receipt page).
+  formatDetection: { telephone: false, date: false, address: false, email: false },
   icons: {
     icon: [
       { url: '/img/logo.png', sizes: '32x32', type: 'image/png' },
