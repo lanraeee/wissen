@@ -12,13 +12,17 @@ function getResend() {
 // their try/catch blocks are written against), so surface .error as a thrown
 // Error instead of silently returning a "successful" response with no data.
 type ResendResult = Awaited<ReturnType<Resend['emails']['send']>>
-async function sendEmail(payload: Parameters<Resend['emails']['send']>[0]): Promise<ResendResult> {
-  const result = await getResend().emails.send(payload)
+type SendEmailPayload = Parameters<Resend['emails']['send']>[0]
+async function sendEmail(payload: SendEmailPayload): Promise<ResendResult> {
+  // FROM is an unmonitored sending address, so replies need somewhere real to
+  // land by default. Call sites that set their own replyTo (e.g. replying to
+  // whoever submitted a form) override this.
+  const result = await getResend().emails.send({ replyTo: 'info@wissenhaus.org', ...payload })
   if (result.error) throw new Error(`Resend: ${result.error.name} — ${result.error.message}`)
   return result
 }
 
-const FROM = 'Wissen-Haus <noreply@wissenhaus.org>'
+const FROM = 'Wissen-Haus <noreply@noreply.wissenhaus.org>'
 const ADMIN = process.env.FOUNDER_EMAIL ?? 'director@wissenhaus.org'
 
 function esc(s: string) {
