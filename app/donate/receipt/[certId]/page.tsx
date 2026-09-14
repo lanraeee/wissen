@@ -126,9 +126,15 @@ export default async function DonationReceiptPage({ params }: Props) {
 
   const donationDate = new Date(cert.date)
   const issuedDate = new Date(cert.issued_at)
+  // Pin the timezone so the date is the same wherever the code runs. Without it,
+  // the server formats in its own timezone and the browser in the donor's, which
+  // makes the text differ and breaks hydration.
+  const dateOpts: Intl.DateTimeFormatOptions = {
+    day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Africa/Lagos',
+  }
   const formatted = {
-    donation: donationDate.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }),
-    issued: issuedDate.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }),
+    donation: donationDate.toLocaleDateString('en-GB', dateOpts),
+    issued: issuedDate.toLocaleDateString('en-GB', dateOpts),
   }
 
   return (
