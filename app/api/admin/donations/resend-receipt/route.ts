@@ -28,7 +28,12 @@ export async function POST(req: NextRequest) {
   try {
     await sendDonationReceipt(donation.email, donation.name, donation.amount, donation.currency, donation.reference, certUrl)
   } catch (err) {
-    console.error('[resend donation receipt]', err)
+    const key = process.env.RESEND_API_KEY
+    console.error('[resend donation receipt]', err, {
+      hasKey: !!key,
+      keyLength: key?.length ?? 0,
+      keyPrefix: key?.slice(0, 3) ?? null,
+    })
     return NextResponse.json({ error: 'Failed to send email' }, { status: 502 })
   }
 
