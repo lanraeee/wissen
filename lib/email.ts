@@ -6,6 +6,18 @@ function getResend() {
   return _resend
 }
 
+// Resend's SDK never throws on API-level failures (invalid/unverified sender
+// domain, rate limits, bad recipient, etc.) — it resolves with { data, error }.
+// Every call site here expects a rejected promise on failure (that's what
+// their try/catch blocks are written against), so surface .error as a thrown
+// Error instead of silently returning a "successful" response with no data.
+type ResendResult = Awaited<ReturnType<Resend['emails']['send']>>
+async function sendEmail(payload: Parameters<Resend['emails']['send']>[0]): Promise<ResendResult> {
+  const result = await getResend().emails.send(payload)
+  if (result.error) throw new Error(`Resend: ${result.error.name} — ${result.error.message}`)
+  return result
+}
+
 const FROM = 'Wissen-Haus <noreply@wissenhaus.org>'
 const ADMIN = process.env.FOUNDER_EMAIL ?? 'director@wissenhaus.org'
 
@@ -65,7 +77,7 @@ function shell(body: string) {
 // ─── Welcome email ──────────────────────────────────────────────────────────
 export async function sendWelcomeEmail(to: string, name: string) {
   const firstName = esc(name.split(' ')[0])
-  return getResend().emails.send({
+  return sendEmail({
     from: FROM,
     to,
     subject: `Welcome to Wissen-Haus, ${name.split(' ')[0]} 🌱`,
@@ -90,7 +102,7 @@ export async function sendWelcomeEmail(to: string, name: string) {
 export async function sendContactNotification(data: {
   name: string; email: string; subject: string; message: string
 }) {
-  return getResend().emails.send({
+  return sendEmail({
     from: FROM,
     to: ADMIN,
     replyTo: data.email,
@@ -110,7 +122,7 @@ export async function sendContactNotification(data: {
 // ─── Contact confirmation (to user) ────────────────────────────────────────
 export async function sendContactConfirmation(to: string, name: string) {
   const firstName = esc(name.split(' ')[0])
-  return getResend().emails.send({
+  return sendEmail({
     from: FROM,
     to,
     subject: `We got your message, ${name.split(' ')[0]} — Wissen-Haus`,
@@ -128,7 +140,7 @@ export async function sendContactConfirmation(to: string, name: string) {
 export async function sendVolunteerNotification(data: {
   name: string; email: string; role: string; message: string
 }) {
-  return getResend().emails.send({
+  return sendEmail({
     from: FROM,
     to: ADMIN,
     replyTo: data.email,
@@ -148,7 +160,7 @@ export async function sendVolunteerNotification(data: {
 // ─── Volunteer confirmation (to user) ──────────────────────────────────────
 export async function sendVolunteerConfirmation(to: string, name: string, role: string) {
   const firstName = esc(name.split(' ')[0])
-  return getResend().emails.send({
+  return sendEmail({
     from: FROM,
     to,
     subject: `Application received, ${name.split(' ')[0]} — Wissen-Haus`,
@@ -166,7 +178,7 @@ export async function sendVolunteerConfirmation(to: string, name: string, role: 
 export async function sendDonationReceipt(to: string, name: string, amount: number, currency: string, ref: string, certUrl?: string) {
   const firstName = esc(name.split(' ')[0])
   const formatted = new Intl.NumberFormat('en-NG', { style: 'currency', currency }).format(amount)
-  return getResend().emails.send({
+  return sendEmail({
     from: FROM,
     to,
     subject: `Donation received — thank you, ${name.split(' ')[0]}!`,
@@ -189,7 +201,7 @@ export async function sendDonationNotification(data: {
   name: string; email: string; amount: number; currency: string; ref: string; provider: string
 }) {
   const formatted = new Intl.NumberFormat('en-NG', { style: 'currency', currency: data.currency }).format(data.amount)
-  return getResend().emails.send({
+  return sendEmail({
     from: FROM,
     to: ADMIN,
     subject: `[Donation] ${formatted} from ${data.name} via ${data.provider}`,
@@ -208,7 +220,7 @@ export async function sendDonationNotification(data: {
 // ─── Certificate email ──────────────────────────────────────────────────────
 export async function sendCertificateEmail(to: string, name: string, courseName: string, certId: string) {
   const firstName = esc(name.split(' ')[0])
-  return getResend().emails.send({
+  return sendEmail({
     from: FROM,
     to,
     subject: `🎓 You've earned your ${courseName} certificate!`,
@@ -227,7 +239,7 @@ export async function sendCertificateEmail(to: string, name: string, courseName:
 export async function sendPartnerNotification(data: {
   name: string; email: string; organisation: string; message: string
 }) {
-  return getResend().emails.send({
+  return sendEmail({
     from: FROM,
     to: ADMIN,
     replyTo: data.email,
@@ -247,7 +259,7 @@ export async function sendPartnerNotification(data: {
 // ─── Partner confirmation (to inquirer) ────────────────────────────────────
 export async function sendPartnerConfirmation(to: string, name: string) {
   const firstName = esc(name.split(' ')[0])
-  return getResend().emails.send({
+  return sendEmail({
     from: FROM,
     to,
     subject: `Thanks for reaching out, ${name.split(' ')[0]} — Wissen-Haus`,
@@ -262,7 +274,7 @@ export async function sendPartnerConfirmation(to: string, name: string) {
 
 // ─── Testimonial submitted for moderation (to admin) ───────────────────────
 export async function sendTestimonialNotification(data: { name: string; role: string | null; quote: string }) {
-  return getResend().emails.send({
+  return sendEmail({
     from: FROM,
     to: ADMIN,
     subject: `[Testimonial] New story from ${data.name} awaiting review`,
@@ -280,7 +292,7 @@ export async function sendTestimonialNotification(data: { name: string; role: st
 // ─── Password reset request (to user) ──────────────────────────────────────
 export async function sendPasswordResetEmail(to: string, name: string, resetUrl: string) {
   const firstName = esc(name.split(' ')[0])
-  return getResend().emails.send({
+  return sendEmail({
     from: FROM,
     to,
     subject: 'Reset your Wissen-Haus password',
@@ -297,7 +309,7 @@ export async function sendPasswordResetEmail(to: string, name: string, resetUrl:
 // ─── Password changed confirmation (to user) ───────────────────────────────
 export async function sendPasswordChangedEmail(to: string, name: string) {
   const firstName = esc(name.split(' ')[0])
-  return getResend().emails.send({
+  return sendEmail({
     from: FROM,
     to,
     subject: 'Your Wissen-Haus password was changed',
