@@ -46,6 +46,24 @@ export default function AdminSubmissions() {
   const [rows, setRows] = useState<Submission[]>([])
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
+  const [resending, setResending] = useState<string | null>(null)
+  const [resendMsg, setResendMsg] = useState<{ id: string; text: string; ok: boolean } | null>(null)
+
+  async function resendReceipt(rowId: string, reference: string) {
+    setResending(rowId); setResendMsg(null)
+    try {
+      const res = await fetch('/api/admin/donations/resend-receipt', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ reference }),
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error || 'Failed to resend')
+      setResendMsg({ id: rowId, text: `Sent to ${data.sentTo}`, ok: true })
+    } catch (err) {
+      setResendMsg({ id: rowId, text: err instanceof Error ? err.message : 'Failed to resend', ok: false })
+    }
+    setResending(null)
+  }
 
   const load = useCallback(async () => {
     setLoading(true)
@@ -129,7 +147,21 @@ export default function AdminSubmissions() {
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 14, flexWrap: 'wrap', gap: 8 }}>
                   {row.email && <a href={`mailto:${row.email}`} style={{ fontSize: '.82rem', fontWeight: 600, color: '#1a3c2e' }}>Reply →</a>}
-                  <SubmissionActions id={row.id} status={row.status || 'pending'} onRefresh={load} />
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                    {resendMsg?.id === row.id && (
+                      <span style={{ fontSize: '.78rem', color: resendMsg.ok ? '#16a34a' : '#dc2626' }}>{resendMsg.text}</span>
+                    )}
+                    {activeType === 'donation' && row.data?.reference && (
+                      <button
+                        onClick={() => resendReceipt(row.id, row.data.reference)}
+                        disabled={resending === row.id}
+                        style={{ padding: '4px 12px', borderRadius: 6, fontSize: '.78rem', fontWeight: 600, background: '#f0ece4', color: '#1a3c2e', border: 'none', cursor: 'pointer', opacity: resending === row.id ? .6 : 1 }}
+                      >
+                        {resending === row.id ? 'Sending…' : 'Resend Receipt'}
+                      </button>
+                    )}
+                    <SubmissionActions id={row.id} status={row.status || 'pending'} onRefresh={load} />
+                  </div>
                 </div>
               </div>
             )

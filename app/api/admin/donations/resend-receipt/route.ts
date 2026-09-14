@@ -1,17 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { adminGuard } from '@/lib/admin-guard'
 import sql from '@/lib/db'
 import { sendDonationReceipt } from '@/lib/email'
 import { issueOrGetCertificate, type VerifiedDonation } from '@/lib/donations'
 
-// One-off/admin utility: (re)send a donation receipt (with certificate link)
-// for an already-recorded donation, identified by its payment reference.
-// Protected the same way as the other cron endpoints — a bearer secret,
-// since it has no interactive session to check against.
+// (Re)sends a donation receipt, with certificate link, for an already-recorded
+// donation identified by its payment reference. Useful for donations recorded
+// before the certificate/receipt-link feature existed, or if a donor's
+// original receipt email never arrived.
 export async function POST(req: NextRequest) {
-  const cronSecret = process.env.CRON_SECRET
-  if (!cronSecret) return NextResponse.json({ error: 'Server misconfiguration' }, { status: 500 })
-  if (req.headers.get('authorization') !== `Bearer ${cronSecret}`)
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  if (!await adminGuard()) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const { reference } = await req.json()
   if (!reference) return NextResponse.json({ error: 'reference is required' }, { status: 400 })
@@ -30,7 +28,7 @@ export async function POST(req: NextRequest) {
   try {
     await sendDonationReceipt(donation.email, donation.name, donation.amount, donation.currency, donation.reference, certUrl)
   } catch (err) {
-    console.error('[backfill donation receipt]', err)
+    console.error('[resend donation receipt]', err)
     return NextResponse.json({ error: 'Failed to send email' }, { status: 502 })
   }
 
