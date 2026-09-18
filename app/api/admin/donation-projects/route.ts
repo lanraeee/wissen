@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 import sql from '@/lib/db'
-import { getSession } from '@/lib/auth'
+import { adminGuard } from '@/lib/admin-guard'
 
+// This used to check session.isAdmin, a claim signToken never issues, so every
+// caller was rejected. Use the same guard the rest of /api/admin/* uses.
 async function requireAdmin() {
-  const session = await getSession()
-  if (!session?.isAdmin) return false
-  return true
+  return (await adminGuard()) !== null
 }
 
 async function ensureTable() {
