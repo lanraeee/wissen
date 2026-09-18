@@ -72,10 +72,25 @@ export async function POST(req: NextRequest) {
         accountName: details.account_name,
         bankName: details.bank_name,
         accountNumber: account.account_number,
+        // Donors abroad often work from this email rather than the page, so the
+        // correspondent leg has to travel with it. Empty values are dropped by
+        // the template, so a domestic NGN transfer still renders a short block.
         extras: [
           { label: 'Sort Code', value: account.sort_code ?? '' },
           { label: 'IBAN', value: account.iban ?? '' },
           { label: 'SWIFT / BIC', value: account.swift ?? '' },
+          ...(account.correspondent
+            ? [
+                { label: 'Correspondent Bank (intermediary)', value: account.correspondent.bank_name },
+                { label: 'Correspondent SWIFT / BIC', value: account.correspondent.swift },
+                { label: 'Routing / ABA Number', value: account.correspondent.routing_number ?? '' },
+                { label: 'Correspondent Sort Code', value: account.correspondent.sort_code ?? '' },
+                {
+                  label: `UBA's ${account.correspondent.iban ? 'IBAN' : 'Account'} at ${account.correspondent.bank_name}`,
+                  value: account.correspondent.iban || account.correspondent.account_number,
+                },
+              ]
+            : []),
         ],
         instructions: details.instructions,
       }),

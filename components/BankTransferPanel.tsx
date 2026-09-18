@@ -9,6 +9,10 @@ export interface DetailRow {
   value: string
   mono?: boolean
   emphasis?: boolean
+  // A short caption under the value, for rows whose meaning is not obvious from
+  // the label alone — notably intermediary-bank numbers, which a donor can
+  // easily mistake for the beneficiary account.
+  hint?: string
 }
 
 interface Props {
@@ -122,7 +126,7 @@ export default function BankTransferPanel({
           <div
             key={row.label}
             style={{
-              display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12,
+              display: 'flex', alignItems: row.hint ? 'flex-start' : 'center', justifyContent: 'space-between', gap: 12,
               padding: '13px 16px', borderRadius: 8,
               background: row.emphasis ? '#f0f7f3' : '#f9f7f3',
               border: row.emphasis ? '1px solid #c8e0d0' : '1px solid transparent',
@@ -144,6 +148,11 @@ export default function BankTransferPanel({
               }}>
                 {row.value}
               </div>
+              {row.hint && (
+                <div style={{ fontSize: '.73rem', color: '#6b7a70', marginTop: 4, lineHeight: 1.45 }}>
+                  {row.hint}
+                </div>
+              )}
             </div>
             <CopyButton value={row.value} label={row.label} />
           </div>

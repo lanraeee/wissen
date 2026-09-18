@@ -41,7 +41,36 @@ export default async function BankTransferDetailsPage({ params }: Props) {
     rows.push({ label: `Account Number (${pledge.currency})`, value: account.account_number, mono: true, emphasis: true })
     if (account.sort_code) rows.push({ label: 'Sort Code', value: account.sort_code, mono: true })
     if (account.iban) rows.push({ label: 'IBAN', value: account.iban, mono: true })
-    if (account.swift) rows.push({ label: 'SWIFT / BIC', value: account.swift, mono: true })
+    if (account.swift) {
+      rows.push({
+        label: 'SWIFT / BIC',
+        value: account.swift,
+        mono: true,
+        hint: account.correspondent ? 'UBA — the bank that makes the final credit.' : undefined,
+      })
+    }
+
+    // Sending banks ask for the intermediary separately. Spelling it out here
+    // is the difference between a gift that lands and one that sits unapplied
+    // at the correspondent.
+    const c = account.correspondent
+    if (c) {
+      rows.push({
+        label: 'Correspondent Bank',
+        value: c.bank_name,
+        hint: `Your bank pays ${c.bank_name} first. Quote the details below as the intermediary, not as the beneficiary.`,
+      })
+      rows.push({ label: 'Correspondent SWIFT / BIC', value: c.swift, mono: true })
+      if (c.routing_number) rows.push({ label: 'Routing / ABA Number', value: c.routing_number, mono: true })
+      if (c.sort_code) rows.push({ label: 'Correspondent Sort Code', value: c.sort_code, mono: true })
+
+      const intermediaryHint = 'This is UBA’s account, not ours — your transfer still needs our account number and name above.'
+      if (c.iban) {
+        rows.push({ label: `UBA's IBAN at ${c.bank_name}`, value: c.iban, mono: true, hint: intermediaryHint })
+      } else if (c.account_number) {
+        rows.push({ label: `UBA's Account at ${c.bank_name}`, value: c.account_number, mono: true, hint: intermediaryHint })
+      }
+    }
   }
 
   if (details.bank_address) rows.push({ label: 'Bank Address', value: details.bank_address })

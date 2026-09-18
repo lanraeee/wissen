@@ -17,6 +17,11 @@ _transform.py
 .env*
 !.env.local.example
 
+# Bank/remittance paperwork and other working documents stay out of the repo.
+# Public-facing PDFs are deliberately exempt so they can still be published.
+*.pdf
+!public/*.pdf
+
 # Next.js
 .next/
 out/

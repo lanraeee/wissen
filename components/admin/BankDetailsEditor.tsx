@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import {
   DEFAULT_BANK_DETAILS, CURRENCY_SYMBOL,
-  type BankDetails, type BankAccount, type BankCurrency,
+  type BankDetails, type BankAccount, type BankCurrency, type CorrespondentBank,
 } from '@/lib/bank-transfer-shared'
 
 const ALL_CURRENCIES: BankCurrency[] = ['NGN', 'USD', 'GBP', 'EUR']
@@ -63,6 +63,17 @@ export default function BankDetailsEditor() {
 
   function patchAccount(currency: BankCurrency, patch: Partial<BankAccount>) {
     setData(d => ({ ...d, accounts: d.accounts.map(a => a.currency === currency ? { ...a, ...patch } : a) }))
+  }
+
+  // The correspondent block starts absent rather than empty, so the first
+  // keystroke has to conjure one before it can be patched.
+  function patchCorrespondent(currency: BankCurrency, patch: Partial<CorrespondentBank>) {
+    setData(d => ({
+      ...d,
+      accounts: d.accounts.map(a => a.currency === currency
+        ? { ...a, correspondent: { bank_name: '', swift: '', account_number: '', ...a.correspondent, ...patch } }
+        : a),
+    }))
   }
 
   function addAccount(currency: BankCurrency) {
@@ -203,6 +214,62 @@ export default function BankDetailsEditor() {
               <div style={{ gridColumn: '1/-1' }}>
                 <label style={lbl}>IBAN (optional)</label>
                 <input style={inp} value={acc.iban ?? ''} onChange={e => patchAccount(acc.currency, { iban: e.target.value })} placeholder="GB00 XXXX 0000 0000 0000 00" />
+              </div>
+
+              {/* The intermediary leg, kept visually separate from the fields
+                  above because the numbers here belong to our bank rather than
+                  to us — mixing the two is exactly how a donation gets
+                  misrouted. */}
+              <div style={{ gridColumn: '1/-1', borderTop: '1px solid #e4e0d8', paddingTop: 12, marginTop: 2 }}>
+                <div style={{ fontSize: '.75rem', fontWeight: 700, color: '#3a4a3f', marginBottom: 2 }}>
+                  Correspondent / Intermediary Bank (for transfers from abroad)
+                </div>
+                <p style={{ margin: '0 0 10px', fontSize: '.73rem', color: '#8a9a8f', maxWidth: '62ch' }}>
+                  These belong to <strong>{data.bank_name || 'our bank'}</strong>, not to us — a sender&apos;s
+                  bank pays them first, and the money is then credited to the account above. Leave the
+                  block blank for domestic-only currencies. Both a name and a SWIFT are required before
+                  any of it is shown to donors.
+                </p>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+                  <div>
+                    <label style={lbl}>Correspondent Bank Name</label>
+                    <input style={inp} value={acc.correspondent?.bank_name ?? ''}
+                      onChange={e => patchCorrespondent(acc.currency, { bank_name: e.target.value })}
+                      placeholder="Citibank New York" />
+                  </div>
+                  <div>
+                    <label style={lbl}>Correspondent SWIFT / BIC</label>
+                    <input style={inp} value={acc.correspondent?.swift ?? ''}
+                      onChange={e => patchCorrespondent(acc.currency, { swift: e.target.value })}
+                      placeholder="CITIUS33" />
+                  </div>
+                  <div>
+                    <label style={lbl}>Routing / ABA Number (US wires)</label>
+                    <input style={{ ...inp, fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace' }}
+                      value={acc.correspondent?.routing_number ?? ''}
+                      onChange={e => patchCorrespondent(acc.currency, { routing_number: e.target.value })}
+                      placeholder="021000089" />
+                  </div>
+                  <div>
+                    <label style={lbl}>Correspondent Sort Code</label>
+                    <input style={inp} value={acc.correspondent?.sort_code ?? ''}
+                      onChange={e => patchCorrespondent(acc.currency, { sort_code: e.target.value })}
+                      placeholder="18 50 08" />
+                  </div>
+                  <div>
+                    <label style={lbl}>Our Bank&apos;s Account There</label>
+                    <input style={{ ...inp, fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace' }}
+                      value={acc.correspondent?.account_number ?? ''}
+                      onChange={e => patchCorrespondent(acc.currency, { account_number: e.target.value })}
+                      placeholder="36320321" />
+                  </div>
+                  <div>
+                    <label style={lbl}>Our Bank&apos;s IBAN There</label>
+                    <input style={inp} value={acc.correspondent?.iban ?? ''}
+                      onChange={e => patchCorrespondent(acc.currency, { iban: e.target.value })}
+                      placeholder="GB07CITI18500813664090" />
+                  </div>
+                </div>
               </div>
             </div>
           </div>
