@@ -25,10 +25,8 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      # No lint step: the repo has no ESLint config, so `next lint` prompts for
-      # setup and exits non-zero in CI. Adding a config is not free either — it
-      # makes `next build` enforce lint, and the 18 pre-existing errors would
-      # then break production deploys. Clean those up first, then add it back.
+      - name: Lint
+        run: npm run lint
 
       - name: Typecheck
         run: npx tsc --noEmit
