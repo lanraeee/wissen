@@ -21,10 +21,14 @@ export default function AdminUsers() {
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
   const [isDirector, setIsDirector] = useState(false)
+  const [forbidden, setForbidden] = useState(false)
 
   const load = useCallback(async () => {
     setLoading(true)
     const res = await fetch('/api/admin/users')
+    // Editors are not admitted to the membership roll. Say that, rather than
+    // rendering an empty list that reads as "there are no users".
+    if (res.status === 403) { setForbidden(true); setLoading(false); return }
     const data = await res.json()
     setUsers(data.users ?? [])
     setTotal(data.total ?? 0)
@@ -37,6 +41,18 @@ export default function AdminUsers() {
   const filtered = users.filter(u =>
     !search || `${u.first_name} ${u.last_name} ${u.email}`.toLowerCase().includes(search.toLowerCase())
   )
+
+  if (forbidden) {
+    return (
+      <>
+        <h1 style={{ margin: '0 0 8px', fontSize: '1.5rem' }}>Users</h1>
+        <p style={{ margin: 0, color: '#8a9a8f', fontSize: '.88rem', maxWidth: '60ch' }}>
+          Member records include everyone&apos;s email address, so only an admin or the director
+          can open this page. Ask the director if you need something changed here.
+        </p>
+      </>
+    )
+  }
 
   return (
     <>

@@ -27,28 +27,41 @@ export default function UserActions({ user, onRefresh, isDirector }: { user: Use
   const [editing, setEditing] = useState(false)
   const [form, setForm] = useState({ first_name: user.first_name, last_name: user.last_name, email: user.email })
 
+  // Several of these actions are director-only, so a refusal is an ordinary
+  // outcome rather than a bug. Report it: without this the row simply reverts
+  // on refresh and reads as "nothing happened".
+  async function report(res: Response) {
+    if (res.ok) return true
+    const message = await res.json().then(d => d?.error).catch(() => null)
+    alert(message ?? 'That change could not be saved.')
+    return false
+  }
+
   async function act(action: string, extra?: object) {
     setBusy(true)
-    await fetch(`/api/admin/users/${user.id}`, {
+    const res = await fetch(`/api/admin/users/${user.id}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ action, ...extra }),
     })
     setBusy(false)
+    const ok = await report(res)
     onRefresh()
+    return ok
   }
 
   async function del() {
     if (!confirm(`Delete ${user.first_name} ${user.last_name}? This cannot be undone.`)) return
     setBusy(true)
-    await fetch(`/api/admin/users/${user.id}`, { method: 'DELETE' })
+    const res = await fetch(`/api/admin/users/${user.id}`, { method: 'DELETE' })
     setBusy(false)
+    await report(res)
     onRefresh()
   }
 
   async function save() {
-    await act('update', form)
-    setEditing(false)
+    // Keep the form open on refusal so the edit is not silently discarded.
+    if (await act('update', form)) setEditing(false)
   }
 
   if (editing) return (

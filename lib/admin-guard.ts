@@ -13,6 +13,16 @@ export async function adminGuard(): Promise<UserPayload | null> {
   return ok ? session : null
 }
 
+// Staff who may manage user accounts. Deliberately excludes `editor`, which
+// adminGuard() admits: editors are content contributors, and user records carry
+// both PII and the email address that isDirector() derives identity from.
+export async function userAdminGuard(): Promise<UserPayload | null> {
+  const session = await getSession()
+  if (!session) return null
+  const ok = isDirector(session.email) || session.role === 'admin'
+  return ok ? session : null
+}
+
 export async function directorGuard(): Promise<UserPayload | null> {
   const session = await getSession()
   if (!session) return null

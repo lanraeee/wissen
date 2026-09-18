@@ -1,19 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getSession } from '@/lib/auth'
+import { userAdminGuard, isDirector } from '@/lib/admin-guard'
 import sql from '@/lib/db'
 
-const ADMIN_EMAIL = process.env.FOUNDER_EMAIL || 'director@wissenhaus.org'
-
-async function guard() {
-  const session = await getSession()
-  if (!session) return null
-  const isDirector = session.email === ADMIN_EMAIL
-  const hasAccess = isDirector || session.role === 'admin' || session.role === 'editor'
-  return hasAccess ? session : null
-}
-
+// This returns every user's email address. Editors are content contributors and
+// have no need for the membership roll, so they are not admitted here — the
+// same boundary the per-user handlers draw.
 export async function GET(req: NextRequest) {
-  const session = await guard()
+  const session = await userAdminGuard()
   if (!session) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   const page = parseInt(new URL(req.url).searchParams.get('page') ?? '1')
   const limit = 50
@@ -30,6 +23,6 @@ export async function GET(req: NextRequest) {
     `,
     sql`SELECT COUNT(*) AS c FROM users`,
   ])
-  const viewerIsDirector = session!.email === ADMIN_EMAIL
+  const viewerIsDirector = isDirector(session.email)
   return NextResponse.json({ users: rows, total: Number(count[0].c), page, limit, viewerIsDirector })
 }
