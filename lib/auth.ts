@@ -1,8 +1,8 @@
 import { SignJWT, jwtVerify, type JWTPayload } from 'jose'
 import bcrypt from 'bcryptjs'
 import { cookies } from 'next/headers'
+import { jwtSecret } from '@/lib/auth-edge'
 
-const secret = new TextEncoder().encode(process.env.JWT_SECRET!)
 export const COOKIE_NAME = 'wh_token'
 
 export interface UserPayload extends JWTPayload {
@@ -26,11 +26,11 @@ export async function signToken(payload: UserPayload) {
     .setProtectedHeader({ alg: 'HS256' })
     .setIssuedAt()
     .setExpirationTime('30d')
-    .sign(secret)
+    .sign(jwtSecret())
 }
 
 export async function verifyToken(token: string): Promise<UserPayload> {
-  const { payload } = await jwtVerify(token, secret)
+  const { payload } = await jwtVerify(token, jwtSecret())
   return payload as UserPayload
 }
 
