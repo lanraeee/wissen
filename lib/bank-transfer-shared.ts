@@ -45,6 +45,40 @@ export const DEFAULT_BANK_DETAILS: BankDetails = {
 
 export const CURRENCY_SYMBOL: Record<string, string> = { NGN: '₦', USD: '$', GBP: '£', EUR: '€' }
 
+export const BANK_CURRENCIES: BankCurrency[] = ['NGN', 'USD', 'GBP', 'EUR']
+
+// site_content holds whatever was last written to it, so what comes back is an
+// untrusted shape, not a BankDetails. Coerce every field to the type the donor
+// pages and the instructions email expect, and drop accounts in unknown
+// currencies, so a malformed write degrades to the defaults rather than
+// rendering `undefined` or an object into payment instructions.
+export function normalizeBankDetails(stored: unknown): BankDetails {
+  const d = (stored && typeof stored === 'object' ? stored : {}) as Partial<BankDetails>
+  const str = (v: unknown, fallback = '') => (typeof v === 'string' ? v.trim() : fallback)
+
+  const accounts = Array.isArray(d.accounts)
+    ? d.accounts
+        .filter(a => a && typeof a === 'object' && BANK_CURRENCIES.includes(a.currency))
+        .map(a => ({
+          currency: a.currency,
+          account_number: str(a.account_number),
+          sort_code: str(a.sort_code),
+          iban: str(a.iban),
+          swift: str(a.swift),
+          note: str(a.note),
+        }))
+    : DEFAULT_BANK_DETAILS.accounts
+
+  return {
+    enabled: typeof d.enabled === 'boolean' ? d.enabled : DEFAULT_BANK_DETAILS.enabled,
+    account_name: str(d.account_name) || DEFAULT_BANK_DETAILS.account_name,
+    bank_name: str(d.bank_name) || DEFAULT_BANK_DETAILS.bank_name,
+    bank_address: str(d.bank_address),
+    instructions: str(d.instructions),
+    accounts,
+  }
+}
+
 // A bank-transfer pledge: the donor has filled in the donation form and been
 // shown the account details, but no money has been verified yet. It becomes a
 // real donation (receipt + certificate) only when an admin confirms it landed.

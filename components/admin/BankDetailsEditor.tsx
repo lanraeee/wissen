@@ -21,11 +21,16 @@ export default function BankDetailsEditor() {
   const [loaded, setLoaded] = useState(false)
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
+  const [forbidden, setForbidden] = useState(false)
+  const [error, setError] = useState('')
 
   useEffect(() => {
     fetch('/api/admin/content/bank_transfer_details')
-      .then(r => r.json())
-      .then(res => {
+      .then(async r => {
+        // This key is director-only server-side. Say so plainly rather than
+        // rendering the seeded defaults to someone who cannot save them.
+        if (r.status === 403) { setForbidden(true); setLoaded(true); return }
+        const res = await r.json()
         if (res.value) {
           setData({
             ...DEFAULT_BANK_DETAILS,
@@ -35,17 +40,25 @@ export default function BankDetailsEditor() {
         }
         setLoaded(true)
       })
-      .catch(() => setLoaded(true))
+      .catch(() => { setError('Could not load bank details.'); setLoaded(true) })
   }, [])
 
   async function save() {
-    setSaving(true)
-    await fetch('/api/admin/content/bank_transfer_details', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ value: data }),
-    })
-    setSaving(false); setSaved(true); setTimeout(() => setSaved(false), 2500)
+    setSaving(true); setError('')
+    try {
+      const res = await fetch('/api/admin/content/bank_transfer_details', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ value: data }),
+      })
+      if (res.status === 403) throw new Error('Only the director can change bank details.')
+      if (!res.ok) throw new Error('Save failed — your changes have not been stored.')
+      setSaved(true); setTimeout(() => setSaved(false), 2500)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Save failed.')
+    } finally {
+      setSaving(false)
+    }
   }
 
   function patchAccount(currency: BankCurrency, patch: Partial<BankAccount>) {
@@ -64,6 +77,18 @@ export default function BankDetailsEditor() {
 
   if (!loaded) return <div style={{ padding: 24, color: '#8a9a8f' }}>Loading…</div>
 
+  if (forbidden) {
+    return (
+      <div style={{ padding: 24 }}>
+        <h2 style={{ margin: '0 0 8px', fontSize: '1.1rem' }}>Bank Transfer Details</h2>
+        <p style={{ margin: 0, fontSize: '.88rem', color: '#8a9a8f', maxWidth: '60ch' }}>
+          These are the account details donors are told to pay into, so only the director can
+          view or change them. Ask the director if something here needs updating.
+        </p>
+      </div>
+    )
+  }
+
   return (
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 20, gap: 12 }}>
@@ -76,6 +101,7 @@ export default function BankDetailsEditor() {
         </div>
         <div style={{ display: 'flex', gap: 10, alignItems: 'center', flexShrink: 0 }}>
           {saved && <span style={{ fontSize: '.8rem', color: '#16a34a' }}>Saved!</span>}
+          {error && <span style={{ fontSize: '.8rem', color: '#dc2626', maxWidth: '32ch' }}>{error}</span>}
           <button onClick={save} disabled={saving} style={{ padding: '7px 16px', borderRadius: 7, fontSize: '.82rem', fontWeight: 600, background: '#1a3c2e', color: '#fff', border: 'none', cursor: 'pointer' }}>
             {saving ? 'Saving…' : 'Save Changes'}
           </button>

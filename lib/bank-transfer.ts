@@ -1,6 +1,6 @@
 import sql from '@/lib/db'
 import {
-  DEFAULT_BANK_DETAILS,
+  DEFAULT_BANK_DETAILS, normalizeBankDetails,
   type BankDetails, type BankPledge, type PledgeStatus,
 } from '@/lib/bank-transfer-shared'
 
@@ -50,14 +50,9 @@ export async function getBankDetails(): Promise<BankDetails> {
   try {
     const [row] = await sql`SELECT value FROM site_content WHERE key = 'bank_transfer_details'`
     if (!row?.value) return DEFAULT_BANK_DETAILS
-    const stored = row.value as Partial<BankDetails>
-    return {
-      ...DEFAULT_BANK_DETAILS,
-      ...stored,
-      // A missing key falls back to the seeded accounts; an admin who has
-      // deliberately saved an empty list keeps their empty list.
-      accounts: stored.accounts ?? DEFAULT_BANK_DETAILS.accounts,
-    }
+    // A missing key falls back to the seeded accounts; a director who has
+    // deliberately saved an empty list keeps their empty list.
+    return normalizeBankDetails(row.value)
   } catch (err) {
     console.error('[bank details load]', err)
     return DEFAULT_BANK_DETAILS
