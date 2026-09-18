@@ -375,7 +375,7 @@ export default function DonationDriveSeries1Page() {
             <span className="eyebrow">Give Now</span>
             <h2>Fund a student's day.</h2>
             <p className="lead mt-m" style={{ maxWidth: 560, marginInline: 'auto' }}>
-              All donations — in Naira, Dollars or Pounds — are processed securely by Stripe. Every contribution — of any size — fills a seat at the Fair.
+              Give by card or direct bank transfer, in Naira, Dollars, Pounds or Euros. Card payments are processed securely by Stripe. Every contribution — of any size — fills a seat at the Fair.
             </p>
           </div>
 

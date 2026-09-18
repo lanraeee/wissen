@@ -258,7 +258,7 @@ export default async function DonationProjectPage({ params }: { params: Promise<
             <span className="eyebrow">Give Now</span>
             <h2>Make your contribution.</h2>
             <p className="lead mt-m" style={{ maxWidth: 540, marginInline: 'auto' }}>
-              All donations — in Naira, Dollars or Pounds — are processed securely by Stripe. Every gift counts.
+              Give by card or direct bank transfer, in Naira, Dollars, Pounds or Euros. Card payments are processed securely by Stripe. Every gift counts.
             </p>
           </div>
           <div className="card reveal" style={{ padding: 'clamp(24px,4vw,48px)', maxWidth: 640, margin: '0 auto' }}>

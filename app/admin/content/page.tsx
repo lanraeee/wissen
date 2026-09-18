@@ -8,6 +8,7 @@ import DonationCertEditor from '@/components/admin/DonationCertEditor'
 import FoundationDetailsEditor from '@/components/admin/FoundationDetailsEditor'
 import ImpactStoriesEditor from '@/components/admin/ImpactStoriesEditor'
 import WhatsAppEditor from '@/components/admin/WhatsAppEditor'
+import BankDetailsEditor from '@/components/admin/BankDetailsEditor'
 
 export const metadata: Metadata = { title: 'Content · Admin · Wissen-Haus' }
 
@@ -20,6 +21,7 @@ const TABS = [
   { key: 'whatsapp', label: 'WhatsApp Channel' },
   { key: 'impact-stories', label: 'Impact Stories' },
   { key: 'donation-certs', label: '🧾 Donation Receipts' },
+  { key: 'bank-details', label: '🏦 Bank Transfer Details' },
   { key: 'foundation', label: 'Foundation Details' },
 ]
 
@@ -53,6 +55,7 @@ export default async function AdminContent({ searchParams }: { searchParams: Pro
         {tab === 'whatsapp' && <WhatsAppEditor />}
         {tab === 'impact-stories' && <ImpactStoriesEditor />}
         {tab === 'donation-certs' && <DonationCertEditor />}
+        {tab === 'bank-details' && <BankDetailsEditor />}
         {tab === 'foundation' && <FoundationDetailsEditor />}
       </div>
     </>

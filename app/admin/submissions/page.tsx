@@ -3,7 +3,9 @@
 import { useState, useEffect, useCallback } from 'react'
 import SubmissionActions from '@/components/admin/SubmissionActions'
 
-const TYPES = ['contact', 'volunteer', 'partner', 'donation']
+const TYPES = ['contact', 'volunteer', 'partner', 'donation', 'bank_transfer']
+
+const TYPE_LABELS: Record<string, string> = { bank_transfer: 'bank transfers' }
 
 const STATUS_COLORS: Record<string, { background: string; color: string }> = {
   pending:  { background: '#fef3c7', color: '#92400e' },
@@ -65,6 +67,45 @@ export default function AdminSubmissions() {
     setResending(null)
   }
 
+  // Confirming a bank transfer is what turns a pledge into a real donation:
+  // the API records it through the same path a card payment uses, so the donor
+  // gets the identical receipt email and certificate.
+  async function confirmTransfer(rowId: string, reference: string) {
+    if (!confirm(`Confirm this transfer has landed in the account?\n\nThis records the donation and emails the donor their receipt and certificate.`)) return
+    setResending(rowId); setResendMsg(null)
+    try {
+      const res = await fetch('/api/admin/bank-transfers', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ reference }),
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error || 'Failed to confirm')
+      setResendMsg({ id: rowId, text: data.alreadyConfirmed ? 'Already confirmed' : 'Confirmed — receipt sent', ok: true })
+      await load()
+    } catch (err) {
+      setResendMsg({ id: rowId, text: err instanceof Error ? err.message : 'Failed to confirm', ok: false })
+    }
+    setResending(null)
+  }
+
+  async function cancelTransfer(rowId: string, reference: string) {
+    if (!confirm('Mark this bank transfer as cancelled? The donor will see it as cancelled if they revisit their link.')) return
+    setResending(rowId); setResendMsg(null)
+    try {
+      const res = await fetch('/api/admin/bank-transfers', {
+        method: 'DELETE', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ reference }),
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error || 'Failed to cancel')
+      setResendMsg({ id: rowId, text: 'Cancelled', ok: true })
+      await load()
+    } catch (err) {
+      setResendMsg({ id: rowId, text: err instanceof Error ? err.message : 'Failed to cancel', ok: false })
+    }
+    setResending(null)
+  }
+
   const load = useCallback(async () => {
     setLoading(true)
     const res = await fetch(`/api/admin/submissions?type=${activeType}`)
@@ -110,7 +151,7 @@ export default function AdminSubmissions() {
             background: activeType === t ? '#1a3c2e' : '#fff',
             color: activeType === t ? '#f4f0e7' : '#3a4a3f',
             border: '1px solid #e8e4dc', cursor: 'pointer', textTransform: 'capitalize',
-          }}>{t}</button>
+          }}>{TYPE_LABELS[t] ?? t}</button>
         ))}
       </div>
 
@@ -120,7 +161,7 @@ export default function AdminSubmissions() {
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
           {filtered.length === 0 && (
             <div style={{ background: '#fff', borderRadius: 10, padding: 32, textAlign: 'center', color: '#8a9a8f', fontSize: '.9rem' }}>
-              No {activeType} submissions{search ? ' matching your search' : ' yet'}.
+              No {TYPE_LABELS[activeType] ?? activeType} submissions{search ? ' matching your search' : ' yet'}.
             </div>
           )}
           {filtered.map(row => {
@@ -159,6 +200,34 @@ export default function AdminSubmissions() {
                       >
                         {resending === row.id ? 'Sending…' : 'Resend Receipt'}
                       </button>
+                    )}
+                    {activeType === 'bank_transfer' && row.data?.reference && row.data?.status !== 'confirmed' && row.data?.status !== 'cancelled' && (
+                      <>
+                        <button
+                          onClick={() => confirmTransfer(row.id, row.data.reference)}
+                          disabled={resending === row.id}
+                          style={{ padding: '4px 12px', borderRadius: 6, fontSize: '.78rem', fontWeight: 600, background: '#1a3c2e', color: '#fff', border: 'none', cursor: 'pointer', opacity: resending === row.id ? .6 : 1 }}
+                        >
+                          {resending === row.id ? 'Working…' : '✓ Confirm Received'}
+                        </button>
+                        <button
+                          onClick={() => cancelTransfer(row.id, row.data.reference)}
+                          disabled={resending === row.id}
+                          style={{ padding: '4px 12px', borderRadius: 6, fontSize: '.78rem', fontWeight: 600, background: '#f0ece4', color: '#dc2626', border: 'none', cursor: 'pointer', opacity: resending === row.id ? .6 : 1 }}
+                        >
+                          Cancel
+                        </button>
+                      </>
+                    )}
+                    {activeType === 'bank_transfer' && row.data?.status === 'confirmed' && row.data?.cert_id && (
+                      <a
+                        href={`/donate/receipt/${row.data.cert_id}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{ padding: '4px 12px', borderRadius: 6, fontSize: '.78rem', fontWeight: 600, background: '#f0ece4', color: '#1a3c2e', textDecoration: 'none' }}
+                      >
+                        View Certificate ↗
+                      </a>
                     )}
                     <SubmissionActions id={row.id} status={row.status || 'pending'} onRefresh={load} />
                   </div>

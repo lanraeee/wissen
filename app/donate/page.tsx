@@ -58,17 +58,17 @@ export default function DonatePage() {
           <div className="section-head center mb-l reveal">
             <span className="eyebrow">Give Now</span>
             <h2>Choose a gift that changes a life.</h2>
-            <p className="lead">Pick a suggested amount or enter your own. All donations — in Naira, Dollars or Pounds — are processed securely by Stripe. Every contribution goes directly to equipping students.</p>
+            <p className="lead">Pick a suggested amount or enter your own, then pay by card or direct bank transfer. Give in Naira, Dollars, Pounds or Euros — card donations are processed securely by Stripe. Every contribution goes directly to equipping students.</p>
           </div>
           <div className="card reveal" style={{ padding: 'clamp(24px,4vw,48px)', maxWidth: 640, margin: '0 auto' }}>
             <DonateWidget />
           </div>
 
           <div style={{ textAlign: 'center', marginTop: '2.5rem' }} className="reveal">
-            <p style={{ color: 'var(--ink-60)', marginBottom: '.75rem', fontSize: '.9rem' }}>Prefer a direct bank transfer?</p>
-            <a href="mailto:info@wissenhaus.org?subject=Donation Enquiry" className="textlink">
-              Contact us for bank details {ARROW}
-            </a>
+            <p style={{ color: 'var(--ink-60)', fontSize: '.9rem', maxWidth: '48ch', margin: '0 auto' }}>
+              Prefer a direct bank transfer? Choose <strong>Bank Transfer</strong> above — fill in the same details
+              and we&#39;ll show you the account to pay into, then email your receipt and certificate once it clears.
+            </p>
           </div>
         </div>
       </section>

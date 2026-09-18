@@ -9,7 +9,7 @@ export interface VerifiedDonation {
   name: string
   email: string
   reference: string
-  provider: 'Stripe'
+  provider: 'Stripe' | 'Bank Transfer'
 }
 
 async function alreadyRecorded(reference: string): Promise<boolean> {

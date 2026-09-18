@@ -221,6 +221,89 @@ export async function sendDonationNotification(data: {
   })
 }
 
+// ─── Bank transfer instructions (to donor) ──────────────────────────────────
+// Sent as soon as a donor completes the donation form choosing bank transfer.
+// This is NOT a receipt — no money has been received yet. The real receipt and
+// certificate go out via sendDonationReceipt once an admin confirms the money
+// landed.
+export async function sendBankTransferInstructions(opts: {
+  to: string
+  name: string
+  amount: number
+  currency: string
+  reference: string
+  detailsUrl: string
+  accountName: string
+  bankName: string
+  accountNumber: string
+  extras?: Array<{ label: string; value: string }>
+  instructions?: string
+}) {
+  const firstName = esc(opts.name.split(' ')[0])
+  const formatted = new Intl.NumberFormat('en-NG', { style: 'currency', currency: opts.currency }).format(opts.amount)
+  const extraRows = (opts.extras ?? [])
+    .filter(e => e.value)
+    .map(e => `<div class="field"><div class="k">${esc(e.label)}</div><div class="v">${esc(e.value)}</div></div>`)
+    .join('')
+
+  return sendEmail({
+    from: FROM,
+    to: opts.to,
+    subject: `Your bank transfer details — ${formatted} to Wissen-Haus`,
+    html: shell(`
+      <span class="badge">Awaiting Transfer</span>
+      <h2>Thank you, ${firstName} — here are your transfer details.</h2>
+      <p>You've chosen to give <strong>${formatted}</strong> by bank transfer. Please send it to the account below, quoting your reference so we can match your gift to your receipt.</p>
+      <div class="field"><div class="k">Account Name</div><div class="v"><strong>${esc(opts.accountName)}</strong></div></div>
+      <div class="field"><div class="k">Bank</div><div class="v">${esc(opts.bankName)}</div></div>
+      <div class="field"><div class="k">Account Number (${esc(opts.currency)})</div><div class="v" style="font-family:monospace;font-size:1.05rem;letter-spacing:.04em"><strong>${esc(opts.accountNumber)}</strong></div></div>
+      ${extraRows}
+      <div class="field"><div class="k">Your Reference</div><div class="v" style="font-family:monospace;font-size:1rem"><strong>${esc(opts.reference)}</strong></div></div>
+      ${opts.instructions ? `<p style="font-size:.88rem">${esc(opts.instructions)}</p>` : ''}
+      <div class="divider"></div>
+      <p>Once you've sent the transfer, let us know so we can watch for it:</p>
+      <a href="${esc(opts.detailsUrl)}" class="btn">Confirm you've sent the transfer →</a>
+      <p style="font-size:.82rem;color:#8a9a8f">We'll email your official receipt and donation certificate as soon as the funds clear into our account.</p>
+    `),
+  })
+}
+
+// ─── Bank transfer notification (to admin) ──────────────────────────────────
+export async function sendBankTransferNotification(data: {
+  name: string
+  email: string
+  amount: number
+  currency: string
+  reference: string
+  stage: 'pledged' | 'declared_sent'
+}) {
+  const formatted = new Intl.NumberFormat('en-NG', { style: 'currency', currency: data.currency }).format(data.amount)
+  const declared = data.stage === 'declared_sent'
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://wissenhaus.org'
+
+  return sendEmail({
+    from: FROM,
+    to: ADMIN,
+    replyTo: data.email,
+    subject: declared
+      ? `[Action] ${formatted} bank transfer marked as sent by ${data.name}`
+      : `[Bank Transfer] ${formatted} pledged by ${data.name}`,
+    html: shell(`
+      <span class="badge">${declared ? 'Awaiting Your Confirmation' : 'New Bank Transfer Pledge'}</span>
+      <h2>${declared ? `${esc(data.name)} says the transfer has been sent` : 'A donor has chosen to give by bank transfer'}</h2>
+      <div class="field"><div class="k">Donor</div><div class="v">${esc(data.name)}</div></div>
+      <div class="field"><div class="k">Email</div><div class="v"><a href="mailto:${esc(data.email)}" style="color:#1a3c2e">${esc(data.email)}</a></div></div>
+      <div class="field"><div class="k">Amount</div><div class="v"><strong>${formatted}</strong></div></div>
+      <div class="field"><div class="k">Reference</div><div class="v" style="font-family:monospace;font-size:.85rem">${esc(data.reference)}</div></div>
+      <div class="divider"></div>
+      <p>${declared
+        ? 'Check the account for this reference. Once the money has landed, confirm it in the dashboard — that issues the donor\'s receipt and certificate automatically.'
+        : 'No action needed yet. You\'ll get another email when the donor marks the transfer as sent.'}</p>
+      <a href="${esc(siteUrl)}/admin/submissions?type=bank_transfer" class="btn">Open bank transfers →</a>
+    `),
+  })
+}
+
 // ─── Certificate email ──────────────────────────────────────────────────────
 export async function sendCertificateEmail(to: string, name: string, courseName: string, certId: string) {
   const firstName = esc(name.split(' ')[0])

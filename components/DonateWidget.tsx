@@ -3,22 +3,30 @@
 import { useState, FormEvent } from 'react'
 import posthog from 'posthog-js'
 
-type Currency = 'NGN' | 'USD' | 'GBP'
+type Currency = 'NGN' | 'USD' | 'GBP' | 'EUR'
+type Method = 'card' | 'bank'
 
 const AMOUNTS: Record<Currency, number[]> = {
   NGN: [5000, 10000, 20000, 50000],
   USD: [5, 10, 25, 50],
   GBP: [5, 10, 25, 50],
+  EUR: [5, 10, 25, 50],
 }
-const SYMBOL: Record<Currency, string> = { NGN: '₦', USD: '$', GBP: '£' }
+const SYMBOL: Record<Currency, string> = { NGN: '₦', USD: '$', GBP: '£', EUR: '€' }
 const TOGGLE_LABEL: Record<Currency, string> = {
   NGN: '🇳🇬 Naira (₦)',
   USD: '🇺🇸 US Dollar ($)',
   GBP: '🇬🇧 British Pound (£)',
+  EUR: '🇪🇺 Euro (€)',
 }
-const CUSTOM_PLACEHOLDER: Record<Currency, string> = { NGN: '15000', USD: '30', GBP: '25' }
+const CUSTOM_PLACEHOLDER: Record<Currency, string> = { NGN: '15000', USD: '30', GBP: '25', EUR: '25' }
+
+// Stripe charges and the foundation's bank accounts both cover all four, so
+// the same choice is offered whichever way the donor pays.
+const CURRENCIES: Currency[] = ['NGN', 'USD', 'GBP', 'EUR']
 
 export default function DonateWidget() {
+  const [method, setMethod] = useState<Method>('card')
   const [currency, setCurrency] = useState<Currency>('NGN')
   const [selected, setSelected] = useState<number | null>(null)
   const [custom, setCustom] = useState('')
@@ -32,6 +40,13 @@ export default function DonateWidget() {
 
   const finalAmount = custom ? parseFloat(custom) : selected
 
+  // The amount and currency carry over between methods — only the destination
+  // changes — so switching just clears any stale error.
+  function changeMethod(next: Method) {
+    setMethod(next)
+    setError('')
+  }
+
   async function handleSubmit(e: FormEvent) {
     e.preventDefault()
     if (!finalAmount || finalAmount <= 0) { setError('Please select or enter an amount'); return }
@@ -41,9 +56,10 @@ export default function DonateWidget() {
     setError('')
 
     const siteUrl = window.location.origin
+    const endpoint = method === 'bank' ? '/api/payments/bank-transfer' : '/api/payments/stripe'
 
     try {
-      const res = await fetch('/api/payments/stripe', {
+      const res = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -51,14 +67,18 @@ export default function DonateWidget() {
           currency,
           email,
           name,
-          callbackUrl: `${siteUrl}/donate/success`,
+          ...(method === 'card' ? { callbackUrl: `${siteUrl}/donate/success` } : {}),
         }),
       })
       const data = await res.json()
-      if (!res.ok) throw new Error(data.error || 'Payment initialisation failed')
+      if (!res.ok) throw new Error(data.error || (method === 'bank' ? 'Could not start your donation' : 'Payment initialisation failed'))
 
       // Capture donation initiation before redirect (browser unloads immediately after)
-      posthog.capture('donation_initiated', { amount: finalAmount, currency, provider: 'stripe' })
+      posthog.capture('donation_initiated', {
+        amount: finalAmount,
+        currency,
+        provider: method === 'bank' ? 'bank_transfer' : 'stripe',
+      })
 
       if (data.url) window.location.href = data.url
     } catch (err) {
@@ -69,9 +89,36 @@ export default function DonateWidget() {
 
   return (
     <form onSubmit={handleSubmit} style={{ maxWidth: 560, margin: '0 auto' }}>
+      {/* Payment method */}
+      <div style={{ display: 'flex', gap: 8, marginBottom: 20 }}>
+        {([['card', '💳 Card'], ['bank', '🏦 Bank Transfer']] as [Method, string][]).map(([m, label]) => (
+          <button
+            key={m}
+            type="button"
+            onClick={() => changeMethod(m)}
+            aria-pressed={method === m}
+            style={{
+              flex: 1, padding: '11px 0', borderRadius: 8, border: '2px solid',
+              borderColor: method === m ? 'var(--green-800,#1a3c2e)' : '#e8e4dc',
+              background: method === m ? 'var(--green-800,#1a3c2e)' : '#fff',
+              color: method === m ? '#f4f0e7' : '#3a4a3f',
+              fontWeight: 700, fontSize: '.9rem', cursor: 'pointer', transition: 'all .15s',
+            }}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+
+      <p style={{ fontSize: '.8rem', color: 'var(--ink-60,#8a9a8f)', margin: '0 0 22px', lineHeight: 1.5 }}>
+        {method === 'bank'
+          ? "Fill in your details and we'll show you the account to transfer to, with a reference to quote. Your receipt and certificate follow once the transfer clears."
+          : 'Pay securely by card — your receipt and certificate arrive by email straight away.'}
+      </p>
+
       {/* Currency toggle */}
       <div style={{ display: 'flex', gap: 8, marginBottom: 28, flexWrap: 'wrap' }}>
-        {(['NGN', 'USD', 'GBP'] as Currency[]).map(c => (
+        {CURRENCIES.map(c => (
           <button
             key={c}
             type="button"
@@ -143,12 +190,16 @@ export default function DonateWidget() {
         style={{ fontSize: '1rem' }}
       >
         {status === 'loading'
-          ? 'Redirecting to payment…'
-          : `Donate ${finalAmount ? `${symbol}${Number(finalAmount).toLocaleString()}` : 'Now'}`}
+          ? (method === 'bank' ? 'Preparing your details…' : 'Redirecting to payment…')
+          : method === 'bank'
+            ? `Get bank details${finalAmount ? ` for ${symbol}${Number(finalAmount).toLocaleString()}` : ''}`
+            : `Donate ${finalAmount ? `${symbol}${Number(finalAmount).toLocaleString()}` : 'Now'}`}
       </button>
 
       <p style={{ textAlign: 'center', fontSize: '.78rem', color: 'var(--ink-60,#8a9a8f)', marginTop: '1rem' }}>
-        Powered by Stripe · Secure payments in Naira, Dollars or Pounds
+        {method === 'bank'
+          ? 'Direct transfer in Naira, Dollars, Pounds or Euros · No card needed'
+          : 'Powered by Stripe · Secure payments in Naira, Dollars, Pounds or Euros'}
       </p>
     </form>
   )
