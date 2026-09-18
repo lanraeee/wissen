@@ -284,7 +284,7 @@ export async function POST(req: NextRequest) {
     })
 
     const now = new Date()
-    let items = Array.from(merged.values()).filter(item => !shouldPrune(item, now))
+    const items = Array.from(merged.values()).filter(item => !shouldPrune(item, now))
 
     // Upsert into DB
     let upserted = 0

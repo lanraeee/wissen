@@ -115,7 +115,7 @@ export default function WikiPage() {
               The foundation operates under the belief that many African youths and diaspora communities lack access to structured career guidance and exposure to opportunities available to their global peers. Wissen-Haus was founded by <Link href="/founder" style={{ color: '#1a3c2e' }}>Benz Olagbaye</Link>, who serves as its director, with the aim of addressing this gap through structured programmes, a digital learning platform, and community-based engagements. The organisation has reported reaching over 500 students since launching in Ibadan, and is expanding its programmes across Africa and to diaspora communities internationally, including the United Kingdom.<Ref n={2} />
             </p>
             <p>
-              The name <em>Wissen-Haus</em> draws from the German word <em>Wissen</em>, meaning "knowledge", and <em>Haus</em>, meaning "house" — reflecting the organisation's vision of being a house of knowledge for African youth and the diaspora.
+              The name <em>Wissen-Haus</em> draws from the German word <em>Wissen</em>, meaning &ldquo;knowledge&rdquo;, and <em>Haus</em>, meaning &ldquo;house&rdquo; — reflecting the organisation&apos;s vision of being a house of knowledge for African youth and the diaspora.
             </p>
 
             {/* 2. Programmes */}
@@ -141,7 +141,7 @@ export default function WikiPage() {
               2.3 Impact Content
             </h3>
             <p>
-              Impact Content is the foundation's social-impact storytelling initiative, documenting stories of youth transformation and community development to inspire broader engagement with its mission.<Ref n={5} />
+              Impact Content is the foundation&apos;s social-impact storytelling initiative, documenting stories of youth transformation and community development to inspire broader engagement with its mission.<Ref n={5} />
             </p>
 
             <h3 style={{ fontSize: '1.05rem', fontWeight: 700, marginTop: 20, color: '#1a2e24' }}>

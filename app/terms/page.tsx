@@ -126,12 +126,12 @@ export default function TermsPage() {
 
           <H id="ip" n="9">Intellectual Property</H>
           <p>
-            The Site's design, text, graphics, logos, and the Wissen-Haus name and branding are the property of Wissen-Haus Youth Empowerment Foundation and protected by applicable intellectual property laws. You may not reproduce, distribute, or create derivative works from Site content without our prior written consent, except as permitted for personal, non-commercial use (e.g. sharing a link, or a certificate you have earned).
+            The Site&apos;s design, text, graphics, logos, and the Wissen-Haus name and branding are the property of Wissen-Haus Youth Empowerment Foundation and protected by applicable intellectual property laws. You may not reproduce, distribute, or create derivative works from Site content without our prior written consent, except as permitted for personal, non-commercial use (e.g. sharing a link, or a certificate you have earned).
           </p>
 
           <H id="third-party" n="10">Third-Party Services</H>
           <p>
-            The Site relies on third-party services including Stripe (payments), Resend (email), PostHog (analytics), and hosting/database providers. Your use of features that rely on these services is also subject to those providers' own terms.
+            The Site relies on third-party services including Stripe (payments), Resend (email), PostHog (analytics), and hosting/database providers. Your use of features that rely on these services is also subject to those providers&apos; own terms.
           </p>
 
           <H id="disclaimers" n="11">Disclaimers</H>

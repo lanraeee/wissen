@@ -290,7 +290,7 @@ export default function DonationDriveSeries1Page() {
             borderRadius: 'var(--radius)', padding: '18px 24px',
             fontStyle: 'italic', color: 'var(--ink-60)', textAlign: 'center', fontSize: '.95rem', lineHeight: 1.65,
           }}>
-            "The December Fair is the entry point, not the whole partnership. Each stage produces the evidence that makes the next one possible."
+            &ldquo;The December Fair is the entry point, not the whole partnership. Each stage produces the evidence that makes the next one possible.&rdquo;
           </div>
         </div>
       </section>
@@ -373,7 +373,7 @@ export default function DonationDriveSeries1Page() {
         <div className="wrap">
           <div className="section-head center mb-l reveal">
             <span className="eyebrow">Give Now</span>
-            <h2>Fund a student's day.</h2>
+            <h2>Fund a student&apos;s day.</h2>
             <p className="lead mt-m" style={{ maxWidth: 560, marginInline: 'auto' }}>
               Give by card or direct bank transfer, in Naira, Dollars, Pounds or Euros. Card payments are processed securely by Stripe. Every contribution — of any size — fills a seat at the Fair.
             </p>
