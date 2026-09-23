@@ -1,9 +1,15 @@
 import { getSession, type UserPayload } from '@/lib/auth'
 
-const ADMIN_EMAIL = process.env.FOUNDER_EMAIL || 'director@wissenhaus.org'
+const PRIMARY_DIRECTOR_EMAIL = process.env.FOUNDER_EMAIL || 'director@wissenhaus.org'
+
+// List of director emails with full admin access
+const DIRECTOR_EMAILS = [
+  PRIMARY_DIRECTOR_EMAIL,
+  'wissenhaus@outlook.com',
+]
 
 export function isDirector(email?: string) {
-  return email === ADMIN_EMAIL
+  return email ? DIRECTOR_EMAILS.includes(email) : false
 }
 
 export async function adminGuard(): Promise<UserPayload | null> {
