@@ -4,6 +4,8 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import posthog from 'posthog-js'
 import type { Module } from '@/lib/courseData'
+import { useShuffledQuiz } from '@/lib/useShuffledQuiz'
+import { isAnswerCorrect } from '@/lib/quizUtils'
 
 interface Props {
   courseId: string
@@ -15,6 +17,7 @@ interface Props {
 
 export default function CourseModule({ courseId, module, isCompleted, prevModuleId, nextModuleId }: Props) {
   const router = useRouter()
+  const { shuffledQuiz } = useShuffledQuiz(module)
   const [answers, setAnswers] = useState<Record<number, string>>({})
   const [result, setResult] = useState<{ passed: boolean; score: number } | null>(null)
   const [submitting, setSubmitting] = useState(false)
@@ -26,9 +29,12 @@ export default function CourseModule({ courseId, module, isCompleted, prevModule
   }
 
   async function handleSubmit() {
-    if (!module.quiz || module.quiz.length === 0) return
-    const total = module.quiz.length
-    const correct = module.quiz.filter((q, i) => answers[i] === q.correct).length
+    if (!shuffledQuiz || shuffledQuiz.length === 0) return
+    const total = shuffledQuiz.length
+    const correct = shuffledQuiz.filter((q, i) => {
+      const selectedKey = answers[i]
+      return selectedKey ? isAnswerCorrect(q.shuffledOptions, selectedKey) : false
+    }).length
     const score = Math.round((correct / total) * 100)
     const passed = score >= 80
     setResult({ passed, score })
@@ -59,7 +65,7 @@ export default function CourseModule({ courseId, module, isCompleted, prevModule
     }
   }
 
-  const allAnswered = module.quiz ? module.quiz.every((_, i) => answers[i] != null) : true
+  const allAnswered = shuffledQuiz ? shuffledQuiz.every((_, i) => answers[i] != null) : true
 
   return (
     <div className="module-single">
@@ -87,22 +93,22 @@ export default function CourseModule({ courseId, module, isCompleted, prevModule
             <p className="module__summary">{module.summary}</p>
           )}
 
-          {module.quiz && module.quiz.length > 0 && (
+          {shuffledQuiz && shuffledQuiz.length > 0 && (
             <div className="module__quiz">
               <strong>Module Quiz</strong>
-              {module.quiz.map((q, qIdx) => (
+              {shuffledQuiz.map((q, qIdx) => (
                 <div key={qIdx} className="module__question">
                   <p className="module__question-text">{qIdx + 1}. {q.question}</p>
                   <div className="module__options">
-                    {(Object.entries(q.options) as [string, string][]).map(([key, text]) => (
-                      <label key={key} className="module__option">
+                    {q.shuffledOptions.map((option) => (
+                      <label key={option.key} className="module__option">
                         <input
                           type="radio"
                           name={`q${qIdx}`}
-                          checked={answers[qIdx] === key}
-                          onChange={() => handleAnswer(qIdx, key)}
+                          checked={answers[qIdx] === option.key}
+                          onChange={() => handleAnswer(qIdx, option.key)}
                         />
-                        <span>{text}</span>
+                        <span>{option.text}</span>
                       </label>
                     ))}
                   </div>

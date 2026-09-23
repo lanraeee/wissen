@@ -1,0 +1,568 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Wissen-Haus Runtime Architecture",
+    "quality_profile": "showcase",
+    "viewBox": [
+      1360,
+      640
+    ],
+    "repository": {
+      "url": "https://github.com/lanraeee/wissen",
+      "provider": "github",
+      "link_mode": "web",
+      "revision": "39fd0c8dc3306dd71d81b8041e1b544b7d346588"
+    },
+    "views": [
+      {
+        "id": "donation-path",
+        "label": "Donation checkout path",
+        "focus": [
+          "browser",
+          "edge",
+          "routes",
+          "libs",
+          "stripe",
+          "neon",
+          "resend"
+        ],
+        "note": "The one primary path: create a Checkout Session, verify on return, then record and notify."
+      },
+      {
+        "id": "trust-zones",
+        "label": "Trust boundaries",
+        "focus": [
+          "browser",
+          "edge",
+          "adminapi",
+          "libs",
+          "scheduler"
+        ],
+        "note": "Where an untrusted caller stops and where a verified session actually begins."
+      },
+      {
+        "id": "admin-plane",
+        "label": "Admin plane",
+        "focus": [
+          "edge",
+          "adminapi",
+          "libs",
+          "neon"
+        ],
+        "note": "Authorization is enforced in handlers and server layouts, never at the edge."
+      },
+      {
+        "id": "scheduled-ingest",
+        "label": "Scheduled ingest",
+        "focus": [
+          "scheduler",
+          "cron",
+          "feeds",
+          "libs",
+          "neon"
+        ],
+        "note": "Daily opportunity refresh, triggered twice on the same schedule."
+      },
+      {
+        "id": "third-party",
+        "label": "External dependencies",
+        "focus": [
+          "neon",
+          "stripe",
+          "resend",
+          "posthog",
+          "feeds"
+        ],
+        "note": "Every stateful dependency is a third-party service outside the trust boundary."
+      }
+    ]
+  },
+  "components": [
+    {
+      "id": "browser",
+      "type": "external",
+      "label": "Browser",
+      "sublabel": "React 19 client",
+      "tag": "wh_token cookie",
+      "pos": [
+        28,
+        280
+      ],
+      "size": [
+        150,
+        70
+      ]
+    },
+    {
+      "id": "scheduler",
+      "type": "cloud",
+      "label": "Scheduler / CI",
+      "sublabel": "Vercel Cron + Actions",
+      "tag": "daily 03:17 UTC",
+      "pos": [
+        28,
+        520
+      ],
+      "size": [
+        150,
+        70
+      ],
+      "sources": [
+        {
+          "path": "vercel.json",
+          "label": "cron entry"
+        },
+        {
+          "path": ".github/workflows/update-opportunities.yml",
+          "label": "curl trigger"
+        }
+      ]
+    },
+    {
+      "id": "edge",
+      "type": "security",
+      "label": "Edge Middleware",
+      "sublabel": "middleware.ts",
+      "tag": "cookie check only",
+      "pos": [
+        314,
+        280
+      ],
+      "size": [
+        150,
+        70
+      ],
+      "sources": [
+        {
+          "path": "middleware.ts",
+          "line": 10,
+          "end_line": 28
+        }
+      ]
+    },
+    {
+      "id": "rsc",
+      "type": "frontend",
+      "label": "App Router Pages",
+      "sublabel": "RSC + server layouts",
+      "tag": "getSession()",
+      "pos": [
+        600,
+        160
+      ],
+      "size": [
+        150,
+        70
+      ],
+      "sources": [
+        {
+          "path": "app/layout.tsx",
+          "label": "root layout"
+        },
+        {
+          "path": "app/profile/layout.tsx",
+          "label": "guarded layout"
+        }
+      ]
+    },
+    {
+      "id": "routes",
+      "type": "backend",
+      "label": "Route Handlers",
+      "sublabel": "auth, forms, payments",
+      "tag": "Node runtime",
+      "pos": [
+        600,
+        280
+      ],
+      "size": [
+        150,
+        70
+      ],
+      "sources": [
+        {
+          "path": "app/api/auth/login/route.ts",
+          "label": "session issue"
+        },
+        {
+          "path": "app/api/payments/stripe/route.ts",
+          "label": "checkout"
+        }
+      ]
+    },
+    {
+      "id": "adminapi",
+      "type": "security",
+      "label": "Admin Surface",
+      "sublabel": "/admin + /api/admin/*",
+      "tag": "adminGuard",
+      "pos": [
+        600,
+        400
+      ],
+      "size": [
+        150,
+        70
+      ],
+      "sources": [
+        {
+          "path": "lib/admin-guard.ts",
+          "label": "adminGuard"
+        },
+        {
+          "path": "app/admin/layout.tsx",
+          "line": 11,
+          "label": "RSC guard"
+        }
+      ]
+    },
+    {
+      "id": "libs",
+      "type": "backend",
+      "label": "lib/ Service Layer",
+      "sublabel": "db, auth, email",
+      "tag": "lazy clients",
+      "pos": [
+        886,
+        280
+      ],
+      "size": [
+        150,
+        70
+      ],
+      "sources": [
+        {
+          "path": "lib/db.ts",
+          "label": "Neon proxy"
+        },
+        {
+          "path": "lib/donations.ts",
+          "line": 72,
+          "label": "recordDonation"
+        }
+      ]
+    },
+    {
+      "id": "cron",
+      "type": "backend",
+      "label": "Opportunity Ingest",
+      "sublabel": "/api/cron/opportunities",
+      "tag": "Bearer CRON_SECRET",
+      "pos": [
+        886,
+        520
+      ],
+      "size": [
+        150,
+        70
+      ],
+      "sources": [
+        {
+          "path": "app/api/cron/opportunities/route.ts",
+          "line": 254
+        }
+      ]
+    },
+    {
+      "id": "neon",
+      "type": "database",
+      "label": "Neon Postgres",
+      "sublabel": "serverless driver",
+      "tag": "8 tables",
+      "pos": [
+        1172,
+        50
+      ],
+      "size": [
+        150,
+        70
+      ],
+      "sources": [
+        {
+          "path": "lib/schema.sql"
+        }
+      ]
+    },
+    {
+      "id": "stripe",
+      "type": "external",
+      "label": "Stripe",
+      "sublabel": "Checkout Sessions API",
+      "tag": "no webhook",
+      "pos": [
+        1172,
+        160
+      ],
+      "size": [
+        150,
+        70
+      ],
+      "sources": [
+        {
+          "path": "app/api/payments/stripe/route.ts",
+          "line": 20
+        }
+      ]
+    },
+    {
+      "id": "resend",
+      "type": "external",
+      "label": "Resend",
+      "sublabel": "transactional email",
+      "pos": [
+        1172,
+        280
+      ],
+      "size": [
+        150,
+        70
+      ],
+      "sources": [
+        {
+          "path": "lib/email.ts"
+        }
+      ]
+    },
+    {
+      "id": "posthog",
+      "type": "external",
+      "label": "PostHog EU Cloud",
+      "sublabel": "product analytics",
+      "tag": "/ingest rewrite",
+      "pos": [
+        1172,
+        400
+      ],
+      "size": [
+        150,
+        70
+      ],
+      "sources": [
+        {
+          "path": "lib/posthog-server.ts"
+        }
+      ]
+    },
+    {
+      "id": "feeds",
+      "type": "external",
+      "label": "Opportunity Feeds",
+      "sublabel": "6 public job/grant APIs",
+      "tag": "unauthenticated",
+      "pos": [
+        1172,
+        520
+      ],
+      "size": [
+        150,
+        70
+      ]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "security-group",
+      "label": "Untrusted internet",
+      "wraps": [
+        "browser"
+      ],
+      "pad": 26
+    },
+    {
+      "kind": "security-group",
+      "label": "CI trigger",
+      "wraps": [
+        "scheduler"
+      ],
+      "pad": 26
+    },
+    {
+      "kind": "region",
+      "label": "Vercel - trusted runtime (Edge + Fluid Compute)",
+      "wraps": [
+        "edge",
+        "rsc",
+        "routes",
+        "adminapi",
+        "libs",
+        "cron"
+      ],
+      "pad": 32
+    },
+    {
+      "kind": "security-group",
+      "label": "Admin plane",
+      "wraps": [
+        "adminapi"
+      ],
+      "pad": 18
+    },
+    {
+      "kind": "region",
+      "label": "Outside trust boundary",
+      "wraps": [
+        "neon",
+        "stripe",
+        "resend",
+        "posthog",
+        "feeds"
+      ],
+      "pad": 30
+    }
+  ],
+  "connections": [
+    {
+      "id": "p1",
+      "from": "browser",
+      "to": "edge",
+      "label": "1 HTTPS",
+      "variant": "emphasis"
+    },
+    {
+      "id": "p2",
+      "from": "edge",
+      "to": "routes",
+      "label": "2 checkout",
+      "variant": "emphasis",
+      "labelDx": 36
+    },
+    {
+      "id": "p3",
+      "from": "routes",
+      "to": "libs",
+      "label": "3 verify",
+      "variant": "emphasis",
+      "labelDx": 36,
+      "labelDy": 14
+    },
+    {
+      "id": "p4",
+      "from": "libs",
+      "to": "stripe",
+      "label": "4 Session",
+      "variant": "emphasis"
+    },
+    {
+      "id": "p5",
+      "from": "libs",
+      "to": "neon",
+      "label": "5 record",
+      "variant": "emphasis",
+      "fromSide": "top",
+      "toSide": "left"
+    },
+    {
+      "id": "p6",
+      "from": "libs",
+      "to": "resend",
+      "label": "6 receipt",
+      "variant": "emphasis",
+      "labelDx": 36
+    },
+    {
+      "id": "s1",
+      "from": "edge",
+      "to": "rsc",
+      "label": "page render"
+    },
+    {
+      "id": "s2",
+      "from": "edge",
+      "to": "adminapi",
+      "label": "no authz",
+      "variant": "security"
+    },
+    {
+      "id": "s3",
+      "from": "rsc",
+      "to": "libs",
+      "label": "session SQL"
+    },
+    {
+      "id": "s4",
+      "from": "adminapi",
+      "to": "libs",
+      "label": "guarded write"
+    },
+    {
+      "id": "s5",
+      "from": "libs",
+      "to": "posthog",
+      "label": "server events",
+      "variant": "dashed"
+    },
+    {
+      "id": "s6",
+      "from": "scheduler",
+      "to": "cron",
+      "label": "CRON_SECRET",
+      "variant": "security"
+    },
+    {
+      "id": "s7",
+      "from": "cron",
+      "to": "feeds",
+      "label": "feed fetch",
+      "variant": "dashed"
+    },
+    {
+      "id": "s8",
+      "from": "cron",
+      "to": "libs",
+      "label": "upsert",
+      "fromSide": "top",
+      "toSide": "bottom"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Runtime and edge",
+      "items": [
+        "Next.js 15.3 App Router, React 19; all handlers on the default Node runtime.",
+        "/ingest/* is rewritten to eu.i.posthog.com so analytics stay first-party."
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "Data plane",
+      "items": [
+        "Neon serverless Postgres; lib/db.ts connects on first query, not at import.",
+        "8 tables; schema applied by hand via scripts/migrate.mjs, no migration history."
+      ]
+    },
+    {
+      "dot": "violet",
+      "title": "Primary path",
+      "items": [
+        "1-3: browser POSTs /api/payments/stripe; lib/stripe.ts creates a Checkout Session.",
+        "4-6: /donate/success PUTs the id back; recordDonation writes, mails, tracks."
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "Trust boundaries",
+      "items": [
+        "Middleware only checks the cookie; JWT verify runs in layouts and handlers.",
+        "donation-projects guards on session.isAdmin, a claim signToken never issues."
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "Scheduled ingest",
+      "items": [
+        "Two triggers on one 17 3 * * * schedule: vercel.json cron and GitHub Actions.",
+        "Six public feeds incl. RemoteOK, Himalayas, Devpost, ScholarshipsForAfricans."
+      ]
+    },
+    {
+      "dot": "slate",
+      "title": "Gaps to review",
+      "items": [
+        "No Stripe webhook: an abandoned redirect leaves a paid donation unrecorded.",
+        "deploy.yml targets a missing redesign/ dir; real deploys come from Vercel Git."
+      ]
+    }
+  ]
+}
