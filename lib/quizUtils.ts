@@ -116,3 +116,45 @@ export function isAnswerCorrect(
   const selected = shuffledOptions.find(opt => opt.key === selectedKey)
   return selected?.isCorrect ?? false
 }
+
+/**
+ * Shuffle the order of questions in a quiz
+ * Maintains original question data, just reorders them
+ *
+ * @param questions - Array of questions to shuffle
+ * @param sessionId - Optional session identifier for deterministic shuffling
+ * @returns Reordered questions array with original indices preserved
+ */
+export function shuffleQuestionOrder(
+  questions: ShuffledQuestion[],
+  sessionId?: string
+): Array<ShuffledQuestion & { originalIndex: number }> {
+  // Create indexed array to track original positions
+  const indexed = questions.map((q, i) => ({ question: q, originalIndex: i }))
+
+  // Create seed from "question-order" + session ID
+  const seed = hashString('question-order' + (sessionId || ''))
+
+  // Shuffle the indexed array
+  const shuffledIndexed = shuffleArray(indexed, seed)
+
+  // Return with original indices preserved for answer tracking
+  return shuffledIndexed.map(({ question, originalIndex }) => ({
+    ...question,
+    originalIndex
+  }))
+}
+
+/**
+ * Get the original question index after shuffling
+ * Used for mapping shuffled answer positions back to original questions
+ */
+export function getOriginalQuestionIndex(
+  shuffledQuestions: Array<ShuffledQuestion & { originalIndex: number }>,
+  currentIndex: number
+): number {
+  if (currentIndex < 0 || currentIndex >= shuffledQuestions.length) {
+    return -1
+  }
+  return shuffledQuestions[currentIndex].originalIndex
+}

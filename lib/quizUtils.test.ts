@@ -1,6 +1,8 @@
 import {
   shuffleQuestionOptions,
   shuffleModuleQuestions,
+  shuffleQuestionOrder,
+  getOriginalQuestionIndex,
   isAnswerCorrect,
   getAnswerKeyFromIndex,
 } from './quizUtils'
@@ -109,6 +111,53 @@ describe('quizUtils', () => {
     })
   })
 
+  describe('shuffleQuestionOrder', () => {
+    it('should return all questions in different order', () => {
+      const questions = shuffleModuleQuestions(mockQuestions, 'session-1')
+      const shuffled = shuffleQuestionOrder(questions, 'session-1')
+
+      expect(shuffled).toHaveLength(2)
+      expect(shuffled.map(q => q.originalIndex).sort()).toEqual([0, 1])
+    })
+
+    it('should preserve question data during reorder', () => {
+      const questions = shuffleModuleQuestions(mockQuestions, 'session-1')
+      const shuffled = shuffleQuestionOrder(questions, 'session-1')
+
+      // All questions should still be present
+      const originalIndices = shuffled.map(q => q.originalIndex).sort()
+      expect(originalIndices).toEqual([0, 1])
+
+      // Question text should be preserved
+      shuffled.forEach(q => {
+        expect(q.question).toBeDefined()
+        expect(q.shuffledOptions).toBeDefined()
+      })
+    })
+
+    it('should produce consistent order for same session', () => {
+      const questions = shuffleModuleQuestions(mockQuestions, 'session-1')
+      const shuffle1 = shuffleQuestionOrder(questions, 'session-1')
+      const shuffle2 = shuffleQuestionOrder(questions, 'session-1')
+
+      expect(shuffle1.map(q => q.originalIndex)).toEqual(
+        shuffle2.map(q => q.originalIndex)
+      )
+    })
+
+    it('should produce different order for different sessions', () => {
+      const questions = shuffleModuleQuestions(mockQuestions, 'session-1')
+      const shuffle1 = shuffleQuestionOrder(questions, 'session-1')
+      const shuffle2 = shuffleQuestionOrder(questions, 'session-2')
+
+      const order1 = shuffle1.map(q => q.originalIndex).join('')
+      const order2 = shuffle2.map(q => q.originalIndex).join('')
+
+      // Highly likely to be different for different sessions
+      expect(order1).not.toBe(order2)
+    })
+  })
+
   describe('isAnswerCorrect', () => {
     it('should return true for correct answer', () => {
       const shuffled = shuffleQuestionOptions(mockQuestion, 'session-1')
@@ -153,6 +202,24 @@ describe('quizUtils', () => {
     })
   })
 
+  describe('getOriginalQuestionIndex', () => {
+    it('should return correct original index', () => {
+      const questions = shuffleModuleQuestions(mockQuestions, 'session-1')
+      const shuffled = shuffleQuestionOrder(questions, 'session-1')
+
+      expect(getOriginalQuestionIndex(shuffled, 0)).toBeGreaterThanOrEqual(0)
+      expect(getOriginalQuestionIndex(shuffled, 1)).toBeGreaterThanOrEqual(0)
+    })
+
+    it('should return -1 for invalid indices', () => {
+      const questions = shuffleModuleQuestions(mockQuestions, 'session-1')
+      const shuffled = shuffleQuestionOrder(questions, 'session-1')
+
+      expect(getOriginalQuestionIndex(shuffled, -1)).toBe(-1)
+      expect(getOriginalQuestionIndex(shuffled, 10)).toBe(-1)
+    })
+  })
+
   describe('Integration tests', () => {
     it('should correctly validate shuffled answers across session', () => {
       const shuffled = shuffleQuestionOptions(mockQuestion, 'session-1')
@@ -176,6 +243,50 @@ describe('quizUtils', () => {
         const correctOption = q.shuffledOptions.find(o => o.isCorrect)!
         answers[i] = correctOption.key
         scores[i] = isAnswerCorrect(q.shuffledOptions, correctOption.key)
+      })
+
+      const correctCount = Object.values(scores).filter(Boolean).length
+      const score = Math.round((correctCount / shuffled.length) * 100)
+
+      expect(score).toBe(100)
+    })
+
+    it('should handle both answer and question shuffling together', () => {
+      const session = 'session-1'
+
+      // Shuffle options first
+      let shuffled = shuffleModuleQuestions(mockQuestions, session)
+
+      // Then shuffle question order
+      shuffled = shuffleQuestionOrder(shuffled, session) as any
+
+      expect(shuffled).toHaveLength(2)
+
+      // All original indices should be present
+      const indices = shuffled.map((q: any) => q.originalIndex).sort()
+      expect(indices).toEqual([0, 1])
+
+      // Each question should have shuffled options
+      shuffled.forEach((q: any) => {
+        expect(q.shuffledOptions).toHaveLength(4)
+      })
+    })
+
+    it('should correctly score quiz with shuffled questions and answers', () => {
+      const session = 'session-1'
+
+      // Apply both shuffles
+      let shuffled = shuffleModuleQuestions(mockQuestions, session)
+      shuffled = shuffleQuestionOrder(shuffled, session) as any
+
+      // Build answers based on current (shuffled) positions
+      const answers: Record<number, string> = {}
+      const scores: Record<number, boolean> = {}
+
+      shuffled.forEach((q: any, displayIdx: number) => {
+        const correctOption = q.shuffledOptions.find((o: any) => o.isCorrect)!
+        answers[displayIdx] = correctOption.key
+        scores[displayIdx] = isAnswerCorrect(q.shuffledOptions, correctOption.key)
       })
 
       const correctCount = Object.values(scores).filter(Boolean).length

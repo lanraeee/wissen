@@ -31,8 +31,9 @@ export default function CourseModule({ courseId, module, isCompleted, prevModule
   async function handleSubmit() {
     if (!shuffledQuiz || shuffledQuiz.length === 0) return
     const total = shuffledQuiz.length
-    const correct = shuffledQuiz.filter((q, i) => {
-      const selectedKey = answers[i]
+    const correct = shuffledQuiz.filter((q, displayIndex) => {
+      // Use display index (shuffled position) to get the answer
+      const selectedKey = answers[displayIndex]
       return selectedKey ? isAnswerCorrect(q.shuffledOptions, selectedKey) : false
     }).length
     const score = Math.round((correct / total) * 100)

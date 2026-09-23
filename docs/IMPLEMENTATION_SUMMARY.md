@@ -7,18 +7,25 @@ Set up a better random reshuffle process for answers on community hub courses to
 
 ### 1. Core Shuffle Engine (`lib/quizUtils.ts`)
 ```typescript
-// Fisher-Yates shuffle with seeded randomization
+// Fisher-Yates shuffle with seeded randomization for answers AND questions
 shuffleQuestionOptions(question, sessionId)
   → Returns question with shuffledOptions array
   → Preserves correctness tracking
   → Deterministic per session
+
+shuffleQuestionOrder(questions, sessionId)
+  → Returns questions in randomized order
+  → Preserves original indices
+  → Deterministic per session
 ```
 
 **Key Functions:**
-- `shuffleQuestionOptions()` - Single question shuffle
-- `shuffleModuleQuestions()` - Module-wide shuffle
+- `shuffleQuestionOptions()` - Single question's answer options shuffle
+- `shuffleModuleQuestions()` - All questions' answer options shuffle
+- `shuffleQuestionOrder()` - Question sequence shuffle
 - `isAnswerCorrect()` - Answer validation
 - `getAnswerKeyFromIndex()` - Position-to-key mapping
+- `getOriginalQuestionIndex()` - Track original question position
 
 ### 2. React Hook (`lib/useShuffledQuiz.ts`)
 ```typescript
@@ -82,16 +89,21 @@ const { shuffledQuiz, sessionId } = useShuffledQuiz(module)
    ↓
 3. Generate session ID (stored in sessionStorage)
    ↓
-4. Hash question text + session ID
+4. STEP A: Shuffle answer options
+   ├─ Hash question text + session ID
+   ├─ Apply Fisher-Yates shuffle per question
+   └─ Return ShuffledQuestion with:
+      - Original question text
+      - shuffledOptions array
+      - Each option has: key, text, isCorrect
    ↓
-5. Apply Fisher-Yates shuffle with seed
+5. STEP B: Shuffle question order (optional)
+   ├─ Hash "question-order" + session ID
+   ├─ Apply Fisher-Yates shuffle to questions array
+   └─ Add originalIndex tracking to each question
    ↓
-6. Return ShuffledQuestion with:
-   - Original question text
-   - shuffledOptions array
-   - Each option has: key, text, isCorrect
-   ↓
-7. Render options in shuffled order
+6. Render questions in shuffled order
+   └─ Render options in shuffled order
 ```
 
 ### Answer Validation
@@ -205,32 +217,51 @@ for i from n-1 down to 1:
 
 ### Before (Static Order)
 ```
-Question: "What is 2 + 2?"
-Session 1: a=3, b=4, c=5, d=6  [User selects b=4 ✓]
-Session 2: a=3, b=4, c=5, d=6  [User selects b ✓]
-Session 3: a=3, b=4, c=5, d=6  [User just clicks b ✓]
+Session 1:
+  Q1: "What is 2 + 2?"     [a=3, b=4, c=5, d=6]  → User selects b=4 ✓
+  Q2: "Capital of France?" [a=London, b=Berlin, c=Paris, d=Madrid] → User selects c ✓
 
-Problem: User memorizes position, not content
+Session 2:
+  Same order every time → User just memorizes positions
+
+Problem: User memorizes both question order AND answer positions
 ```
 
-### After (Shuffled Order)
+### After (Shuffled Order - Both Answers & Questions)
 ```
-Question: "What is 2 + 2?"
-Session 1: a=5, b=3, c=4, d=6  [User selects c=4 ✓]
-Session 2: a=6, b=4, c=3, d=5  [User must think about it ✓]
-Session 3: a=4, b=6, c=5, d=3  [User can't memorize position ✓]
+Session 1:
+  Q1: "What is 2 + 2?"     [a=5, b=3, c=4, d=6]  → User selects c=4 ✓
+  Q2: "Capital of France?" [a=Madrid, b=Paris, c=London, d=Berlin] → User selects b ✓
 
-Benefit: User must understand content, not just position
+Session 2:
+  Q2: "Capital of France?" [a=Berlin, b=Madrid, c=Paris, d=London] → User must think ✓
+  Q1: "What is 2 + 2?"     [a=4, b=5, c=3, d=6]  → User must think ✓
+
+Session 3:
+  Q1: "What is 2 + 2?"     [a=6, b=4, c=5, d=3]  → Can't memorize anything ✓
+  Q2: "Capital of France?" [a=Paris, b=Berlin, c=Madrid, d=London] → Must understand ✓
+
+Benefit: User MUST understand content - position + sequence memory completely useless
 ```
 
 ## 🎓 Learning Outcomes
 
-Randomized answers promote:
-1. **Deeper Understanding** - Must read all options
-2. **Better Retention** - Not relying on position memory
-3. **Fair Assessment** - All students see different orders
-4. **Reduced Guessing** - Prevents pattern recognition
-5. **Transferable Knowledge** - Applies across all attempts
+Randomized answers AND questions promote:
+1. **Deeper Understanding** - Must read all options and pay attention to sequence
+2. **Better Retention** - Not relying on position or sequence memory
+3. **Fair Assessment** - All students see completely different quiz layouts
+4. **Reduced Guessing** - Prevents both answer and question pattern recognition
+5. **Transferable Knowledge** - Applies across all attempts with full variation
+6. **Cognitive Load** - Requires full attention, not muscle memory
+
+### Answer Shuffling Benefits
+- Students can't memorize which option is usually correct
+- Must actually read and understand each answer
+
+### Question Shuffling Benefits  
+- Students can't memorize question patterns or sequences
+- Prevents "I remember this is about X" heuristics
+- Creates truly unique quiz experiences
 
 ## 🔄 Backward Compatibility
 
