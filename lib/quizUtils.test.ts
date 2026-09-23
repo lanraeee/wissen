@@ -6,7 +6,7 @@ import {
   isAnswerCorrect,
   getAnswerKeyFromIndex,
 } from './quizUtils'
-import type { QuizQuestion, Module } from './courseData'
+import type { QuizQuestion } from './courseData'
 
 // Mock data
 const mockQuestion: QuizQuestion = {
@@ -224,8 +224,6 @@ describe('quizUtils', () => {
     it('should correctly validate shuffled answers across session', () => {
       const shuffled = shuffleQuestionOptions(mockQuestion, 'session-1')
 
-      // Simulate user selecting different options
-      mockQuestion.options.a; // Position might vary
       const correctOption = shuffled.shuffledOptions.find(o => o.isCorrect)!
 
       expect(isAnswerCorrect(shuffled.shuffledOptions, correctOption.key)).toBe(true)
@@ -255,19 +253,19 @@ describe('quizUtils', () => {
       const session = 'session-1'
 
       // Shuffle options first
-      let shuffled = shuffleModuleQuestions(mockQuestions, session)
+      const shuffled = shuffleModuleQuestions(mockQuestions, session)
 
       // Then shuffle question order
-      shuffled = shuffleQuestionOrder(shuffled, session) as any
+      const shuffledQuestions = shuffleQuestionOrder(shuffled, session)
 
-      expect(shuffled).toHaveLength(2)
+      expect(shuffledQuestions).toHaveLength(2)
 
       // All original indices should be present
-      const indices = shuffled.map((q: any) => q.originalIndex).sort()
+      const indices = shuffledQuestions.map(q => q.originalIndex).sort()
       expect(indices).toEqual([0, 1])
 
       // Each question should have shuffled options
-      shuffled.forEach((q: any) => {
+      shuffledQuestions.forEach(q => {
         expect(q.shuffledOptions).toHaveLength(4)
       })
     })
@@ -276,21 +274,21 @@ describe('quizUtils', () => {
       const session = 'session-1'
 
       // Apply both shuffles
-      let shuffled = shuffleModuleQuestions(mockQuestions, session)
-      shuffled = shuffleQuestionOrder(shuffled, session) as any
+      const shuffledOptions = shuffleModuleQuestions(mockQuestions, session)
+      const shuffledQuestions = shuffleQuestionOrder(shuffledOptions, session)
 
       // Build answers based on current (shuffled) positions
       const answers: Record<number, string> = {}
       const scores: Record<number, boolean> = {}
 
-      shuffled.forEach((q: any, displayIdx: number) => {
-        const correctOption = q.shuffledOptions.find((o: any) => o.isCorrect)!
+      shuffledQuestions.forEach((q, displayIdx) => {
+        const correctOption = q.shuffledOptions.find(o => o.isCorrect)!
         answers[displayIdx] = correctOption.key
         scores[displayIdx] = isAnswerCorrect(q.shuffledOptions, correctOption.key)
       })
 
       const correctCount = Object.values(scores).filter(Boolean).length
-      const score = Math.round((correctCount / shuffled.length) * 100)
+      const score = Math.round((correctCount / shuffledQuestions.length) * 100)
 
       expect(score).toBe(100)
     })
