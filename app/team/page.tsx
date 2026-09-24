@@ -13,17 +13,18 @@ export const metadata: Metadata = {
 export interface TeamMember {
   name: string
   role: string
-  group: 'leadership' | 'advisor' | 'mentor' | 'volunteer'
+  group: 'leadership' | 'advisor' | 'mentor' | 'team_member' | 'volunteer'
   bio: string
   linkedin?: string
   photo?: string
 }
 
 const GROUP_META: Record<TeamMember['group'], { heading: string; eyebrow: string }> = {
-  leadership: { heading: 'Leadership', eyebrow: 'Core Team' },
-  advisor:    { heading: 'Advisory Board', eyebrow: 'Strategy & Governance' },
-  mentor:     { heading: 'Mentors', eyebrow: 'Career & Industry' },
-  volunteer:  { heading: 'Volunteers', eyebrow: 'Programmes & Operations' },
+  leadership:  { heading: 'Leadership', eyebrow: 'Core Team' },
+  advisor:     { heading: 'Advisory Board', eyebrow: 'Strategy & Governance' },
+  mentor:      { heading: 'Mentors', eyebrow: 'Career & Industry' },
+  team_member: { heading: 'Team Members', eyebrow: 'Operations and Programmes' },
+  volunteer:   { heading: 'Volunteers', eyebrow: 'Our Community' },
 }
 
 const VALUES = [
@@ -96,7 +97,7 @@ function MemberCard({ m, delay }: { m: TeamMember; delay?: number }) {
 export default async function TeamPage() {
   const [members, founderPhoto] = await Promise.all([getMembers(), getFounderPhoto()])
 
-  const grouped = (['leadership', 'advisor', 'mentor', 'volunteer'] as TeamMember['group'][])
+  const grouped = (['leadership', 'advisor', 'mentor', 'team_member', 'volunteer'] as TeamMember['group'][])
     .map(g => ({ group: g, items: members.filter(m => m.group === g) }))
     .filter(g => g.items.length > 0)
 
