@@ -7,6 +7,7 @@ const GROUP_OPTIONS: { value: TeamMember['group']; label: string }[] = [
   { value: 'leadership', label: 'Leadership' },
   { value: 'advisor', label: 'Advisory Board' },
   { value: 'mentor', label: 'Mentor' },
+  { value: 'team_member', label: 'Team Member' },
   { value: 'volunteer', label: 'Volunteer' },
 ]
 
@@ -22,6 +23,7 @@ const inp = { padding: '6px 10px', fontSize: '.85rem', border: '1px solid #d0ccc
 
 export default function TeamEditor() {
   const [members, setMembers] = useState<TeamMember[]>([])
+  const [sectionOrder, setSectionOrder] = useState<TeamMember['group'][]>(['leadership', 'advisor', 'mentor', 'team_member', 'volunteer'])
   const [loaded, setLoaded] = useState(false)
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
@@ -29,22 +31,41 @@ export default function TeamEditor() {
   const [draft, setDraft] = useState<TeamMember>(BLANK)
 
   useEffect(() => {
-    fetch('/api/admin/content/team_members').then(r => r.json()).then(res => {
-      setMembers(res.value ?? DEFAULT_MEMBERS)
+    Promise.all([
+      fetch('/api/admin/content/team_members').then(r => r.json()),
+      fetch('/api/admin/content/team_section_order').then(r => r.json()),
+    ]).then(([membersRes, orderRes]) => {
+      setMembers(membersRes.value ?? DEFAULT_MEMBERS)
+      setSectionOrder(orderRes.value ?? ['leadership', 'advisor', 'mentor', 'team_member', 'volunteer'])
       setLoaded(true)
     })
   }, [])
 
   async function save() {
     setSaving(true)
-    await fetch('/api/admin/content/team_members', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ value: members }),
-    })
+    await Promise.all([
+      fetch('/api/admin/content/team_members', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ value: members }),
+      }),
+      fetch('/api/admin/content/team_section_order', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ value: sectionOrder }),
+      }),
+    ])
     setSaving(false)
     setSaved(true)
     setTimeout(() => setSaved(false), 2500)
+  }
+
+  function moveSectionOrder(i: number, dir: -1 | 1) {
+    setSectionOrder(o => {
+      const next = [...o]
+      const tmp = next[i]; next[i] = next[i + dir]; next[i + dir] = tmp
+      return next
+    })
   }
 
   function startEdit(i: number) { setEditing(i); setDraft(members[i]) }
@@ -63,7 +84,7 @@ export default function TeamEditor() {
   }
 
   const GROUP_LABEL: Record<TeamMember['group'], string> = {
-    leadership: 'Leadership', advisor: 'Advisor', mentor: 'Mentor', volunteer: 'Volunteer',
+    leadership: 'Leadership', advisor: 'Advisor', mentor: 'Mentor', team_member: 'Team Member', volunteer: 'Volunteer',
   }
 
   if (!loaded) return <div style={{ padding: 24, color: '#8a9a8f' }}>Loading…</div>
@@ -211,6 +232,29 @@ export default function TeamEditor() {
           No team members yet. Add people to display them on the public /team page.
         </p>
       )}
+
+      <hr style={{ border: 'none', borderTop: '1px solid #e8e4dc', margin: '2rem 0 1.5rem' }} />
+
+      <div>
+        <h3 style={{ margin: '0 0 16px', fontSize: '1rem', color: '#1a3c2e' }}>Section Order</h3>
+        <p style={{ margin: '0 0 12px', fontSize: '.85rem', color: '#8a9a8f' }}>
+          Rearrange the order of team sections displayed on the public /team page.
+        </p>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+          {sectionOrder.map((group, i) => {
+            const groupLabel = GROUP_OPTIONS.find(o => o.value === group)?.label || group
+            return (
+              <div key={group} style={{ background: '#f9f7f3', borderRadius: 8, padding: '10px 12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span style={{ fontSize: '.9rem', fontWeight: 500 }}>{groupLabel}</span>
+                <div style={{ display: 'flex', gap: 4 }}>
+                  <button style={{ ...s('#e8e4dc', '#3a4a3f'), padding: '4px 8px' }} onClick={() => moveSectionOrder(i, -1)} disabled={i === 0}>↑</button>
+                  <button style={{ ...s('#e8e4dc', '#3a4a3f'), padding: '4px 8px' }} onClick={() => moveSectionOrder(i, 1)} disabled={i === sectionOrder.length - 1}>↓</button>
+                </div>
+              </div>
+            )
+          })}
+        </div>
+      </div>
     </div>
   )
 }

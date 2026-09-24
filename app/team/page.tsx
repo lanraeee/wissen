@@ -47,6 +47,14 @@ async function getMembers(): Promise<TeamMember[]> {
   return []
 }
 
+async function getSectionOrder(): Promise<TeamMember['group'][]> {
+  try {
+    const rows = await sql`SELECT value FROM site_content WHERE key = 'team_section_order'`
+    if (rows[0]?.value) return rows[0].value as TeamMember['group'][]
+  } catch {}
+  return ['leadership', 'advisor', 'mentor', 'team_member', 'volunteer']
+}
+
 async function getFounderPhoto(): Promise<string | null> {
   try {
     const rows = await sql`SELECT value FROM site_content WHERE key = 'founder_bio'`
@@ -95,9 +103,9 @@ function MemberCard({ m, delay }: { m: TeamMember; delay?: number }) {
 }
 
 export default async function TeamPage() {
-  const [members, founderPhoto] = await Promise.all([getMembers(), getFounderPhoto()])
+  const [members, founderPhoto, sectionOrder] = await Promise.all([getMembers(), getFounderPhoto(), getSectionOrder()])
 
-  const grouped = (['leadership', 'advisor', 'mentor', 'team_member', 'volunteer'] as TeamMember['group'][])
+  const grouped = sectionOrder
     .map(g => ({ group: g, items: members.filter(m => m.group === g) }))
     .filter(g => g.items.length > 0)
 
