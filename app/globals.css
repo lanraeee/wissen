@@ -828,3 +828,15 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
 .admin-row-3col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
 .admin-row-2col-btn{display:grid;grid-template-columns:1fr 1fr auto;gap:12px;align-items:end}
 @media(max-width:560px){.admin-row-2col,.admin-row-3col,.admin-row-2col-btn{grid-template-columns:1fr}}
+
+/* Dashboard specific */
+.admin-dashboard-card{background:#fff;border-radius:10px;padding:20px 24px;box-shadow:0 1px 4px rgba(0,0,0,.06);text-decoration:none;display:block;transition:box-shadow .15s;cursor:pointer}
+.admin-dashboard-card:hover{box-shadow:0 4px 12px rgba(0,0,0,.1)}
+.admin-dashboard-label{font-size:.75rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#8a9a8f;margin-bottom:6px}
+.admin-dashboard-value{font-size:2rem;font-weight:800;color:#1a2e24;line-height:1}
+.admin-dashboard-sub{font-size:.78rem;color:#8a9a8f;margin-top:4px}
+.admin-section-title{margin:0 0 12px;font-size:.8rem;letter-spacing:.1em;text-transform:uppercase;color:#8a9a8f}
+.admin-section-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:32px}
+.admin-page-header{margin-bottom:32px}
+.admin-page-title{margin:0 0 4px;font-size:1.5rem}
+.admin-page-desc{margin:0;color:#8a9a8f;font-size:.88rem}

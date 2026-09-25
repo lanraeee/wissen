@@ -50,13 +50,13 @@ export default async function AdminDashboard() {
   ])
 
   const card = (label: string, value: number | string, sub?: string, href?: string, badge?: string) => (
-    <a href={href ?? '#'} style={{ background: '#fff', borderRadius: 10, padding: '20px 24px', boxShadow: '0 1px 4px rgba(0,0,0,.06)', textDecoration: 'none', display: 'block', transition: 'box-shadow .15s' }}>
+    <a href={href ?? '#'} className="admin-dashboard-card">
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-        <div style={{ fontSize: '.75rem', fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase', color: '#8a9a8f', marginBottom: 6 }}>{label}</div>
-        {badge && <span style={{ background: '#fee2e2', color: '#dc2626', borderRadius: 99, padding: '1px 7px', fontSize: '.68rem', fontWeight: 700 }}>{badge} pending</span>}
+        <div className="admin-dashboard-label">{label}</div>
+        {badge && <span className="admin-badge-pending">{badge} pending</span>}
       </div>
-      <div style={{ fontSize: '2rem', fontWeight: 800, color: '#1a2e24', lineHeight: 1 }}>{value}</div>
-      {sub && <div style={{ fontSize: '.78rem', color: '#8a9a8f', marginTop: 4 }}>{sub}</div>}
+      <div className="admin-dashboard-value">{value}</div>
+      {sub && <div className="admin-dashboard-sub">{sub}</div>}
     </a>
   )
 
@@ -64,21 +64,21 @@ export default async function AdminDashboard() {
 
   return (
     <>
-      <div style={{ marginBottom: 32 }}>
-        <h1 style={{ margin: '0 0 4px', fontSize: '1.5rem' }}>Dashboard</h1>
-        <p style={{ margin: 0, color: '#8a9a8f', fontSize: '.88rem' }}>Welcome back, {session?.name?.split(' ')[0]}. {stats.todayActive > 0 && `${stats.todayActive} members active today.`}</p>
+      <div className="admin-page-header">
+        <h1 className="admin-page-title">Dashboard</h1>
+        <p className="admin-page-desc">Welcome back, {session?.name?.split(' ')[0]}. {stats.todayActive > 0 && `${stats.todayActive} members active today.`}</p>
       </div>
 
-      <h3 style={{ margin: '0 0 12px', fontSize: '.8rem', letterSpacing: '.1em', textTransform: 'uppercase', color: '#8a9a8f' }}>Community</h3>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 14, marginBottom: 32 }}>
+      <h3 className="admin-section-title">Community</h3>
+      <div className="admin-section-grid">
         {card('Registered Users', stats.users, 'Total members', '/admin/users')}
         {card('Active Learners', stats.learners, 'Started a course', '/admin/courses')}
         {card('Certificates', stats.certificates, 'Issued to date', '/admin/courses')}
         {card('Opportunities', stats.opportunities, 'Live listings', '/admin/opportunities')}
       </div>
 
-      <h3 style={{ margin: '0 0 12px', fontSize: '.8rem', letterSpacing: '.1em', textTransform: 'uppercase', color: '#8a9a8f' }}>Submissions</h3>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 14, marginBottom: 32 }}>
+      <h3 className="admin-section-title">Submissions</h3>
+      <div className="admin-section-grid">
         {card('Contact Forms', stats.contact, undefined, '/admin/submissions?type=contact', stats.pendingContact > 0 ? String(stats.pendingContact) : undefined)}
         {card('Volunteer Apps', stats.volunteer, undefined, '/admin/submissions?type=volunteer', stats.pendingVolunteer > 0 ? String(stats.pendingVolunteer) : undefined)}
         {card('Partner Inquiries', stats.partner, undefined, '/admin/submissions?type=partner', stats.pendingPartner > 0 ? String(stats.pendingPartner) : undefined)}
@@ -88,7 +88,7 @@ export default async function AdminDashboard() {
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20 }}>
         {/* Recent signups */}
         <div>
-          <h3 style={{ margin: '0 0 12px', fontSize: '.8rem', letterSpacing: '.1em', textTransform: 'uppercase', color: '#8a9a8f' }}>Recent Signups</h3>
+          <h3 className="admin-section-title">Recent Signups</h3>
           <div style={{ background: '#fff', borderRadius: 10, boxShadow: '0 1px 4px rgba(0,0,0,.06)', overflow: 'hidden' }}>
             {recentUsers.map((u, i) => (
               <div key={i} style={{ padding: '12px 16px', borderBottom: i < recentUsers.length - 1 ? '1px solid #f0ece4' : 'none', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -107,7 +107,7 @@ export default async function AdminDashboard() {
 
         {/* Recent submissions */}
         <div>
-          <h3 style={{ margin: '0 0 12px', fontSize: '.8rem', letterSpacing: '.1em', textTransform: 'uppercase', color: '#8a9a8f' }}>Recent Submissions</h3>
+          <h3 className="admin-section-title">Recent Submissions</h3>
           <div style={{ background: '#fff', borderRadius: 10, boxShadow: '0 1px 4px rgba(0,0,0,.06)', overflow: 'hidden' }}>
             {recentSubs.map((s, i) => {
               const status = (s.status as string) || 'pending'
@@ -134,7 +134,7 @@ export default async function AdminDashboard() {
 
       {/* Quick links */}
       <div style={{ marginTop: 28 }}>
-        <h3 style={{ margin: '0 0 12px', fontSize: '.8rem', letterSpacing: '.1em', textTransform: 'uppercase', color: '#8a9a8f' }}>Quick Actions</h3>
+        <h3 className="admin-section-title">Quick Actions</h3>
         <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
           {[
             ['Donation Projects', '/admin/projects'],
