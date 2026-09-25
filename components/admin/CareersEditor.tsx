@@ -24,7 +24,6 @@ const s = (bg: string, color = '#fff') => ({
   background: bg, color, border: 'none', cursor: 'pointer',
 })
 
-const inp = { padding: '6px 10px', fontSize: '.85rem', border: '1px solid #d0ccc4', borderRadius: 6, width: '100%', boxSizing: 'border-box' as const }
 
 const BLANK: Role = { title: '', type: '', desc: '' }
 
@@ -55,8 +54,8 @@ function RoleList({ roles, onChange }: { roles: Role[]; onChange: (r: Role[]) =>
                 <div key={k}>
                   <label style={{ fontSize: '.7rem', fontWeight: 700, textTransform: 'uppercase', color: '#8a9a8f', letterSpacing: '.06em' }}>{k}</label>
                   {k === 'desc'
-                    ? <textarea style={{ ...inp, minHeight: 64, resize: 'vertical' }} value={draft[k]} onChange={e => setDraft(d => ({ ...d, [k]: e.target.value }))} />
-                    : <input style={inp} value={draft[k]} onChange={e => setDraft(d => ({ ...d, [k]: e.target.value }))} />
+                    ? <textarea className="admin-textarea" style={{ minHeight: 64 }} value={draft[k]} onChange={e => setDraft(d => ({ ...d, [k]: e.target.value }))} />
+                    : <input className="admin-input" value={draft[k]} onChange={e => setDraft(d => ({ ...d, [k]: e.target.value }))} />
                   }
                 </div>
               ))}
@@ -89,8 +88,8 @@ function RoleList({ roles, onChange }: { roles: Role[]; onChange: (r: Role[]) =>
             <div key={k}>
               <label style={{ fontSize: '.7rem', fontWeight: 700, textTransform: 'uppercase', color: '#8a9a8f', letterSpacing: '.06em' }}>{k}</label>
               {k === 'desc'
-                ? <textarea style={{ ...inp, minHeight: 64, resize: 'vertical' }} value={draft[k]} onChange={e => setDraft(d => ({ ...d, [k]: e.target.value }))} />
-                : <input style={inp} value={draft[k]} onChange={e => setDraft(d => ({ ...d, [k]: e.target.value }))} />
+                ? <textarea className="admin-textarea" style={{ minHeight: 64 }} value={draft[k]} onChange={e => setDraft(d => ({ ...d, [k]: e.target.value }))} />
+                : <input className="admin-input" value={draft[k]} onChange={e => setDraft(d => ({ ...d, [k]: e.target.value }))} />
               }
             </div>
           ))}

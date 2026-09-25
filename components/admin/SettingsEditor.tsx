@@ -22,7 +22,6 @@ const DEFAULTS: Settings = {
   footer_note: '',
 }
 
-const inp = { padding: '8px 12px', fontSize: '.88rem', border: '1px solid #d0ccc4', borderRadius: 6, width: '100%', boxSizing: 'border-box' as const }
 const lbl = { fontSize: '.72rem', fontWeight: 700, letterSpacing: '.08em', textTransform: 'uppercase' as const, color: '#8a9a8f', display: 'block', marginBottom: 4 }
 
 export default function SettingsEditor() {
@@ -83,7 +82,7 @@ export default function SettingsEditor() {
             <label style={lbl}>{label}</label>
             <input
               type={type}
-              style={inp}
+              className="admin-input"
               value={settings[key] as string}
               onChange={e => setSettings(s => ({ ...s, [key]: e.target.value }))}
             />

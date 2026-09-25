@@ -7,7 +7,6 @@ const s = (bg: string, color = '#fff') => ({
   background: bg, color, border: 'none', cursor: 'pointer',
 })
 
-const inp = { padding: '6px 10px', fontSize: '.85rem', border: '1px solid #d0ccc4', borderRadius: 6, width: '100%', boxSizing: 'border-box' as const }
 
 const BLANK = { title: '', company: '', type: 'job', url: '', eligibility: 'worldwide', date_posted: '', tags: '' }
 
@@ -62,18 +61,18 @@ export default function OpportunityManager({ onRefresh }: { onRefresh: () => voi
           ] as [keyof typeof BLANK, string][]).map(([k, label]) => (
             <div key={k} style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
               <label style={{ fontSize: '.72rem', fontWeight: 700, letterSpacing: '.06em', textTransform: 'uppercase', color: '#8a9a8f' }}>{label}</label>
-              <input style={inp} value={form[k]} onChange={e => setForm(f => ({ ...f, [k]: e.target.value }))} />
+              <input className="admin-input" value={form[k]} onChange={e => setForm(f => ({ ...f, [k]: e.target.value }))} />
             </div>
           ))}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
             <label style={{ fontSize: '.72rem', fontWeight: 700, letterSpacing: '.06em', textTransform: 'uppercase', color: '#8a9a8f' }}>Type</label>
-            <select style={inp} value={form.type} onChange={e => setForm(f => ({ ...f, type: e.target.value }))}>
+            <select className="admin-input" value={form.type} onChange={e => setForm(f => ({ ...f, type: e.target.value }))}>
               {['job', 'internship', 'scholarship', 'competition'].map(t => <option key={t} value={t}>{t}</option>)}
             </select>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
             <label style={{ fontSize: '.72rem', fontWeight: 700, letterSpacing: '.06em', textTransform: 'uppercase', color: '#8a9a8f' }}>Eligibility</label>
-            <select style={inp} value={form.eligibility} onChange={e => setForm(f => ({ ...f, eligibility: e.target.value }))}>
+            <select className="admin-input" value={form.eligibility} onChange={e => setForm(f => ({ ...f, eligibility: e.target.value }))}>
               {[['worldwide', 'Open Worldwide'], ['africa', 'Open to Africa'], ['nigeria', 'Open to Nigeria']].map(([v, l]) => <option key={v} value={v}>{l}</option>)}
             </select>
           </div>

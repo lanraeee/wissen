@@ -19,7 +19,6 @@ const s = (bg: string, color = '#fff') => ({
   background: bg, color, border: 'none', cursor: 'pointer',
 } as const)
 
-const inp = { padding: '6px 10px', fontSize: '.85rem', border: '1px solid #d0ccc4', borderRadius: 6, width: '100%', boxSizing: 'border-box' as const }
 
 export default function TeamEditor() {
   const [members, setMembers] = useState<TeamMember[]>([])
@@ -109,14 +108,14 @@ export default function TeamEditor() {
                     <div key={k} style={k === 'bio' ? { gridColumn: '1 / -1' } : undefined}>
                       <label style={{ fontSize: '.7rem', fontWeight: 700, textTransform: 'uppercase', color: '#8a9a8f', letterSpacing: '.06em' }}>{label}</label>
                       {k === 'bio'
-                        ? <textarea style={{ ...inp, minHeight: 72, resize: 'vertical' }} value={draft[k] as string} onChange={e => setDraft(d => ({ ...d, [k]: e.target.value }))} />
-                        : <input style={inp} value={(draft[k] ?? '') as string} onChange={e => setDraft(d => ({ ...d, [k]: e.target.value }))} />
+                        ? <textarea className="admin-textarea" style={{ minHeight: 72 }} value={draft[k] as string} onChange={e => setDraft(d => ({ ...d, [k]: e.target.value }))} />
+                        : <input className="admin-input" value={(draft[k] ?? '') as string} onChange={e => setDraft(d => ({ ...d, [k]: e.target.value }))} />
                       }
                     </div>
                   ))}
                   <div>
                     <label style={{ fontSize: '.7rem', fontWeight: 700, textTransform: 'uppercase', color: '#8a9a8f', letterSpacing: '.06em' }}>Group</label>
-                    <select style={inp} value={draft.group} onChange={e => setDraft(d => ({ ...d, group: e.target.value as TeamMember['group'] }))}>
+                    <select className="admin-input" value={draft.group} onChange={e => setDraft(d => ({ ...d, group: e.target.value as TeamMember['group'] }))}>
                       {GROUP_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
                     </select>
                   </div>
@@ -184,14 +183,14 @@ export default function TeamEditor() {
                 <div key={k} style={k === 'bio' ? { gridColumn: '1 / -1' } : undefined}>
                   <label style={{ fontSize: '.7rem', fontWeight: 700, textTransform: 'uppercase', color: '#8a9a8f', letterSpacing: '.06em' }}>{label}</label>
                   {k === 'bio'
-                    ? <textarea style={{ ...inp, minHeight: 72, resize: 'vertical' }} value={draft[k] as string} onChange={e => setDraft(d => ({ ...d, [k]: e.target.value }))} />
-                    : <input style={inp} value={(draft[k] ?? '') as string} onChange={e => setDraft(d => ({ ...d, [k]: e.target.value }))} />
+                    ? <textarea className="admin-textarea" style={{ minHeight: 72 }} value={draft[k] as string} onChange={e => setDraft(d => ({ ...d, [k]: e.target.value }))} />
+                    : <input className="admin-input" value={(draft[k] ?? '') as string} onChange={e => setDraft(d => ({ ...d, [k]: e.target.value }))} />
                   }
                 </div>
               ))}
               <div>
                 <label style={{ fontSize: '.7rem', fontWeight: 700, textTransform: 'uppercase', color: '#8a9a8f', letterSpacing: '.06em' }}>Group</label>
-                <select style={inp} value={draft.group} onChange={e => setDraft(d => ({ ...d, group: e.target.value as TeamMember['group'] }))}>
+                <select className="admin-input" value={draft.group} onChange={e => setDraft(d => ({ ...d, group: e.target.value as TeamMember['group'] }))}>
                   {GROUP_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
                 </select>
               </div>

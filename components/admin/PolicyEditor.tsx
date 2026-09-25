@@ -24,7 +24,6 @@ const s = (bg: string, color = '#fff') => ({
   background: bg, color, border: 'none', cursor: 'pointer',
 })
 
-const inp = { padding: '6px 10px', fontSize: '.85rem', border: '1px solid #d0ccc4', borderRadius: 6, width: '100%', boxSizing: 'border-box' as const }
 
 const BLANK: Paper = { date: '', tag: 'Upcoming', no: '', theme: '', title: '', subtitle: '', status: 'upcoming' }
 
@@ -89,12 +88,12 @@ export default function PolicyEditor() {
                   {fields.map(([k, label]) => (
                     <div key={k}>
                       <label style={{ fontSize: '.7rem', fontWeight: 700, textTransform: 'uppercase', color: '#8a9a8f', letterSpacing: '.06em' }}>{label}</label>
-                      <input style={inp} value={draft[k]} onChange={e => setDraft(d => ({ ...d, [k]: e.target.value }))} />
+                      <input className="admin-input" value={draft[k]} onChange={e => setDraft(d => ({ ...d, [k]: e.target.value }))} />
                     </div>
                   ))}
                   <div>
                     <label style={{ fontSize: '.7rem', fontWeight: 700, textTransform: 'uppercase', color: '#8a9a8f', letterSpacing: '.06em' }}>Status</label>
-                    <select style={inp} value={draft.status} onChange={e => setDraft(d => ({ ...d, status: e.target.value as Paper['status'] }))}>
+                    <select className="admin-input" value={draft.status} onChange={e => setDraft(d => ({ ...d, status: e.target.value as Paper['status'] }))}>
                       <option value="completed">Completed / Published</option>
                       <option value="upcoming">Upcoming</option>
                     </select>
@@ -127,7 +126,7 @@ export default function PolicyEditor() {
               {fields.map(([k, label]) => (
                 <div key={k}>
                   <label style={{ fontSize: '.7rem', fontWeight: 700, textTransform: 'uppercase', color: '#8a9a8f', letterSpacing: '.06em' }}>{label}</label>
-                  <input style={inp} value={draft[k]} onChange={e => setDraft(d => ({ ...d, [k]: e.target.value }))} />
+                  <input className="admin-input" value={draft[k]} onChange={e => setDraft(d => ({ ...d, [k]: e.target.value }))} />
                 </div>
               ))}
             </div>

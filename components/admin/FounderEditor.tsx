@@ -24,7 +24,6 @@ const DEFAULTS: FounderContent = {
   ],
 }
 
-const inp = { padding: '8px 12px', fontSize: '.88rem', border: '1px solid #d0ccc4', borderRadius: 6, width: '100%', boxSizing: 'border-box' as const }
 const lbl = { fontSize: '.72rem', fontWeight: 700, letterSpacing: '.08em', textTransform: 'uppercase' as const, color: '#8a9a8f', display: 'block', marginBottom: 4 }
 const s = (bg: string, color = '#fff') => ({ padding: '4px 10px', borderRadius: 6, fontSize: '.72rem', fontWeight: 600, background: bg, color, border: 'none', cursor: 'pointer' })
 
@@ -78,7 +77,7 @@ export default function FounderEditor() {
         {(['name', 'role'] as const).map(k => (
           <div key={k}>
             <label style={lbl}>{k === 'name' ? 'Full Name' : 'Title / Role'}</label>
-            <input style={inp} value={data[k]} onChange={e => setData(d => ({ ...d, [k]: e.target.value }))} />
+            <input className="admin-input" value={data[k]} onChange={e => setData(d => ({ ...d, [k]: e.target.value }))} />
           </div>
         ))}
         <div style={{ gridColumn: '1/-1' }}>
@@ -104,7 +103,7 @@ export default function FounderEditor() {
         </div>
         <div style={{ gridColumn: '1/-1' }}>
           <label style={lbl}>Opening Quote</label>
-          <textarea style={{ ...inp, minHeight: 80, resize: 'vertical' }} value={data.quote} onChange={e => setData(d => ({ ...d, quote: e.target.value }))} />
+          <textarea className="admin-textarea" style={{ minHeight: 80 }} value={data.quote} onChange={e => setData(d => ({ ...d, quote: e.target.value }))} />
         </div>
       </div>
 
@@ -112,7 +111,7 @@ export default function FounderEditor() {
       <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
         {data.paragraphs.map((p, i) => (
           <div key={i} style={{ display: 'flex', gap: 8, alignItems: 'flex-start' }}>
-            <textarea style={{ ...inp, minHeight: 72, resize: 'vertical', flex: 1 }} value={p} onChange={e => updatePara(i, e.target.value)} />
+            <textarea className="admin-textarea" style={{ minHeight: 72, flex: 1 }} value={p} onChange={e => updatePara(i, e.target.value)} />
             <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
               {i > 0 && <button style={s('#e8e4dc', '#3a4a3f')} onClick={() => movePara(i, -1)}>↑</button>}
               {i < data.paragraphs.length - 1 && <button style={s('#e8e4dc', '#3a4a3f')} onClick={() => movePara(i, 1)}>↓</button>}

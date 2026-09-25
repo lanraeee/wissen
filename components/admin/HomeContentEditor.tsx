@@ -38,7 +38,6 @@ const s = (bg: string, color = '#fff') => ({
   background: bg, color, border: 'none', cursor: 'pointer',
 } as const)
 
-const inp = { padding: '6px 10px', fontSize: '.85rem', border: '1px solid #d0ccc4', borderRadius: 6, width: '100%', boxSizing: 'border-box' as const }
 const fieldLabel = { fontSize: '.7rem', fontWeight: 700, textTransform: 'uppercase' as const, color: '#8a9a8f', letterSpacing: '.06em' }
 
 export default function HomeContentEditor() {
@@ -105,13 +104,13 @@ export default function HomeContentEditor() {
           {HERO_FIELDS.map(([k, label]) => (
             <div key={k}>
               <label style={fieldLabel}>{label}</label>
-              <input style={inp} value={hero[k]} onChange={e => setHero(h => ({ ...h, [k]: e.target.value }))} />
+              <input className="admin-input" value={hero[k]} onChange={e => setHero(h => ({ ...h, [k]: e.target.value }))} />
             </div>
           ))}
         </div>
         <div>
           <label style={fieldLabel}>Lead Paragraph</label>
-          <textarea style={{ ...inp, minHeight: 80, resize: 'vertical' }} value={hero.lead} onChange={e => setHero(h => ({ ...h, lead: e.target.value }))} />
+          <textarea className="admin-textarea" style={{ minHeight: 80 }} value={hero.lead} onChange={e => setHero(h => ({ ...h, lead: e.target.value }))} />
         </div>
       </div>
 
@@ -125,16 +124,16 @@ export default function HomeContentEditor() {
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
               <div>
                 <label style={fieldLabel}>Number</label>
-                <input style={inp} value={stat.count} onChange={e => setStat(i, { count: e.target.value })} />
+                <input className="admin-input" value={stat.count} onChange={e => setStat(i, { count: e.target.value })} />
               </div>
               <div>
                 <label style={fieldLabel}>Suffix</label>
-                <input style={inp} value={stat.suffix} onChange={e => setStat(i, { suffix: e.target.value })} placeholder="+ or blank" />
+                <input className="admin-input" value={stat.suffix} onChange={e => setStat(i, { suffix: e.target.value })} placeholder="+ or blank" />
               </div>
             </div>
             <div>
               <label style={fieldLabel}>Label</label>
-              <input style={inp} value={stat.label} onChange={e => setStat(i, { label: e.target.value })} />
+              <input className="admin-input" value={stat.label} onChange={e => setStat(i, { label: e.target.value })} />
             </div>
           </div>
         ))}

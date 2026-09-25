@@ -17,7 +17,6 @@ const s = (bg: string, color = '#fff') => ({
   background: bg, color, border: 'none', cursor: 'pointer',
 } as const)
 
-const inp = { padding: '6px 10px', fontSize: '.85rem', border: '1px solid #d0ccc4', borderRadius: 6, width: '100%', boxSizing: 'border-box' as const }
 
 export default function PartnersEditor() {
   const [partners, setPartners] = useState<Partner[]>([])
@@ -84,7 +83,7 @@ export default function PartnersEditor() {
         {FIELDS.map(([k, label]) => (
           <div key={k} style={k === 'description' ? { gridColumn: '1 / -1' } : undefined}>
             <label style={{ fontSize: '.7rem', fontWeight: 700, textTransform: 'uppercase', color: '#8a9a8f', letterSpacing: '.06em' }}>{label}</label>
-            <input style={inp} value={(draft[k] ?? '') as string} onChange={e => setDraft(d => ({ ...d, [k]: e.target.value }))} />
+            <input className="admin-input" value={(draft[k] ?? '') as string} onChange={e => setDraft(d => ({ ...d, [k]: e.target.value }))} />
           </div>
         ))}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>

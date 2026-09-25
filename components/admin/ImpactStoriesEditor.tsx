@@ -15,7 +15,6 @@ const s = (bg: string, color = '#fff') => ({
   background: bg, color, border: 'none', cursor: 'pointer',
 } as const)
 
-const inp = { padding: '6px 10px', fontSize: '.85rem', border: '1px solid #d0ccc4', borderRadius: 6, width: '100%', boxSizing: 'border-box' as const }
 const lbl = { fontSize: '.7rem', fontWeight: 700, textTransform: 'uppercase' as const, color: '#8a9a8f', letterSpacing: '.06em' }
 
 export default function ImpactStoriesEditor() {
@@ -91,8 +90,8 @@ export default function ImpactStoriesEditor() {
                     <div key={k} style={multiline ? { gridColumn: '1 / -1' } : {}}>
                       <label style={lbl}>{label}</label>
                       {multiline
-                        ? <textarea style={{ ...inp, minHeight: 80, resize: 'vertical' }} value={draft[k]} onChange={e => setDraft(d => ({ ...d, [k]: e.target.value }))} />
-                        : <input style={inp} value={draft[k]} onChange={e => setDraft(d => ({ ...d, [k]: e.target.value }))} />
+                        ? <textarea className="admin-textarea" style={{ minHeight: 80 }} value={draft[k]} onChange={e => setDraft(d => ({ ...d, [k]: e.target.value }))} />
+                        : <input className="admin-input" value={draft[k]} onChange={e => setDraft(d => ({ ...d, [k]: e.target.value }))} />
                       }
                     </div>
                   ))}
@@ -127,8 +126,8 @@ export default function ImpactStoriesEditor() {
                 <div key={k} style={multiline ? { gridColumn: '1 / -1' } : {}}>
                   <label style={lbl}>{label}</label>
                   {multiline
-                    ? <textarea style={{ ...inp, minHeight: 80, resize: 'vertical' }} value={draft[k]} onChange={e => setDraft(d => ({ ...d, [k]: e.target.value }))} />
-                    : <input style={inp} value={draft[k]} onChange={e => setDraft(d => ({ ...d, [k]: e.target.value }))} />
+                    ? <textarea className="admin-textarea" style={{ minHeight: 80 }} value={draft[k]} onChange={e => setDraft(d => ({ ...d, [k]: e.target.value }))} />
+                    : <input className="admin-input" value={draft[k]} onChange={e => setDraft(d => ({ ...d, [k]: e.target.value }))} />
                   }
                 </div>
               ))}
