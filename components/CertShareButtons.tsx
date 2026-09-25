@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 
 import { useState } from 'react'
 
@@ -15,7 +15,7 @@ export default function CertShareButtons({ courseId, courseTitle, certId, recipi
   const [copied, setCopied] = useState(false)
   const certUrl = `https://www.wissenhaus.org/courses/${courseId}/certificate`
   const verifyUrl = `https://www.wissenhaus.org/verify/${certId}`
-  const shareText = `I just earned a certificate in "${courseTitle}" from Wissen-Haus Empowerment Foundation! ðŸŽ“`
+  const shareText = `I just earned a certificate in "${courseTitle}" from Wissen-Haus Empowerment Foundation! 🎓`
 
   const linkedin = `https://www.linkedin.com/profile/add?startTask=CERTIFICATION_NAME&name=${encodeURIComponent(courseTitle)}&organizationName=${encodeURIComponent('Wissen-Haus Empowerment Foundation')}&issueYear=${issuedYear}&issueMonth=${issuedMonth}&certUrl=${encodeURIComponent(verifyUrl)}&certId=${encodeURIComponent(certId)}`
   const twitter = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(verifyUrl)}`
