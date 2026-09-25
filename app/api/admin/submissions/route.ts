@@ -1,6 +1,11 @@
 ﻿import { NextRequest, NextResponse } from 'next/server'
+import { z } from 'zod'
 import { adminGuard } from '@/lib/admin-guard'
 import sql from '@/lib/db'
+import { parseBody } from '@/lib/validation'
+import { logActivity } from '@/lib/audit-log'
+
+const IdSchema = z.object({ id: z.string().trim().min(1).max(100) })
 
 export async function GET(req: NextRequest) {
   if (!await adminGuard()) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
@@ -17,8 +22,11 @@ export async function GET(req: NextRequest) {
 }
 
 export async function DELETE(req: NextRequest) {
-  if (!await adminGuard()) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
-  const { id } = await req.json()
-  await sql`DELETE FROM submissions WHERE id = ${id}`
+  const session = await adminGuard()
+  if (!session) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+  const { data, error } = await parseBody(req, IdSchema)
+  if (error) return error
+  await sql`DELETE FROM submissions WHERE id = ${data.id}`
+  logActivity(session, 'submission.delete', { targetType: 'submission', targetId: data.id })
   return NextResponse.json({ success: true })
 }

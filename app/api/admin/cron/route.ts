@@ -1,5 +1,6 @@
 ﻿import { NextResponse } from 'next/server'
 import { getSession } from '@/lib/auth'
+import { logActivity } from '@/lib/audit-log'
 
 const ADMIN_EMAIL = process.env.FOUNDER_EMAIL ?? 'director@wissenhaus.org'
 
@@ -16,6 +17,7 @@ export async function POST() {
       headers: { Authorization: `Bearer ${cronSecret}` },
     })
     const data = await res.json()
+    logActivity(session, 'cron.trigger', { targetType: 'opportunities' })
     return NextResponse.json(data)
   } catch (e) {
     return NextResponse.json({ error: String(e) }, { status: 500 })

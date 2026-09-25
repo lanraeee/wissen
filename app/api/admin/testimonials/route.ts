@@ -4,6 +4,7 @@ import sql from '@/lib/db'
 import { adminGuard } from '@/lib/admin-guard'
 import { ensureTestimonialsTable } from '@/lib/testimonials-db'
 import { parseBody } from '@/lib/validation'
+import { logActivity } from '@/lib/audit-log'
 
 const TestimonialCreateSchema = z.object({
   name: z.string().trim().min(1).max(100),
@@ -30,7 +31,8 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
-  if (!await adminGuard()) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  const session = await adminGuard()
+  if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   await ensureTestimonialsTable()
   const { data: body, error } = await parseBody(req, TestimonialCreateSchema)
   if (error) return error
@@ -44,11 +46,13 @@ export async function POST(req: NextRequest) {
     VALUES (${name}, ${role}, ${quote}, ${avatar_url}, ${rating}, 'admin', ${status}, ${featured}, ${sort_order})
     RETURNING *
   `
+  logActivity(session, 'testimonial.create', { targetType: 'testimonial', targetId: String(row.id), details: { name } })
   return NextResponse.json({ testimonial: row }, { status: 201 })
 }
 
 export async function PUT(req: NextRequest) {
-  if (!await adminGuard()) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  const session = await adminGuard()
+  if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   const { data: body, error } = await parseBody(req, TestimonialUpdateSchema)
   if (error) return error
   const { id, ...fields } = body as Record<string, unknown>
@@ -70,14 +74,17 @@ export async function PUT(req: NextRequest) {
     WHERE id = ${id}
     RETURNING *
   `
+  logActivity(session, 'testimonial.update', { targetType: 'testimonial', targetId: String(id) })
   return NextResponse.json({ testimonial: row })
 }
 
 export async function DELETE(req: NextRequest) {
-  if (!await adminGuard()) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  const session = await adminGuard()
+  if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   const { data, error } = await parseBody(req, IdSchema)
   if (error) return error
   const { id } = data
   await sql`DELETE FROM testimonials WHERE id = ${id}`
+  logActivity(session, 'testimonial.delete', { targetType: 'testimonial', targetId: String(id) })
   return NextResponse.json({ ok: true })
 }

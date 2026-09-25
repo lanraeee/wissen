@@ -6,6 +6,7 @@ import { sendDonationReceipt } from '@/lib/email'
 import { issueOrGetCertificate, type VerifiedDonation } from '@/lib/donations'
 import { parseBody } from '@/lib/validation'
 import { log } from '@/lib/logger'
+import { logActivity } from '@/lib/audit-log'
 
 const ReferenceSchema = z.object({ reference: z.string().trim().min(1).max(100) })
 
@@ -14,7 +15,8 @@ const ReferenceSchema = z.object({ reference: z.string().trim().min(1).max(100) 
 // before the certificate/receipt-link feature existed, or if a donor's
 // original receipt email never arrived.
 export async function POST(req: NextRequest) {
-  if (!await adminGuard()) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  const session = await adminGuard()
+  if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const { data, error } = await parseBody(req, ReferenceSchema)
   if (error) return error
@@ -38,5 +40,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Failed to send email' }, { status: 502 })
   }
 
+  logActivity(session, 'donation.resend_receipt', { targetType: 'submission', targetId: reference, details: { sentTo: donation.email } })
   return NextResponse.json({ success: true, certId, certUrl, sentTo: donation.email })
 }

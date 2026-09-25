@@ -6,6 +6,7 @@ import { getCourse } from '@/lib/courses'
 import { sendCertificateEmail } from '@/lib/email'
 import { parseBody, zEmail } from '@/lib/validation'
 import { log } from '@/lib/logger'
+import { logActivity } from '@/lib/audit-log'
 
 const IssueCertSchema = z.object({
   email: zEmail,
@@ -14,7 +15,8 @@ const IssueCertSchema = z.object({
 })
 
 export async function POST(req: NextRequest) {
-  if (!await adminGuard()) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+  const session = await adminGuard()
+  if (!session) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 
   const { data, error } = await parseBody(req, IssueCertSchema)
   if (error) return error
@@ -57,5 +59,6 @@ export async function POST(req: NextRequest) {
   sendCertificateEmail(email, userName, course.title, certId)
     .catch(err => log.error('admin certificate email', err))
 
+  logActivity(session, 'certificate.issue', { targetType: 'user', targetId: userId, details: { courseId, certId, markComplete: !!markComplete } })
   return NextResponse.json({ success: true, certificateId: certId, alreadyExisted: false })
 }

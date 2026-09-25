@@ -6,6 +6,7 @@ import { getPledge, updatePledge } from '@/lib/bank-transfer'
 import { certIdForReference, recordDonation, type VerifiedDonation } from '@/lib/donations'
 import { parseBody } from '@/lib/validation'
 import { log } from '@/lib/logger'
+import { logActivity } from '@/lib/audit-log'
 
 const ReferenceSchema = z.object({ reference: z.string().trim().min(1).max(100) })
 
@@ -27,7 +28,8 @@ export async function GET() {
 // Idempotent — recordDonation and the certificate issuer both no-op on a
 // reference that has already been recorded.
 export async function POST(req: NextRequest) {
-  if (!await adminGuard()) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  const session = await adminGuard()
+  if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const { data, error } = await parseBody(req, ReferenceSchema)
   if (error) return error
@@ -64,13 +66,15 @@ export async function POST(req: NextRequest) {
     cert_id: certId,
   })
 
+  logActivity(session, 'bank_transfer.confirm', { targetType: 'submission', targetId: reference, details: { certId, amount: pledge.amount, currency: pledge.currency } })
   return NextResponse.json({ success: true, certId, certUrl: `/donate/receipt/${certId}` })
 }
 
 // Marks a pledge as cancelled (donor never sent the money, duplicate, etc.).
 // The row is kept so the reference stays resolvable if the donor returns.
 export async function DELETE(req: NextRequest) {
-  if (!await adminGuard()) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  const session = await adminGuard()
+  if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const { data, error } = await parseBody(req, ReferenceSchema)
   if (error) return error
@@ -78,5 +82,6 @@ export async function DELETE(req: NextRequest) {
 
   const updated = await updatePledge(reference, { status: 'cancelled' })
   if (!updated) return NextResponse.json({ error: 'Not found' }, { status: 404 })
+  logActivity(session, 'bank_transfer.cancel', { targetType: 'submission', targetId: reference })
   return NextResponse.json({ success: true })
 }

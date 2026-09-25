@@ -3,6 +3,7 @@ import { z } from 'zod'
 import { adminGuard } from '@/lib/admin-guard'
 import sql from '@/lib/db'
 import { parseBody } from '@/lib/validation'
+import { logActivity } from '@/lib/audit-log'
 
 function slugify(t: string) {
   return t.toLowerCase().replace(/[^a-z0-9]+/g, '-').slice(0, 40)
@@ -19,7 +20,8 @@ const OpportunitySchema = z.object({
 })
 
 export async function POST(req: NextRequest) {
-  if (!await adminGuard()) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+  const session = await adminGuard()
+  if (!session) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   const { data: body, error } = await parseBody(req, OpportunitySchema)
   if (error) return error
   const id = `manual-${slugify(body.title)}-${Date.now()}`
@@ -35,5 +37,6 @@ export async function POST(req: NextRequest) {
     )
     ON CONFLICT (id) DO NOTHING
   `
+  logActivity(session, 'opportunity.create', { targetType: 'opportunity', targetId: id, details: { title: body.title } })
   return NextResponse.json({ success: true, id })
 }

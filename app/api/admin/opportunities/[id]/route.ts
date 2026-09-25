@@ -3,6 +3,7 @@ import { z } from 'zod'
 import { adminGuard } from '@/lib/admin-guard'
 import sql from '@/lib/db'
 import { parseBody } from '@/lib/validation'
+import { logActivity } from '@/lib/audit-log'
 
 function slugify(t: string) {
   return t.toLowerCase().replace(/[^a-z0-9]+/g, '-').slice(0, 40)
@@ -27,7 +28,8 @@ export async function GET(_: NextRequest, { params }: { params: Promise<{ id: st
 }
 
 export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  if (!await adminGuard()) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+  const session = await adminGuard()
+  if (!session) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   const { id } = await params
   const { data: body, error } = await parseBody(req, OpportunityUpdateSchema)
   if (error) return error
@@ -49,12 +51,15 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
       updated_at = NOW()
     WHERE id = ${id}
   `
+  logActivity(session, 'opportunity.update', { targetType: 'opportunity', targetId: id })
   return NextResponse.json({ success: true })
 }
 
 export async function DELETE(_: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  if (!await adminGuard()) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+  const session = await adminGuard()
+  if (!session) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   const { id } = await params
   await sql`DELETE FROM opportunities WHERE id = ${id}`
+  logActivity(session, 'opportunity.delete', { targetType: 'opportunity', targetId: id })
   return NextResponse.json({ success: true })
 }

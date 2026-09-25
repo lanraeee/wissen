@@ -3,6 +3,7 @@ import { z } from 'zod'
 import { userAdminGuard, isDirector } from '@/lib/admin-guard'
 import sql from '@/lib/db'
 import { parseBody, zEmail } from '@/lib/validation'
+import { logActivity } from '@/lib/audit-log'
 
 const ActionSchema = z.discriminatedUnion('action', [
   z.object({ action: z.literal('grant_premium') }),
@@ -65,9 +66,11 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     const expiry = new Date()
     expiry.setFullYear(expiry.getFullYear() + 1)
     await sql`UPDATE users SET membership_expiry = ${expiry.toISOString()} WHERE id = ${id}`
+    logActivity(session, 'user.grant_premium', { targetType: 'user', targetId: id, details: { expiry: expiry.toISOString() } })
 
   } else if (body.action === 'revoke_premium') {
     await sql`UPDATE users SET membership_expiry = NULL WHERE id = ${id}`
+    logActivity(session, 'user.revoke_premium', { targetType: 'user', targetId: id })
 
   } else if (body.action === 'update') {
     const email = body.email ? body.email.toLowerCase() : target.email
@@ -103,11 +106,16 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
         WHERE id = ${id}
       `
     }
+    logActivity(session, 'user.update', {
+      targetType: 'user', targetId: id,
+      details: { first_name: firstName, last_name: lastName, email, created_at: createdAt },
+    })
 
   } else if (body.action === 'set_role') {
     if (!callerIsDirector) return forbidden()
     const role = ['user', 'editor', 'admin'].includes(body.role) ? body.role : 'user'
     await sql`UPDATE users SET role = ${role} WHERE id = ${id}`
+    logActivity(session, 'user.set_role', { targetType: 'user', targetId: id, details: { from: target.role, to: role } })
 
   } else {
     return NextResponse.json({ error: 'Unknown action' }, { status: 400 })
@@ -140,5 +148,6 @@ export async function DELETE(_: NextRequest, { params }: { params: Promise<{ id:
   }
 
   await sql`DELETE FROM users WHERE id = ${id}`
+  logActivity(session, 'user.delete', { targetType: 'user', targetId: id, details: { email: target.email, role: target.role } })
   return NextResponse.json({ success: true })
 }

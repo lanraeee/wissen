@@ -5,6 +5,7 @@ import { adminGuard, directorGuard } from '@/lib/admin-guard'
 import sql from '@/lib/db'
 import { parseBody } from '@/lib/validation'
 import { siteContentTag } from '@/lib/site-content'
+import { logActivity } from '@/lib/audit-log'
 
 // site_content.value shape varies per key by design (each admin editor owns
 // its own shape) so this stays a generic JSON blob rather than a per-key
@@ -38,7 +39,8 @@ export async function GET(_: NextRequest, { params }: { params: Promise<{ key: s
 
 export async function PUT(req: NextRequest, { params }: { params: Promise<{ key: string }> }) {
   const { key } = await params
-  if (!await guardFor(key)) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+  const session = await guardFor(key)
+  if (!session) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   const { data, error } = await parseBody(req, ContentSchema)
   if (error) return error
   const { value } = data
@@ -48,5 +50,6 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ key:
     ON CONFLICT (key) DO UPDATE SET value = ${JSON.stringify(value)}, updated_at = NOW()
   `
   revalidateTag(siteContentTag(key))
+  logActivity(session, 'content.update', { targetType: 'site_content', targetId: key })
   return NextResponse.json({ success: true })
 }

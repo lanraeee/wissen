@@ -3,6 +3,7 @@ import { z } from 'zod'
 import sql from '@/lib/db'
 import { adminGuard } from '@/lib/admin-guard'
 import { parseBody } from '@/lib/validation'
+import { logActivity } from '@/lib/audit-log'
 
 const HighlightSchema = z.object({ label: z.string().max(200), value: z.string().max(200) })
 const FundedSchema = z.object({ item: z.string().max(200), amount: z.string().max(100) })
@@ -40,7 +41,7 @@ const IdSchema = z.object({ id: z.union([z.string(), z.number()]) })
 // This used to check session.isAdmin, a claim signToken never issues, so every
 // caller was rejected. Use the same guard the rest of /api/admin/* uses.
 async function requireAdmin() {
-  return (await adminGuard()) !== null
+  return await adminGuard()
 }
 
 async function ensureTable() {
@@ -87,7 +88,8 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
-  if (!await requireAdmin()) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  const session = await requireAdmin()
+  if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   await ensureTable()
   const { data: body, error } = await parseBody(req, ProjectCreateSchema)
   if (error) return error
@@ -114,11 +116,13 @@ export async function POST(req: NextRequest) {
        ${JSON.stringify(impact_points)}, ${JSON.stringify(faq)})
     RETURNING *
   `
+  logActivity(session, 'donation_project.create', { targetType: 'donation_project', targetId: String(row.id), details: { slug, title } })
   return NextResponse.json({ project: row }, { status: 201 })
 }
 
 export async function PUT(req: NextRequest) {
-  if (!await requireAdmin()) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  const session = await requireAdmin()
+  if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   const { data: body, error } = await parseBody(req, ProjectUpdateSchema)
   if (error) return error
   const { id, ...fields } = body as Record<string, unknown>
@@ -155,14 +159,17 @@ export async function PUT(req: NextRequest) {
     RETURNING *
   `
   if (!row) return NextResponse.json({ error: 'Not found' }, { status: 404 })
+  logActivity(session, 'donation_project.update', { targetType: 'donation_project', targetId: String(id) })
   return NextResponse.json({ project: row })
 }
 
 export async function DELETE(req: NextRequest) {
-  if (!await requireAdmin()) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  const session = await requireAdmin()
+  if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   const { data, error } = await parseBody(req, IdSchema)
   if (error) return error
   const { id } = data
   await sql`DELETE FROM donation_projects WHERE id = ${id}`
+  logActivity(session, 'donation_project.delete', { targetType: 'donation_project', targetId: String(id) })
   return NextResponse.json({ ok: true })
 }
