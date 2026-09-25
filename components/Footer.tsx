@@ -43,7 +43,7 @@ export default async function Footer() {
             <div className="footer-brand">
               <Link className="brand" href="/">
                 <Image src="/img/logo.png" alt="Wissen-Haus logo" width={40} height={40} />
-                <span>Wissen-Haus<small>Youth Empowerment</small></span>
+                <span>Wissen-Haus<small>Empowerment Foundation</small></span>
               </Link>
               <p>Bridging the skills gap for African youth and the diaspora, equipping young people with practical guidance, mentorship and global exposure for economic independence.</p>
               <div className="footer-social">
