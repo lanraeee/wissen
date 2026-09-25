@@ -16,7 +16,7 @@ export default function PartnerPage() {
           <div className="section-head reveal">
             <span className="eyebrow">Partner With Us</span>
             <h1 className="display-lg mt-s">Let&#39;s build the bridge together.</h1>
-            <p className="lead mt-m">Whether you&#39;re a school administrator, a company with a CSR mandate, or an individual with expertise to share â€” there&#39;s a partnership model for you.</p>
+            <p className=”lead mt-m”>Whether you&apos;re a school administrator, a company with a CSR mandate, or an individual with expertise to share&mdash;there&apos;s a partnership model for you.</p>
           </div>
         </div>
       </section>
