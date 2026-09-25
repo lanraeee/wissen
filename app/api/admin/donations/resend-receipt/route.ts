@@ -1,8 +1,12 @@
 ﻿import { NextRequest, NextResponse } from 'next/server'
+import { z } from 'zod'
 import { adminGuard } from '@/lib/admin-guard'
 import sql from '@/lib/db'
 import { sendDonationReceipt } from '@/lib/email'
 import { issueOrGetCertificate, type VerifiedDonation } from '@/lib/donations'
+import { parseBody } from '@/lib/validation'
+
+const ReferenceSchema = z.object({ reference: z.string().trim().min(1).max(100) })
 
 // (Re)sends a donation receipt, with certificate link, for an already-recorded
 // donation identified by its payment reference. Useful for donations recorded
@@ -11,8 +15,9 @@ import { issueOrGetCertificate, type VerifiedDonation } from '@/lib/donations'
 export async function POST(req: NextRequest) {
   if (!await adminGuard()) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const { reference } = await req.json()
-  if (!reference) return NextResponse.json({ error: 'reference is required' }, { status: 400 })
+  const { data, error } = await parseBody(req, ReferenceSchema)
+  if (error) return error
+  const { reference } = data
 
   const [row] = await sql`
     SELECT data FROM submissions WHERE type = 'donation' AND data->>'reference' = ${reference} LIMIT 1

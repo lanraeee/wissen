@@ -1,6 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { z } from 'zod'
 import { adminGuard, directorGuard } from '@/lib/admin-guard'
 import sql from '@/lib/db'
+import { parseBody } from '@/lib/validation'
+
+// site_content.value shape varies per key by design (each admin editor owns
+// its own shape) so this stays a generic JSON blob rather than a per-key
+// schema — bounded in size to stop this generic endpoint being used to
+// stuff arbitrary large payloads into the database.
+const ContentSchema = z.object({
+  value: z.unknown().refine(
+    v => JSON.stringify(v).length <= 500_000,
+    { message: 'value is too large' }
+  ),
+})
 
 // Most site_content keys hold public copy, and adminGuard() — which admits the
 // `editor` role — is the right gate for those. These keys do not: they hold the
@@ -24,7 +37,9 @@ export async function GET(_: NextRequest, { params }: { params: Promise<{ key: s
 export async function PUT(req: NextRequest, { params }: { params: Promise<{ key: string }> }) {
   const { key } = await params
   if (!await guardFor(key)) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
-  const { value } = await req.json()
+  const { data, error } = await parseBody(req, ContentSchema)
+  if (error) return error
+  const { value } = data
   await sql`
     INSERT INTO site_content (key, value, updated_at)
     VALUES (${key}, ${JSON.stringify(value)}, NOW())

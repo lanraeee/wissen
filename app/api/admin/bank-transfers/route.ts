@@ -1,8 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { z } from 'zod'
 import sql from '@/lib/db'
 import { adminGuard } from '@/lib/admin-guard'
 import { getPledge, updatePledge } from '@/lib/bank-transfer'
 import { certIdForReference, recordDonation, type VerifiedDonation } from '@/lib/donations'
+import { parseBody } from '@/lib/validation'
+
+const ReferenceSchema = z.object({ reference: z.string().trim().min(1).max(100) })
 
 export async function GET() {
   if (!await adminGuard()) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
@@ -24,8 +28,9 @@ export async function GET() {
 export async function POST(req: NextRequest) {
   if (!await adminGuard()) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const { reference } = await req.json()
-  if (!reference) return NextResponse.json({ error: 'reference required' }, { status: 400 })
+  const { data, error } = await parseBody(req, ReferenceSchema)
+  if (error) return error
+  const { reference } = data
 
   const pledge = await getPledge(reference)
   if (!pledge) return NextResponse.json({ error: 'No bank transfer found for that reference' }, { status: 404 })
@@ -66,8 +71,9 @@ export async function POST(req: NextRequest) {
 export async function DELETE(req: NextRequest) {
   if (!await adminGuard()) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const { reference } = await req.json()
-  if (!reference) return NextResponse.json({ error: 'reference required' }, { status: 400 })
+  const { data, error } = await parseBody(req, ReferenceSchema)
+  if (error) return error
+  const { reference } = data
 
   const updated = await updatePledge(reference, { status: 'cancelled' })
   if (!updated) return NextResponse.json({ error: 'Not found' }, { status: 404 })

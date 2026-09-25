@@ -1,6 +1,41 @@
 ﻿import { NextRequest, NextResponse } from 'next/server'
+import { z } from 'zod'
 import sql from '@/lib/db'
 import { adminGuard } from '@/lib/admin-guard'
+import { parseBody } from '@/lib/validation'
+
+const HighlightSchema = z.object({ label: z.string().max(200), value: z.string().max(200) })
+const FundedSchema = z.object({ item: z.string().max(200), amount: z.string().max(100) })
+const FaqSchema = z.object({ q: z.string().max(500), a: z.string().max(2000) })
+
+const ProjectCreateSchema = z.object({
+  slug: z.string().trim().min(1).max(200),
+  title: z.string().trim().min(1).max(300),
+  subtitle: z.string().max(300).nullable().optional(),
+  status: z.enum(['draft', 'published', 'closed']).optional(),
+  event_name: z.string().max(200).nullable().optional(),
+  event_date: z.string().max(30).nullable().optional(),
+  event_location: z.string().max(300).nullable().optional(),
+  event_time: z.string().max(100).nullable().optional(),
+  campaign_start: z.string().max(30).nullable().optional(),
+  campaign_end: z.string().max(30).nullable().optional(),
+  goal_ngn: z.number().int().nonnegative().optional(),
+  raised_ngn: z.number().int().nonnegative().optional(),
+  donor_count: z.number().int().nonnegative().optional(),
+  hero_desc: z.string().max(5000).nullable().optional(),
+  partnership_name: z.string().max(300).nullable().optional(),
+  partnership_desc: z.string().max(5000).nullable().optional(),
+  highlights: z.array(HighlightSchema).max(50).optional(),
+  what_funded: z.array(FundedSchema).max(50).optional(),
+  impact_points: z.array(z.string().max(500)).max(50).optional(),
+  faq: z.array(FaqSchema).max(50).optional(),
+})
+
+const ProjectUpdateSchema = ProjectCreateSchema.partial().extend({
+  id: z.union([z.string(), z.number()]),
+})
+
+const IdSchema = z.object({ id: z.union([z.string(), z.number()]) })
 
 // This used to check session.isAdmin, a claim signToken never issues, so every
 // caller was rejected. Use the same guard the rest of /api/admin/* uses.
@@ -54,7 +89,8 @@ export async function GET() {
 export async function POST(req: NextRequest) {
   if (!await requireAdmin()) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   await ensureTable()
-  const body = await req.json()
+  const { data: body, error } = await parseBody(req, ProjectCreateSchema)
+  if (error) return error
   const {
     slug, title, subtitle = null, status = 'draft',
     event_name = null, event_date = null, event_location = null, event_time = null,
@@ -63,8 +99,6 @@ export async function POST(req: NextRequest) {
     hero_desc = null, partnership_name = null, partnership_desc = null,
     highlights = [], what_funded = [], impact_points = [], faq = [],
   } = body
-
-  if (!slug || !title) return NextResponse.json({ error: 'slug and title are required' }, { status: 400 })
 
   const [row] = await sql`
     INSERT INTO donation_projects
@@ -85,9 +119,9 @@ export async function POST(req: NextRequest) {
 
 export async function PUT(req: NextRequest) {
   if (!await requireAdmin()) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  const body = await req.json()
-  const { id, ...fields } = body
-  if (!id) return NextResponse.json({ error: 'id required' }, { status: 400 })
+  const { data: body, error } = await parseBody(req, ProjectUpdateSchema)
+  if (error) return error
+  const { id, ...fields } = body as Record<string, unknown>
 
   const jsonFields = ['highlights', 'what_funded', 'impact_points', 'faq']
   for (const f of jsonFields) {
@@ -126,8 +160,9 @@ export async function PUT(req: NextRequest) {
 
 export async function DELETE(req: NextRequest) {
   if (!await requireAdmin()) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  const { id } = await req.json()
-  if (!id) return NextResponse.json({ error: 'id required' }, { status: 400 })
+  const { data, error } = await parseBody(req, IdSchema)
+  if (error) return error
+  const { id } = data
   await sql`DELETE FROM donation_projects WHERE id = ${id}`
   return NextResponse.json({ ok: true })
 }

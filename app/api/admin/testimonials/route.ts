@@ -1,7 +1,26 @@
 ﻿import { NextRequest, NextResponse } from 'next/server'
+import { z } from 'zod'
 import sql from '@/lib/db'
 import { adminGuard } from '@/lib/admin-guard'
 import { ensureTestimonialsTable } from '@/lib/testimonials-db'
+import { parseBody } from '@/lib/validation'
+
+const TestimonialCreateSchema = z.object({
+  name: z.string().trim().min(1).max(100),
+  role: z.string().trim().max(100).nullable().optional(),
+  quote: z.string().trim().min(1).max(1000),
+  avatar_url: z.string().max(2000).nullable().optional(),
+  rating: z.number().int().min(1).max(5).nullable().optional(),
+  status: z.enum(['approved', 'pending', 'rejected']).optional(),
+  featured: z.boolean().optional(),
+  sort_order: z.number().int().optional(),
+})
+
+const TestimonialUpdateSchema = TestimonialCreateSchema.partial().extend({
+  id: z.union([z.string(), z.number()]),
+})
+
+const IdSchema = z.object({ id: z.union([z.string(), z.number()]) })
 
 export async function GET() {
   if (!await adminGuard()) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
@@ -13,13 +32,12 @@ export async function GET() {
 export async function POST(req: NextRequest) {
   if (!await adminGuard()) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   await ensureTestimonialsTable()
-  const body = await req.json()
+  const { data: body, error } = await parseBody(req, TestimonialCreateSchema)
+  if (error) return error
   const {
     name, role = null, quote, avatar_url = null, rating = null,
     status = 'approved', featured = false, sort_order = 0,
   } = body
-
-  if (!name || !quote) return NextResponse.json({ error: 'name and quote are required' }, { status: 400 })
 
   const [row] = await sql`
     INSERT INTO testimonials (name, role, quote, avatar_url, rating, source, status, featured, sort_order)
@@ -31,9 +49,9 @@ export async function POST(req: NextRequest) {
 
 export async function PUT(req: NextRequest) {
   if (!await adminGuard()) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  const body = await req.json()
-  const { id, ...fields } = body
-  if (!id) return NextResponse.json({ error: 'id required' }, { status: 400 })
+  const { data: body, error } = await parseBody(req, TestimonialUpdateSchema)
+  if (error) return error
+  const { id, ...fields } = body as Record<string, unknown>
 
   const [existing] = await sql`SELECT * FROM testimonials WHERE id = ${id}`
   if (!existing) return NextResponse.json({ error: 'Not found' }, { status: 404 })
@@ -57,8 +75,9 @@ export async function PUT(req: NextRequest) {
 
 export async function DELETE(req: NextRequest) {
   if (!await adminGuard()) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  const { id } = await req.json()
-  if (!id) return NextResponse.json({ error: 'id required' }, { status: 400 })
+  const { data, error } = await parseBody(req, IdSchema)
+  if (error) return error
+  const { id } = data
   await sql`DELETE FROM testimonials WHERE id = ${id}`
   return NextResponse.json({ ok: true })
 }

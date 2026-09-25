@@ -1,21 +1,23 @@
 ﻿import { NextRequest, NextResponse } from 'next/server'
+import { z } from 'zod'
 import { adminGuard } from '@/lib/admin-guard'
 import sql from '@/lib/db'
 import { COURSES } from '@/lib/courseData'
 import { sendCertificateEmail } from '@/lib/email'
+import { parseBody, zEmail } from '@/lib/validation'
+
+const IssueCertSchema = z.object({
+  email: zEmail,
+  courseId: z.string().trim().min(1).max(100),
+  markComplete: z.boolean().optional(),
+})
 
 export async function POST(req: NextRequest) {
   if (!await adminGuard()) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 
-  const { email, courseId, markComplete } = await req.json() as {
-    email: string
-    courseId: string
-    markComplete?: boolean
-  }
-
-  if (!email || !courseId) {
-    return NextResponse.json({ error: 'email and courseId are required' }, { status: 400 })
-  }
+  const { data, error } = await parseBody(req, IssueCertSchema)
+  if (error) return error
+  const { email, courseId, markComplete } = data
 
   const course = COURSES.find(c => c.id === courseId)
   if (!course) return NextResponse.json({ error: 'Unknown course' }, { status: 400 })
