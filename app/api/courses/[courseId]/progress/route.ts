@@ -1,9 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { z } from 'zod'
 import { getSession } from '@/lib/auth'
 import sql from '@/lib/db'
 import { COURSES } from '@/lib/courseData'
 import { getPostHogClient } from '@/lib/posthog-server'
 import { sendCertificateEmail } from '@/lib/email'
+import { parseBody } from '@/lib/validation'
+
+const ProgressSchema = z.object({
+  moduleId: z.number().int().nonnegative(),
+})
 
 export async function GET(
   _req: NextRequest,
@@ -33,11 +39,9 @@ export async function POST(
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const { courseId } = await params
-  const { moduleId } = await req.json()
-
-  if (typeof moduleId !== 'number') {
-    return NextResponse.json({ error: 'moduleId must be a number' }, { status: 400 })
-  }
+  const { data, error } = await parseBody(req, ProgressSchema)
+  if (error) return error
+  const { moduleId } = data
 
   await sql`
     INSERT INTO course_progress (user_id, course_id, module_id)

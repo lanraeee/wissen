@@ -1,7 +1,11 @@
 ﻿import { NextRequest, NextResponse } from 'next/server'
+import { z } from 'zod'
 import crypto from 'crypto'
 import sql from '@/lib/db'
 import { sendPasswordResetEmail } from '@/lib/email'
+import { parseBody, zEmail } from '@/lib/validation'
+
+const ForgotPasswordSchema = z.object({ email: zEmail })
 
 async function ensureTable() {
   await sql`
@@ -17,8 +21,9 @@ async function ensureTable() {
 }
 
 export async function POST(req: NextRequest) {
-  const { email } = await req.json()
-  if (!email) return NextResponse.json({ error: 'Email is required' }, { status: 400 })
+  const { data, error } = await parseBody(req, ForgotPasswordSchema)
+  if (error) return error
+  const { email } = data
 
   await ensureTable()
 

@@ -1,13 +1,20 @@
 ﻿import { NextRequest, NextResponse } from 'next/server'
+import { z } from 'zod'
 import crypto from 'crypto'
 import sql from '@/lib/db'
 import { hashPassword } from '@/lib/auth'
 import { sendPasswordChangedEmail } from '@/lib/email'
+import { parseBody } from '@/lib/validation'
+
+const ResetPasswordSchema = z.object({
+  token: z.string().min(1).max(500),
+  password: z.string().min(8).max(200),
+})
 
 export async function POST(req: NextRequest) {
-  const { token, password } = await req.json()
-  if (!token || !password) return NextResponse.json({ error: 'Token and password are required' }, { status: 400 })
-  if (password.length < 8) return NextResponse.json({ error: 'Password must be at least 8 characters' }, { status: 400 })
+  const { data, error } = await parseBody(req, ResetPasswordSchema)
+  if (error) return error
+  const { token, password } = data
 
   const tokenHash = crypto.createHash('sha256').update(token).digest('hex')
 

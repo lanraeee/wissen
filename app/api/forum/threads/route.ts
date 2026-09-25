@@ -1,8 +1,16 @@
 ﻿import { NextRequest, NextResponse } from 'next/server'
+import { z } from 'zod'
 import { getSession } from '@/lib/auth'
 import sql from '@/lib/db'
+import { parseBody } from '@/lib/validation'
 
 const TAGS = ['Jobs', 'Education', 'Tech', 'Scholarships', 'Career', 'Finance', 'Discussion', 'General']
+
+const ThreadSchema = z.object({
+  title: z.string().trim().min(1).max(200),
+  body: z.string().trim().min(1).max(5000),
+  tag: z.string().optional(),
+})
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url)
@@ -37,15 +45,14 @@ export async function POST(req: NextRequest) {
   const session = await getSession()
   if (!session) return NextResponse.json({ error: 'Sign in to post' }, { status: 401 })
 
-  const { title, body, tag } = await req.json()
-  if (!title?.trim() || !body?.trim()) return NextResponse.json({ error: 'Title and body required' }, { status: 400 })
-  if (title.length > 200) return NextResponse.json({ error: 'Title too long' }, { status: 400 })
-  if (body.length > 5000) return NextResponse.json({ error: 'Body too long' }, { status: 400 })
-  const safeTag = TAGS.includes(tag) ? tag : 'Discussion'
+  const { data, error } = await parseBody(req, ThreadSchema)
+  if (error) return error
+  const { title, body, tag } = data
+  const safeTag = tag && TAGS.includes(tag) ? tag : 'Discussion'
 
   const [thread] = await sql`
     INSERT INTO forum_threads (user_id, author_name, title, body, tag)
-    VALUES (${session.id}, ${session.name}, ${title.trim()}, ${body.trim()}, ${safeTag})
+    VALUES (${session.id}, ${session.name}, ${title}, ${body}, ${safeTag})
     RETURNING id, title, tag, reply_count, pinned, created_at, author_name
   `
   return NextResponse.json(thread, { status: 201 })

@@ -1,5 +1,16 @@
 ﻿import { NextRequest, NextResponse } from 'next/server'
+import { z } from 'zod'
 import sql from '@/lib/db'
+import { parseBody } from '@/lib/validation'
+
+const TrackSchema = z.object({
+  pathname: z.string().min(1).max(500),
+  referrer: z.string().max(1000).optional(),
+  session_id: z.string().max(200).optional(),
+  utm_source: z.string().max(200).optional(),
+  utm_medium: z.string().max(200).optional(),
+  utm_campaign: z.string().max(200).optional(),
+})
 
 function parseDevice(ua: string): string {
   if (/ipad|tablet/i.test(ua)) return 'tablet'
@@ -18,10 +29,11 @@ function parseBrowser(ua: string): string {
 
 export async function POST(req: NextRequest) {
   try {
-    const body = await req.json()
-    const { pathname, referrer, session_id, utm_source, utm_medium, utm_campaign } = body
+    const { data, error } = await parseBody(req, TrackSchema)
+    if (error) return NextResponse.json({ ok: false }, { status: 400 })
+    const { pathname, referrer, session_id, utm_source, utm_medium, utm_campaign } = data
 
-    if (!pathname || typeof pathname !== 'string' || pathname.startsWith('/admin')) {
+    if (pathname.startsWith('/admin')) {
       return NextResponse.json({ ok: false }, { status: 400 })
     }
 

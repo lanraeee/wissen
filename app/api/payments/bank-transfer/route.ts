@@ -1,27 +1,31 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { z } from 'zod'
 import sql from '@/lib/db'
 import {
   generateReference, getBankDetails, accountFor, getPledge, updatePledge,
   type BankCurrency, type BankPledge,
 } from '@/lib/bank-transfer'
 import { sendBankTransferInstructions, sendBankTransferNotification } from '@/lib/email'
+import { parseBody, zEmail } from '@/lib/validation'
 
 const CURRENCIES: BankCurrency[] = ['NGN', 'USD', 'GBP', 'EUR']
+
+const PledgeSchema = z.object({
+  amount: z.number().positive(),
+  currency: z.enum(['NGN', 'USD', 'GBP', 'EUR']),
+  name: z.string().trim().min(1).max(100),
+  email: zEmail,
+  message: z.string().trim().max(2000).optional(),
+})
 
 // Records a bank-transfer pledge and returns the reference plus the URL of the
 // page showing the account details. No money has moved at this point — the
 // pledge only becomes a donation (receipt + certificate) once an admin
 // confirms it landed, via /api/admin/bank-transfers.
 export async function POST(req: NextRequest) {
-  const { amount, currency, name, email, message } = await req.json()
-
-  const value = Number(amount)
-  if (!Number.isFinite(value) || value <= 0)
-    return NextResponse.json({ error: 'A donation amount is required' }, { status: 400 })
-  if (typeof name !== 'string' || !name.trim() || typeof email !== 'string' || !email.trim())
-    return NextResponse.json({ error: 'Your name and email are required' }, { status: 400 })
-  if (!CURRENCIES.includes(currency))
-    return NextResponse.json({ error: 'Unsupported currency' }, { status: 400 })
+  const { data, error } = await parseBody(req, PledgeSchema)
+  if (error) return error
+  const { amount: value, currency, name, email, message } = data
 
   const details = await getBankDetails()
   if (!details.enabled)
@@ -116,9 +120,12 @@ export async function POST(req: NextRequest) {
 // The donor declaring "I've sent the transfer". Advisory only: it nudges the
 // admin to go looking for the money. It deliberately does NOT issue a receipt
 // or certificate — only a confirmed arrival does that.
+const ReferenceSchema = z.object({ reference: z.string().trim().min(1).max(100) })
+
 export async function PUT(req: NextRequest) {
-  const { reference } = await req.json()
-  if (!reference) return NextResponse.json({ error: 'reference required' }, { status: 400 })
+  const { data, error } = await parseBody(req, ReferenceSchema)
+  if (error) return error
+  const { reference } = data
 
   const pledge = await getPledge(reference)
   if (!pledge) return NextResponse.json({ error: 'Donation not found' }, { status: 404 })

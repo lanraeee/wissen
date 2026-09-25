@@ -1,8 +1,15 @@
 ﻿import { NextRequest, NextResponse } from 'next/server'
+import { z } from 'zod'
 import sql from '@/lib/db'
 import { getSession } from '@/lib/auth'
 import { ensureTestimonialsTable } from '@/lib/testimonials-db'
 import { sendTestimonialNotification } from '@/lib/email'
+import { parseBody } from '@/lib/validation'
+
+const TestimonialSchema = z.object({
+  quote: z.string().trim().min(1).max(1000),
+  role: z.string().trim().max(100).optional(),
+})
 
 export async function GET() {
   await ensureTestimonialsTable()
@@ -21,12 +28,10 @@ export async function POST(req: NextRequest) {
   if (!session) return NextResponse.json({ error: 'Please log in to share your story.' }, { status: 401 })
 
   await ensureTestimonialsTable()
-  const body = await req.json()
-  const quote = (body.quote ?? '').toString().trim()
-  const role = (body.role ?? '').toString().trim() || null
-
-  if (!quote) return NextResponse.json({ error: 'A quote is required.' }, { status: 400 })
-  if (quote.length > 1000) return NextResponse.json({ error: 'Quote is too long (max 1000 characters).' }, { status: 400 })
+  const { data, error } = await parseBody(req, TestimonialSchema)
+  if (error) return error
+  const { quote } = data
+  const role = data.role || null
 
   const [row] = await sql`
     INSERT INTO testimonials (name, role, quote, source, status, user_id)

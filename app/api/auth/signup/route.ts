@@ -1,18 +1,22 @@
 ﻿import { NextRequest, NextResponse } from 'next/server'
+import { z } from 'zod'
 import sql from '@/lib/db'
 import { hashPassword, signToken, COOKIE_NAME } from '@/lib/auth'
 import { sendWelcomeEmail } from '@/lib/email'
+import { parseBody, zEmail, zName } from '@/lib/validation'
+
+const SignupSchema = z.object({
+  firstName: zName,
+  lastName: zName,
+  email: zEmail,
+  password: z.string().min(8).max(200),
+})
 
 export async function POST(req: NextRequest) {
   try {
-    const { firstName, lastName, email, password } = await req.json()
-
-    if (!firstName || !lastName || !email || !password) {
-      return NextResponse.json({ error: 'All fields are required' }, { status: 400 })
-    }
-    if (password.length < 8) {
-      return NextResponse.json({ error: 'Password must be at least 8 characters' }, { status: 400 })
-    }
+    const { data, error } = await parseBody(req, SignupSchema)
+    if (error) return error
+    const { firstName, lastName, email, password } = data
 
     const existing = await sql`SELECT id FROM users WHERE email = ${email.toLowerCase()}`
     if (existing.length > 0) {

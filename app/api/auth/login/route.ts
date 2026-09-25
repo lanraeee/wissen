@@ -1,14 +1,19 @@
 ﻿import { NextRequest, NextResponse } from 'next/server'
+import { z } from 'zod'
 import sql from '@/lib/db'
 import { verifyPassword, signToken, COOKIE_NAME } from '@/lib/auth'
+import { parseBody } from '@/lib/validation'
+
+const LoginSchema = z.object({
+  email: z.string().trim().min(1).max(255),
+  password: z.string().min(1).max(200),
+})
 
 export async function POST(req: NextRequest) {
   try {
-    const { email, password } = await req.json()
-
-    if (!email || !password) {
-      return NextResponse.json({ error: 'Email and password are required' }, { status: 400 })
-    }
+    const { data, error } = await parseBody(req, LoginSchema)
+    if (error) return error
+    const { email, password } = data
 
     const [user] = await sql`
       SELECT id, email, password_hash, first_name, last_name, membership_expiry, role

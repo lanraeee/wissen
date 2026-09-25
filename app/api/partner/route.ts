@@ -1,20 +1,20 @@
 ﻿import { NextRequest, NextResponse } from 'next/server'
+import { z } from 'zod'
 import { sendPartnerNotification, sendPartnerConfirmation } from '@/lib/email'
 import sql from '@/lib/db'
+import { parseBody, zEmail, zName, zShortText, zMessage } from '@/lib/validation'
+
+const PartnerSchema = z.object({
+  name: zName,
+  email: zEmail,
+  organisation: zShortText,
+  message: zMessage,
+})
 
 export async function POST(req: NextRequest) {
-  const { name, email, organisation, message } = await req.json()
-  if (!name || !email || !organisation)
-    return NextResponse.json({ error: 'Name, email and organisation required' }, { status: 400 })
-
-  if (typeof name !== 'string' || name.length > 100)
-    return NextResponse.json({ error: 'Invalid name (max 100 chars)' }, { status: 400 })
-  if (typeof email !== 'string' || email.length > 255 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
-    return NextResponse.json({ error: 'Invalid email format' }, { status: 400 })
-  if (typeof organisation !== 'string' || organisation.length > 200)
-    return NextResponse.json({ error: 'Invalid organisation (max 200 chars)' }, { status: 400 })
-  if (message && (typeof message !== 'string' || message.length > 5000))
-    return NextResponse.json({ error: 'Invalid message (max 5000 chars)' }, { status: 400 })
+  const { data, error } = await parseBody(req, PartnerSchema)
+  if (error) return error
+  const { name, email, organisation, message } = data
 
   try {
     await sql`INSERT INTO submissions (type, name, email, data) VALUES ('partner', ${name}, ${email}, ${JSON.stringify({ organisation, message })})`
