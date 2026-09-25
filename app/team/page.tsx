@@ -55,13 +55,26 @@ async function getSectionOrder(): Promise<TeamMember['group'][]> {
   return ['leadership', 'advisor', 'mentor', 'team_member', 'volunteer']
 }
 
-async function getFounderPhoto(): Promise<string | null> {
+interface FounderInfo {
+  name: string
+  role: string
+  quote: string
+  photo?: string
+}
+
+const DEFAULT_FOUNDER: FounderInfo = {
+  name: 'Benz Olagbaye',
+  role: 'Founder & Executive Director',
+  quote: "Benz founded Wissen-Haus after seeing firsthand that the youth gap across Nigeria, Africa and the diaspora is not a talent problem — it's an access problem. She has personally mentored over 50 young people and leads every programme with that conviction.",
+}
+
+async function getFounder(): Promise<FounderInfo> {
   try {
     const rows = await sql`SELECT value FROM site_content WHERE key = 'founder_bio'`
-    const val = rows[0]?.value as { photo?: string } | undefined
-    return val?.photo ?? null
+    const val = rows[0]?.value as Partial<FounderInfo> | undefined
+    if (val) return { ...DEFAULT_FOUNDER, ...val }
   } catch {}
-  return null
+  return DEFAULT_FOUNDER
 }
 
 function MemberCard({ m, delay }: { m: TeamMember; delay?: number }) {
@@ -103,7 +116,7 @@ function MemberCard({ m, delay }: { m: TeamMember; delay?: number }) {
 }
 
 export default async function TeamPage() {
-  const [members, founderPhoto, sectionOrder] = await Promise.all([getMembers(), getFounderPhoto(), getSectionOrder()])
+  const [members, founder, sectionOrder] = await Promise.all([getMembers(), getFounder(), getSectionOrder()])
 
   const grouped = sectionOrder
     .map(g => ({ group: g, items: members.filter(m => m.group === g) }))
@@ -152,20 +165,20 @@ export default async function TeamPage() {
             {/* Founder — static card */}
             <div className="card reveal" style={{ position: 'relative' }}>
               <div className="card__body">
-                {founderPhoto ? (
+                {founder.photo ? (
                   // eslint-disable-next-line @next/next/no-img-element
-                  <img src={founderPhoto} alt="Benz Olagbaye" style={{ width: 52, height: 52, borderRadius: '50%', objectFit: 'cover', marginBottom: '1rem', display: 'block' }} />
+                  <img src={founder.photo} alt={founder.name} style={{ width: 52, height: 52, borderRadius: '50%', objectFit: 'cover', marginBottom: '1rem', display: 'block' }} />
                 ) : (
                   <div style={{ position: 'relative', width: 52, height: 52, borderRadius: '50%', overflow: 'hidden', marginBottom: '1rem', flexShrink: 0 }}>
-                    <Image src="/img/Benzz.jpg" alt="Benz Olagbaye" fill style={{ objectFit: 'cover', objectPosition: 'center 20%' }} />
+                    <Image src="/img/Benzz.jpg" alt={founder.name} fill style={{ objectFit: 'cover', objectPosition: 'center 20%' }} />
                   </div>
                 )}
-                <h3 style={{ fontSize: '1rem', marginBottom: '.15rem' }}>Benz Olagbaye</h3>
+                <h3 style={{ fontSize: '1rem', marginBottom: '.15rem' }}>{founder.name}</h3>
                 <div style={{ fontSize: '.72rem', fontWeight: 700, letterSpacing: '.07em', textTransform: 'uppercase', color: 'var(--green-700)', marginBottom: '.75rem' }}>
-                  Founder &amp; Executive Director
+                  {founder.role}
                 </div>
                 <p style={{ fontSize: '.88rem', color: 'var(--muted)', lineHeight: 1.6, margin: '0 0 1rem' }}>
-                  Benz founded Wissen-Haus after seeing firsthand that the youth gap across Nigeria, Africa and the diaspora is not a talent problem — it&apos;s an access problem. She has personally mentored over 50 young people and leads every programme with that conviction.
+                  {founder.quote}
                 </p>
                 <Link href="/founder" style={{ fontSize: '.82rem', fontWeight: 600, color: 'var(--green-700)' }}>
                   Full profile &rarr;
