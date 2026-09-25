@@ -4,6 +4,7 @@ import sql from '@/lib/db'
 import { verifyPassword, signToken, COOKIE_NAME } from '@/lib/auth'
 import { parseBody } from '@/lib/validation'
 import { log } from '@/lib/logger'
+import { clientIp } from '@/lib/rate-limit'
 
 const LoginSchema = z.object({
   email: z.string().trim().min(1).max(255),
@@ -50,6 +51,13 @@ export async function POST(req: NextRequest) {
         last_visit = CURRENT_DATE,
         updated_at = NOW()
     `
+
+    // Session history shown in the user's admin activity view. Best-effort --
+    // not awaited alongside the response, a logging hiccup shouldn't delay login.
+    sql`
+      INSERT INTO login_events (user_id, ip, user_agent)
+      VALUES (${user.id}, ${clientIp(req)}, ${req.headers.get('user-agent') ?? null})
+    `.catch(err => log.error('login event', err))
 
     const res = NextResponse.json({
       success: true,

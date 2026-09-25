@@ -2,6 +2,7 @@
 import { z } from 'zod'
 import sql from '@/lib/db'
 import { parseBody } from '@/lib/validation'
+import { getSession } from '@/lib/auth'
 
 const TrackSchema = z.object({
   pathname: z.string().min(1).max(500),
@@ -40,15 +41,19 @@ export async function POST(req: NextRequest) {
     const ua = req.headers.get('user-agent') ?? ''
     const country = req.headers.get('x-vercel-ip-country') ?? null
     const city = decodeURIComponent(req.headers.get('x-vercel-ip-city') ?? '') || null
+    // Attributes this view to the signed-in user, when there is one, so an
+    // admin can see "pages visited" and location per-user, not just in
+    // aggregate. Most visitors are anonymous -- that's fine, user_id is nullable.
+    const session = await getSession()
 
     await sql`
       INSERT INTO page_views
-        (pathname, referrer, country, city, device_type, browser, utm_source, utm_medium, utm_campaign, session_id)
+        (pathname, referrer, country, city, device_type, browser, utm_source, utm_medium, utm_campaign, session_id, user_id)
       VALUES
         (${pathname}, ${referrer || null}, ${country}, ${city},
          ${parseDevice(ua)}, ${parseBrowser(ua)},
          ${utm_source || null}, ${utm_medium || null}, ${utm_campaign || null},
-         ${session_id || null})
+         ${session_id || null}, ${session?.id ?? null})
     `
 
     return NextResponse.json({ ok: true })

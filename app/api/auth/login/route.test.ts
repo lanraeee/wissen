@@ -16,10 +16,10 @@ vi.mock('@/lib/auth', async () => {
 
 import { POST } from './route'
 
-function loginRequest(body: unknown) {
+function loginRequest(body: unknown, headers: Record<string, string> = {}) {
   return new NextRequest('http://localhost/api/auth/login', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json', ...headers },
     body: JSON.stringify(body),
   })
 }
@@ -36,9 +36,17 @@ const DB_USER = {
 
 describe('POST /api/auth/login', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
+    // resetAllMocks (not clearAllMocks): a test whose code path returns
+    // early (e.g. a rejected login) leaves any queued mockResolvedValueOnce
+    // values it never consumed sitting in the queue -- clearAllMocks only
+    // wipes call history, not that queue, so the leftover would silently
+    // shift into the next test's first call. reset wipes implementations too.
+    vi.resetAllMocks()
     signTokenMock.mockResolvedValue('signed.jwt.token')
-    // First call: SELECT user. Second call: visit_streaks upsert.
+    // First call: SELECT user. Second: visit_streaks upsert. Third (fire-and-
+    // forget, not awaited by the route): login_events insert -- the fallback
+    // covers that and any other incidental call.
+    sqlMock.mockResolvedValue([])
     sqlMock.mockResolvedValueOnce([DB_USER]).mockResolvedValueOnce([])
   })
 
@@ -68,6 +76,20 @@ describe('POST /api/auth/login', () => {
     const body = await res.json()
     expect(body.error).toBe('Invalid email or password')
     expect(signTokenMock).not.toHaveBeenCalled()
+  })
+
+  it('records a login_events row with the requester IP and user agent', async () => {
+    verifyPasswordMock.mockResolvedValue(true)
+    await POST(loginRequest(
+      { email: 'ada@example.com', password: 'correct-password' },
+      { 'x-vercel-forwarded-for': '1.2.3.4', 'user-agent': 'TestAgent/1.0' }
+    ))
+    // Flush the fire-and-forget insert's microtask.
+    await new Promise(r => setTimeout(r, 0))
+    const loginEventCall = sqlMock.mock.calls.find(call => (call[0] as string[]).join('').includes('login_events'))
+    expect(loginEventCall).toBeDefined()
+    expect(loginEventCall).toContain('1.2.3.4')
+    expect(loginEventCall).toContain('TestAgent/1.0')
   })
 
   it('rejects a request missing the password field', async () => {
