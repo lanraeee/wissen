@@ -1,4 +1,4 @@
-import sql from '@/lib/db'
+﻿import sql from '@/lib/db'
 
 export async function ensureTestimonialsTable() {
   await sql`
@@ -27,7 +27,7 @@ export async function ensureTestimonialsTable() {
       ('Amara Nwosu', 'SS3 Student, Command Secondary School', 'Before the Career Clarity Fair I had no idea what I wanted to do after school. Now I have a plan and mentors I can actually talk to.', 5, 'admin', 'approved', false, 2),
       ('Tobi Adewale', 'Career Clarity Fair Attendee', 'Meeting professionals face to face changed everything for me. I finally understand what a career in tech really looks like day to day.', 5, 'admin', 'approved', false, 3),
       ('Fatima Bello', 'Scholarship Recipient', 'The Opportunity Hub helped me find and apply for a scholarship I would never have heard about otherwise. Forever grateful.', 5, 'admin', 'approved', false, 4),
-      ('Emeka Obi', 'Career Launch Blueprint Graduate', 'The free courses gave me real, practical skills — CV writing, interviews, networking. I felt ready for the working world for the first time.', 4, 'admin', 'approved', false, 5)
+      ('Emeka Obi', 'Career Launch Blueprint Graduate', 'The free courses gave me real, practical skills â€” CV writing, interviews, networking. I felt ready for the working world for the first time.', 4, 'admin', 'approved', false, 5)
     `
   }
 }

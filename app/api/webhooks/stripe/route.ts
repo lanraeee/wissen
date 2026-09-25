@@ -1,10 +1,10 @@
-import { NextRequest, NextResponse } from 'next/server'
+﻿import { NextRequest, NextResponse } from 'next/server'
 import type Stripe from 'stripe'
 import { getStripe } from '@/lib/stripe'
 import { verifyStripeSession, recordDonation } from '@/lib/donations'
 
 // Without this, a donation was only ever recorded when the browser came back to
-// /donate/success and issued the PUT — so a closed tab or a dropped redirect
+// /donate/success and issued the PUT â€” so a closed tab or a dropped redirect
 // left a paid donation with no row, no certificate and no receipt. Stripe
 // retries this endpoint until it gets a 2xx, which closes that gap.
 //

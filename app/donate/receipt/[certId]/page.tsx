@@ -38,7 +38,7 @@ export interface FoundationDetails {
 }
 
 const DEFAULT_FOUNDATION: FoundationDetails = {
-  legal_name: 'Wissen-Haus Youth Empowerment Foundation',
+  legal_name: 'Wissen-Haus Empowerment Foundation',
   rc_number: '',
   address: 'Ibadan, Oyo State, Nigeria',
   email: 'director@wissenhaus.org',
@@ -100,7 +100,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!cert) return { title: 'Receipt Not Found — Wissen-Haus' }
   return {
     title: `Donation Receipt ${cert.cert_id} — Wissen-Haus`,
-    description: `Official donation receipt issued to ${cert.donor_name} by Wissen-Haus Youth Empowerment Foundation.`,
+    description: `Official donation receipt issued to ${cert.donor_name} by Wissen-Haus Empowerment Foundation.`,
   }
 }
 

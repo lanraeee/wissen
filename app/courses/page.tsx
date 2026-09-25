@@ -1,9 +1,9 @@
-import type { Metadata } from 'next'
+﻿import type { Metadata } from 'next'
 import Link from 'next/link'
 import { COURSES } from '@/lib/courseData'
 
 export const metadata: Metadata = {
-  title: 'Courses · Wissen-Haus',
+  title: 'Courses Â· Wissen-Haus',
   description: 'Free and premium certificate courses for Nigerian youth. Build real career skills.',
 }
 
@@ -22,9 +22,9 @@ export default function CoursesPage() {
               <article key={course.id} className="card reveal" data-d={i % 3 as unknown as string}>
                 <div className="card__body">
                   {course.isPremium ? (
-                    <span className="card__num" style={{ color: 'var(--red)' }}>PREMIUM · {course.modules.length} MODULES</span>
+                    <span className="card__num" style={{ color: 'var(--red)' }}>PREMIUM Â· {course.modules.length} MODULES</span>
                   ) : (
-                    <span className="badge-free">FREE · {course.modules.length} MODULES</span>
+                    <span className="badge-free">FREE Â· {course.modules.length} MODULES</span>
                   )}
                   <h3 style={{ marginTop: '.6rem' }}>{course.title}</h3>
                   <p>{course.tagline}</p>

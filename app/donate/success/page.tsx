@@ -1,9 +1,9 @@
-import type { Metadata } from 'next'
+﻿import type { Metadata } from 'next'
 import Link from 'next/link'
 import { verifyStripeSession, recordDonation } from '@/lib/donations'
 
 export const metadata: Metadata = {
-  title: 'Thank You · Wissen-Haus',
+  title: 'Thank You Â· Wissen-Haus',
   description: 'Your donation to Wissen-Haus has been received. Thank you for empowering youth across Africa and the diaspora.',
 }
 

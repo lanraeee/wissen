@@ -1,4 +1,4 @@
-# Wissen-Haus Youth Empowerment Foundation
+# Wissen-Haus Empowerment
 
 Web platform for Wissen-Haus — a Nigerian NGO bridging the skills gap by equipping young people with practical career guidance, mentorship, and global exposure.
 

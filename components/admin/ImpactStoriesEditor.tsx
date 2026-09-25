@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState, useEffect } from 'react'
 
@@ -60,7 +60,7 @@ export default function ImpactStoriesEditor() {
     })
   }
 
-  if (!loaded) return <div style={{ padding: 24, color: '#8a9a8f' }}>Loading…</div>
+  if (!loaded) return <div style={{ padding: 24, color: '#8a9a8f' }}>Loadingâ€¦</div>
 
   const fields: [keyof Story, string, boolean][] = [
     ['name', 'Name', false],
@@ -77,7 +77,7 @@ export default function ImpactStoriesEditor() {
         </div>
         <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
           {saved && <span style={{ fontSize: '.8rem', color: '#16a34a' }}>Saved!</span>}
-          <button style={s('#1a3c2e')} onClick={save} disabled={saving}>{saving ? 'Saving…' : 'Save Changes'}</button>
+          <button style={s('#1a3c2e')} onClick={save} disabled={saving}>{saving ? 'Savingâ€¦' : 'Save Changes'}</button>
         </div>
       </div>
 
@@ -110,10 +110,10 @@ export default function ImpactStoriesEditor() {
                   <div style={{ fontSize: '.8rem', color: '#3a4a3f', marginTop: 4, maxWidth: 480 }}>{story.desc}</div>
                 </div>
                 <div style={{ display: 'flex', gap: 5, alignItems: 'center', flexShrink: 0, marginLeft: 12 }}>
-                  <button style={{ ...s('#e8e4dc', '#3a4a3f'), padding: '4px 8px' }} onClick={() => move(i, -1)} disabled={i === 0}>↑</button>
-                  <button style={{ ...s('#e8e4dc', '#3a4a3f'), padding: '4px 8px' }} onClick={() => move(i, 1)} disabled={i === stories.length - 1}>↓</button>
+                  <button style={{ ...s('#e8e4dc', '#3a4a3f'), padding: '4px 8px' }} onClick={() => move(i, -1)} disabled={i === 0}>â†‘</button>
+                  <button style={{ ...s('#e8e4dc', '#3a4a3f'), padding: '4px 8px' }} onClick={() => move(i, 1)} disabled={i === stories.length - 1}>â†“</button>
                   <button style={s('#1d4ed8')} onClick={() => startEdit(i)}>Edit</button>
-                  <button style={s('#dc2626')} onClick={() => remove(i)}>✕</button>
+                  <button style={s('#dc2626')} onClick={() => remove(i)}>âœ•</button>
                 </div>
               </div>
             )}

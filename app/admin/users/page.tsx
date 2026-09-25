@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState, useEffect, useCallback } from 'react'
 import UserActions from '@/components/admin/UserActions'
@@ -62,7 +62,7 @@ export default function AdminUsers() {
           <p style={{ margin: 0, color: '#8a9a8f', fontSize: '.88rem' }}>{total} total members</p>
         </div>
         <input
-          placeholder="Search name or email…"
+          placeholder="Search name or emailâ€¦"
           value={search}
           onChange={e => setSearch(e.target.value)}
           style={{ padding: '7px 12px', borderRadius: 8, border: '1px solid #d0ccc4', fontSize: '.88rem', width: 220 }}
@@ -70,7 +70,7 @@ export default function AdminUsers() {
       </div>
 
       {loading ? (
-        <div style={{ padding: 40, textAlign: 'center', color: '#8a9a8f' }}>Loading…</div>
+        <div style={{ padding: 40, textAlign: 'center', color: '#8a9a8f' }}>Loadingâ€¦</div>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
           {filtered.map(u => (
@@ -80,9 +80,9 @@ export default function AdminUsers() {
                   <div style={{ fontWeight: 600, fontSize: '.95rem' }}>{u.first_name} {u.last_name}</div>
                   <div style={{ fontSize: '.83rem', color: '#3a4a3f', marginTop: 2 }}>{u.email}</div>
                   <div style={{ display: 'flex', gap: 12, marginTop: 6 }}>
-                    <span style={{ fontSize: '.75rem', color: '#8a9a8f' }}>{u.modules_done} modules · {u.certs} certs</span>
+                    <span style={{ fontSize: '.75rem', color: '#8a9a8f' }}>{u.modules_done} modules Â· {u.certs} certs</span>
                     {u.membership_expiry ? (
-                      <span style={{ background: '#1a3c2e', color: '#f4f0e7', borderRadius: 99, padding: '1px 8px', fontSize: '.7rem', fontWeight: 600 }}>Premium · expires {new Date(u.membership_expiry).toLocaleDateString('en-GB')}</span>
+                      <span style={{ background: '#1a3c2e', color: '#f4f0e7', borderRadius: 99, padding: '1px 8px', fontSize: '.7rem', fontWeight: 600 }}>Premium Â· expires {new Date(u.membership_expiry).toLocaleDateString('en-GB')}</span>
                     ) : (
                       <span style={{ fontSize: '.75rem', color: '#8a9a8f' }}>Free</span>
                     )}

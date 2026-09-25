@@ -1,7 +1,7 @@
-import { ImageResponse } from 'next/og'
+﻿import { ImageResponse } from 'next/og'
 
 export const runtime = 'edge'
-export const alt = 'Wissen-Haus Youth Empowerment Foundation'
+export const alt = 'Wissen-Haus Empowerment Foundation'
 export const size = { width: 1200, height: 630 }
 export const contentType = 'image/png'
 
@@ -27,7 +27,7 @@ export default async function Image() {
           overflow: 'hidden',
         }}
       >
-        {/* Left panel — deep green */}
+        {/* Left panel â€” deep green */}
         <div
           style={{
             width: 420,
@@ -124,7 +124,7 @@ export default async function Image() {
           />
         </div>
 
-        {/* Right panel — ivory/cream */}
+        {/* Right panel â€” ivory/cream */}
         <div
           style={{
             flex: 1,
@@ -162,7 +162,7 @@ export default async function Image() {
                 display: 'flex',
               }}
             >
-              Ibadan, Nigeria · Est. 2025
+              Ibadan, Nigeria Â· Est. 2025
             </span>
           </div>
 

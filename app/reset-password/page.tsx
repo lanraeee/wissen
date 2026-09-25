@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
@@ -55,10 +55,10 @@ export default function ResetPasswordPage() {
           {status === 'done' ? (
             <>
               <h1 style={{ fontSize: '1.4rem', textAlign: 'center', marginBottom: 12, color: 'var(--green-800)' }}>Password updated</h1>
-              <p style={{ textAlign: 'center', color: 'var(--ink-60)', fontSize: '.95rem' }}>Redirecting you to sign in…</p>
+              <p style={{ textAlign: 'center', color: 'var(--ink-60)', fontSize: '.95rem' }}>Redirecting you to sign inâ€¦</p>
             </>
           ) : token === null ? (
-            <p style={{ textAlign: 'center', color: 'var(--ink-60)' }}>Loading…</p>
+            <p style={{ textAlign: 'center', color: 'var(--ink-60)' }}>Loadingâ€¦</p>
           ) : !token ? (
             <>
               <h1 style={{ fontSize: '1.4rem', textAlign: 'center', marginBottom: 12, color: 'var(--green-800)' }}>Invalid reset link</h1>
@@ -66,7 +66,7 @@ export default function ResetPasswordPage() {
                 This link is missing its reset token. Please request a new one.
               </p>
               <div style={{ textAlign: 'center', marginTop: 24 }}>
-                <Link href="/forgot-password" style={{ color: 'var(--green-800)', fontSize: '.9rem', fontWeight: 600 }}>Request a new link →</Link>
+                <Link href="/forgot-password" style={{ color: 'var(--green-800)', fontSize: '.9rem', fontWeight: 600 }}>Request a new link â†’</Link>
               </div>
             </>
           ) : (
@@ -84,18 +84,18 @@ export default function ResetPasswordPage() {
                 <div className="field">
                   <label htmlFor="rp-pw">New Password <span style={{ color: 'var(--ink-60)', fontWeight: 400 }}>(min 8 chars)</span></label>
                   <div style={{ position: 'relative' }}>
-                    <input id="rp-pw" type={showPw ? 'text' : 'password'} required minLength={8} placeholder="••••••••" value={password} onChange={e => setPassword(e.target.value)} style={{ paddingRight: 44 }} />
+                    <input id="rp-pw" type={showPw ? 'text' : 'password'} required minLength={8} placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢" value={password} onChange={e => setPassword(e.target.value)} style={{ paddingRight: 44 }} />
                     <button type="button" onClick={() => setShowPw(v => !v)} style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', background: 'none', color: 'var(--ink-60)', fontSize: '1.1rem', cursor: 'pointer', border: 'none' }}>
-                      {showPw ? '🙈' : '👁️'}
+                      {showPw ? 'ðŸ™ˆ' : 'ðŸ‘ï¸'}
                     </button>
                   </div>
                 </div>
                 <div className="field">
                   <label htmlFor="rp-confirm">Confirm Password</label>
-                  <input id="rp-confirm" type={showPw ? 'text' : 'password'} required minLength={8} placeholder="••••••••" value={confirm} onChange={e => setConfirm(e.target.value)} />
+                  <input id="rp-confirm" type={showPw ? 'text' : 'password'} required minLength={8} placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢" value={confirm} onChange={e => setConfirm(e.target.value)} />
                 </div>
                 <button type="submit" className="btn btn--block" disabled={status === 'loading'} style={{ marginTop: 8 }}>
-                  {status === 'loading' ? 'Updating…' : 'Update password'}
+                  {status === 'loading' ? 'Updatingâ€¦' : 'Update password'}
                 </button>
               </form>
             </>

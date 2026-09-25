@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState } from 'react'
 
@@ -33,10 +33,10 @@ export default function OpportunityManager({ onRefresh }: { onRefresh: () => voi
 
   async function triggerCron() {
     setBusy(true)
-    setCronMsg('Running…')
+    setCronMsg('Runningâ€¦')
     const res = await fetch('/api/admin/cron', { method: 'POST' })
     const data = await res.json()
-    setCronMsg(data.success ? `Done — ${data.upserted} upserted` : `Error: ${data.error}`)
+    setCronMsg(data.success ? `Done â€” ${data.upserted} upserted` : `Error: ${data.error}`)
     setBusy(false)
     onRefresh()
   }

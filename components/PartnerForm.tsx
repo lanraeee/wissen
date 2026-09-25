@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState, FormEvent } from 'react'
 import posthog from 'posthog-js'
@@ -66,7 +66,7 @@ export default function PartnerForm() {
       <div className="field">
         <label htmlFor="p-type">Partnership type</label>
         <select id="p-type" name="type" required>
-          <option value="">Select…</option>
+          <option value="">Selectâ€¦</option>
           <option>School / University</option>
           <option>Corporate / Company</option>
           <option>Individual Mentor</option>
@@ -81,7 +81,7 @@ export default function PartnerForm() {
       </div>
       {status === 'error' && <p style={{ color: '#c0392b', fontSize: '.875rem', margin: '-.5rem 0 .75rem' }}>{error}</p>}
       <button type="submit" className="btn btn--block" disabled={status === 'sending'}>
-        {status === 'sending' ? 'Sending…' : 'Send Enquiry'}
+        {status === 'sending' ? 'Sendingâ€¦' : 'Send Enquiry'}
       </button>
     </form>
   )

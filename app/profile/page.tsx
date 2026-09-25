@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+﻿import type { Metadata } from 'next'
 import { getSession } from '@/lib/auth'
 import sql from '@/lib/db'
 import { COURSES } from '@/lib/courseData'
@@ -6,7 +6,7 @@ import Link from 'next/link'
 import { redirect } from 'next/navigation'
 
 export const metadata: Metadata = {
-  title: 'My Profile · Wissen-Haus',
+  title: 'My Profile Â· Wissen-Haus',
 }
 
 export default async function ProfilePage() {
@@ -37,7 +37,7 @@ export default async function ProfilePage() {
             <p className="lead mt-s">{user.email}</p>
             <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', marginTop: '1.5rem', alignItems: 'center' }}>
               <div style={{ background: 'var(--green-100)', borderRadius: 18, padding: '12px 20px', display: 'flex', alignItems: 'center', gap: 10 }}>
-                <span style={{ fontSize: '1.8rem' }}>🔥</span>
+                <span style={{ fontSize: '1.8rem' }}>ðŸ”¥</span>
                 <div>
                   <div style={{ fontFamily: 'var(--ff-display)', fontWeight: 900, fontSize: '1.8rem', color: 'var(--red)', lineHeight: 1 }}>{streak?.streak_count ?? 0}</div>
                   <div style={{ fontSize: '.75rem', color: 'var(--ink-60)' }}>day streak</div>
@@ -98,7 +98,7 @@ export default async function ProfilePage() {
                     </div>
                     {cert && (
                       <Link href={`/courses/${course.id}/certificate`} style={{ fontSize: '.75rem', color: 'var(--green-800)', fontWeight: 600, flexShrink: 0 }}>
-                        View cert →
+                        View cert â†’
                       </Link>
                     )}
                   </div>

@@ -1,7 +1,7 @@
-import { ImageResponse } from 'next/og'
+﻿import { ImageResponse } from 'next/og'
 
 export const runtime = 'edge'
-export const alt = 'Wissen-Haus Youth Empowerment Foundation — Encyclopedia Overview'
+export const alt = 'Wissen-Haus Empowerment Foundation â€” Encyclopedia Overview'
 export const size = { width: 1200, height: 630 }
 export const contentType = 'image/png'
 
@@ -74,7 +74,7 @@ export default async function Image() {
           </div>
 
           <p style={{ color: '#4a5a4f', fontSize: 17, lineHeight: 1.5, margin: 0, display: 'flex', maxWidth: 440 }}>
-            History, programmes, policy research, and mission of the Wissen-Haus Youth Empowerment Foundation, Ibadan, Nigeria.
+            History, programmes, policy research, and mission of the Wissen-Haus Empowerment Foundation, Ibadan, Nigeria.
           </p>
 
           <div style={{ marginTop: 32, display: 'flex', alignItems: 'center', gap: 10 }}>

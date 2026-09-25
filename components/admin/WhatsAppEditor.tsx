@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState, useEffect } from 'react'
 
@@ -18,7 +18,7 @@ interface WAChannel {
 const DEFAULTS: WAChannel = {
   url: '',
   name: 'Wissen-Haus',
-  description: 'Career tips, opportunities and community updates — straight from the Wissen-Haus team.',
+  description: 'Career tips, opportunities and community updates â€” straight from the Wissen-Haus team.',
   posts: [],
 }
 
@@ -61,7 +61,7 @@ export default function WhatsAppEditor() {
 
   function removePost(i: number) { setData(d => ({ ...d, posts: d.posts.filter((_, j) => j !== i) })) }
 
-  if (!loaded) return <div style={{ padding: 24, color: '#8a9a8f' }}>Loading…</div>
+  if (!loaded) return <div style={{ padding: 24, color: '#8a9a8f' }}>Loadingâ€¦</div>
 
   return (
     <div>
@@ -69,7 +69,7 @@ export default function WhatsAppEditor() {
         <h2 style={{ margin: 0, fontSize: '1.1rem' }}>WhatsApp Channel</h2>
         <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
           {saved && <span style={{ fontSize: '.8rem', color: '#16a34a' }}>Saved!</span>}
-          <button onClick={save} disabled={saving} style={{ padding: '7px 16px', borderRadius: 7, fontSize: '.82rem', fontWeight: 600, background: '#25D366', color: '#fff', border: 'none', cursor: 'pointer' }}>{saving ? 'Saving…' : 'Save Changes'}</button>
+          <button onClick={save} disabled={saving} style={{ padding: '7px 16px', borderRadius: 7, fontSize: '.82rem', fontWeight: 600, background: '#25D366', color: '#fff', border: 'none', cursor: 'pointer' }}>{saving ? 'Savingâ€¦' : 'Save Changes'}</button>
         </div>
       </div>
 
@@ -108,7 +108,7 @@ export default function WhatsAppEditor() {
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
               <div>
                 <label style={lbl}>Message text</label>
-                <textarea style={{ ...inp, minHeight: 80, resize: 'vertical' }} placeholder="Type the post content…" value={draft.text} onChange={e => setDraft(d => ({ ...d, text: e.target.value }))} />
+                <textarea style={{ ...inp, minHeight: 80, resize: 'vertical' }} placeholder="Type the post contentâ€¦" value={draft.text} onChange={e => setDraft(d => ({ ...d, text: e.target.value }))} />
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
                 <div>
@@ -128,7 +128,7 @@ export default function WhatsAppEditor() {
                         reader.readAsDataURL(file)
                       }} />
                     </label>
-                    {draft.image && <button style={s('#dc2626')} onClick={() => setDraft(d => ({ ...d, image: undefined }))}>✕</button>}
+                    {draft.image && <button style={s('#dc2626')} onClick={() => setDraft(d => ({ ...d, image: undefined }))}>âœ•</button>}
                   </div>
                 </div>
               </div>
@@ -170,7 +170,7 @@ export default function WhatsAppEditor() {
                           reader.readAsDataURL(file)
                         }} />
                       </label>
-                      {draft.image && <button style={s('#dc2626')} onClick={() => setDraft(d => ({ ...d, image: undefined }))}>✕</button>}
+                      {draft.image && <button style={s('#dc2626')} onClick={() => setDraft(d => ({ ...d, image: undefined }))}>âœ•</button>}
                     </div>
                   </div>
                 </div>
@@ -188,7 +188,7 @@ export default function WhatsAppEditor() {
                 </div>
                 <div style={{ display: 'flex', gap: 5, flexShrink: 0 }}>
                   <button style={s('#1d4ed8')} onClick={() => { setEditing(i); setDraft({ ...post }) }}>Edit</button>
-                  <button style={s('#dc2626')} onClick={() => removePost(i)}>✕</button>
+                  <button style={s('#dc2626')} onClick={() => removePost(i)}>âœ•</button>
                 </div>
               </div>
             )}

@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+﻿import type { Metadata } from 'next'
 import './globals.css'
 import SiteShell from '@/components/SiteShell'
 import Footer from '@/components/Footer'
@@ -7,14 +7,14 @@ import AnalyticsTracker from '@/components/AnalyticsTracker'
 export const metadata: Metadata = {
   metadataBase: new URL('https://www.wissenhaus.org'),
   title: {
-    default: 'Wissen-Haus Youth Empowerment Foundation',
-    template: '%s · Wissen-Haus',
+    default: 'Wissen-Haus Empowerment Foundation',
+    template: '%s Â· Wissen-Haus',
   },
-  description: 'Bridging the skills gap for African youth and the diaspora — practical guidance, mentorship and global exposure for economic independence. Founded in Ibadan, Nigeria, now reaching young people across Africa and internationally, including the UK.',
+  description: 'Bridging the skills gap for African youth and the diaspora â€” practical guidance, mentorship and global exposure for economic independence. Founded in Ibadan, Nigeria, now reaching young people across Africa and internationally, including the UK.',
   keywords: ['youth empowerment Africa', 'career guidance Nigeria', 'skills gap Africa', 'African diaspora youth', 'Ibadan youth foundation', 'mentorship Nigeria UK', 'Wissen-Haus'],
-  authors: [{ name: 'Wissen-Haus Youth Empowerment Foundation' }],
-  creator: 'Wissen-Haus Youth Empowerment Foundation',
-  publisher: 'Wissen-Haus Youth Empowerment Foundation',
+  authors: [{ name: 'Wissen-Haus Empowerment Foundation' }],
+  creator: 'Wissen-Haus Empowerment Foundation',
+  publisher: 'Wissen-Haus Empowerment Foundation',
   icons: {
     icon: [
       { url: '/img/logo.png', sizes: '32x32', type: 'image/png' },
@@ -27,22 +27,22 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'en_NG',
     url: 'https://www.wissenhaus.org',
-    siteName: 'Wissen-Haus Youth Empowerment Foundation',
-    title: 'Wissen-Haus Youth Empowerment Foundation',
-    description: 'Bridging the skills gap for African youth and the diaspora — practical guidance, mentorship and global exposure for economic independence.',
+    siteName: 'Wissen-Haus Empowerment Foundation',
+    title: 'Wissen-Haus Empowerment Foundation',
+    description: 'Bridging the skills gap for African youth and the diaspora â€” practical guidance, mentorship and global exposure for economic independence.',
     images: [
       {
         url: '/opengraph-image',
         width: 1200,
         height: 630,
-        alt: 'Wissen-Haus Youth Empowerment Foundation',
+        alt: 'Wissen-Haus Empowerment Foundation',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Wissen-Haus Youth Empowerment Foundation',
-    description: 'Bridging the skills gap for African youth and the diaspora — practical guidance, mentorship and global exposure for economic independence.',
+    title: 'Wissen-Haus Empowerment Foundation',
+    description: 'Bridging the skills gap for African youth and the diaspora â€” practical guidance, mentorship and global exposure for economic independence.',
     images: ['/opengraph-image'],
   },
   robots: {

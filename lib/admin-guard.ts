@@ -1,4 +1,4 @@
-import { getSession, type UserPayload } from '@/lib/auth'
+﻿import { getSession, type UserPayload } from '@/lib/auth'
 
 const PRIMARY_DIRECTOR_EMAIL = process.env.FOUNDER_EMAIL || 'director@wissenhaus.org'
 

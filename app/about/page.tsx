@@ -1,9 +1,9 @@
-import type { Metadata } from 'next'
+﻿import type { Metadata } from 'next'
 import Link from 'next/link'
 import Image from 'next/image'
 
 export const metadata: Metadata = {
-  title: 'About Us · Wissen-Haus',
+  title: 'About Us Â· Wissen-Haus',
   description: 'The Wissen-Haus journey: bridging the classroom and the world so every young African and diaspora changemaker can achieve economic independence.',
 }
 

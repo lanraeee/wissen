@@ -1,9 +1,9 @@
-import type { Metadata } from 'next'
+﻿import type { Metadata } from 'next'
 import OpportunityGrid from '@/components/OpportunityGrid'
 import StreakBadge from '@/components/StreakBadge'
 
 export const metadata: Metadata = {
-  title: 'Remote Jobs · Wissen-Haus Community',
+  title: 'Remote Jobs Â· Wissen-Haus Community',
   description: 'Remote job opportunities curated for Nigerian, African, and diaspora youth. Updated daily.',
 }
 
@@ -13,7 +13,7 @@ export default function JobsPage() {
       <StreakBadge />
       <section className="section section--tight" style={{ paddingTop: 'clamp(48px,6vw,84px)' }}>
         <div className="wrap">
-          <span className="eyebrow reveal">Community Hub · Jobs</span>
+          <span className="eyebrow reveal">Community Hub Â· Jobs</span>
           <h1 className="display-lg mt-s reveal">Remote Jobs</h1>
           <p className="lead mt-s reveal" data-d="1">Remote job opportunities open to Nigerian, African, and diaspora candidates, updated daily from the best sources.</p>
           <div className="mt-l">

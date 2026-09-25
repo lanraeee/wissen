@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server'
+﻿import { NextRequest, NextResponse } from 'next/server'
 import crypto from 'crypto'
 import sql from '@/lib/db'
 import { sendPasswordResetEmail } from '@/lib/email'

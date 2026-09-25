@@ -1,9 +1,9 @@
-import type { Metadata } from 'next'
+﻿import type { Metadata } from 'next'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
-  title: 'Events & Cafés · Wissen-Haus',
-  description: 'Networking events, career cafés, and workshops that connect African youth and the diaspora with professionals in relaxed, inspiring settings.',
+  title: 'Events & CafÃ©s Â· Wissen-Haus',
+  description: 'Networking events, career cafÃ©s, and workshops that connect African youth and the diaspora with professionals in relaxed, inspiring settings.',
 }
 
 const ARROW = (
@@ -21,8 +21,8 @@ const EVENT_TYPES = [
         <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
       </svg>
     ),
-    title: 'Career Cafés',
-    desc: 'Informal coffee-style sessions where students sit with professionals in a specific field and ask anything — no formality, just real conversation.',
+    title: 'Career CafÃ©s',
+    desc: 'Informal coffee-style sessions where students sit with professionals in a specific field and ask anything â€” no formality, just real conversation.',
   },
   {
     icon: (
@@ -61,10 +61,10 @@ export default function EventsPage() {
     <>
       <section className="section section--tight panel-dark" style={{ paddingTop: 'clamp(48px,6vw,84px)', textAlign: 'center' }}>
         <div className="wrap">
-          <span className="eyebrow eyebrow--light reveal">Programmes · Events</span>
-          <h1 className="display-lg mt-s reveal" style={{ color: '#fff' }}>Events &amp; Cafés</h1>
+          <span className="eyebrow eyebrow--light reveal">Programmes Â· Events</span>
+          <h1 className="display-lg mt-s reveal" style={{ color: '#fff' }}>Events &amp; CafÃ©s</h1>
           <p className="lead mt-m reveal" data-d="1" style={{ color: 'rgba(244,240,231,.78)', maxWidth: 620, marginInline: 'auto' }}>
-            Networking events, career cafés, and workshops that connect African youth and the diaspora with professionals — in real spaces, with real conversations.
+            Networking events, career cafÃ©s, and workshops that connect African youth and the diaspora with professionals â€” in real spaces, with real conversations.
           </p>
           <div className="cta-actions mt-l reveal" data-d="2">
             <a href="#upcoming" className="btn btn--light btn--lg">See upcoming events</a>

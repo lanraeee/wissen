@@ -1,4 +1,4 @@
-import Link from 'next/link'
+﻿import Link from 'next/link'
 import Image from 'next/image'
 import sql from '@/lib/db'
 
@@ -18,7 +18,7 @@ const DEFAULTS: SiteSettings = {
   instagram_url: 'https://www.instagram.com/wissen_haus',
   linkedin_url: 'https://www.linkedin.com/company/wissen-haus-empowerment-foundation',
   twitter_url: '',
-  tagline: 'Empowering youth · Educating for all · Opportunity for all',
+  tagline: 'Empowering youth Â· Educating for all Â· Opportunity for all',
   footer_note: '',
 }
 
@@ -117,7 +117,7 @@ export default async function Footer() {
           <div style={{ paddingBottom: 32, borderBottom: '1px solid var(--line)', marginBottom: 24 }}>
             <h5 style={{ fontSize: '.75rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--muted)', letterSpacing: '.06em', marginBottom: 16 }}>Partner Organizations</h5>
             <div style={{ display: 'flex', alignItems: 'center', gap: 24, flexWrap: 'wrap' }}>
-              <a href="/partners/datacamp" style={{ display: 'inline-flex', alignItems: 'center', opacity: 0.8, transition: 'opacity 0.2s', textDecoration: 'none' }} onMouseEnter={e => e.currentTarget.style.opacity = '1'} onMouseLeave={e => e.currentTarget.style.opacity = '0.8'}>
+              <a href="/partners/datacamp" style={{ display: 'inline-flex', alignItems: 'center', opacity: 0.8, transition: 'opacity 0.2s', textDecoration: 'none' }}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src="/img/partners/datacamp-logo-inverted.png" alt="DataCamp Donates" style={{ height: 32, objectFit: 'contain' }} />
               </a>
@@ -127,12 +127,12 @@ export default async function Footer() {
 
         <div className="wrap wrap-wide">
           <div className="footer-bottom">
-            <span>© {year} Wissen-Haus Youth Empowerment Foundation. All rights reserved.</span>
+            <span>Â© {year} Wissen-Haus Empowerment Foundation. All rights reserved.</span>
             <span style={{ display: 'flex', gap: 16, alignItems: 'center', flexWrap: 'wrap' }}>
               <Link href="/privacy">Privacy Policy</Link>
               <Link href="/terms">Terms &amp; Conditions</Link>
             </span>
-            <span>{settings.tagline || 'Empowering youth · Educating for all · Opportunity for all'}</span>
+            <span>{settings.tagline || 'Empowering youth Â· Educating for all Â· Opportunity for all'}</span>
           </div>
           {settings.footer_note && (
             <p style={{ textAlign: 'center', fontSize: '.78rem', color: 'rgba(255,255,255,0.4)', marginTop: 8, marginBottom: 0 }}>

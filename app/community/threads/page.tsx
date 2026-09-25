@@ -1,12 +1,12 @@
-import type { Metadata } from 'next'
+﻿import type { Metadata } from 'next'
 import Link from 'next/link'
 import StreakBadge from '@/components/StreakBadge'
 import ThreadsClient from '@/components/ThreadsClient'
 import sql from '@/lib/db'
 
 export const metadata: Metadata = {
-  title: 'Discussion Threads · Wissen-Haus Community',
-  description: 'Discuss, share wins, ask questions — the Wissen-Haus community discussion board.',
+  title: 'Discussion Threads Â· Wissen-Haus Community',
+  description: 'Discuss, share wins, ask questions â€” the Wissen-Haus community discussion board.',
 }
 
 interface WAPost { text: string; date: string; image?: string }
@@ -62,7 +62,7 @@ export default async function ThreadsPage() {
 
           <div className="head-row mb-l reveal">
             <div className="section-head">
-              <span className="eyebrow">Community Hub · Threads</span>
+              <span className="eyebrow">Community Hub Â· Threads</span>
               <h1 className="display-lg mt-s">Discussion Board</h1>
               <p className="lead mt-s">Ask questions, share wins, and learn from the community.</p>
             </div>
@@ -84,7 +84,7 @@ export default async function ThreadsPage() {
               </div>
               <div>
                 <div style={{ color: '#fff', fontWeight: 700, fontSize: '1rem', lineHeight: 1.2 }}>{wa?.name ?? 'Wissen-Haus'} on WhatsApp</div>
-                <div style={{ color: 'rgba(255,255,255,0.75)', fontSize: '.82rem', marginTop: 3 }}>{wa?.description ?? 'Career tips, opportunities and community updates — straight from the team.'}</div>
+                <div style={{ color: 'rgba(255,255,255,0.75)', fontSize: '.82rem', marginTop: 3 }}>{wa?.description ?? 'Career tips, opportunities and community updates â€” straight from the team.'}</div>
               </div>
             </div>
             <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: '#25D366', color: '#fff', padding: '10px 20px', borderRadius: 99, fontSize: '.85rem', fontWeight: 700, flexShrink: 0, boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }}>
@@ -104,7 +104,7 @@ export default async function ThreadsPage() {
                 <div style={{ width: 36, height: 36, borderRadius: '50%', background: '#25D366', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', flexShrink: 0 }}>{WA_ICON}</div>
                 <div>
                   <div style={{ fontWeight: 700, fontSize: '.95rem' }}>{wa?.name ?? 'Wissen-Haus'}</div>
-                  <div style={{ fontSize: '.75rem', color: 'var(--ink-60)' }}>WhatsApp Channel · recent updates</div>
+                  <div style={{ fontSize: '.75rem', color: 'var(--ink-60)' }}>WhatsApp Channel Â· recent updates</div>
                 </div>
                 <a href={channelUrl} target="_blank" rel="noopener noreferrer" style={{ marginLeft: 'auto', fontSize: '.78rem', fontWeight: 600, color: '#128C7E', textDecoration: 'none', border: '1px solid #25D366', borderRadius: 99, padding: '4px 14px' }}>View channel</a>
               </div>

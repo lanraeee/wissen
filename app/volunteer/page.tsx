@@ -1,10 +1,10 @@
-import type { Metadata } from 'next'
+﻿import type { Metadata } from 'next'
 import Link from 'next/link'
 import Image from 'next/image'
 import VolunteerForm from '@/components/VolunteerForm'
 
 export const metadata: Metadata = {
-  title: 'Volunteer · Wissen-Haus',
+  title: 'Volunteer Â· Wissen-Haus',
   description: 'Volunteer with Wissen-Haus and help bridge the skills gap in Ibadan and beyond. Mentor, train and support African youth and the diaspora.',
 }
 
@@ -50,7 +50,7 @@ export default function VolunteerPage() {
               </div>
               <h3>Mentoring</h3>
               <p>Guide students through career choices and personal growth by sharing your professional journey and advice.</p>
-              <span className="tag-line">Build Impact · Gain Community</span>
+              <span className="tag-line">Build Impact Â· Gain Community</span>
             </div>
             <div className="feature reveal" data-d="1">
               <div className="feature__ic">
@@ -58,7 +58,7 @@ export default function VolunteerPage() {
               </div>
               <h3>Technical Training</h3>
               <p>Help bridge the skills gap by teaching coding, digital marketing, or vocational skills to our eager participants.</p>
-              <span className="tag-line">Share Skills · Empower Youth</span>
+              <span className="tag-line">Share Skills Â· Empower Youth</span>
             </div>
             <div className="feature reveal" data-d="2">
               <div className="feature__ic">
@@ -66,7 +66,7 @@ export default function VolunteerPage() {
               </div>
               <h3>Operations</h3>
               <p>Contribute your time to content creation, event planning, or logistical support as we scale our impact across Africa and the diaspora.</p>
-              <span className="tag-line">Shape the Future · Gain Experience</span>
+              <span className="tag-line">Shape the Future Â· Gain Experience</span>
             </div>
           </div>
         </div>
@@ -75,7 +75,7 @@ export default function VolunteerPage() {
       <section className="section panel-dark">
         <div className="wrap center">
           <span className="quote-mark reveal">&ldquo;</span>
-          <p className="quote-lg reveal" style={{ color: '#fff', maxWidth: '26ch', marginInline: 'auto' }}>Volunteering with Wissen-Haus gave me back as much as I gave — real relationships, real growth.</p>
+          <p className="quote-lg reveal" style={{ color: '#fff', maxWidth: '26ch', marginInline: 'auto' }}>Volunteering with Wissen-Haus gave me back as much as I gave â€” real relationships, real growth.</p>
           <div className="mt-m reveal" data-d="1">
             <div className="testi__name" style={{ color: 'var(--gold)' }}>Tolu Adeyemi</div>
             <div className="testi__role">Mentor, 2025 cohort</div>

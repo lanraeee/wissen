@@ -1,8 +1,8 @@
-import type { Metadata } from 'next'
+﻿import type { Metadata } from 'next'
 import ContactForm from '@/components/ContactForm'
 
 export const metadata: Metadata = {
-  title: 'Contact Us · Wissen-Haus',
+  title: 'Contact Us Â· Wissen-Haus',
   description: 'Get in touch with Wissen-Haus. Contact us for inquiries, partnerships, volunteering, or general questions.',
 }
 

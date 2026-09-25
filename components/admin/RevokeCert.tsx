@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState } from 'react'
 
@@ -19,7 +19,7 @@ export default function RevokeCert({ id, name, onRefresh }: { id: string; name: 
       padding: '3px 8px', borderRadius: 5, fontSize: '.7rem', fontWeight: 600,
       background: '#fee2e2', color: '#dc2626', border: 'none', cursor: 'pointer',
     }}>
-      {busy ? '…' : 'Revoke'}
+      {busy ? 'â€¦' : 'Revoke'}
     </button>
   )
 }

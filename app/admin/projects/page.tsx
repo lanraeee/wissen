@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState, useEffect, useCallback } from 'react'
 
@@ -63,7 +63,7 @@ const addBtn = (onClick: () => void, text: string) => (
   <button type="button" onClick={onClick} style={{ fontSize: '.78rem', color: '#1a3c2e', fontWeight: 600, background: '#f0ece4', border: 'none', borderRadius: 6, padding: '5px 12px', cursor: 'pointer', marginTop: 6 }}>{text}</button>
 )
 const removeBtn = (onClick: () => void) => (
-  <button type="button" onClick={onClick} style={{ fontSize: '.72rem', color: '#dc2626', fontWeight: 600, background: '#fee2e2', border: 'none', borderRadius: 5, padding: '3px 8px', cursor: 'pointer' }}>✕</button>
+  <button type="button" onClick={onClick} style={{ fontSize: '.72rem', color: '#dc2626', fontWeight: 600, background: '#fee2e2', border: 'none', borderRadius: 5, padding: '3px 8px', cursor: 'pointer' }}>âœ•</button>
 )
 
 export default function AdminProjects() {
@@ -153,7 +153,7 @@ export default function AdminProjects() {
 
       {/* Project list */}
       {loading ? (
-        <div style={{ padding: 40, textAlign: 'center', color: '#8a9a8f' }}>Loading…</div>
+        <div style={{ padding: 40, textAlign: 'center', color: '#8a9a8f' }}>Loadingâ€¦</div>
       ) : (
         <div style={{ background: '#fff', borderRadius: 10, boxShadow: '0 1px 4px rgba(0,0,0,.06)', overflow: 'auto', marginBottom: 32 }}>
           {projects.length === 0 ? (
@@ -164,7 +164,7 @@ export default function AdminProjects() {
             <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 700 }}>
               <thead>
                 <tr style={{ background: '#f9f7f3' }}>
-                  {['Title', 'Slug', 'Event Date', 'Goal (₦)', 'Raised (₦)', 'Status', ''].map(h => (
+                  {['Title', 'Slug', 'Event Date', 'Goal (â‚¦)', 'Raised (â‚¦)', 'Status', ''].map(h => (
                     <th key={h} style={{ padding: '10px 16px', textAlign: 'left', fontSize: '.72rem', fontWeight: 700, letterSpacing: '.08em', textTransform: 'uppercase', color: '#8a9a8f', borderBottom: '1px solid #e8e4dc', whiteSpace: 'nowrap' }}>{h}</th>
                   ))}
                 </tr>
@@ -177,7 +177,7 @@ export default function AdminProjects() {
                       <a href={`/donate/${p.slug}`} target="_blank" rel="noopener noreferrer" style={{ color: '#1a3c2e' }}>/donate/{p.slug}</a>
                     </td>
                     <td style={{ padding: '10px 16px', fontSize: '.85rem', color: '#3a4a3f', whiteSpace: 'nowrap' }}>
-                      {p.event_date ? new Date(p.event_date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : '—'}
+                      {p.event_date ? new Date(p.event_date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : 'â€”'}
                     </td>
                     <td style={{ padding: '10px 16px', fontSize: '.85rem', color: '#3a4a3f' }}>{p.goal_ngn.toLocaleString()}</td>
                     <td style={{ padding: '10px 16px', fontSize: '.85rem', color: '#3a4a3f' }}>{p.raised_ngn.toLocaleString()}</td>
@@ -202,7 +202,7 @@ export default function AdminProjects() {
           <div style={{ background: '#fff', borderRadius: 14, padding: '28px 32px', width: '100%', maxWidth: 780, boxShadow: '0 24px 60px rgba(0,0,0,.25)' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
               <h2 style={{ margin: 0, fontSize: '1.25rem', color: '#1a2e24' }}>{e.id ? 'Edit Project' : 'New Donation Project'}</h2>
-              <button onClick={() => setEditing(null)} style={{ background: '#f0ece4', border: 'none', borderRadius: 8, padding: '6px 14px', fontWeight: 700, cursor: 'pointer' }}>✕ Close</button>
+              <button onClick={() => setEditing(null)} style={{ background: '#f0ece4', border: 'none', borderRadius: 8, padding: '6px 14px', fontWeight: 700, cursor: 'pointer' }}>âœ• Close</button>
             </div>
 
             {sectionHead('Core Details')}
@@ -236,7 +236,7 @@ export default function AdminProjects() {
             </div>
 
             {sectionHead('Hero Description')}
-            <textarea style={{ ...inp(), height: 90, resize: 'vertical' }} value={e.hero_desc ?? ''} onChange={ev => setField('hero_desc', ev.target.value || null)} placeholder="The main lead paragraph on the campaign page…" />
+            <textarea style={{ ...inp(), height: 90, resize: 'vertical' }} value={e.hero_desc ?? ''} onChange={ev => setField('hero_desc', ev.target.value || null)} placeholder="The main lead paragraph on the campaign pageâ€¦" />
 
             {sectionHead('Event Details')}
             <div className="rgrid-2" style={{ gap: 12, marginBottom: 12 }}>
@@ -254,7 +254,7 @@ export default function AdminProjects() {
               </div>
               <div>
                 {label('Event Time')}
-                <input style={inp()} value={e.event_time ?? ''} onChange={ev => setField('event_time', ev.target.value || null)} placeholder="8:00am – 5:00pm" />
+                <input style={inp()} value={e.event_time ?? ''} onChange={ev => setField('event_time', ev.target.value || null)} placeholder="8:00am â€“ 5:00pm" />
               </div>
             </div>
 
@@ -273,11 +273,11 @@ export default function AdminProjects() {
             {sectionHead('Funding Numbers')}
             <div className="rgrid-3" style={{ gap: 12, marginBottom: 12 }}>
               <div>
-                {label('Goal (₦)')}
+                {label('Goal (â‚¦)')}
                 <input type="number" style={inp()} value={e.goal_ngn ?? 0} onChange={ev => setField('goal_ngn', Number(ev.target.value))} />
               </div>
               <div>
-                {label('Raised (₦) — manual update')}
+                {label('Raised (â‚¦) â€” manual update')}
                 <input type="number" style={inp()} value={e.raised_ngn ?? 0} onChange={ev => setField('raised_ngn', Number(ev.target.value))} />
               </div>
               <div>
@@ -290,7 +290,7 @@ export default function AdminProjects() {
             {(e.highlights ?? []).map((h, i) => (
               <div key={i} className="rgrid-row-a" style={{ gap: 8, marginBottom: 8, alignItems: 'center' }}>
                 <input style={inp()} placeholder="Label e.g. Students expected" value={h.label} onChange={ev => setField('highlights', updateArrayItem(e.highlights!, i, { label: ev.target.value }))} />
-                <input style={inp()} placeholder="Value e.g. 500–1,000" value={h.value} onChange={ev => setField('highlights', updateArrayItem(e.highlights!, i, { value: ev.target.value }))} />
+                <input style={inp()} placeholder="Value e.g. 500â€“1,000" value={h.value} onChange={ev => setField('highlights', updateArrayItem(e.highlights!, i, { value: ev.target.value }))} />
                 {removeBtn(() => setField('highlights', removeArrayItem(e.highlights!, i)))}
               </div>
             ))}
@@ -300,7 +300,7 @@ export default function AdminProjects() {
             {(e.what_funded ?? []).map((w, i) => (
               <div key={i} className="rgrid-row-b" style={{ gap: 8, marginBottom: 8, alignItems: 'center' }}>
                 <input style={inp()} placeholder="Line item description" value={w.item} onChange={ev => setField('what_funded', updateArrayItem(e.what_funded!, i, { item: ev.target.value }))} />
-                <input style={inp()} placeholder="₦250,000" value={w.amount} onChange={ev => setField('what_funded', updateArrayItem(e.what_funded!, i, { amount: ev.target.value }))} />
+                <input style={inp()} placeholder="â‚¦250,000" value={w.amount} onChange={ev => setField('what_funded', updateArrayItem(e.what_funded!, i, { amount: ev.target.value }))} />
                 {removeBtn(() => setField('what_funded', removeArrayItem(e.what_funded!, i)))}
               </div>
             ))}
@@ -309,7 +309,7 @@ export default function AdminProjects() {
             {sectionHead('Impact Points (bullet list in the "Why" section)')}
             {(e.impact_points ?? []).map((pt, i) => (
               <div key={i} className="rgrid-row-c" style={{ gap: 8, marginBottom: 8, alignItems: 'center' }}>
-                <input style={inp()} placeholder="Impact statement…" value={pt} onChange={ev => {
+                <input style={inp()} placeholder="Impact statementâ€¦" value={pt} onChange={ev => {
                   const arr = [...(e.impact_points ?? [])]
                   arr[i] = ev.target.value
                   setField('impact_points', arr)
@@ -327,7 +327,7 @@ export default function AdminProjects() {
               </div>
             </div>
             {label('Partner Description')}
-            <textarea style={{ ...inp(), height: 80, resize: 'vertical', marginBottom: 12 }} value={e.partnership_desc ?? ''} onChange={ev => setField('partnership_desc', ev.target.value || null)} placeholder="What the partner brings and why they matter to this campaign…" />
+            <textarea style={{ ...inp(), height: 80, resize: 'vertical', marginBottom: 12 }} value={e.partnership_desc ?? ''} onChange={ev => setField('partnership_desc', ev.target.value || null)} placeholder="What the partner brings and why they matter to this campaignâ€¦" />
 
             {sectionHead('FAQ')}
             {(e.faq ?? []).map((item, i) => (
@@ -336,8 +336,8 @@ export default function AdminProjects() {
                   {label(`Question ${i + 1}`)}
                   {removeBtn(() => setField('faq', removeArrayItem(e.faq!, i)))}
                 </div>
-                <input style={{ ...inp(), marginBottom: 6 }} placeholder="Question…" value={item.q} onChange={ev => setField('faq', updateArrayItem(e.faq!, i, { q: ev.target.value }))} />
-                <textarea style={{ ...inp(), height: 70, resize: 'vertical' }} placeholder="Answer…" value={item.a} onChange={ev => setField('faq', updateArrayItem(e.faq!, i, { a: ev.target.value }))} />
+                <input style={{ ...inp(), marginBottom: 6 }} placeholder="Questionâ€¦" value={item.q} onChange={ev => setField('faq', updateArrayItem(e.faq!, i, { q: ev.target.value }))} />
+                <textarea style={{ ...inp(), height: 70, resize: 'vertical' }} placeholder="Answerâ€¦" value={item.a} onChange={ev => setField('faq', updateArrayItem(e.faq!, i, { a: ev.target.value }))} />
               </div>
             ))}
             {addBtn(() => setField('faq', [...(e.faq ?? []), { q: '', a: '' }]), '+ Add FAQ')}
@@ -349,7 +349,7 @@ export default function AdminProjects() {
                 Cancel
               </button>
               <button onClick={handleSave} disabled={saving} style={{ padding: '9px 24px', borderRadius: 8, fontSize: '.88rem', fontWeight: 700, background: '#1a3c2e', color: '#fff', border: 'none', cursor: 'pointer', opacity: saving ? .65 : 1 }}>
-                {saving ? 'Saving…' : e.id ? 'Save Changes' : 'Create Project'}
+                {saving ? 'Savingâ€¦' : e.id ? 'Save Changes' : 'Create Project'}
               </button>
             </div>
           </div>

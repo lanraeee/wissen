@@ -6,7 +6,7 @@ import BankTransferPanel, { type DetailRow } from '@/components/BankTransferPane
 
 export const metadata: Metadata = {
   title: 'Complete Your Bank Transfer · Wissen-Haus',
-  description: 'Bank account details for your donation to Wissen-Haus Youth Empowerment Foundation.',
+  description: 'Bank account details for your donation to Wissen-Haus Empowerment Foundation.',
   robots: { index: false, follow: false },
 }
 

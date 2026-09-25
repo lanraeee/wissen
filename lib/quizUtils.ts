@@ -1,4 +1,4 @@
-import type { QuizQuestion } from './courseData'
+﻿import type { QuizQuestion } from './courseData'
 
 export interface ShuffledOption {
   key: string

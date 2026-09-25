@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server'
+﻿import { NextRequest, NextResponse } from 'next/server'
 import { adminGuard } from '@/lib/admin-guard'
 import sql from '@/lib/db'
 

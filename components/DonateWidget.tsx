@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState, FormEvent } from 'react'
 import posthog from 'posthog-js'
@@ -12,12 +12,12 @@ const AMOUNTS: Record<Currency, number[]> = {
   GBP: [5, 10, 25, 50],
   EUR: [5, 10, 25, 50],
 }
-const SYMBOL: Record<Currency, string> = { NGN: '₦', USD: '$', GBP: '£', EUR: '€' }
+const SYMBOL: Record<Currency, string> = { NGN: 'â‚¦', USD: '$', GBP: 'Â£', EUR: 'â‚¬' }
 const TOGGLE_LABEL: Record<Currency, string> = {
-  NGN: '🇳🇬 Naira (₦)',
-  USD: '🇺🇸 US Dollar ($)',
-  GBP: '🇬🇧 British Pound (£)',
-  EUR: '🇪🇺 Euro (€)',
+  NGN: 'ðŸ‡³ðŸ‡¬ Naira (â‚¦)',
+  USD: 'ðŸ‡ºðŸ‡¸ US Dollar ($)',
+  GBP: 'ðŸ‡¬ðŸ‡§ British Pound (Â£)',
+  EUR: 'ðŸ‡ªðŸ‡º Euro (â‚¬)',
 }
 const CUSTOM_PLACEHOLDER: Record<Currency, string> = { NGN: '15000', USD: '30', GBP: '25', EUR: '25' }
 
@@ -40,8 +40,8 @@ export default function DonateWidget() {
 
   const finalAmount = custom ? parseFloat(custom) : selected
 
-  // The amount and currency carry over between methods — only the destination
-  // changes — so switching just clears any stale error.
+  // The amount and currency carry over between methods â€” only the destination
+  // changes â€” so switching just clears any stale error.
   function changeMethod(next: Method) {
     setMethod(next)
     setError('')
@@ -91,7 +91,7 @@ export default function DonateWidget() {
     <form onSubmit={handleSubmit} style={{ maxWidth: 560, margin: '0 auto' }}>
       {/* Payment method */}
       <div style={{ display: 'flex', gap: 8, marginBottom: 20 }}>
-        {([['card', '💳 Card'], ['bank', '🏦 Bank Transfer']] as [Method, string][]).map(([m, label]) => (
+        {([['card', 'ðŸ’³ Card'], ['bank', 'ðŸ¦ Bank Transfer']] as [Method, string][]).map(([m, label]) => (
           <button
             key={m}
             type="button"
@@ -113,7 +113,7 @@ export default function DonateWidget() {
       <p style={{ fontSize: '.8rem', color: 'var(--ink-60,#8a9a8f)', margin: '0 0 22px', lineHeight: 1.5 }}>
         {method === 'bank'
           ? "Fill in your details and we'll show you the account to transfer to, with a reference to quote. Your receipt and certificate follow once the transfer clears."
-          : 'Pay securely by card — your receipt and certificate arrive by email straight away.'}
+          : 'Pay securely by card â€” your receipt and certificate arrive by email straight away.'}
       </p>
 
       {/* Currency toggle */}
@@ -190,7 +190,7 @@ export default function DonateWidget() {
         style={{ fontSize: '1rem' }}
       >
         {status === 'loading'
-          ? (method === 'bank' ? 'Preparing your details…' : 'Redirecting to payment…')
+          ? (method === 'bank' ? 'Preparing your detailsâ€¦' : 'Redirecting to paymentâ€¦')
           : method === 'bank'
             ? `Get bank details${finalAmount ? ` for ${symbol}${Number(finalAmount).toLocaleString()}` : ''}`
             : `Donate ${finalAmount ? `${symbol}${Number(finalAmount).toLocaleString()}` : 'Now'}`}
@@ -198,8 +198,8 @@ export default function DonateWidget() {
 
       <p style={{ textAlign: 'center', fontSize: '.78rem', color: 'var(--ink-60,#8a9a8f)', marginTop: '1rem' }}>
         {method === 'bank'
-          ? 'Direct transfer in Naira, Dollars, Pounds or Euros · No card needed'
-          : 'Powered by Stripe · Secure payments in Naira, Dollars, Pounds or Euros'}
+          ? 'Direct transfer in Naira, Dollars, Pounds or Euros Â· No card needed'
+          : 'Powered by Stripe Â· Secure payments in Naira, Dollars, Pounds or Euros'}
       </p>
     </form>
   )

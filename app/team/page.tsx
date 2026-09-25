@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+﻿import type { Metadata } from 'next'
 import Link from 'next/link'
 import Image from 'next/image'
 import sql from '@/lib/db'
@@ -6,8 +6,8 @@ import sql from '@/lib/db'
 export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
-  title: 'Our Team · Wissen-Haus',
-  description: 'Meet the people who hold Wissen-Haus together — the founder, advisors, mentors, and volunteers building something that matters.',
+  title: 'Our Team Â· Wissen-Haus',
+  description: 'Meet the people who hold Wissen-Haus together â€” the founder, advisors, mentors, and volunteers building something that matters.',
 }
 
 export interface TeamMember {
@@ -28,8 +28,8 @@ const GROUP_META: Record<TeamMember['group'], { heading: string; eyebrow: string
 }
 
 const VALUES = [
-  { label: 'We show up', body: 'For every student, every event, every early morning — the team shows up before the spotlight does.' },
-  { label: 'We work behind the scenes', body: 'The best work at Wissen-Haus is done quietly — in planning docs, mentor calls, and preparation that nobody sees but everyone feels.' },
+  { label: 'We show up', body: 'For every student, every event, every early morning â€” the team shows up before the spotlight does.' },
+  { label: 'We work behind the scenes', body: 'The best work at Wissen-Haus is done quietly â€” in planning docs, mentor calls, and preparation that nobody sees but everyone feels.' },
   { label: 'We grow together', body: "Nobody has all the answers. We learn from the students we serve, the mentors we work with, and each other." },
 ]
 
@@ -124,7 +124,7 @@ export default async function TeamPage() {
               </h1>
               <p className="lead mt-m" style={{ color: 'rgba(244,240,231,.78)' }}>
                 Wissen-Haus runs on the belief that young Africans and diaspora youth deserve better. Every person on this
-                team holds that belief — and turns it into something real, every single day.
+                team holds that belief â€” and turns it into something real, every single day.
               </p>
               <div className="cta-actions mt-l">
                 <Link href="/volunteer" className="btn btn--light btn--lg">Join the team</Link>
@@ -140,7 +140,7 @@ export default async function TeamPage() {
 
       <div className="pattern-edge" aria-hidden="true" />
 
-      {/* Founder card — always shown, compact */}
+      {/* Founder card â€” always shown, compact */}
       <section className="section">
         <div className="wrap">
           <div className="section-head mb-l reveal">
@@ -149,7 +149,7 @@ export default async function TeamPage() {
           </div>
 
           <div className="grid grid-3">
-            {/* Founder — static card */}
+            {/* Founder â€” static card */}
             <div className="card reveal" style={{ position: 'relative' }}>
               <div className="card__body">
                 {founderPhoto ? (
@@ -165,7 +165,7 @@ export default async function TeamPage() {
                   Founder &amp; Executive Director
                 </div>
                 <p style={{ fontSize: '.88rem', color: 'var(--muted)', lineHeight: 1.6, margin: '0 0 1rem' }}>
-                  Benz founded Wissen-Haus after seeing firsthand that the youth gap across Nigeria, Africa and the diaspora is not a talent problem — it&apos;s an access problem. She has personally mentored over 50 young people and leads every programme with that conviction.
+                  Benz founded Wissen-Haus after seeing firsthand that the youth gap across Nigeria, Africa and the diaspora is not a talent problem â€” it&apos;s an access problem. She has personally mentored over 50 young people and leads every programme with that conviction.
                 </p>
                 <Link href="/founder" style={{ fontSize: '.82rem', fontWeight: 600, color: 'var(--green-700)' }}>
                   Full profile &rarr;
@@ -225,7 +225,7 @@ export default async function TeamPage() {
               <h2 className="mt-s">The culture behind the cause.</h2>
               <p className="lead mt-m">
                 There is no Wissen-Haus without the people inside it. These are the three things every
-                team member — paid or volunteer — carries with them.
+                team member â€” paid or volunteer â€” carries with them.
               </p>
             </div>
             <div className="reveal" data-d="1">
@@ -256,7 +256,7 @@ export default async function TeamPage() {
             <h2>Want to be part of this?</h2>
             <p className="lead">
               We&apos;re always looking for people who believe what we believe. Whether you mentor, volunteer,
-              advise, or give — there is a place for you here.
+              advise, or give â€” there is a place for you here.
             </p>
             <div className="cta-actions">
               <Link href="/volunteer" className="btn btn--light btn--lg">Volunteer with us</Link>

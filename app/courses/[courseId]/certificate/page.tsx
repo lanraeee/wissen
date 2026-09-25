@@ -18,10 +18,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!course) return {}
   return {
     title: `Certificate of Completion — ${course.title} | Wissen-Haus`,
-    description: `Official certificate of completion for ${course.title}, issued by Wissen-Haus Youth Empowerment Foundation.`,
+    description: `Official certificate of completion for ${course.title}, issued by Wissen-Haus Empowerment Foundation.`,
     openGraph: {
       title: `Certificate of Completion — ${course.title}`,
-      description: `Issued by Wissen-Haus Youth Empowerment Foundation · wissenhaus.org`,
+      description: `Issued by Wissen-Haus Empowerment Foundation · wissenhaus.org`,
       images: ['/img/logo.png'],
     },
   }

@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState, FormEvent } from 'react'
 import posthog from 'posthog-js'
@@ -66,11 +66,11 @@ export default function ContactForm() {
       </div>
       <div className="field">
         <label htmlFor="c-msg">Message</label>
-        <textarea id="c-msg" name="message" required placeholder="Tell us more…" />
+        <textarea id="c-msg" name="message" required placeholder="Tell us moreâ€¦" />
       </div>
       {status === 'error' && <p style={{ color: '#c0392b', fontSize: '.875rem', margin: '-.5rem 0 .75rem' }}>{error}</p>}
       <button type="submit" className="btn" disabled={status === 'sending'}>
-        {status === 'sending' ? 'Sending…' : 'Send Message'}
+        {status === 'sending' ? 'Sendingâ€¦' : 'Send Message'}
       </button>
     </form>
   )

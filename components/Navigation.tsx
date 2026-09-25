@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
@@ -26,7 +26,7 @@ const NAV = [
       ['/career-clarity-trade-fair', 'Career Clarity Trade Fair', 'For all secondary school students'],
       ['/opportunity-blueprint', 'Opportunity Blueprint', 'Our flagship podcast'],
       ['/impact-content', 'Impact Content', 'Social-impact storytelling'],
-      ['/events', 'Events & Cafés', 'Networking, workshops & more'],
+      ['/events', 'Events & CafÃ©s', 'Networking, workshops & more'],
     ]
   },
   {
@@ -40,7 +40,7 @@ const NAV = [
     key: 'careers', label: 'Careers', menu: [
       ['/careers', 'Careers Overview', 'Jobs, internships & opportunities'],
       ['/career-pathways', 'Career Pathways Assessment', 'Get your personalised roadmap'],
-      ['/career-assessment', 'Career Assessment Accelerator', '10-question quiz · 12 career profiles'],
+      ['/career-assessment', 'Career Assessment Accelerator', '10-question quiz Â· 12 career profiles'],
     ]
   },
   { key: 'policy', label: 'Policy', href: '/policy-research' },

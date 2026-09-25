@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
@@ -96,14 +96,14 @@ export default function LoginPage() {
               <div className="field">
                 <label htmlFor="su-pw">Password <span style={{ color: 'var(--ink-60)', fontWeight: 400 }}>(min 8 chars)</span></label>
                 <div style={{ position: 'relative' }}>
-                  <input id="su-pw" name="password" type={showPw ? 'text' : 'password'} required minLength={8} placeholder="••••••••" style={{ paddingRight: 44 }} />
+                  <input id="su-pw" name="password" type={showPw ? 'text' : 'password'} required minLength={8} placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢" style={{ paddingRight: 44 }} />
                   <button type="button" onClick={() => setShowPw(v => !v)} style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', background: 'none', color: 'var(--ink-60)', fontSize: '1.1rem', cursor: 'pointer', border: 'none' }}>
-                    {showPw ? '🙈' : '👁️'}
+                    {showPw ? 'ðŸ™ˆ' : 'ðŸ‘ï¸'}
                   </button>
                 </div>
               </div>
               <button type="submit" className="btn btn--block" disabled={loading} style={{ marginTop: 8 }}>
-                {loading ? 'Creating account…' : 'Sign Up'}
+                {loading ? 'Creating accountâ€¦' : 'Sign Up'}
               </button>
               <div style={{ textAlign: 'center', marginTop: 24, paddingTop: 24, borderTop: '1px solid var(--line)', color: 'var(--ink-60)', fontSize: '.9rem' }}>
                 Already have an account?{' '}
@@ -119,9 +119,9 @@ export default function LoginPage() {
               <div className="field">
                 <label htmlFor="li-pw">Password</label>
                 <div style={{ position: 'relative' }}>
-                  <input id="li-pw" name="password" type={showPw ? 'text' : 'password'} required placeholder="••••••••" style={{ paddingRight: 44 }} />
+                  <input id="li-pw" name="password" type={showPw ? 'text' : 'password'} required placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢" style={{ paddingRight: 44 }} />
                   <button type="button" onClick={() => setShowPw(v => !v)} style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', background: 'none', color: 'var(--ink-60)', fontSize: '1.1rem', cursor: 'pointer', border: 'none' }}>
-                    {showPw ? '🙈' : '👁️'}
+                    {showPw ? 'ðŸ™ˆ' : 'ðŸ‘ï¸'}
                   </button>
                 </div>
                 <div style={{ textAlign: 'right', marginTop: 6 }}>
@@ -129,14 +129,14 @@ export default function LoginPage() {
                 </div>
               </div>
               <button type="submit" className="btn btn--block" disabled={loading} style={{ marginTop: 8 }}>
-                {loading ? 'Signing in…' : 'Sign In'}
+                {loading ? 'Signing inâ€¦' : 'Sign In'}
               </button>
               <div style={{ textAlign: 'center', marginTop: 24, paddingTop: 24, borderTop: '1px solid var(--line)', color: 'var(--ink-60)', fontSize: '.9rem' }}>
                 Don&#39;t have an account?{' '}
                 <button type="button" onClick={() => setTab('signup')} style={{ color: 'var(--green-800)', fontWeight: 600, background: 'none', cursor: 'pointer', border: 'none' }}>Sign Up</button>
               </div>
               <div style={{ textAlign: 'center', marginTop: 16 }}>
-                <Link href="/" style={{ color: 'var(--green-800)', fontSize: '.85rem' }}>← Back to Home</Link>
+                <Link href="/" style={{ color: 'var(--green-800)', fontSize: '.85rem' }}>â† Back to Home</Link>
               </div>
             </form>
           )}

@@ -1,14 +1,14 @@
-# Quiz Shuffle System - Setup & Implementation Guide
+﻿# Quiz Shuffle System - Setup & Implementation Guide
 
 ## What Was Implemented
 
 A complete random reshuffle system for quiz answers on community hub courses that:
-- ✅ Randomizes answer option order on each session
-- ✅ Maintains correctness tracking regardless of position
-- ✅ Provides consistent shuffle within a user's session
-- ✅ Uses seeded randomization for deterministic but varied shuffles
-- ✅ Has zero performance impact (fully memoized)
-- ✅ Works automatically with existing code
+- âœ… Randomizes answer option order on each session
+- âœ… Maintains correctness tracking regardless of position
+- âœ… Provides consistent shuffle within a user's session
+- âœ… Uses seeded randomization for deterministic but varied shuffles
+- âœ… Has zero performance impact (fully memoized)
+- âœ… Works automatically with existing code
 
 ## Files Created
 
@@ -46,25 +46,25 @@ A complete random reshuffle system for quiz answers on community hub courses tha
 ### 1. **Session Creation**
 ```
 Browser loads course module
-└─ useShuffledQuiz hook generates session ID
-   └─ Stored in sessionStorage
-   └─ Persists across navigation
+â””â”€ useShuffledQuiz hook generates session ID
+   â””â”€ Stored in sessionStorage
+   â””â”€ Persists across navigation
 ```
 
 ### 2. **Question Shuffling**
 ```
 For each question:
-├─ Hash question text + session ID → seed
-├─ Apply Fisher-Yates shuffle with seed
-└─ Create ShuffledQuestion with tracked correctness
+â”œâ”€ Hash question text + session ID â†’ seed
+â”œâ”€ Apply Fisher-Yates shuffle with seed
+â””â”€ Create ShuffledQuestion with tracked correctness
 ```
 
 ### 3. **Answer Validation**
 ```
 User submits answers
-├─ For each answer, check original key against correct key
-├─ Count correct answers
-└─ Calculate score (same logic, different position)
+â”œâ”€ For each answer, check original key against correct key
+â”œâ”€ Count correct answers
+â””â”€ Calculate score (same logic, different position)
 ```
 
 ## Quick Start
@@ -110,8 +110,8 @@ if (isAnswerCorrect(shuffled.shuffledOptions, userAnswer)) {
 ## Key Features Explained
 
 ### Deterministic Shuffling
-- **Same question, same session** → same shuffle order
-- **Same question, different session** → different shuffle order
+- **Same question, same session** â†’ same shuffle order
+- **Same question, different session** â†’ different shuffle order
 - Prevents random variations that could confuse users
 
 ### Session-Based Stability
@@ -135,10 +135,10 @@ if (isAnswerCorrect(shuffled.shuffledOptions, userAnswer)) {
 
 ## Browser Support
 
-✅ Chrome/Edge 90+
-✅ Firefox 88+
-✅ Safari 14+
-✅ Mobile browsers (iOS Safari, Chrome Mobile)
+âœ… Chrome/Edge 90+
+âœ… Firefox 88+
+âœ… Safari 14+
+âœ… Mobile browsers (iOS Safari, Chrome Mobile)
 
 ## Potential Issues & Solutions
 
@@ -175,16 +175,16 @@ posthog.capture('quiz_shuffled', {
 ## Troubleshooting Guide
 
 ### Students report different options
-✅ **This is expected!** Each session gets different shuffle order.
+âœ… **This is expected!** Each session gets different shuffle order.
 
 ### Quiz scores seem wrong
-❌ **Check**: Is `isAnswerCorrect()` being used for validation?
+âŒ **Check**: Is `isAnswerCorrect()` being used for validation?
 
 ### Performance degradation
-❌ **Check**: Is `useShuffledQuiz` hook being used (not recreating shuffles)?
+âŒ **Check**: Is `useShuffledQuiz` hook being used (not recreating shuffles)?
 
 ### Shuffle too predictable
-🔧 **Solution**: Adjust seed algorithm in `quizUtils.ts`
+ðŸ”§ **Solution**: Adjust seed algorithm in `quizUtils.ts`
 
 ## Migration Path (If Needed)
 
@@ -198,7 +198,7 @@ This system is non-breaking. To revert:
 ## Next Steps
 
 ### Immediate
-- ✅ System is live and working
+- âœ… System is live and working
 - Test in staging environment
 - Monitor for issues
 

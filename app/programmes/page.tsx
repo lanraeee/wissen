@@ -1,10 +1,10 @@
-import type { Metadata } from 'next'
+﻿import type { Metadata } from 'next'
 import Link from 'next/link'
 import Image from 'next/image'
 
 export const metadata: Metadata = {
-  title: 'Programmes · Wissen-Haus',
-  description: 'Career Clarity Fair, Opportunity Blueprint Podcast, Impact Content, Events, and Career Hub — all our programmes in one place.',
+  title: 'Programmes Â· Wissen-Haus',
+  description: 'Career Clarity Fair, Opportunity Blueprint Podcast, Impact Content, Events, and Career Hub â€” all our programmes in one place.',
 }
 
 const ARROW = (
@@ -21,7 +21,7 @@ export default function ProgrammesPage() {
           <div className="section-head reveal">
             <span className="eyebrow">Our Programmes</span>
             <h1 className="display-lg mt-s">Everything we build, built for you.</h1>
-            <p className="lead mt-m">From one-day career fairs to podcasts to digital courses—every Wissen-Haus programme is designed to bridge a real gap in a young African or diaspora changemaker&#39;s journey.</p>
+            <p className="lead mt-m">From one-day career fairs to podcasts to digital coursesâ€”every Wissen-Haus programme is designed to bridge a real gap in a young African or diaspora changemaker&#39;s journey.</p>
           </div>
         </div>
       </section>
@@ -73,8 +73,8 @@ export default function ProgrammesPage() {
             <article className="card reveal">
               <div className="card__body">
                 <span className="card__num">04</span>
-                <h3>Events &amp; Cafés</h3>
-                <p>Regular networking events, career cafés, and workshops that connect students with professionals in relaxed settings.</p>
+                <h3>Events &amp; CafÃ©s</h3>
+                <p>Regular networking events, career cafÃ©s, and workshops that connect students with professionals in relaxed settings.</p>
                 <Link href="/events" className="textlink">See events {ARROW}</Link>
               </div>
             </article>
@@ -83,7 +83,7 @@ export default function ProgrammesPage() {
               <div className="card__body">
                 <span className="card__num">05</span>
                 <h3>Career Hub</h3>
-                <p>Online platform with job boards, scholarship listings, free courses, mentorship matching, and career tools—all in one place.</p>
+                <p>Online platform with job boards, scholarship listings, free courses, mentorship matching, and career toolsâ€”all in one place.</p>
                 <Link href="/community" className="textlink">Access the hub {ARROW}</Link>
               </div>
             </article>

@@ -1,9 +1,9 @@
-import type { Metadata } from 'next'
+﻿import type { Metadata } from 'next'
 import Link from 'next/link'
 import PartnerForm from '@/components/PartnerForm'
 
 export const metadata: Metadata = {
-  title: 'Partner With Us · Wissen-Haus',
+  title: 'Partner With Us Â· Wissen-Haus',
   description: 'Partner with Wissen-Haus to empower African youth and the diaspora. For schools, companies, and individuals.',
 }
 
@@ -15,7 +15,7 @@ export default function PartnerPage() {
           <div className="section-head reveal">
             <span className="eyebrow">Partner With Us</span>
             <h1 className="display-lg mt-s">Let&#39;s build the bridge together.</h1>
-            <p className="lead mt-m">Whether you&#39;re a school administrator, a company with a CSR mandate, or an individual with expertise to share — there&#39;s a partnership model for you.</p>
+            <p className="lead mt-m">Whether you&#39;re a school administrator, a company with a CSR mandate, or an individual with expertise to share â€” there&#39;s a partnership model for you.</p>
           </div>
         </div>
       </section>
@@ -95,19 +95,19 @@ export default function PartnerPage() {
           <div className="section-head center mb-l reveal">
             <span className="eyebrow">Our Partners</span>
             <h2>Organizations Making Impact Together</h2>
-            <p className="lead mt-m">We're proud to collaborate with leading organizations committed to youth empowerment and access to education.</p>
+            <p className="lead mt-m">We&apos;re proud to collaborate with leading organizations committed to youth empowerment and access to education.</p>
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 32, alignItems: 'center', justifyContent: 'center' }}>
-            <a href="/partners/datacamp" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20, textDecoration: 'none', transition: 'transform 0.2s' }} className="reveal" onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.05)'} onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}>
+            <Link href="/partners/datacamp" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20, textDecoration: 'none', transition: 'transform 0.2s' }} className="reveal">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src="/img/partners/datacamp-logo.jpg" alt="DataCamp Donates" style={{ maxHeight: 80, maxWidth: 200, objectFit: 'contain' }} />
-            </a>
+            </Link>
           </div>
 
           <p style={{ textAlign: 'center', marginTop: 24, color: 'var(--muted)', fontSize: '.9rem' }}>
             Through DataCamp Donates, our students and team members get free access to 500+ premium data science and AI courses.{' '}
-            <a href="/partners/datacamp" style={{ color: 'var(--green-700)', fontWeight: 600 }}>Learn more →</a>
+            <a href="/partners/datacamp" style={{ color: 'var(--green-700)', fontWeight: 600 }}>Learn more â†’</a>
           </p>
         </div>
       </section>

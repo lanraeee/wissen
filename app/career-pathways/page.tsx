@@ -1,10 +1,10 @@
-'use client'
+﻿'use client'
 
 import { useState, useRef } from 'react'
 import Link from 'next/link'
 import './career-pathways.css'
 
-// ─── Types ───────────────────────────────────────────────────────────────────
+// â”€â”€â”€ Types â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 type Phase = 'form' | 'results'
 type PathwayKey = 'tech' | 'business' | 'media' | 'healthcare' | 'social' | 'entrepreneurship'
@@ -17,20 +17,20 @@ interface AssessmentData {
   cvFileName: string
 }
 
-// ─── Data ────────────────────────────────────────────────────────────────────
+// â”€â”€â”€ Data â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 const ROADMAP_PHASES = [
   {
-    badge: 'Phase 1', title: 'Foundation', duration: '0–6 months',
+    badge: 'Phase 1', title: 'Foundation', duration: '0â€“6 months',
     items: [
       'Build core skills in your chosen field',
       'Complete relevant online courses',
       'Connect with professionals',
-      'Build a portfolio of 2–3 projects',
+      'Build a portfolio of 2â€“3 projects',
     ],
   },
   {
-    badge: 'Phase 2', title: 'Growth', duration: '6–12 months',
+    badge: 'Phase 2', title: 'Growth', duration: '6â€“12 months',
     items: [
       'Seek internship or junior role',
       'Deepen expertise through real projects',
@@ -39,7 +39,7 @@ const ROADMAP_PHASES = [
     ],
   },
   {
-    badge: 'Phase 3', title: 'Advancement', duration: '1–2 years',
+    badge: 'Phase 3', title: 'Advancement', duration: '1â€“2 years',
     items: [
       'Transition to mid-level role',
       'Develop leadership skills',
@@ -50,19 +50,19 @@ const ROADMAP_PHASES = [
 ]
 
 const PATHWAYS = [
-  { icon: '🖥️', title: 'Tech', roles: 'Software Engineer, Data Scientist, Product Manager, UX Designer', salary: '₦1.5M – ₦8M+/year' },
-  { icon: '💼', title: 'Business', roles: 'Manager, Finance Analyst, Sales Lead, Strategist', salary: '₦1.2M – ₦6M+/year' },
-  { icon: '📱', title: 'Media & Content', roles: 'Journalist, Content Creator, Video Producer, Marketer', salary: '₦600K – ₦3M+/year' },
-  { icon: '🚀', title: 'Entrepreneurship', roles: 'Founder, Business Owner, Venture Builder', salary: 'Variable (₦0 – ∞)' },
-  { icon: '🏥', title: 'Healthcare', roles: 'Healthcare Provider, Researcher, Healthcare Tech, Public Health', salary: '₦1.5M – ₦5M+/year' },
-  { icon: '🤝', title: 'Social Impact', roles: 'NGO Leader, Policy Expert, Community Developer, CSR Manager', salary: '₦800K – ₦3M+/year' },
+  { icon: 'ðŸ–¥ï¸', title: 'Tech', roles: 'Software Engineer, Data Scientist, Product Manager, UX Designer', salary: 'â‚¦1.5M â€“ â‚¦8M+/year' },
+  { icon: 'ðŸ’¼', title: 'Business', roles: 'Manager, Finance Analyst, Sales Lead, Strategist', salary: 'â‚¦1.2M â€“ â‚¦6M+/year' },
+  { icon: 'ðŸ“±', title: 'Media & Content', roles: 'Journalist, Content Creator, Video Producer, Marketer', salary: 'â‚¦600K â€“ â‚¦3M+/year' },
+  { icon: 'ðŸš€', title: 'Entrepreneurship', roles: 'Founder, Business Owner, Venture Builder', salary: 'Variable (â‚¦0 â€“ âˆž)' },
+  { icon: 'ðŸ¥', title: 'Healthcare', roles: 'Healthcare Provider, Researcher, Healthcare Tech, Public Health', salary: 'â‚¦1.5M â€“ â‚¦5M+/year' },
+  { icon: 'ðŸ¤', title: 'Social Impact', roles: 'NGO Leader, Policy Expert, Community Developer, CSR Manager', salary: 'â‚¦800K â€“ â‚¦3M+/year' },
 ]
 
 const OPPORTUNITIES = [
-  { icon: '🔗', title: 'Remote Jobs', desc: 'Work for global companies from Nigeria. Remote roles often pay 2–3x more.' },
-  { icon: '🎓', title: 'Scholarships', desc: 'Study abroad programs and fully-funded masters globally recognised.' },
-  { icon: '✈️', title: 'Visa-Sponsored Roles', desc: 'Companies seeking Nigerian talent with visa sponsorship packages.' },
-  { icon: '🚀', title: 'Build Your Profile', desc: 'Skills, portfolio, and network to compete for world-class opportunities.' },
+  { icon: 'ðŸ”—', title: 'Remote Jobs', desc: 'Work for global companies from Nigeria. Remote roles often pay 2â€“3x more.' },
+  { icon: 'ðŸŽ“', title: 'Scholarships', desc: 'Study abroad programs and fully-funded masters globally recognised.' },
+  { icon: 'âœˆï¸', title: 'Visa-Sponsored Roles', desc: 'Companies seeking Nigerian talent with visa sponsorship packages.' },
+  { icon: 'ðŸš€', title: 'Build Your Profile', desc: 'Skills, portfolio, and network to compete for world-class opportunities.' },
 ]
 
 const PATHWAY_SKILLS: Record<PathwayKey, string[]> = {
@@ -74,7 +74,7 @@ const PATHWAY_SKILLS: Record<PathwayKey, string[]> = {
   entrepreneurship: ['Business Planning', 'Financial Mgmt', 'Sales', 'Leadership', 'Innovation'],
 }
 
-// ─── Helpers ─────────────────────────────────────────────────────────────────
+// â”€â”€â”€ Helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 function detectPathway(careerGoal: string): PathwayKey {
   const g = careerGoal.toLowerCase()
@@ -88,13 +88,13 @@ function detectPathway(careerGoal: string): PathwayKey {
 
 function calculateTimeline(currentJob: string): string {
   const j = currentJob.toLowerCase()
-  if (j.includes('student') || j.includes('fresh grad')) return '2–3'
-  if (j.includes('intern') || j.includes('entry')) return '1–2'
-  if (j.includes('junior') || j.includes('mid')) return '1–2'
-  return '1.5–2.5'
+  if (j.includes('student') || j.includes('fresh grad')) return '2â€“3'
+  if (j.includes('intern') || j.includes('entry')) return '1â€“2'
+  if (j.includes('junior') || j.includes('mid')) return '1â€“2'
+  return '1.5â€“2.5'
 }
 
-// ─── Component ───────────────────────────────────────────────────────────────
+// â”€â”€â”€ Component â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 export default function CareerPathwaysPage() {
   const [phase, setPhase] = useState<Phase>('form')
@@ -148,7 +148,7 @@ export default function CareerPathwaysPage() {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
-  // ── RESULTS ──────────────────────────────────────────────────────────────
+  // â”€â”€ RESULTS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   if (phase === 'results' && data) {
     const pathway = detectPathway(data.careerGoal)
@@ -183,7 +183,7 @@ export default function CareerPathwaysPage() {
 
               {/* Roadmap */}
               <div className="cp-section-box">
-                <div className="cp-section-title">🗺️ Your 3-Phase Career Roadmap</div>
+                <div className="cp-section-title">ðŸ—ºï¸ Your 3-Phase Career Roadmap</div>
                 <p className="cp-section-sub">
                   A clear path to reaching your goal. Expected timeline:{' '}
                   <strong style={{ color: 'var(--green-800)' }}>{timeline} years</strong>
@@ -200,7 +200,7 @@ export default function CareerPathwaysPage() {
                     <ul className="cp-phase-list">
                       {rp.items.map(item => (
                         <li key={item} className="cp-phase-item">
-                          <span className="cp-check">✓</span>{item}
+                          <span className="cp-check">âœ“</span>{item}
                         </li>
                       ))}
                     </ul>
@@ -210,7 +210,7 @@ export default function CareerPathwaysPage() {
 
               {/* Pathways */}
               <div className="cp-section-box">
-                <div className="cp-section-title">💼 Discover 6 Career Pathways</div>
+                <div className="cp-section-title">ðŸ’¼ Discover 6 Career Pathways</div>
                 <p className="cp-section-sub">Explore different career paths with realistic salary ranges in Nigeria and the skills needed.</p>
                 <div className="cp-pathway-grid">
                   {PATHWAYS.map(p => (
@@ -232,7 +232,7 @@ export default function CareerPathwaysPage() {
 
               {/* Opportunities */}
               <div className="cp-section-box cp-section-box--tinted">
-                <div className="cp-section-title">🌍 Global Opportunities Await</div>
+                <div className="cp-section-title">ðŸŒ Global Opportunities Await</div>
                 <p className="cp-section-sub">Access opportunities beyond borders while building your career in Nigeria, elsewhere in Africa, or in the diaspora.</p>
                 <div className="cp-opp-grid">
                   {OPPORTUNITIES.map(o => (
@@ -247,10 +247,10 @@ export default function CareerPathwaysPage() {
 
               {/* Skills */}
               <div className="cp-section-box">
-                <div className="cp-section-title">🎯 Skills You Need to Develop</div>
+                <div className="cp-section-title">ðŸŽ¯ Skills You Need to Develop</div>
                 <div className="cp-skills-container">
                   <div className="cp-skill-group">
-                    <div className="cp-skill-group-title">🔴 Must-Have (Critical)</div>
+                    <div className="cp-skill-group-title">ðŸ”´ Must-Have (Critical)</div>
                     <div className="cp-skill-badges">
                       {['Communication', 'Problem-solving', 'Adaptability', 'Time Management'].map(s => (
                         <span key={s} className="cp-skill-tag cp-skill-tag--critical">{s}</span>
@@ -258,7 +258,7 @@ export default function CareerPathwaysPage() {
                     </div>
                   </div>
                   <div className="cp-skill-group">
-                    <div className="cp-skill-group-title">💡 Path-Specific Skills</div>
+                    <div className="cp-skill-group-title">ðŸ’¡ Path-Specific Skills</div>
                     <div className="cp-skill-badges">
                       {skills.map(s => (
                         <span key={s} className="cp-skill-tag">{s}</span>
@@ -270,7 +270,7 @@ export default function CareerPathwaysPage() {
 
               {/* Mentorship CTA */}
               <div className="cp-mentorship">
-                <h3>👥 Get Real Mentorship</h3>
+                <h3>ðŸ‘¥ Get Real Mentorship</h3>
                 <p>Struggling to figure it out alone? Connect with professionals who&rsquo;ve been where you are and get personalised guidance.</p>
                 <Link href="/volunteer" className="btn" style={{ background: 'white', color: 'var(--green-800)', fontWeight: 600 }}>
                   Find a Mentor
@@ -289,7 +289,7 @@ export default function CareerPathwaysPage() {
     )
   }
 
-  // ── FORM ─────────────────────────────────────────────────────────────────
+  // â”€â”€ FORM â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   return (
     <div className="cp-page">
@@ -313,11 +313,11 @@ export default function CareerPathwaysPage() {
           {/* Eligibility box */}
           <div className="cp-eligibility">
             <h3 className="cp-eligibility__title">Who Should Take This Assessment?</h3>
-            <p className="cp-eligibility__row">✓ <strong>Professionals</strong> looking to pivot, advance, or explore new fields</p>
-            <p className="cp-eligibility__row">✓ <strong>Graduates</strong> ready to enter the job market or transition careers</p>
-            <p className="cp-eligibility__row">✓ <strong>Undergraduates with skills</strong> preparing for your first professional role</p>
+            <p className="cp-eligibility__row">âœ“ <strong>Professionals</strong> looking to pivot, advance, or explore new fields</p>
+            <p className="cp-eligibility__row">âœ“ <strong>Graduates</strong> ready to enter the job market or transition careers</p>
+            <p className="cp-eligibility__row">âœ“ <strong>Undergraduates with skills</strong> preparing for your first professional role</p>
             <p className="cp-eligibility__row">
-              ✗ <strong>Secondary school students:</strong> Check out our{' '}
+              âœ— <strong>Secondary school students:</strong> Check out our{' '}
               <Link href="/courses" style={{ color: 'var(--green-800)', textDecoration: 'none', fontWeight: 600 }}>
                 courses
               </Link>{' '}
@@ -355,7 +355,7 @@ export default function CareerPathwaysPage() {
               <div>
                 <label className="cp-upload-label">Upload Your CV (Optional)</label>
                 <div className="cp-upload-box" onClick={() => fileRef.current?.click()}>
-                  <div className="cp-upload-icon">📎</div>
+                  <div className="cp-upload-icon">ðŸ“Ž</div>
                   <p>Click to upload your CV</p>
                   <small>PDF, DOC, or DOCX (Max 5MB)</small>
                   <input
@@ -366,8 +366,8 @@ export default function CareerPathwaysPage() {
                     onChange={handleFileChange}
                   />
                 </div>
-                {cvFileName && <p className="cp-upload-feedback cp-upload-feedback--ok">✓ {cvFileName}</p>}
-                {cvError && <p className="cp-upload-feedback cp-upload-feedback--err">❌ {cvError}</p>}
+                {cvFileName && <p className="cp-upload-feedback cp-upload-feedback--ok">âœ“ {cvFileName}</p>}
+                {cvError && <p className="cp-upload-feedback cp-upload-feedback--err">âŒ {cvError}</p>}
               </div>
 
               <div className="cp-field">
@@ -381,7 +381,7 @@ export default function CareerPathwaysPage() {
               </div>
 
               <button type="submit" className="cp-submit-btn" disabled={loading}>
-                <span>{loading ? 'Analysing your profile…' : 'Get Your Personalised Roadmap'}</span>
+                <span>{loading ? 'Analysing your profileâ€¦' : 'Get Your Personalised Roadmap'}</span>
                 {!loading && (
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" width="18" height="18">
                     <path d="M5 12h14M13 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />

@@ -1,11 +1,11 @@
-'use client'
+﻿'use client'
 
 import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
 import posthog from 'posthog-js'
 import '../career-assessment.css'
 
-// ─── Types ──────────────────────────────────────────────────────────────────
+// â”€â”€â”€ Types â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 type Phase = 'hero' | 'quiz' | 'results'
 type CareerKey = 'pm' | 'da' | 'se' | 'ux' | 'sim' | 'te' | 'hp' | 'en' | 'mm' | 'fp' | 'cc' | 'pa'
@@ -30,111 +30,111 @@ interface Result {
   reasons: string[]
 }
 
-// ─── Questions ───────────────────────────────────────────────────────────────
+// â”€â”€â”€ Questions â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 const QUESTIONS = [
   {
     q: 'What area interests you most?',
     hint: 'Choose the field that genuinely excites you.',
     opts: [
-      { label: 'Technology & Engineering', icon: '💻' },
-      { label: 'Business & Finance', icon: '📊' },
-      { label: 'Healthcare & Wellness', icon: '🏥' },
-      { label: 'Creative Arts & Design', icon: '🎨' },
-      { label: 'Social Impact & Community', icon: '🌍' },
+      { label: 'Technology & Engineering', icon: 'ðŸ’»' },
+      { label: 'Business & Finance', icon: 'ðŸ“Š' },
+      { label: 'Healthcare & Wellness', icon: 'ðŸ¥' },
+      { label: 'Creative Arts & Design', icon: 'ðŸŽ¨' },
+      { label: 'Social Impact & Community', icon: 'ðŸŒ' },
     ],
   },
   {
     q: 'How do you prefer to work?',
     hint: 'Your ideal day-to-day environment.',
     opts: [
-      { label: 'Remote — flexible & independent', icon: '🏠' },
-      { label: 'Office — structured & collaborative', icon: '🏢' },
-      { label: 'Hybrid — best of both worlds', icon: '⚡' },
-      { label: 'Field — hands-on & community-facing', icon: '🌿' },
+      { label: 'Remote â€” flexible & independent', icon: 'ðŸ ' },
+      { label: 'Office â€” structured & collaborative', icon: 'ðŸ¢' },
+      { label: 'Hybrid â€” best of both worlds', icon: 'âš¡' },
+      { label: 'Field â€” hands-on & community-facing', icon: 'ðŸŒ¿' },
     ],
   },
   {
     q: 'Where are you in your career journey?',
-    hint: 'Be honest — every stage has great opportunities.',
+    hint: 'Be honest â€” every stage has great opportunities.',
     opts: [
-      { label: 'Just starting out', icon: '🌱' },
-      { label: '2–5 years of experience', icon: '📈' },
-      { label: 'Mid-career professional', icon: '🎯' },
-      { label: 'Looking to transition', icon: '🔄' },
+      { label: 'Just starting out', icon: 'ðŸŒ±' },
+      { label: '2â€“5 years of experience', icon: 'ðŸ“ˆ' },
+      { label: 'Mid-career professional', icon: 'ðŸŽ¯' },
+      { label: 'Looking to transition', icon: 'ðŸ”„' },
     ],
   },
   {
     q: 'How important is a high salary to you?',
-    hint: 'Be honest — there\'s no wrong answer.',
+    hint: 'Be honest â€” there\'s no wrong answer.',
     opts: [
-      { label: 'Not a priority — mission over money', icon: '❤️' },
-      { label: 'Moderate — decent pay is enough', icon: '✅' },
-      { label: 'High — I want top earning potential', icon: '💎' },
+      { label: 'Not a priority â€” mission over money', icon: 'â¤ï¸' },
+      { label: 'Moderate â€” decent pay is enough', icon: 'âœ…' },
+      { label: 'High â€” I want top earning potential', icon: 'ðŸ’Ž' },
     ],
   },
   {
     q: 'What work-life balance suits you best?',
     hint: 'Think about your ideal week, not just your ideal day.',
     opts: [
-      { label: 'Flexible hours — work on my schedule', icon: '🕐' },
-      { label: 'Standard 9–5 — clear boundaries', icon: '📅' },
-      { label: 'Entrepreneurial — all-in on growth', icon: '🚀' },
+      { label: 'Flexible hours â€” work on my schedule', icon: 'ðŸ•' },
+      { label: 'Standard 9â€“5 â€” clear boundaries', icon: 'ðŸ“…' },
+      { label: 'Entrepreneurial â€” all-in on growth', icon: 'ðŸš€' },
     ],
   },
   {
     q: 'Which skills do you enjoy using most?',
     hint: 'Pick the one that energises you, not just what you\'re good at.',
     opts: [
-      { label: 'People skills — connecting & empathising', icon: '🤝' },
-      { label: 'Problem solving — logic & strategy', icon: '🧩' },
-      { label: 'Creating — design, writing, making', icon: '✏️' },
-      { label: 'Analysing — data, research & patterns', icon: '🔬' },
-      { label: 'Leading — managing & inspiring teams', icon: '👑' },
+      { label: 'People skills â€” connecting & empathising', icon: 'ðŸ¤' },
+      { label: 'Problem solving â€” logic & strategy', icon: 'ðŸ§©' },
+      { label: 'Creating â€” design, writing, making', icon: 'âœï¸' },
+      { label: 'Analysing â€” data, research & patterns', icon: 'ðŸ”¬' },
+      { label: 'Leading â€” managing & inspiring teams', icon: 'ðŸ‘‘' },
     ],
   },
   {
     q: 'Where do you want your career to take you?',
     hint: 'Geographic ambition shapes which doors open fastest.',
     opts: [
-      { label: 'Nigeria — local roots, local impact', icon: '🇳🇬' },
-      { label: 'Africa — continental reach', icon: '🌍' },
-      { label: 'Global — international teams & markets', icon: '✈️' },
+      { label: 'Nigeria â€” local roots, local impact', icon: 'ðŸ‡³ðŸ‡¬' },
+      { label: 'Africa â€” continental reach', icon: 'ðŸŒ' },
+      { label: 'Global â€” international teams & markets', icon: 'âœˆï¸' },
     ],
   },
   {
     q: 'How do you learn best?',
     hint: 'The right career should match how you naturally grow.',
     opts: [
-      { label: 'Hands-on — learning by doing', icon: '🔧' },
-      { label: 'Classroom — structured lessons & exams', icon: '🎓' },
-      { label: 'Self-paced — online & independent', icon: '💡' },
-      { label: 'Mentorship — guided by experienced people', icon: '🧑‍🏫' },
+      { label: 'Hands-on â€” learning by doing', icon: 'ðŸ”§' },
+      { label: 'Classroom â€” structured lessons & exams', icon: 'ðŸŽ“' },
+      { label: 'Self-paced â€” online & independent', icon: 'ðŸ’¡' },
+      { label: 'Mentorship â€” guided by experienced people', icon: 'ðŸ§‘â€ðŸ«' },
     ],
   },
   {
     q: 'What is your risk tolerance?',
-    hint: 'Risk and reward are always linked — know your comfort zone.',
+    hint: 'Risk and reward are always linked â€” know your comfort zone.',
     opts: [
-      { label: 'Stable — secure, predictable career', icon: '🏛️' },
-      { label: 'Startup — fast, risky, high reward', icon: '⚡' },
-      { label: 'Flexible — somewhere in between', icon: '🌊' },
+      { label: 'Stable â€” secure, predictable career', icon: 'ðŸ›ï¸' },
+      { label: 'Startup â€” fast, risky, high reward', icon: 'âš¡' },
+      { label: 'Flexible â€” somewhere in between', icon: 'ðŸŒŠ' },
     ],
   },
   {
     q: 'What matters most to you in a career?',
-    hint: 'Your core motivation shapes everything — career choice, performance, fulfilment.',
+    hint: 'Your core motivation shapes everything â€” career choice, performance, fulfilment.',
     opts: [
-      { label: 'Impact — making a real difference', icon: '🌟' },
-      { label: 'Income — maximising earnings', icon: '💰' },
-      { label: 'Growth — rapid learning & progression', icon: '📈' },
-      { label: 'Autonomy — being my own boss', icon: '🦅' },
-      { label: 'Security — long-term stability', icon: '🛡️' },
+      { label: 'Impact â€” making a real difference', icon: 'ðŸŒŸ' },
+      { label: 'Income â€” maximising earnings', icon: 'ðŸ’°' },
+      { label: 'Growth â€” rapid learning & progression', icon: 'ðŸ“ˆ' },
+      { label: 'Autonomy â€” being my own boss', icon: 'ðŸ¦…' },
+      { label: 'Security â€” long-term stability', icon: 'ðŸ›¡ï¸' },
     ],
   },
 ]
 
-// ─── Scoring Matrix ───────────────────────────────────────────────────────────
+// â”€â”€â”€ Scoring Matrix â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // SCORING[questionIndex][answerIndex] = { careerKey: points }
 
 const SCORING: ScoreMap[][] = [
@@ -209,42 +209,42 @@ const SCORING: ScoreMap[][] = [
   ],
 ]
 
-// ─── Match Signal Reasons ─────────────────────────────────────────────────────
+// â”€â”€â”€ Match Signal Reasons â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // Key format: `${questionIndex}_${answerIndex}`  (only for scores >= 2)
 
 const MATCH_SIGNALS: Record<CareerKey, Record<string, string>> = {
   pm: {
     '0_0': 'Your interest in technology gives you the credibility to work alongside engineering teams.',
     '0_1': 'A business mindset is the foundation of every great product decision.',
-    '1_2': 'Hybrid environments suit PMs perfectly — balancing stakeholder meetings with deep strategy work.',
+    '1_2': 'Hybrid environments suit PMs perfectly â€” balancing stakeholder meetings with deep strategy work.',
     '3_2': 'Your high salary focus aligns: Product Managers rank among the best-compensated roles in tech.',
-    '4_2': 'Entrepreneurial energy drives exceptional product vision — you build like a founder.',
+    '4_2': 'Entrepreneurial energy drives exceptional product vision â€” you build like a founder.',
     '5_1': 'Problem solving is the daily currency of great Product Management.',
     '5_4': 'Natural leaders who align cross-functional teams around a vision are what this role demands.',
-    '7_3': 'Mentorship-based growth mirrors how top PMs develop — learning from experienced product leaders.',
+    '7_3': 'Mentorship-based growth mirrors how top PMs develop â€” learning from experienced product leaders.',
     '8_1': 'Startup appetite is an asset: the best PMs thrive in fast-moving, high-stakes environments.',
-    '9_2': 'Growth-focused careers reward PMs quickly — paths to Director and CPO are well-defined.',
+    '9_2': 'Growth-focused careers reward PMs quickly â€” paths to Director and CPO are well-defined.',
   },
   da: {
     '0_0': 'Interest in technology is the core foundation of a data analytics career.',
     '1_0': 'Remote data roles are among the most abundant fully-distributed positions globally.',
-    '3_2': 'Skilled data analysts command competitive salaries — your high earning focus is achievable.',
+    '3_2': 'Skilled data analysts command competitive salaries â€” your high earning focus is achievable.',
     '4_0': 'Flexible hours are common in data roles, particularly remote positions.',
-    '5_3': 'Analytical thinking is the number-one skill in data — you\'re already wired for this.',
+    '5_3': 'Analytical thinking is the number-one skill in data â€” you\'re already wired for this.',
     '7_2': 'Self-paced learners thrive in data analytics; the online resources are world-class.',
-    '8_2': 'Flexible risk suits the growing data market — roles span every sector and company size.',
+    '8_2': 'Flexible risk suits the growing data market â€” roles span every sector and company size.',
     '9_1': 'Income-focused drive aligns with data\'s strong and growing earning trajectory.',
     '9_2': 'Growth mindset fits perfectly: the data field evolves fast and rewards continuous learners.',
   },
   se: {
     '0_0': 'Deep interest in technology is the strongest predictor of engineering success.',
-    '1_0': 'Remote software roles are the most globally abundant — your flexibility is a major advantage.',
+    '1_0': 'Remote software roles are the most globally abundant â€” your flexibility is a major advantage.',
     '3_2': 'Software engineers are among the highest-paid professionals in Nigeria and globally.',
-    '4_0': 'Flexible hours are very common — many engineering teams are fully async.',
+    '4_0': 'Flexible hours are very common â€” many engineering teams are fully async.',
     '5_1': 'Software engineering is structured problem-solving at its finest.',
     '6_2': 'A global outlook opens doors to international remote roles and diaspora opportunities.',
-    '7_2': 'Self-paced learners excel in engineering — the learning resources are limitless and free.',
-    '8_1': 'Your startup appetite is perfect — Nigeria\'s tech ecosystem is growing fast.',
+    '7_2': 'Self-paced learners excel in engineering â€” the learning resources are limitless and free.',
+    '8_1': 'Your startup appetite is perfect â€” Nigeria\'s tech ecosystem is growing fast.',
     '9_1': 'Income focus aligns strongly: software engineering leads Nigeria\'s pay rankings.',
     '9_2': 'A growth mindset will accelerate your path from junior to senior engineer.',
   },
@@ -253,19 +253,19 @@ const MATCH_SIGNALS: Record<CareerKey, Record<string, string>> = {
     '0_3': 'Creative instincts are the foundation of exceptional UX/UI work.',
     '1_0': 'Remote UX roles are widely available with global product companies.',
     '1_2': 'Hybrid environments are typical for in-house designers collaborating with product teams.',
-    '3_2': 'Senior UX designers command premium salaries — your high salary focus is achievable.',
-    '5_1': 'Problem solving is fundamental to UX — you design solutions to human challenges.',
+    '3_2': 'Senior UX designers command premium salaries â€” your high salary focus is achievable.',
+    '5_1': 'Problem solving is fundamental to UX â€” you design solutions to human challenges.',
     '5_2': 'Your love of creating makes UX/UI design a natural and energising career.',
     '6_2': 'A global outlook opens doors: the best UX roles are with international product teams.',
-    '9_3': 'Autonomy is common in design — you\'ll own the process from research to final screens.',
+    '9_3': 'Autonomy is common in design â€” you\'ll own the process from research to final screens.',
   },
   sim: {
     '0_4': 'Passion for social impact is the defining trait of great Social Impact Managers.',
     '1_3': 'Field-based community work is where social impact professionals create real change.',
-    '5_0': 'People skills are your greatest asset — social impact work is 90% human connection.',
+    '5_0': 'People skills are your greatest asset â€” social impact work is 90% human connection.',
     '5_4': 'Leading teams toward a shared mission is the heart of social impact management.',
     '6_1': 'An Africa-wide vision expands your scope and influence as a social impact professional.',
-    '7_3': 'Mentorship-based learning mirrors NGO culture — experience-sharing drives the sector.',
+    '7_3': 'Mentorship-based learning mirrors NGO culture â€” experience-sharing drives the sector.',
     '9_0': 'Impact-driven motivation is the core reason social impact professionals love their work.',
     '9_2': 'The NGO and social enterprise sector is growing fast, creating clear career trajectories.',
   },
@@ -274,54 +274,54 @@ const MATCH_SIGNALS: Record<CareerKey, Record<string, string>> = {
     '1_3': 'School and community environments are where great educators do their best work.',
     '3_2': 'Education leadership, edtech, and corporate training can meet high salary expectations.',
     '4_1': 'Standard school hours make teaching one of the best structured-schedule careers available.',
-    '5_0': 'People skills are your competitive advantage — great teachers inspire through connection.',
+    '5_0': 'People skills are your competitive advantage â€” great teachers inspire through connection.',
     '7_1': 'Classroom-based learning suits the structured, evidence-based approach of education.',
-    '8_0': 'Education is one of the most stable sectors — demand persists across all economic cycles.',
-    '9_0': 'Impact is why most educators join — and stay in — the profession.',
+    '8_0': 'Education is one of the most stable sectors â€” demand persists across all economic cycles.',
+    '9_0': 'Impact is why most educators join â€” and stay in â€” the profession.',
     '9_4': 'Security-focused professionals find education reliably stable across economic cycles.',
   },
   hp: {
     '0_2': 'Healthcare interest is the clearest signal for this career path.',
-    '1_3': 'Field work — hospitals, clinics, communities — is the daily rhythm of healthcare.',
+    '1_3': 'Field work â€” hospitals, clinics, communities â€” is the daily rhythm of healthcare.',
     '3_2': 'Healthcare specialists in Nigeria and globally earn among the highest salaries available.',
-    '4_1': 'Structured hours define hospital and clinical roles — predictable and professional.',
-    '5_0': 'People skills are central to healthcare — it is built entirely on trust and empathy.',
+    '4_1': 'Structured hours define hospital and clinical roles â€” predictable and professional.',
+    '5_0': 'People skills are central to healthcare â€” it is built entirely on trust and empathy.',
     '7_0': 'Hands-on clinical learning is how healthcare professionals develop true mastery.',
     '8_0': 'Healthcare is one of the most recession-proof, stable sectors in existence.',
     '9_0': 'Few careers create impact as directly and immediately as healthcare.',
     '9_1': 'Income focus is well-placed: healthcare is one of the highest-earning career paths globally.',
-    '9_4': 'Security: healthcare demand never drops — qualified professionals are always needed.',
+    '9_4': 'Security: healthcare demand never drops â€” qualified professionals are always needed.',
   },
   en: {
     '0_1': 'Business interest combined with entrepreneurial drive is a powerful foundation.',
     '3_3': 'Career transitioners bring invaluable real-world experience to entrepreneurship.',
     '4_2': 'Entrepreneurial lifestyle means building something entirely on your own terms.',
-    '5_4': 'Your drive to lead is what entrepreneurship rewards most — founders must inspire.',
+    '5_4': 'Your drive to lead is what entrepreneurship rewards most â€” founders must inspire.',
     '6_1': 'Africa-wide ambition is exactly the mindset for building a scalable continental business.',
-    '7_0': 'Hands-on learning is how entrepreneurs grow — every day in the field is a lesson.',
-    '8_1': 'Startup appetite is the defining trait of founders — you embrace risk and uncertainty.',
-    '9_3': 'Autonomy is the #1 reason people build their own companies — own your outcomes fully.',
+    '7_0': 'Hands-on learning is how entrepreneurs grow â€” every day in the field is a lesson.',
+    '8_1': 'Startup appetite is the defining trait of founders â€” you embrace risk and uncertainty.',
+    '9_3': 'Autonomy is the #1 reason people build their own companies â€” own your outcomes fully.',
   },
   mm: {
     '0_1': 'Business interest gives you the commercial lens every effective marketer needs.',
     '0_3': 'Creative instincts are the competitive edge separating great marketers from average ones.',
-    '1_2': 'Hybrid roles dominate marketing — agency days and remote execution are the norm.',
-    '3_2': 'Senior marketing managers earn well — your high salary drive is achievable.',
-    '4_2': 'Entrepreneurial energy makes you a natural marketer — bold, curious, and action-oriented.',
+    '1_2': 'Hybrid roles dominate marketing â€” agency days and remote execution are the norm.',
+    '3_2': 'Senior marketing managers earn well â€” your high salary drive is achievable.',
+    '4_2': 'Entrepreneurial energy makes you a natural marketer â€” bold, curious, and action-oriented.',
     '5_0': 'People skills are at the root of effective brand building and customer connection.',
-    '5_2': 'Your love of creating — campaigns, content, brand strategy — is the heart of marketing.',
+    '5_2': 'Your love of creating â€” campaigns, content, brand strategy â€” is the heart of marketing.',
     '8_1': 'Startup appetite means you\'ll thrive in fast-paced agencies and growth-marketing environments.',
-    '9_2': 'A growth mindset is exactly how marketing careers accelerate — test, learn, scale.',
+    '9_2': 'A growth mindset is exactly how marketing careers accelerate â€” test, learn, scale.',
   },
   fp: {
     '0_1': 'Business and finance interest is the bedrock of this career path.',
     '1_1': 'Office-based roles are standard in banking, accounting, and financial services.',
-    '3_2': 'Finance is one of the highest-earning sectors in Nigeria — your salary drive aligns.',
-    '4_1': 'Structured hours define financial institutions — clear routines, clear rewards.',
-    '5_3': 'Analytical skills are non-negotiable in finance — you\'ll use them every single day.',
-    '7_1': 'Formal qualifications (ACCA, CFA, ICAN) follow a classroom model — ideal for your learning style.',
+    '3_2': 'Finance is one of the highest-earning sectors in Nigeria â€” your salary drive aligns.',
+    '4_1': 'Structured hours define financial institutions â€” clear routines, clear rewards.',
+    '5_3': 'Analytical skills are non-negotiable in finance â€” you\'ll use them every single day.',
+    '7_1': 'Formal qualifications (ACCA, CFA, ICAN) follow a classroom model â€” ideal for your learning style.',
     '8_0': 'Finance is among the most stable, well-structured sectors with clear career ladders.',
-    '9_1': 'Income maximisation is a core motivator in finance — the earning ceiling is genuinely high.',
+    '9_1': 'Income maximisation is a core motivator in finance â€” the earning ceiling is genuinely high.',
     '9_4': 'Security: financial services is among the most stable employment sectors globally.',
   },
   cc: {
@@ -329,34 +329,34 @@ const MATCH_SIGNALS: Record<CareerKey, Record<string, string>> = {
     '1_0': 'Remote work is the default for most professional content creators today.',
     '3_2': 'High income is achievable: creators with engaged audiences earn significantly.',
     '4_0': 'Flexible hours are the number-one benefit of being a professional content creator.',
-    '5_2': 'Your love of creating — writing, filming, podcasting — is the engine of this career.',
+    '5_2': 'Your love of creating â€” writing, filming, podcasting â€” is the engine of this career.',
     '6_2': 'A global audience mindset will help you build audiences well beyond Nigeria.',
-    '7_2': 'Self-paced learners thrive — content skills are best developed by making things daily.',
+    '7_2': 'Self-paced learners thrive â€” content skills are best developed by making things daily.',
     '8_2': 'Flexible risk suits the variable but high-upside income nature of content creation.',
     '9_3': 'Autonomy is the ultimate reward: own your platform, your schedule, and your brand.',
   },
   pa: {
     '0_4': 'Social impact interest is a strong predictor of a fulfilling career in policy.',
-    '1_1': 'Policy work is institution-based — government bodies, think tanks, and IGOs.',
+    '1_1': 'Policy work is institution-based â€” government bodies, think tanks, and IGOs.',
     '3_1': 'Moderate salary expectations fit public sector roles; international positions pay well.',
     '5_3': 'Analytical skills are the backbone of policy research and advisory work.',
-    '6_1': 'Africa-wide focus is especially valued — regional policy knowledge shapes real outcomes.',
+    '6_1': 'Africa-wide focus is especially valued â€” regional policy knowledge shapes real outcomes.',
     '7_1': 'Academic and classroom training is the standard pathway for policy professionals.',
-    '8_0': 'Policy positions are typically stable — many are government or IGO-backed.',
-    '9_0': 'Impact is the core motivation of policy advisors — shaping decisions that affect millions.',
+    '8_0': 'Policy positions are typically stable â€” many are government or IGO-backed.',
+    '9_0': 'Impact is the core motivation of policy advisors â€” shaping decisions that affect millions.',
     '9_4': 'Security: government and international organisation roles offer long-term stability.',
   },
 }
 
-// ─── Career Database ──────────────────────────────────────────────────────────
+// â”€â”€â”€ Career Database â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 const CAREERS: Record<CareerKey, Career> = {
   pm: {
     title: 'Product Manager',
-    icon: '🧭',
+    icon: 'ðŸ§­',
     tagline: 'Bridge business goals and technical execution',
-    description: 'Product Managers own the vision and roadmap of a digital product. You\'ll collaborate with engineers, designers, and business stakeholders to ship features that users love and that drive revenue — sitting at the intersection of technology, business, and design.',
-    salary: '₦300,000 – ₦800,000/month',
+    description: 'Product Managers own the vision and roadmap of a digital product. You\'ll collaborate with engineers, designers, and business stakeholders to ship features that users love and that drive revenue â€” sitting at the intersection of technology, business, and design.',
+    salary: 'â‚¦300,000 â€“ â‚¦800,000/month',
     salaryNote: 'Senior PMs at global tech companies earn significantly more in USD',
     growth: 'Very High',
     growthColor: '#16a34a',
@@ -365,11 +365,11 @@ const CAREERS: Record<CareerKey, Career> = {
   },
   da: {
     title: 'Data Analyst',
-    icon: '📊',
+    icon: 'ðŸ“Š',
     tagline: 'Turn raw numbers into decisions that move businesses forward',
     description: 'Data Analysts collect, process, and interpret data to help organisations make smarter decisions. You\'ll build dashboards, run deep analyses, identify trends, and tell compelling stories with numbers that shape strategy.',
-    salary: '₦200,000 – ₦600,000/month',
-    salaryNote: 'Remote roles with international clients can earn 3–5× more',
+    salary: 'â‚¦200,000 â€“ â‚¦600,000/month',
+    salaryNote: 'Remote roles with international clients can earn 3â€“5Ã— more',
     growth: 'High',
     growthColor: '#16a34a',
     skills: ['SQL', 'Excel & Google Sheets', 'Python or R', 'Data visualisation', 'Statistical analysis', 'Business intelligence tools'],
@@ -377,10 +377,10 @@ const CAREERS: Record<CareerKey, Career> = {
   },
   se: {
     title: 'Software Engineer',
-    icon: '💻',
+    icon: 'ðŸ’»',
     tagline: 'Build the digital products that millions of people rely on',
-    description: 'Software Engineers design, build, and maintain software systems — from mobile apps to enterprise platforms. You\'ll write code that solves real problems at scale, collaborate in teams, and continuously learn as technology evolves.',
-    salary: '₦300,000 – ₦1,200,000/month',
+    description: 'Software Engineers design, build, and maintain software systems â€” from mobile apps to enterprise platforms. You\'ll write code that solves real problems at scale, collaborate in teams, and continuously learn as technology evolves.',
+    salary: 'â‚¦300,000 â€“ â‚¦1,200,000/month',
     salaryNote: 'Among the highest-earning careers in Nigeria\'s booming tech ecosystem',
     growth: 'Very High',
     growthColor: '#16a34a',
@@ -389,10 +389,10 @@ const CAREERS: Record<CareerKey, Career> = {
   },
   ux: {
     title: 'UX/UI Designer',
-    icon: '🎨',
+    icon: 'ðŸŽ¨',
     tagline: 'Design digital experiences that people genuinely love using',
     description: 'UX/UI Designers create intuitive, beautiful digital interfaces. You\'ll conduct user research, build wireframes, create interactive prototypes, and collaborate closely with developers to ship polished, user-centred products.',
-    salary: '₦200,000 – ₦700,000/month',
+    salary: 'â‚¦200,000 â€“ â‚¦700,000/month',
     salaryNote: 'Senior designers at global product companies command premium rates',
     growth: 'High',
     growthColor: '#16a34a',
@@ -401,10 +401,10 @@ const CAREERS: Record<CareerKey, Career> = {
   },
   sim: {
     title: 'Social Impact Manager',
-    icon: '🌍',
+    icon: 'ðŸŒ',
     tagline: 'Lead programmes that transform communities at scale',
     description: 'Social Impact Managers design and run programmes at NGOs, foundations, and social enterprises. You\'ll manage projects, lead community teams, secure grants and partnerships, and rigorously measure your impact on people\'s lives.',
-    salary: '₦150,000 – ₦400,000/month',
+    salary: 'â‚¦150,000 â€“ â‚¦400,000/month',
     salaryNote: 'International NGO and donor-funded positions often pay significantly higher',
     growth: 'Moderate',
     growthColor: '#d97706',
@@ -413,10 +413,10 @@ const CAREERS: Record<CareerKey, Career> = {
   },
   te: {
     title: 'Teacher / Educator',
-    icon: '📚',
+    icon: 'ðŸ“š',
     tagline: 'Shape the next generation and build lasting human capital',
-    description: 'Educators inspire, challenge, and develop people at every level. Beyond classroom teaching, the field spans curriculum development, edtech, education policy, corporate training, and mentorship — a career with genuine reach.',
-    salary: '₦80,000 – ₦250,000/month',
+    description: 'Educators inspire, challenge, and develop people at every level. Beyond classroom teaching, the field spans curriculum development, edtech, education policy, corporate training, and mentorship â€” a career with genuine reach.',
+    salary: 'â‚¦80,000 â€“ â‚¦250,000/month',
     salaryNote: 'International schools, edtech platforms & corporate training pay significantly more',
     growth: 'Moderate',
     growthColor: '#d97706',
@@ -425,10 +425,10 @@ const CAREERS: Record<CareerKey, Career> = {
   },
   hp: {
     title: 'Healthcare Professional',
-    icon: '🏥',
+    icon: 'ðŸ¥',
     tagline: 'Save lives, improve health outcomes, and serve communities',
-    description: 'Healthcare spans medicine, nursing, pharmacy, physiotherapy, public health, and mental health. It\'s one of the most respected, stable, and globally portable careers available — and the demand for skilled professionals never drops.',
-    salary: '₦150,000 – ₦500,000/month',
+    description: 'Healthcare spans medicine, nursing, pharmacy, physiotherapy, public health, and mental health. It\'s one of the most respected, stable, and globally portable careers available â€” and the demand for skilled professionals never drops.',
+    salary: 'â‚¦150,000 â€“ â‚¦500,000/month',
     salaryNote: 'Specialists and diaspora professionals earn significantly more; global demand is very high',
     growth: 'High',
     growthColor: '#16a34a',
@@ -437,10 +437,10 @@ const CAREERS: Record<CareerKey, Career> = {
   },
   en: {
     title: 'Entrepreneur',
-    icon: '🚀',
+    icon: 'ðŸš€',
     tagline: 'Build something from nothing and create your own future',
-    description: 'Entrepreneurs identify problems and build solutions — businesses, products, and services that create value. It requires resilience, creativity, and appetite for risk, but the freedom and rewards are genuinely unlimited.',
-    salary: 'Variable — ₦0 to unlimited',
+    description: 'Entrepreneurs identify problems and build solutions â€” businesses, products, and services that create value. It requires resilience, creativity, and appetite for risk, but the freedom and rewards are genuinely unlimited.',
+    salary: 'Variable â€” â‚¦0 to unlimited',
     salaryNote: 'Nigeria\'s startup ecosystem is growing fast; funding and exit opportunities are expanding',
     growth: 'High (if it works)',
     growthColor: '#16a34a',
@@ -449,10 +449,10 @@ const CAREERS: Record<CareerKey, Career> = {
   },
   mm: {
     title: 'Marketing Manager',
-    icon: '📣',
+    icon: 'ðŸ“£',
     tagline: 'Build brands, capture audiences, and drive business growth',
     description: 'Marketing Managers develop and execute strategies to reach customers and grow revenue. You\'ll own campaigns, manage budgets, analyse performance data, and build brand identity across digital and physical channels.',
-    salary: '₦200,000 – ₦600,000/month',
+    salary: 'â‚¦200,000 â€“ â‚¦600,000/month',
     salaryNote: 'Performance marketers and brand strategists at large companies earn above this range',
     growth: 'High',
     growthColor: '#16a34a',
@@ -461,10 +461,10 @@ const CAREERS: Record<CareerKey, Career> = {
   },
   fp: {
     title: 'Finance Professional',
-    icon: '💹',
+    icon: 'ðŸ’¹',
     tagline: 'Manage money, build wealth, and drive financial strategy',
     description: 'Finance professionals work in banking, investment, accounting, and corporate finance. You\'ll manage financial reporting, investment portfolios, risk analysis, and help businesses make smarter financial decisions.',
-    salary: '₦250,000 – ₦800,000/month',
+    salary: 'â‚¦250,000 â€“ â‚¦800,000/month',
     salaryNote: 'Investment banking and financial services in Lagos often exceed this range',
     growth: 'High',
     growthColor: '#16a34a',
@@ -473,10 +473,10 @@ const CAREERS: Record<CareerKey, Career> = {
   },
   cc: {
     title: 'Content Creator',
-    icon: '🎬',
+    icon: 'ðŸŽ¬',
     tagline: 'Build audiences, tell stories, and turn creativity into income',
     description: 'Content Creators build loyal audiences through video, writing, podcasting, photography, and social media. It\'s one of the fastest-growing career paths globally, with multiple and stackable monetisation models.',
-    salary: '₦100,000 – ₦500,000/month',
+    salary: 'â‚¦100,000 â€“ â‚¦500,000/month',
     salaryNote: 'Top creators earn multiples of this via brand deals, courses & subscriptions',
     growth: 'Very High',
     growthColor: '#16a34a',
@@ -485,10 +485,10 @@ const CAREERS: Record<CareerKey, Career> = {
   },
   pa: {
     title: 'Policy Advisor',
-    icon: '🏛️',
+    icon: 'ðŸ›ï¸',
     tagline: 'Shape laws and decisions that affect millions of lives',
-    description: 'Policy Advisors research, analyse, and recommend solutions to public problems. You\'ll work in government, think tanks, NGOs, or international organisations — influencing the decisions that shape economies, health, and opportunity.',
-    salary: '₦200,000 – ₦600,000/month',
+    description: 'Policy Advisors research, analyse, and recommend solutions to public problems. You\'ll work in government, think tanks, NGOs, or international organisations â€” influencing the decisions that shape economies, health, and opportunity.',
+    salary: 'â‚¦200,000 â€“ â‚¦600,000/month',
     salaryNote: 'International organisations (UN, World Bank, AfDB) pay significantly more',
     growth: 'Moderate',
     growthColor: '#d97706',
@@ -497,7 +497,7 @@ const CAREERS: Record<CareerKey, Career> = {
   },
 }
 
-// ─── Scoring Engine ────────────────────────────────────────────────────────────
+// â”€â”€â”€ Scoring Engine â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 function computeResults(answers: number[]): Result[] {
   const scores: Partial<Record<CareerKey, number>> = {}
@@ -531,7 +531,7 @@ function computeResults(answers: number[]): Result[] {
     .slice(0, 3)
 }
 
-// ─── SVG Arrow ─────────────────────────────────────────────────────────────────
+// â”€â”€â”€ SVG Arrow â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 const Arrow = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" width="1em" height="1em">
@@ -539,7 +539,7 @@ const Arrow = () => (
   </svg>
 )
 
-// ─── Component ────────────────────────────────────────────────────────────────
+// â”€â”€â”€ Component â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 export default function CareerAssessmentPage() {
   const [phase, setPhase] = useState<Phase>('hero')
@@ -616,7 +616,7 @@ export default function CareerAssessmentPage() {
   const progress = Math.round(((step + 1) / QUESTIONS.length) * 100)
   const q = QUESTIONS[step]
 
-  // ── HERO ──
+  // â”€â”€ HERO â”€â”€
   if (phase === 'hero') return (
     <div className="ca-page">
       <section className="ca-hero">
@@ -630,9 +630,9 @@ export default function CareerAssessmentPage() {
               Answer 10 quick questions. Get personalised career recommendations based on your interests, skills, and goals.
             </p>
             <div className="ca-trust">
-              <span className="ca-trust__pill">⏱ Takes 5 minutes</span>
-              <span className="ca-trust__pill">📋 10 questions</span>
-              <span className="ca-trust__pill">🎯 12 career profiles</span>
+              <span className="ca-trust__pill">â± Takes 5 minutes</span>
+              <span className="ca-trust__pill">ðŸ“‹ 10 questions</span>
+              <span className="ca-trust__pill">ðŸŽ¯ 12 career profiles</span>
             </div>
             <div className="ca-hero__cta">
               <button className="btn btn--lg" onClick={handleStart}>
@@ -647,19 +647,19 @@ export default function CareerAssessmentPage() {
           </div>
           <div className="ca-hero__visual" aria-hidden="true">
             <div className="ca-visual-card ca-visual-card--1">
-              <span className="ca-visual-card__icon">💻</span>
+              <span className="ca-visual-card__icon">ðŸ’»</span>
               <span>Software Engineer</span>
             </div>
             <div className="ca-visual-card ca-visual-card--2">
-              <span className="ca-visual-card__icon">🎨</span>
+              <span className="ca-visual-card__icon">ðŸŽ¨</span>
               <span>UX/UI Designer</span>
             </div>
             <div className="ca-visual-card ca-visual-card--3">
-              <span className="ca-visual-card__icon">📊</span>
+              <span className="ca-visual-card__icon">ðŸ“Š</span>
               <span>Data Analyst</span>
             </div>
             <div className="ca-visual-card ca-visual-card--4">
-              <span className="ca-visual-card__icon">🚀</span>
+              <span className="ca-visual-card__icon">ðŸš€</span>
               <span>Entrepreneur</span>
             </div>
             <div className="ca-visual-centerpiece">
@@ -691,7 +691,7 @@ export default function CareerAssessmentPage() {
           </div>
           <div className="ca-how__cta">
             <button className="btn btn--lg" onClick={handleStart}>
-              Begin — it&rsquo;s free <Arrow />
+              Begin â€” it&rsquo;s free <Arrow />
             </button>
           </div>
         </div>
@@ -699,7 +699,7 @@ export default function CareerAssessmentPage() {
     </div>
   )
 
-  // ── QUIZ ──
+  // â”€â”€ QUIZ â”€â”€
   if (phase === 'quiz') return (
     <div className="ca-page">
       <section className="ca-quiz">
@@ -712,7 +712,7 @@ export default function CareerAssessmentPage() {
             </div>
             <div className="ca-progress__meta">
               <button className="ca-back" onClick={handleBack}>
-                ← {step === 0 ? 'Back' : 'Previous'}
+                â† {step === 0 ? 'Back' : 'Previous'}
               </button>
               <span className="ca-progress__label">{step + 1} of {QUESTIONS.length}</span>
             </div>
@@ -744,7 +744,7 @@ export default function CareerAssessmentPage() {
     </div>
   )
 
-  // ── RESULTS ──
+  // â”€â”€ RESULTS â”€â”€
   if (phase === 'results' && results) return (
     <div className="ca-page">
       {/* Results header */}
@@ -836,10 +836,10 @@ export default function CareerAssessmentPage() {
           </div>
           <div className="ca-next__grid">
             {[
-              { icon: '📚', title: 'Browse Courses', body: 'Start learning the skills your matched careers need.', href: '/courses', label: 'View courses' },
-              { icon: '💼', title: 'Explore Opportunities', body: 'Jobs, internships, scholarships and competitions.', href: '/jobs', label: 'Find opportunities' },
-              { icon: '👥', title: 'Join the Community', body: 'Connect with peers on similar career paths.', href: '/community', label: 'Join now' },
-              { icon: '🧑‍🏫', title: 'Talk to a Mentor', body: 'Get guidance from professionals in your matched fields.', href: '/volunteer', label: 'Find a mentor' },
+              { icon: 'ðŸ“š', title: 'Browse Courses', body: 'Start learning the skills your matched careers need.', href: '/courses', label: 'View courses' },
+              { icon: 'ðŸ’¼', title: 'Explore Opportunities', body: 'Jobs, internships, scholarships and competitions.', href: '/jobs', label: 'Find opportunities' },
+              { icon: 'ðŸ‘¥', title: 'Join the Community', body: 'Connect with peers on similar career paths.', href: '/community', label: 'Join now' },
+              { icon: 'ðŸ§‘â€ðŸ«', title: 'Talk to a Mentor', body: 'Get guidance from professionals in your matched fields.', href: '/volunteer', label: 'Find a mentor' },
             ].map(card => (
               <div key={card.title} className="ca-next-card">
                 <div className="ca-next-card__icon">{card.icon}</div>
@@ -860,7 +860,7 @@ export default function CareerAssessmentPage() {
 
           <div className="ca-testimonial">
             <p className="ca-testimonial__quote">
-              &ldquo;The assessment showed me that my love of people skills and social impact pointed to Social Impact Management — I had no idea that was even a career. Now I have a clear direction.&rdquo;
+              &ldquo;The assessment showed me that my love of people skills and social impact pointed to Social Impact Management â€” I had no idea that was even a career. Now I have a clear direction.&rdquo;
             </p>
             <div className="ca-testimonial__author">
               <strong>Amara Okonkwo</strong>
@@ -873,11 +873,11 @@ export default function CareerAssessmentPage() {
             {[
               {
                 q: 'Can I retake the assessment?',
-                a: 'Yes — click the button below to restart with fresh answers. Your previous results will be cleared.',
+                a: 'Yes â€” click the button below to restart with fresh answers. Your previous results will be cleared.',
               },
               {
                 q: 'What if I relate to more than one result?',
-                a: 'That\'s completely normal. Many careers overlap — a Content Creator also needs Marketing skills; a Product Manager needs both Tech and Business literacy. Explore all three results and look for the common threads.',
+                a: 'That\'s completely normal. Many careers overlap â€” a Content Creator also needs Marketing skills; a Product Manager needs both Tech and Business literacy. Explore all three results and look for the common threads.',
               },
               {
                 q: 'How do I get started in any of these careers?',
@@ -890,7 +890,7 @@ export default function CareerAssessmentPage() {
                   onClick={() => setOpenFaq(openFaq === i ? null : i)}
                 >
                   {faq.q}
-                  <span className="ca-faq__chevron">{openFaq === i ? '−' : '+'}</span>
+                  <span className="ca-faq__chevron">{openFaq === i ? 'âˆ’' : '+'}</span>
                 </button>
                 {openFaq === i && <p className="ca-faq__a">{faq.a}</p>}
               </div>

@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server'
+﻿import { NextRequest, NextResponse } from 'next/server'
 import sql from '@/lib/db'
 import { hashPassword, signToken, COOKIE_NAME } from '@/lib/auth'
 import { sendWelcomeEmail } from '@/lib/email'

@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+﻿import type { Metadata } from 'next'
 import CareersEditor from '@/components/admin/CareersEditor'
 import PolicyEditor from '@/components/admin/PolicyEditor'
 import FounderEditor from '@/components/admin/FounderEditor'
@@ -10,7 +10,7 @@ import ImpactStoriesEditor from '@/components/admin/ImpactStoriesEditor'
 import WhatsAppEditor from '@/components/admin/WhatsAppEditor'
 import BankDetailsEditor from '@/components/admin/BankDetailsEditor'
 
-export const metadata: Metadata = { title: 'Content · Admin · Wissen-Haus' }
+export const metadata: Metadata = { title: 'Content Â· Admin Â· Wissen-Haus' }
 
 const TABS = [
   { key: 'careers', label: 'Careers Roles' },
@@ -20,8 +20,8 @@ const TABS = [
   { key: 'threads', label: 'Community Threads' },
   { key: 'whatsapp', label: 'WhatsApp Channel' },
   { key: 'impact-stories', label: 'Impact Stories' },
-  { key: 'donation-certs', label: '🧾 Donation Receipts' },
-  { key: 'bank-details', label: '🏦 Bank Transfer Details' },
+  { key: 'donation-certs', label: 'ðŸ§¾ Donation Receipts' },
+  { key: 'bank-details', label: 'ðŸ¦ Bank Transfer Details' },
   { key: 'foundation', label: 'Foundation Details' },
 ]
 

@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server'
+﻿import { NextRequest, NextResponse } from 'next/server'
 import sql from '@/lib/db'
 
 function parseDevice(ua: string): string {

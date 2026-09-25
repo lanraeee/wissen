@@ -1,11 +1,11 @@
-import type { Metadata } from 'next'
+﻿import type { Metadata } from 'next'
 import Link from 'next/link'
 import Image from 'next/image'
 import sql from '@/lib/db'
 
 export const metadata: Metadata = {
-  title: 'Meet the Founder · Wissen-Haus',
-  description: 'Meet Benz Olagbaye, Founder and Executive Director of Wissen-Haus Youth Empowerment Foundation.',
+  title: 'Meet the Founder Â· Wissen-Haus',
+  description: 'Meet Benz Olagbaye, Founder and Executive Director of Wissen-Haus Empowerment Foundation.',
 }
 
 interface FounderContent {
@@ -25,7 +25,7 @@ const DEFAULT: FounderContent = {
     "Moving to the UK opened my eyes to a deeper truth about the real nature of the skills gap. It wasn't about intelligence or capability. The real issue was access. Young Africans and diaspora youth deserve the same global exposure, career mentorship, and skill development opportunities as their peers anywhere in the world. They deserve more than just hope; they deserve a proven path to economic independence.",
     "That's why I founded Wissen-Haus.",
     "I started this foundation because I refused to accept that your zip code should limit your potential and determine your destiny. I've mentored over 50 young people, watching them grow into confident professionals who now lead their own journeys with belief in themselves and their abilities.",
-    "Every member of the Wissen-Haus community is proof that when young people are equipped with the right skills, guidance, and belief in themselves, they don't just succeed—they transform their entire communities.",
+    "Every member of the Wissen-Haus community is proof that when young people are equipped with the right skills, guidance, and belief in themselves, they don't just succeedâ€”they transform their entire communities.",
     "This is just the beginning.",
   ],
 }

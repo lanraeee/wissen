@@ -1,4 +1,4 @@
-import { jwtVerify, type JWTPayload } from 'jose'
+﻿import { jwtVerify, type JWTPayload } from 'jose'
 
 export const COOKIE_NAME = 'wh_token'
 

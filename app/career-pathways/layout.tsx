@@ -1,7 +1,7 @@
-import type { Metadata } from 'next'
+﻿import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Career Pathways Assessment — Wissen Haus',
+  title: 'Career Pathways Assessment â€” Wissen Haus',
   description: 'Get a personalised career roadmap tailored to your interests, skills, and aspirations. For professionals, graduates, and undergraduates.',
 }
 

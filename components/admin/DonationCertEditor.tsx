@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState, useEffect } from 'react'
 import type { DonationCert } from '@/app/donate/receipt/[certId]/page'
@@ -96,7 +96,7 @@ function CertForm({ title, draft, setDraft, onSave, onCancel, saveLabel, saving,
         </div>
         <div style={{ gridColumn: '1 / -1' }}>
           <label style={lbl}>Additional Notes (optional)</label>
-          <textarea style={{ ...inp, minHeight: 60, resize: 'vertical' }} value={draft.notes ?? ''} onChange={e => setDraft(d => ({ ...d, notes: e.target.value }))} placeholder="Any additional details to include on the receipt…" />
+          <textarea style={{ ...inp, minHeight: 60, resize: 'vertical' }} value={draft.notes ?? ''} onChange={e => setDraft(d => ({ ...d, notes: e.target.value }))} placeholder="Any additional details to include on the receiptâ€¦" />
         </div>
       </div>
       <div style={{ display: 'flex', gap: 8, marginTop: 16 }}>
@@ -176,9 +176,9 @@ export default function DonationCertEditor() {
     setCerts(updated)
   }
 
-  const CURRENCY_SYM: Record<string, string> = { NGN: '₦', USD: '$', GBP: '£', EUR: '€' }
+  const CURRENCY_SYM: Record<string, string> = { NGN: 'â‚¦', USD: '$', GBP: 'Â£', EUR: 'â‚¬' }
 
-  if (!loaded) return <div style={{ padding: 24, color: '#8a9a8f' }}>Loading…</div>
+  if (!loaded) return <div style={{ padding: 24, color: '#8a9a8f' }}>Loadingâ€¦</div>
 
   return (
     <div>
@@ -191,7 +191,7 @@ export default function DonationCertEditor() {
           {saved && newCertId && (
             <a href={`/donate/receipt/${newCertId}`} target="_blank" rel="noopener noreferrer"
               style={{ fontSize: '.78rem', color: '#16a34a', fontWeight: 600, textDecoration: 'underline' }}>
-              ✓ Issued — View receipt ↗
+              âœ“ Issued â€” View receipt â†—
             </a>
           )}
           {!showForm && !editId && (
@@ -208,7 +208,7 @@ export default function DonationCertEditor() {
           setDraft={setDraft}
           onSave={issue}
           onCancel={() => { setShowForm(false); setDraft(BLANK) }}
-          saveLabel={saving ? 'Issuing…' : 'Issue Certificate'}
+          saveLabel={saving ? 'Issuingâ€¦' : 'Issue Certificate'}
           saving={saving}
           disabled={!draft.donor_name || !draft.amount || !draft.date || !draft.purpose}
           currencies={CURRENCIES}
@@ -225,12 +225,12 @@ export default function DonationCertEditor() {
             <div key={c.cert_id}>
               {editId === c.cert_id ? (
                 <CertForm
-                  title={`Edit · ${c.cert_id}`}
+                  title={`Edit Â· ${c.cert_id}`}
                   draft={editDraft}
                   setDraft={setEditDraft}
                   onSave={saveEdit}
                   onCancel={() => setEditId(null)}
-                  saveLabel={saving ? 'Saving…' : 'Save Changes'}
+                  saveLabel={saving ? 'Savingâ€¦' : 'Save Changes'}
                   saving={saving}
                   disabled={!editDraft.donor_name || !editDraft.amount || !editDraft.date || !editDraft.purpose}
                   currencies={CURRENCIES}
@@ -244,7 +244,7 @@ export default function DonationCertEditor() {
                       <span style={{ fontFamily: 'monospace', fontSize: '.68rem', color: '#B8952A', background: 'rgba(184,149,42,0.1)', padding: '1px 6px', borderRadius: 4 }}>{c.cert_id}</span>
                     </div>
                     <div style={{ fontSize: '.75rem', color: '#8a9a8f' }}>
-                      {CURRENCY_SYM[c.currency]}{c.amount.toLocaleString()} · Donated {new Date(c.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })} · Issued {new Date(c.issued_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+                      {CURRENCY_SYM[c.currency]}{c.amount.toLocaleString()} Â· Donated {new Date(c.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })} Â· Issued {new Date(c.issued_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
                     </div>
                   </div>
                   <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>

@@ -1,19 +1,19 @@
-import type { Metadata } from 'next'
+﻿import type { Metadata } from 'next'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
-  title: 'About Wissen-Haus · Encyclopedia Entry',
-  description: 'An encyclopedic overview of the Wissen-Haus Youth Empowerment Foundation — its history, programmes, and mission to bridge the skills gap for African youth and the diaspora.',
+  title: 'About Wissen-Haus Â· Encyclopedia Entry',
+  description: 'An encyclopedic overview of the Wissen-Haus Empowerment Foundation â€” its history, programmes, and mission to bridge the skills gap for African youth and the diaspora.',
   openGraph: {
-    title: 'Wissen-Haus Youth Empowerment Foundation — Overview',
-    description: 'An encyclopedic overview of the Wissen-Haus Youth Empowerment Foundation — its history, programmes, and mission to bridge the skills gap for African youth and the diaspora.',
+    title: 'Wissen-Haus Empowerment Foundation â€” Overview',
+    description: 'An encyclopedic overview of the Wissen-Haus Empowerment Foundation â€” its history, programmes, and mission to bridge the skills gap for African youth and the diaspora.',
     url: 'https://www.wissenhaus.org/wiki',
     images: [{ url: '/wiki/opengraph-image', width: 1200, height: 630 }],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Wissen-Haus Youth Empowerment Foundation — Overview',
-    description: 'An encyclopedic overview of the Wissen-Haus Youth Empowerment Foundation — its history, programmes, and mission to bridge the skills gap for African youth and the diaspora.',
+    title: 'Wissen-Haus Empowerment Foundation â€” Overview',
+    description: 'An encyclopedic overview of the Wissen-Haus Empowerment Foundation â€” its history, programmes, and mission to bridge the skills gap for African youth and the diaspora.',
     images: ['/wiki/opengraph-image'],
   },
 }
@@ -43,15 +43,15 @@ const PERSONNEL = [
 ]
 
 const REFS = [
-  { id: 1, label: 'Wissen-Haus Youth Empowerment Foundation', url: 'https://www.wissenhaus.org' },
-  { id: 2, label: 'Our Story – Wissen-Haus', url: 'https://www.wissenhaus.org/about/story' },
-  { id: 3, label: 'Career Clarity Fair – Wissen-Haus', url: 'https://www.wissenhaus.org/career-clarity-trade-fair' },
-  { id: 4, label: 'Opportunity Blueprint – Wissen-Haus', url: 'https://www.wissenhaus.org/opportunity-blueprint' },
-  { id: 5, label: 'Impact Content – Wissen-Haus', url: 'https://www.wissenhaus.org/impact-content' },
-  { id: 6, label: 'Community Hub – Wissen-Haus', url: 'https://www.wissenhaus.org/community' },
-  { id: 7, label: 'Career Pathways Assessment – Wissen-Haus', url: 'https://www.wissenhaus.org/career-pathways' },
-  { id: 8, label: 'Policy Research – Wissen-Haus', url: 'https://www.wissenhaus.org/policy-research' },
-  { id: 9, label: 'Volunteer – Wissen-Haus', url: 'https://www.wissenhaus.org/volunteer' },
+  { id: 1, label: 'Wissen-Haus Empowerment Foundation', url: 'https://www.wissenhaus.org' },
+  { id: 2, label: 'Our Story â€“ Wissen-Haus', url: 'https://www.wissenhaus.org/about/story' },
+  { id: 3, label: 'Career Clarity Fair â€“ Wissen-Haus', url: 'https://www.wissenhaus.org/career-clarity-trade-fair' },
+  { id: 4, label: 'Opportunity Blueprint â€“ Wissen-Haus', url: 'https://www.wissenhaus.org/opportunity-blueprint' },
+  { id: 5, label: 'Impact Content â€“ Wissen-Haus', url: 'https://www.wissenhaus.org/impact-content' },
+  { id: 6, label: 'Community Hub â€“ Wissen-Haus', url: 'https://www.wissenhaus.org/community' },
+  { id: 7, label: 'Career Pathways Assessment â€“ Wissen-Haus', url: 'https://www.wissenhaus.org/career-pathways' },
+  { id: 8, label: 'Policy Research â€“ Wissen-Haus', url: 'https://www.wissenhaus.org/policy-research' },
+  { id: 9, label: 'Volunteer â€“ Wissen-Haus', url: 'https://www.wissenhaus.org/volunteer' },
 ]
 
 function Ref({ n }: { n: number }) {
@@ -75,10 +75,10 @@ export default function WikiPage() {
             Foundation Overview
           </div>
           <h1 style={{ margin: 0, fontSize: 'clamp(1.6rem,4vw,2.4rem)', fontWeight: 900, color: '#0f2d1d', lineHeight: 1.1 }}>
-            Wissen-Haus Youth Empowerment Foundation
+            Wissen-Haus Empowerment Foundation
           </h1>
           <p style={{ margin: '10px 0 0', color: '#4a5a4f', fontSize: '.95rem' }}>
-            Non-profit organisation · Founded in Ibadan, Oyo State, Nigeria · Est. 2025 · Serving Africa &amp; the diaspora
+            Non-profit organisation Â· Founded in Ibadan, Oyo State, Nigeria Â· Est. 2025 Â· Serving Africa &amp; the diaspora
           </p>
         </div>
 
@@ -88,9 +88,9 @@ export default function WikiPage() {
           <article style={{ color: '#1a2e24', lineHeight: 1.8, fontSize: '.97rem' }}>
 
             <p>
-              <strong>Wissen-Haus Youth Empowerment Foundation</strong> is a non-profit organisation founded in{' '}
+              <strong>Wissen-Haus Empowerment Foundation</strong> is a non-profit organisation founded in{' '}
               <a href="https://en.wikipedia.org/wiki/Ibadan" target="_blank" rel="noopener noreferrer" style={{ color: '#1a3c2e' }}>Ibadan</a>,{' '}
-              <a href="https://en.wikipedia.org/wiki/Oyo_State" target="_blank" rel="noopener noreferrer" style={{ color: '#1a3c2e' }}>Oyo State</a>, Nigeria, focused on bridging the skills gap among African youth and the diaspora through career guidance, mentorship, and access to global opportunities. The foundation was established with a mission to equip young people — in Nigeria, across the wider African continent, and in diaspora communities including the United Kingdom — with the practical knowledge and exposure needed for economic independence.<Ref n={1} />
+              <a href="https://en.wikipedia.org/wiki/Oyo_State" target="_blank" rel="noopener noreferrer" style={{ color: '#1a3c2e' }}>Oyo State</a>, Nigeria, focused on bridging the skills gap among African youth and the diaspora through career guidance, mentorship, and access to global opportunities. The foundation was established with a mission to equip young people â€” in Nigeria, across the wider African continent, and in diaspora communities including the United Kingdom â€” with the practical knowledge and exposure needed for economic independence.<Ref n={1} />
             </p>
 
             {/* TOC */}
@@ -115,7 +115,7 @@ export default function WikiPage() {
               The foundation operates under the belief that many African youths and diaspora communities lack access to structured career guidance and exposure to opportunities available to their global peers. Wissen-Haus was founded by <Link href="/founder" style={{ color: '#1a3c2e' }}>Benz Olagbaye</Link>, who serves as its director, with the aim of addressing this gap through structured programmes, a digital learning platform, and community-based engagements. The organisation has reported reaching over 500 students since launching in Ibadan, and is expanding its programmes across Africa and to diaspora communities internationally, including the United Kingdom.<Ref n={2} />
             </p>
             <p>
-              The name <em>Wissen-Haus</em> draws from the German word <em>Wissen</em>, meaning &ldquo;knowledge&rdquo;, and <em>Haus</em>, meaning &ldquo;house&rdquo; — reflecting the organisation&apos;s vision of being a house of knowledge for African youth and the diaspora.
+              The name <em>Wissen-Haus</em> draws from the German word <em>Wissen</em>, meaning &ldquo;knowledge&rdquo;, and <em>Haus</em>, meaning &ldquo;house&rdquo; â€” reflecting the organisation&apos;s vision of being a house of knowledge for African youth and the diaspora.
             </p>
 
             {/* 2. Programmes */}
@@ -184,7 +184,7 @@ export default function WikiPage() {
             </table>
             {PERSONNEL.filter(p => p.note).map(p => (
               <p key={p.name} style={{ fontSize: '.86rem', color: '#4a5a4f', marginTop: 8 }}>
-                <strong>{p.name}</strong> — {p.note}
+                <strong>{p.name}</strong> â€” {p.note}
               </p>
             ))}
 
@@ -238,7 +238,7 @@ export default function WikiPage() {
                 ['Founded', '2025'],
                 ['Founder', 'Benz Olagbaye'],
                 ['Headquarters', 'Ibadan, Oyo State, Nigeria'],
-                ['Focus', 'Youth empowerment, career guidance, skills development — for African youth and the diaspora'],
+                ['Focus', 'Youth empowerment, career guidance, skills development â€” for African youth and the diaspora'],
                 ['Reach', '500+ students, expanding across Africa and internationally'],
                 ['Website', 'wissenhaus.org'],
               ].map(([label, value]) => (
@@ -264,7 +264,7 @@ export default function WikiPage() {
                 ['/about/story', 'Our Story'],
               ].map(([href, label]) => (
                 <Link key={href} href={href} style={{ display: 'block', color: '#1a3c2e', padding: '4px 0', fontSize: '.84rem' }}>
-                  {label as string} →
+                  {label as string} â†’
                 </Link>
               ))}
             </div>

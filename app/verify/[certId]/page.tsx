@@ -20,7 +20,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const course = COURSES.find(c => c.id === row.course_id as string)
   return {
     title: `Certificate Verified — ${course?.title ?? 'Wissen-Haus'}`,
-    description: `This certificate issued to ${row.name as string} by Wissen-Haus Youth Empowerment Foundation has been verified as authentic.`,
+    description: `This certificate issued to ${row.name as string} by Wissen-Haus Empowerment Foundation has been verified as authentic.`,
   }
 }
 

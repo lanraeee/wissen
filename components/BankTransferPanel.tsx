@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
@@ -10,7 +10,7 @@ export interface DetailRow {
   mono?: boolean
   emphasis?: boolean
   // A short caption under the value, for rows whose meaning is not obvious from
-  // the label alone — notably intermediary-bank numbers, which a donor can
+  // the label alone â€” notably intermediary-bank numbers, which a donor can
   // easily mistake for the beneficiary account.
   hint?: string
 }
@@ -36,7 +36,7 @@ function CopyButton({ value, label }: { value: string; label: string }) {
       setCopied(true)
       setTimeout(() => setCopied(false), 1800)
     } catch {
-      // Clipboard is blocked (insecure context, denied permission) — the value
+      // Clipboard is blocked (insecure context, denied permission) â€” the value
       // is on screen and selectable, so there's nothing to recover from.
     }
   }
@@ -53,7 +53,7 @@ function CopyButton({ value, label }: { value: string; label: string }) {
         transition: 'all .15s',
       }}
     >
-      {copied ? '✓ Copied' : 'Copy'}
+      {copied ? 'âœ“ Copied' : 'Copy'}
     </button>
   )
 }
@@ -95,7 +95,7 @@ export default function BankTransferPanel({
             <polyline points="20 6 9 17 4 12" />
           </svg>
         </div>
-        <h2 style={{ margin: '0 0 .75rem', fontSize: '1.4rem' }}>Transfer received — thank you!</h2>
+        <h2 style={{ margin: '0 0 .75rem', fontSize: '1.4rem' }}>Transfer received â€” thank you!</h2>
         <p style={{ color: 'var(--ink-60,#8a9a8f)', marginBottom: '1.5rem' }}>
           Your gift of <strong>{amountLabel}</strong> has been confirmed. Your receipt has been emailed to {donorEmail}.
         </p>
@@ -173,8 +173,8 @@ export default function BankTransferPanel({
           textAlign: 'center', background: '#f0f7f3', border: '1px solid #c8e0d0',
           borderRadius: 10, padding: '20px 18px',
         }}>
-          <div style={{ fontSize: '1.5rem', marginBottom: 6 }}>⏳</div>
-          <h3 style={{ margin: '0 0 .5rem', fontSize: '1.05rem' }}>Thank you — we&apos;re watching for your transfer.</h3>
+          <div style={{ fontSize: '1.5rem', marginBottom: 6 }}>â³</div>
+          <h3 style={{ margin: '0 0 .5rem', fontSize: '1.05rem' }}>Thank you â€” we&apos;re watching for your transfer.</h3>
           <p style={{ margin: '0 0 1rem', fontSize: '.88rem', color: '#5a6a5f' }}>
             Bank transfers usually clear within one working day (longer for international payments).
             As soon as it lands we&apos;ll email your receipt and donation certificate to {donorEmail}.
@@ -199,7 +199,7 @@ export default function BankTransferPanel({
             disabled={busy}
             style={{ fontSize: '1rem' }}
           >
-            {busy ? 'Saving…' : "I've sent the transfer"}
+            {busy ? 'Savingâ€¦' : "I've sent the transfer"}
           </button>
           <p style={{ textAlign: 'center', fontSize: '.78rem', color: 'var(--ink-60,#8a9a8f)', marginTop: '.9rem' }}>
             Tell us once you&apos;ve made the payment so we can match it and send your certificate.

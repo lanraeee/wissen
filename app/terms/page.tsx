@@ -1,9 +1,9 @@
-import type { Metadata } from 'next'
+﻿import type { Metadata } from 'next'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
-  title: 'Terms & Conditions of Use · Wissen-Haus',
-  description: 'The terms and conditions governing your use of the Wissen-Haus Youth Empowerment Foundation website and programmes.',
+  title: 'Terms & Conditions of Use Â· Wissen-Haus',
+  description: 'The terms and conditions governing your use of the Wissen-Haus Empowerment Foundation website and programmes.',
 }
 
 const LAST_UPDATED = '13 September 2026'
@@ -56,7 +56,7 @@ export default function TermsPage() {
         <article style={{ color: '#1a2e24', lineHeight: 1.75, fontSize: '.96rem' }}>
 
           <p>
-            These Terms &amp; Conditions of Use (&ldquo;Terms&rdquo;) govern your access to and use of <strong>wissenhaus.org</strong> (the &ldquo;Site&rdquo;), operated by Wissen-Haus Youth Empowerment Foundation (&ldquo;Wissen-Haus,&rdquo; &ldquo;we,&rdquo; &ldquo;us,&rdquo; or &ldquo;our&rdquo;), a non-profit organisation founded in Ibadan, Nigeria. By accessing or using the Site, creating an account, submitting a form, or making a donation, you agree to be bound by these Terms. If you do not agree, please do not use the Site.
+            These Terms &amp; Conditions of Use (&ldquo;Terms&rdquo;) govern your access to and use of <strong>wissenhaus.org</strong> (the &ldquo;Site&rdquo;), operated by Wissen-Haus Empowerment Foundation (&ldquo;Wissen-Haus,&rdquo; &ldquo;we,&rdquo; &ldquo;us,&rdquo; or &ldquo;our&rdquo;), a non-profit organisation founded in Ibadan, Nigeria. By accessing or using the Site, creating an account, submitting a form, or making a donation, you agree to be bound by these Terms. If you do not agree, please do not use the Site.
           </p>
 
           <div style={{ background: '#f0ece4', border: '1px solid #ddd9d0', borderRadius: 8, padding: '16px 20px', margin: '24px 0' }}>
@@ -77,7 +77,7 @@ export default function TermsPage() {
 
           <H id="about-us" n="2">About Wissen-Haus</H>
           <p>
-            Wissen-Haus Youth Empowerment Foundation is a non-profit organisation dedicated to bridging the skills gap for African youth and the diaspora through career guidance, mentorship, courses, community programmes, and events such as the Career Clarity Fair. Nothing on the Site should be understood as a guarantee of any particular career, financial, or educational outcome.
+            Wissen-Haus Empowerment Foundation is a non-profit organisation dedicated to bridging the skills gap for African youth and the diaspora through career guidance, mentorship, courses, community programmes, and events such as the Career Clarity Fair. Nothing on the Site should be understood as a guarantee of any particular career, financial, or educational outcome.
           </p>
 
           <H id="eligibility" n="3">Eligibility &amp; Accounts</H>
@@ -126,7 +126,7 @@ export default function TermsPage() {
 
           <H id="ip" n="9">Intellectual Property</H>
           <p>
-            The Site&apos;s design, text, graphics, logos, and the Wissen-Haus name and branding are the property of Wissen-Haus Youth Empowerment Foundation and protected by applicable intellectual property laws. You may not reproduce, distribute, or create derivative works from Site content without our prior written consent, except as permitted for personal, non-commercial use (e.g. sharing a link, or a certificate you have earned).
+            The Site&apos;s design, text, graphics, logos, and the Wissen-Haus name and branding are the property of Wissen-Haus Empowerment Foundation and protected by applicable intellectual property laws. You may not reproduce, distribute, or create derivative works from Site content without our prior written consent, except as permitted for personal, non-commercial use (e.g. sharing a link, or a certificate you have earned).
           </p>
 
           <H id="third-party" n="10">Third-Party Services</H>
@@ -166,7 +166,7 @@ export default function TermsPage() {
 
           <H id="contact" n="17">Contact Us</H>
           <p>
-            Questions about these Terms can be sent to <a href="mailto:info@wissenhaus.org" style={{ color: '#1a3c2e' }}>info@wissenhaus.org</a>, or by post to Wissen-Haus Youth Empowerment Foundation, Ibadan, Oyo State, Nigeria.
+            Questions about these Terms can be sent to <a href="mailto:info@wissenhaus.org" style={{ color: '#1a3c2e' }}>info@wissenhaus.org</a>, or by post to Wissen-Haus Empowerment Foundation, Ibadan, Oyo State, Nigeria.
           </p>
 
           <div style={{ marginTop: 40, background: '#f0ece4', borderLeft: '4px solid #1a3c2e', borderRadius: '0 8px 8px 0', padding: '14px 18px', fontSize: '.85rem', color: '#4a5a4f' }}>

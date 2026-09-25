@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
@@ -83,7 +83,7 @@ export default function TestimonialForm() {
         </div>
         {error && <p style={{ margin: 0, color: '#dc2626', fontSize: '.82rem' }}>{error}</p>}
         <button onClick={submit} disabled={posting || !quote.trim()} className="btn" style={{ opacity: posting ? 0.7 : 1, alignSelf: 'flex-start' }}>
-          {posting ? 'Sharing…' : 'Share Your Story'}
+          {posting ? 'Sharingâ€¦' : 'Share Your Story'}
         </button>
       </div>
     </div>

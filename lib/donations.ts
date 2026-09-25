@@ -1,4 +1,4 @@
-import sql from '@/lib/db'
+﻿import sql from '@/lib/db'
 import { getStripe } from '@/lib/stripe'
 import { sendDonationReceipt, sendDonationNotification } from '@/lib/email'
 import { getPostHogClient } from '@/lib/posthog-server'
@@ -67,7 +67,7 @@ export async function issueOrGetCertificate(d: VerifiedDonation): Promise<string
 }
 
 // Records a verified donation exactly once (safe to call again if the donor
-// reloads the success page — later calls are a no-op) and fires off the
+// reloads the success page â€” later calls are a no-op) and fires off the
 // receipt/notification emails and analytics event.
 export async function recordDonation(d: VerifiedDonation): Promise<{ recorded: boolean }> {
   if (await alreadyRecorded(d.reference)) return { recorded: false }

@@ -1,4 +1,4 @@
-import { SignJWT, jwtVerify, type JWTPayload } from 'jose'
+﻿import { SignJWT, jwtVerify, type JWTPayload } from 'jose'
 import bcrypt from 'bcryptjs'
 import { cookies } from 'next/headers'
 import { jwtSecret } from '@/lib/auth-edge'

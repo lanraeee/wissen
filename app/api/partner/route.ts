@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server'
+﻿import { NextRequest, NextResponse } from 'next/server'
 import { sendPartnerNotification, sendPartnerConfirmation } from '@/lib/email'
 import sql from '@/lib/db'
 

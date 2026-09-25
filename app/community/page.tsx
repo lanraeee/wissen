@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+﻿import type { Metadata } from 'next'
 import Link from 'next/link'
 import Image from 'next/image'
 import OpportunityGrid from '@/components/OpportunityGrid'
@@ -6,8 +6,8 @@ import StreakBadge from '@/components/StreakBadge'
 import TestimonialForm from '@/components/TestimonialForm'
 
 export const metadata: Metadata = {
-  title: 'Community Hub · Wissen-Haus',
-  description: 'Scholarships, internships, mentorship, courses and a community feed—everything a young Nigerian changemaker needs in one place.',
+  title: 'Community Hub Â· Wissen-Haus',
+  description: 'Scholarships, internships, mentorship, courses and a community feedâ€”everything a young Nigerian changemaker needs in one place.',
 }
 
 const ARROW = (
@@ -28,7 +28,7 @@ export default function CommunityPage() {
             <div className="reveal">
               <span className="eyebrow">Community Hub</span>
               <h1 className="display-lg mt-s">Where Nigerian youth grow, together.</h1>
-              <p className="lead mt-m">Scholarships, internships, mentorship, courses and a community feed—everything a young changemaker needs, in one place.</p>
+              <p className="lead mt-m">Scholarships, internships, mentorship, courses and a community feedâ€”everything a young changemaker needs, in one place.</p>
             </div>
             <div className="split__media reveal" data-d="1">
               <Image src="/img/community.jpg" alt="Wissen-Haus community members collaborating" fill style={{ objectFit: 'cover' }} />
@@ -91,7 +91,7 @@ export default function CommunityPage() {
               <div className="card__body">
                 <span className="card__num" style={{ color: 'var(--green-800)' }}>FREE COURSE</span>
                 <h3>Soft Skills for the Modern Workplace</h3>
-                <p>Communication, teamwork, problem solving, and professional presentation — the skills every employer wants.</p>
+                <p>Communication, teamwork, problem solving, and professional presentation â€” the skills every employer wants.</p>
                 <Link href="/courses/soft-skills" className="textlink">Start for free {ARROW}</Link>
               </div>
             </article>
@@ -99,7 +99,7 @@ export default function CommunityPage() {
               <div className="card__body">
                 <span className="card__num" style={{ color: 'var(--green-800)' }}>CERTIFICATE COURSE</span>
                 <h3>AI for Everyone</h3>
-                <p>Learn to use AI tools to enhance your work, productivity and career prospects — no coding required.</p>
+                <p>Learn to use AI tools to enhance your work, productivity and career prospects â€” no coding required.</p>
                 <Link href="/courses/ai" className="textlink">Start the course {ARROW}</Link>
               </div>
             </article>
