@@ -1,4 +1,4 @@
-﻿import type { Metadata } from 'next'
+import type { Metadata } from 'next'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
@@ -32,7 +32,7 @@ export default function PodcastPage() {
             <div className="feature reveal">
               <div className="feature__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M12 2a3 3 0 0 1 3 3v7a3 3 0 0 1-6 0V5a3 3 0 0 1 3-3z" /><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v3M8 22h8" /></svg></div>
               <h3>Career Stories</h3>
-              <p>Hear how professionals went from school to their dream careers â€” including the failures, setbacks, and breakthroughs.</p>
+              <p>Hear how professionals went from school to their dream careers — including the failures, setbacks, and breakthroughs.</p>
             </div>
             <div className="feature reveal" data-d="1">
               <div className="feature__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><circle cx="12" cy="12" r="9" /><path d="M3 12h18M12 3c2.5 2.5 3.8 5.7 3.8 9s-1.3 6.5-3.8 9c-2.5-2.5-3.8-5.7-3.8-9S9.5 5.5 12 3z" /></svg></div>

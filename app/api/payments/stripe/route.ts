@@ -1,4 +1,4 @@
-﻿import { NextRequest, NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { getStripe } from '@/lib/stripe'
 import { verifyStripeSession, recordDonation } from '@/lib/donations'
 
@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
     const session = await getStripe().checkout.sessions.create({
       mode: 'payment',
       // Managed Payments (Stripe's merchant-of-record mode) requires a tax
-      // code on every line item, which doesn't apply to a donation â€” no
+      // code on every line item, which doesn't apply to a donation — no
       // goods or services are exchanged. Opt this session out of it so
       // payment methods fall back to the account's normal configuration.
       managed_payments: { enabled: false },
@@ -46,7 +46,7 @@ export async function POST(req: NextRequest) {
   }
 }
 
-// Verify and record a completed Checkout session â€” called by the success page,
+// Verify and record a completed Checkout session — called by the success page,
 // but kept as its own endpoint so it can also be triggered manually/via webhook.
 export async function PUT(req: NextRequest) {
   const { sessionId } = await req.json()

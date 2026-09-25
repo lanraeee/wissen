@@ -1,4 +1,4 @@
-﻿import type { Metadata } from 'next'
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import Image from 'next/image'
 import sql from '@/lib/db'
@@ -8,13 +8,13 @@ export const metadata: Metadata = {
   title: 'Wissen-Haus Empowerment Foundation · Bridging the Skills Gap',
   description: 'We equip African youth and the diaspora with practical skills, mentorship and global exposure for economic independence. 500+ students reached since launching in Ibadan, Nigeria.',
   openGraph: {
-    title: 'Wissen-Haus â€” Bridging the Skills Gap for African Youth',
+    title: 'Wissen-Haus — Bridging the Skills Gap for African Youth',
     description: 'Empowering young Africans and the diaspora with practical career skills, mentorship, and global exposure. 500+ students reached since launching in Ibadan, Nigeria.',
     images: [{ url: '/opengraph-image', width: 1200, height: 630, alt: 'Wissen-Haus Empowerment Foundation' }],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Wissen-Haus â€” Bridging the Skills Gap for African Youth',
+    title: 'Wissen-Haus — Bridging the Skills Gap for African Youth',
     description: 'Empowering young Africans and the diaspora with practical career skills, mentorship, and global exposure.',
     images: ['/opengraph-image'],
   },
@@ -92,7 +92,7 @@ export default async function HomePage() {
               <h2 className="mt-s">{tagline}</h2>
             </div>
             <div className="reveal--right">
-              <p className="lead">We are dedicated to bridging the skills gap for African youth and the diaspora by equipping young people with practical career guidance and global exposure. Founded in Ibadan, Nigeria, our mission is to empower the next generation â€” in Nigeria, across Africa, and internationally â€” through economic independence and social impact.</p>
+              <p className="lead">We are dedicated to bridging the skills gap for African youth and the diaspora by equipping young people with practical career guidance and global exposure. Founded in Ibadan, Nigeria, our mission is to empower the next generation — in Nigeria, across Africa, and internationally — through economic independence and social impact.</p>
               <Link href="/about" className="textlink mt-m">Read our story {ARROW}</Link>
             </div>
           </div>
@@ -176,7 +176,7 @@ export default async function HomePage() {
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><circle cx="12" cy="12" r="9" /><path d="M3 12h18M12 3c2.5 2.5 3.8 5.7 3.8 9s-1.3 6.5-3.8 9c-2.5-2.5-3.8-5.7-3.8-9S9.5 5.5 12 3z" /></svg>
               </div>
               <h3>See Global Opportunities</h3>
-              <p>Remote jobs, international scholarships, visa-sponsored roles. Learn how to position yourself to compete globallyâ€”whether you&#39;re building your career in Nigeria, elsewhere in Africa, or in the diaspora.</p>
+              <p>Remote jobs, international scholarships, visa-sponsored roles. Learn how to position yourself to compete globally—whether you&#39;re building your career in Nigeria, elsewhere in Africa, or in the diaspora.</p>
             </div>
             <div className="feature reveal" data-d="2">
               <div className="feature__ic">

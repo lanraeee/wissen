@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 
 import { useState, useEffect } from 'react'
 
@@ -76,7 +76,7 @@ export default function PolicyEditor() {
         <h2 style={{ margin: 0, fontSize: '1.1rem' }}>Policy &amp; Research Timeline</h2>
         <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
           {saved && <span style={{ fontSize: '.8rem', color: '#16a34a' }}>Saved!</span>}
-          <button style={s('#1a3c2e')} onClick={save} disabled={saving}>{saving ? 'Savingâ€¦' : 'Save Changes'}</button>
+          <button style={s('#1a3c2e')} onClick={save} disabled={saving}>{saving ? 'Saving…' : 'Save Changes'}</button>
         </div>
       </div>
 
@@ -114,7 +114,7 @@ export default function PolicyEditor() {
                 </div>
                 <div style={{ display: 'flex', gap: 5 }}>
                   <button style={s('#1d4ed8')} onClick={() => startEdit(i)}>Edit</button>
-                  <button style={s('#dc2626')} onClick={() => remove(i)}>âœ•</button>
+                  <button style={s('#dc2626')} onClick={() => remove(i)}>✕</button>
                 </div>
               </div>
             )}

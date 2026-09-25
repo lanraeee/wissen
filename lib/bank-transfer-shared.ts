@@ -1,4 +1,4 @@
-﻿// Types and constants for the bank-transfer donation flow.
+// Types and constants for the bank-transfer donation flow.
 //
 // Deliberately free of any database or server-only import: the admin editor is
 // a client component, so anything it needs has to be safe to ship to the
@@ -10,14 +10,14 @@ export type BankCurrency = 'NGN' | 'USD' | 'GBP' | 'EUR'
 // An offshore gift into a Nigerian domiciliary account travels in two hops: the
 // donor's bank pays UBA's own account at a correspondent bank abroad, and UBA
 // then credits the foundation. The numbers below belong to UBA, NOT to the
-// foundation â€” they are the intermediary leg. Keeping them in their own shape
+// foundation — they are the intermediary leg. Keeping them in their own shape
 // is the whole point: dropped into BankAccount.iban they would read as the
 // beneficiary IBAN, and a donor quoting them alone sends money that stops at
 // Citibank with nothing to say who it is for.
 export interface CorrespondentBank {
   bank_name: string
   swift: string
-  routing_number?: string // ABA â€” US wires only
+  routing_number?: string // ABA — US wires only
   sort_code?: string
   account_number: string // UBA's account with the correspondent
   iban?: string // UBA's IBAN with the correspondent
@@ -26,7 +26,7 @@ export interface CorrespondentBank {
 export interface BankAccount {
   currency: BankCurrency
   account_number: string
-  // Optional international routing fields â€” blank until the foundation has them.
+  // Optional international routing fields — blank until the foundation has them.
   sort_code?: string
   iban?: string
   swift?: string
@@ -54,7 +54,7 @@ export const DEFAULT_BANK_DETAILS: BankDetails = {
   bank_address: '',
   instructions: 'Please quote your donation reference in the transfer narration so we can match your gift to your receipt.',
   accounts: [
-    // Domestic â€” paid directly, no intermediary.
+    // Domestic — paid directly, no intermediary.
     { currency: 'NGN', account_number: '1029685261' },
 
     // Foreign currency arrives via UBA's correspondents (per UBA's published
@@ -98,7 +98,7 @@ export const DEFAULT_BANK_DETAILS: BankDetails = {
   ],
 }
 
-export const CURRENCY_SYMBOL: Record<string, string> = { NGN: 'â‚¦', USD: '$', GBP: ' £', EUR: 'â‚¬' }
+export const CURRENCY_SYMBOL: Record<string, string> = { NGN: '₦', USD: '$', GBP: ' £', EUR: '€' }
 
 export const BANK_CURRENCIES: BankCurrency[] = ['NGN', 'USD', 'GBP', 'EUR']
 

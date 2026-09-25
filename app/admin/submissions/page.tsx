@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 
 import { useState, useEffect, useCallback } from 'react'
 import SubmissionActions from '@/components/admin/SubmissionActions'
@@ -80,7 +80,7 @@ export default function AdminSubmissions() {
       })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error || 'Failed to confirm')
-      setResendMsg({ id: rowId, text: data.alreadyConfirmed ? 'Already confirmed' : 'Confirmed â€” receipt sent', ok: true })
+      setResendMsg({ id: rowId, text: data.alreadyConfirmed ? 'Already confirmed' : 'Confirmed — receipt sent', ok: true })
       await load()
     } catch (err) {
       setResendMsg({ id: rowId, text: err instanceof Error ? err.message : 'Failed to confirm', ok: false })
@@ -136,7 +136,7 @@ export default function AdminSubmissions() {
           </p>
         </div>
         <div style={{ display: 'flex', gap: 8 }}>
-          <input placeholder="Searchâ€¦" value={search} onChange={e => setSearch(e.target.value)}
+          <input placeholder="Search…" value={search} onChange={e => setSearch(e.target.value)}
             style={{ padding: '7px 12px', borderRadius: 8, border: '1px solid #d0ccc4', fontSize: '.88rem', width: 180 }} />
           <button onClick={() => exportCSV(filtered, activeType)} style={{ padding: '7px 14px', borderRadius: 8, fontSize: '.82rem', fontWeight: 600, background: '#1a3c2e', color: '#fff', border: 'none', cursor: 'pointer' }}>
             Export CSV
@@ -187,7 +187,7 @@ export default function AdminSubmissions() {
                   ))}
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 14, flexWrap: 'wrap', gap: 8 }}>
-                  {row.email && <a href={`mailto:${row.email}`} style={{ fontSize: '.82rem', fontWeight: 600, color: '#1a3c2e' }}>Reply â†’</a>}
+                  {row.email && <a href={`mailto:${row.email}`} style={{ fontSize: '.82rem', fontWeight: 600, color: '#1a3c2e' }}>Reply →</a>}
                   <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                     {resendMsg?.id === row.id && (
                       <span style={{ fontSize: '.78rem', color: resendMsg.ok ? '#16a34a' : '#dc2626' }}>{resendMsg.text}</span>
@@ -198,7 +198,7 @@ export default function AdminSubmissions() {
                         disabled={resending === row.id}
                         style={{ padding: '4px 12px', borderRadius: 6, fontSize: '.78rem', fontWeight: 600, background: '#f0ece4', color: '#1a3c2e', border: 'none', cursor: 'pointer', opacity: resending === row.id ? .6 : 1 }}
                       >
-                        {resending === row.id ? 'Sendingâ€¦' : 'Resend Receipt'}
+                        {resending === row.id ? 'Sending…' : 'Resend Receipt'}
                       </button>
                     )}
                     {activeType === 'bank_transfer' && row.data?.reference && row.data?.status !== 'confirmed' && row.data?.status !== 'cancelled' && (
@@ -208,7 +208,7 @@ export default function AdminSubmissions() {
                           disabled={resending === row.id}
                           style={{ padding: '4px 12px', borderRadius: 6, fontSize: '.78rem', fontWeight: 600, background: '#1a3c2e', color: '#fff', border: 'none', cursor: 'pointer', opacity: resending === row.id ? .6 : 1 }}
                         >
-                          {resending === row.id ? 'Workingâ€¦' : 'âœ“ Confirm Received'}
+                          {resending === row.id ? 'Working…' : '✓ Confirm Received'}
                         </button>
                         <button
                           onClick={() => cancelTransfer(row.id, row.data.reference)}
@@ -226,7 +226,7 @@ export default function AdminSubmissions() {
                         rel="noopener noreferrer"
                         style={{ padding: '4px 12px', borderRadius: 6, fontSize: '.78rem', fontWeight: 600, background: '#f0ece4', color: '#1a3c2e', textDecoration: 'none' }}
                       >
-                        View Certificate â†—
+                        View Certificate ↗
                       </a>
                     )}
                     <SubmissionActions id={row.id} status={row.status || 'pending'} onRefresh={load} />

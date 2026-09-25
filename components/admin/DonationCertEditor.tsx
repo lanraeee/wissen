@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 
 import { useState, useEffect } from 'react'
 import type { DonationCert } from '@/app/donate/receipt/[certId]/page'
@@ -96,7 +96,7 @@ function CertForm({ title, draft, setDraft, onSave, onCancel, saveLabel, saving,
         </div>
         <div style={{ gridColumn: '1 / -1' }}>
           <label style={lbl}>Additional Notes (optional)</label>
-          <textarea style={{ ...inp, minHeight: 60, resize: 'vertical' }} value={draft.notes ?? ''} onChange={e => setDraft(d => ({ ...d, notes: e.target.value }))} placeholder="Any additional details to include on the receiptâ€¦" />
+          <textarea style={{ ...inp, minHeight: 60, resize: 'vertical' }} value={draft.notes ?? ''} onChange={e => setDraft(d => ({ ...d, notes: e.target.value }))} placeholder="Any additional details to include on the receipt…" />
         </div>
       </div>
       <div style={{ display: 'flex', gap: 8, marginTop: 16 }}>
@@ -176,7 +176,7 @@ export default function DonationCertEditor() {
     setCerts(updated)
   }
 
-  const CURRENCY_SYM: Record<string, string> = { NGN: 'â‚¦', USD: '$', GBP: ' £', EUR: 'â‚¬' }
+  const CURRENCY_SYM: Record<string, string> = { NGN: '₦', USD: '$', GBP: ' £', EUR: '€' }
 
   if (!loaded) return <div style={{ padding: 24, color: '#8a9a8f' }}>Loading…</div>
 
@@ -191,7 +191,7 @@ export default function DonationCertEditor() {
           {saved && newCertId && (
             <a href={`/donate/receipt/${newCertId}`} target="_blank" rel="noopener noreferrer"
               style={{ fontSize: '.78rem', color: '#16a34a', fontWeight: 600, textDecoration: 'underline' }}>
-              âœ“ Issued â€” View receipt â†—
+              ✓ Issued — View receipt ↗
             </a>
           )}
           {!showForm && !editId && (
@@ -208,7 +208,7 @@ export default function DonationCertEditor() {
           setDraft={setDraft}
           onSave={issue}
           onCancel={() => { setShowForm(false); setDraft(BLANK) }}
-          saveLabel={saving ? 'Issuingâ€¦' : 'Issue Certificate'}
+          saveLabel={saving ? 'Issuing…' : 'Issue Certificate'}
           saving={saving}
           disabled={!draft.donor_name || !draft.amount || !draft.date || !draft.purpose}
           currencies={CURRENCIES}
@@ -230,7 +230,7 @@ export default function DonationCertEditor() {
                   setDraft={setEditDraft}
                   onSave={saveEdit}
                   onCancel={() => setEditId(null)}
-                  saveLabel={saving ? 'Savingâ€¦' : 'Save Changes'}
+                  saveLabel={saving ? 'Saving…' : 'Save Changes'}
                   saving={saving}
                   disabled={!editDraft.donor_name || !editDraft.amount || !editDraft.date || !editDraft.purpose}
                   currencies={CURRENCIES}

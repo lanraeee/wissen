@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 
 import { useState, useEffect } from 'react'
 
@@ -19,7 +19,7 @@ const DEFAULTS: FounderContent = {
     "Moving to the UK opened my eyes to a deeper truth about the real nature of the skills gap. It wasn't about intelligence or capability. The real issue was access. Young Nigerians deserve the same global exposure, career mentorship, and skill development opportunities as their peers anywhere in the world. They deserve more than just hope; they deserve a proven path to economic independence.",
     "That's why I founded Wissen-Haus.",
     "I started this foundation because I refused to accept that your zip code should limit your potential and determine your destiny. I've mentored over 50 young people, watching them grow into confident professionals who now lead their own journeys with belief in themselves and their abilities.",
-    "Every member of the Wissen-Haus community is proof that when young people are equipped with the right skills, guidance, and belief in themselves, they don't just succeedâ€”they transform their entire communities.",
+    "Every member of the Wissen-Haus community is proof that when young people are equipped with the right skills, guidance, and belief in themselves, they don't just succeed—they transform their entire communities.",
     "This is just the beginning.",
   ],
 }
@@ -70,7 +70,7 @@ export default function FounderEditor() {
         <h2 style={{ margin: 0, fontSize: '1.1rem' }}>Founder Bio</h2>
         <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
           {saved && <span style={{ fontSize: '.8rem', color: '#16a34a' }}>Saved!</span>}
-          <button onClick={save} disabled={saving} style={{ padding: '7px 16px', borderRadius: 7, fontSize: '.82rem', fontWeight: 600, background: '#1a3c2e', color: '#fff', border: 'none', cursor: 'pointer' }}>{saving ? 'Savingâ€¦' : 'Save Changes'}</button>
+          <button onClick={save} disabled={saving} style={{ padding: '7px 16px', borderRadius: 7, fontSize: '.82rem', fontWeight: 600, background: '#1a3c2e', color: '#fff', border: 'none', cursor: 'pointer' }}>{saving ? 'Saving…' : 'Save Changes'}</button>
         </div>
       </div>
 
@@ -114,9 +114,9 @@ export default function FounderEditor() {
           <div key={i} style={{ display: 'flex', gap: 8, alignItems: 'flex-start' }}>
             <textarea style={{ ...inp, minHeight: 72, resize: 'vertical', flex: 1 }} value={p} onChange={e => updatePara(i, e.target.value)} />
             <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-              {i > 0 && <button style={s('#e8e4dc', '#3a4a3f')} onClick={() => movePara(i, -1)}>â†‘</button>}
-              {i < data.paragraphs.length - 1 && <button style={s('#e8e4dc', '#3a4a3f')} onClick={() => movePara(i, 1)}>â†“</button>}
-              <button style={s('#dc2626')} onClick={() => removePara(i)}>âœ•</button>
+              {i > 0 && <button style={s('#e8e4dc', '#3a4a3f')} onClick={() => movePara(i, -1)}>↑</button>}
+              {i < data.paragraphs.length - 1 && <button style={s('#e8e4dc', '#3a4a3f')} onClick={() => movePara(i, 1)}>↓</button>}
+              <button style={s('#dc2626')} onClick={() => removePara(i)}>✕</button>
             </div>
           </div>
         ))}

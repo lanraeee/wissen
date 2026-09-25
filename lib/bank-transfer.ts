@@ -1,4 +1,4 @@
-﻿import sql from '@/lib/db'
+import sql from '@/lib/db'
 import {
   DEFAULT_BANK_DETAILS, normalizeBankDetails,
   type BankDetails, type BankPledge, type PledgeStatus,
@@ -25,7 +25,7 @@ const BASE32 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567'
 //
 // The trailing 3 bits of the 128 are dropped rather than emitted as a 26th
 // character. A partial character encodes only 3 bits but occupies a full
-// position, so it can land on just 8 of the 32 symbols â€” a visible bias in the
+// position, so it can land on just 8 of the 32 symbols — a visible bias in the
 // last position, which is inside the certificate window. 25 whole characters of
 // 5 uniform bits each (125 bits) is both simpler and better distributed.
 export function generateReference(): string {

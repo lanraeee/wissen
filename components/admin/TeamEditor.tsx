@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 
 import { useState, useEffect } from 'react'
 import type { TeamMember } from '@/app/team/page'
@@ -95,7 +95,7 @@ export default function TeamEditor() {
         <h2 style={{ margin: 0, fontSize: '1.1rem' }}>Team Members</h2>
         <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
           {saved && <span style={{ fontSize: '.8rem', color: '#16a34a' }}>Saved!</span>}
-          <button style={s('#1a3c2e')} onClick={save} disabled={saving}>{saving ? 'Savingâ€¦' : 'Save Changes'}</button>
+          <button style={s('#1a3c2e')} onClick={save} disabled={saving}>{saving ? 'Saving…' : 'Save Changes'}</button>
         </div>
       </div>
 
@@ -138,7 +138,7 @@ export default function TeamEditor() {
                           reader.readAsDataURL(file)
                         }} />
                       </label>
-                      {draft.photo && <button style={s('#dc2626')} onClick={() => setDraft(d => ({ ...d, photo: undefined }))}>âœ•</button>}
+                      {draft.photo && <button style={s('#dc2626')} onClick={() => setDraft(d => ({ ...d, photo: undefined }))}>✕</button>}
                     </div>
                   </div>
                 </div>
@@ -167,10 +167,10 @@ export default function TeamEditor() {
                 </div>
                 </div>
                 <div style={{ display: 'flex', gap: 5, alignItems: 'center' }}>
-                  <button style={{ ...s('#e8e4dc', '#3a4a3f'), padding: '4px 8px' }} onClick={() => move(i, -1)} disabled={i === 0}>â†‘</button>
-                  <button style={{ ...s('#e8e4dc', '#3a4a3f'), padding: '4px 8px' }} onClick={() => move(i, 1)} disabled={i === members.length - 1}>â†“</button>
+                  <button style={{ ...s('#e8e4dc', '#3a4a3f'), padding: '4px 8px' }} onClick={() => move(i, -1)} disabled={i === 0}>↑</button>
+                  <button style={{ ...s('#e8e4dc', '#3a4a3f'), padding: '4px 8px' }} onClick={() => move(i, 1)} disabled={i === members.length - 1}>↓</button>
                   <button style={s('#1d4ed8')} onClick={() => startEdit(i)}>Edit</button>
-                  <button style={s('#dc2626')} onClick={() => remove(i)}>âœ•</button>
+                  <button style={s('#dc2626')} onClick={() => remove(i)}>✕</button>
                 </div>
               </div>
             )}
@@ -213,7 +213,7 @@ export default function TeamEditor() {
                       reader.readAsDataURL(file)
                     }} />
                   </label>
-                  {draft.photo && <button style={s('#dc2626')} onClick={() => setDraft(d => ({ ...d, photo: undefined }))}>âœ•</button>}
+                  {draft.photo && <button style={s('#dc2626')} onClick={() => setDraft(d => ({ ...d, photo: undefined }))}>✕</button>}
                 </div>
               </div>
             </div>
@@ -247,8 +247,8 @@ export default function TeamEditor() {
               <div key={group} style={{ background: '#f9f7f3', borderRadius: 8, padding: '10px 12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <span style={{ fontSize: '.9rem', fontWeight: 500 }}>{groupLabel}</span>
                 <div style={{ display: 'flex', gap: 4 }}>
-                  <button style={{ ...s('#e8e4dc', '#3a4a3f'), padding: '4px 8px' }} onClick={() => moveSectionOrder(i, -1)} disabled={i === 0}>â†‘</button>
-                  <button style={{ ...s('#e8e4dc', '#3a4a3f'), padding: '4px 8px' }} onClick={() => moveSectionOrder(i, 1)} disabled={i === sectionOrder.length - 1}>â†“</button>
+                  <button style={{ ...s('#e8e4dc', '#3a4a3f'), padding: '4px 8px' }} onClick={() => moveSectionOrder(i, -1)} disabled={i === 0}>↑</button>
+                  <button style={{ ...s('#e8e4dc', '#3a4a3f'), padding: '4px 8px' }} onClick={() => moveSectionOrder(i, 1)} disabled={i === sectionOrder.length - 1}>↓</button>
                 </div>
               </div>
             )

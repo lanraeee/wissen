@@ -1,4 +1,4 @@
-﻿import { NextRequest, NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import sql from '@/lib/db'
 import {
   generateReference, getBankDetails, accountFor, getPledge, updatePledge,
@@ -9,7 +9,7 @@ import { sendBankTransferInstructions, sendBankTransferNotification } from '@/li
 const CURRENCIES: BankCurrency[] = ['NGN', 'USD', 'GBP', 'EUR']
 
 // Records a bank-transfer pledge and returns the reference plus the URL of the
-// page showing the account details. No money has moved at this point â€” the
+// page showing the account details. No money has moved at this point — the
 // pledge only becomes a donation (receipt + certificate) once an admin
 // confirms it landed, via /api/admin/bank-transfers.
 export async function POST(req: NextRequest) {
@@ -115,7 +115,7 @@ export async function POST(req: NextRequest) {
 
 // The donor declaring "I've sent the transfer". Advisory only: it nudges the
 // admin to go looking for the money. It deliberately does NOT issue a receipt
-// or certificate â€” only a confirmed arrival does that.
+// or certificate — only a confirmed arrival does that.
 export async function PUT(req: NextRequest) {
   const { reference } = await req.json()
   if (!reference) return NextResponse.json({ error: 'reference required' }, { status: 400 })

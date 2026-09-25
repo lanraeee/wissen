@@ -1,4 +1,4 @@
-﻿import type { Metadata } from 'next'
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import sql from '@/lib/db'
 
@@ -16,17 +16,17 @@ interface Story {
 }
 
 const FALLBACK_STORIES: Story[] = [
-  { name: 'Ose Kaye', role: 'Software Engineer', desc: 'From Ibadan to a remote tech job â€” how Ose built skills that crossed borders.' },
+  { name: 'Ose Kaye', role: 'Software Engineer', desc: 'From Ibadan to a remote tech job — how Ose built skills that crossed borders.' },
   { name: 'Emeka Nwosu', role: 'Social Entrepreneur', desc: 'The 19-year-old turning agricultural waste into income for his community.' },
   { name: 'Aisha Jarrett', role: 'Medical Student', desc: 'How mentorship helped Aisha navigate the JAMB maze and secure a scholarship.' },
-  { name: 'Toyin Adeyemi', role: 'Content Creator', desc: 'Building a digital career from Oyo State â€” no Instagram following required to start.' },
+  { name: 'Toyin Adeyemi', role: 'Content Creator', desc: 'Building a digital career from Oyo State — no Instagram following required to start.' },
   { name: 'Chidi Okafor', role: 'Policy Researcher', desc: 'How a secondary school debate club became the first step toward Oxford.' },
-  { name: 'Fatima Aliyu', role: 'Finance Analyst', desc: 'Breaking into fintech without a Lagos postcode â€” Fatima\'s remote-first story.' },
-  { name: 'Seun Bello', role: 'Product Designer', desc: 'Self-taught, NYSC posted upcountry, hired internationally â€” Seun\'s design journey.' },
+  { name: 'Fatima Aliyu', role: 'Finance Analyst', desc: 'Breaking into fintech without a Lagos postcode — Fatima\'s remote-first story.' },
+  { name: 'Seun Bello', role: 'Product Designer', desc: 'Self-taught, NYSC posted upcountry, hired internationally — Seun\'s design journey.' },
   { name: 'Ngozi Eze', role: 'Non-Profit Leader', desc: 'Turning grassroots activism into a structured NGO with national reach at 22.' },
-  { name: 'Kola Adegoke', role: 'Data Scientist', desc: 'From biology degree to data science â€” the unconventional pivot that paid off.' },
-  { name: 'Blessing Obi', role: 'Startup Founder', desc: 'The â‚¦50k that became a business â€” Blessing\'s bootstrapped success story.' },
-  { name: 'Yusuf Ibrahim', role: 'Civil Engineer', desc: 'Infrastructure dreams and international study â€” how Yusuf funded it without loans.' },
+  { name: 'Kola Adegoke', role: 'Data Scientist', desc: 'From biology degree to data science — the unconventional pivot that paid off.' },
+  { name: 'Blessing Obi', role: 'Startup Founder', desc: 'The ₦50k that became a business — Blessing\'s bootstrapped success story.' },
+  { name: 'Yusuf Ibrahim', role: 'Civil Engineer', desc: 'Infrastructure dreams and international study — how Yusuf funded it without loans.' },
 ]
 
 async function getStories(): Promise<Story[]> {
@@ -78,7 +78,7 @@ export default async function ImpactContentPage() {
         <div className="wrap">
           <div className="cta-band reveal">
             <h2>Have a story to tell?</h2>
-            <p className="lead">We&#39;re always looking for young Africans and diaspora changemakers doing extraordinary things. If that&#39;s you â€” or if you know someone whose story deserves to be heard â€” reach out.</p>
+            <p className="lead">We&#39;re always looking for young Africans and diaspora changemakers doing extraordinary things. If that&#39;s you — or if you know someone whose story deserves to be heard — reach out.</p>
             <div className="cta-actions">
               <Link href="/contact" className="btn btn--light btn--lg">Submit a story</Link>
             </div>

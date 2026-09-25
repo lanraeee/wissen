@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 
 import { useState, useEffect, useCallback } from 'react'
 import UserActions from '@/components/admin/UserActions'
@@ -62,7 +62,7 @@ export default function AdminUsers() {
           <p className="admin-page-desc">{total} total members</p>
         </div>
         <input
-          placeholder="Search name or emailâ€¦"
+          placeholder="Search name or email…"
           value={search}
           onChange={e => setSearch(e.target.value)}
           style={{ padding: '7px 12px', borderRadius: 8, border: '1px solid #d0ccc4', fontSize: '.88rem', width: 220 }}

@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 
 import { useState, useEffect } from 'react'
 import type { FoundationDetails } from '@/app/donate/receipt/[certId]/page'
@@ -26,7 +26,7 @@ const s = (bg: string, color = '#fff') => ({ padding: '6px 16px', borderRadius: 
 const FIELDS: [keyof FoundationDetails, string, string][] = [
   ['legal_name', 'Legal Foundation Name', 'Wissen-Haus Empowerment Foundation'],
   ['rc_number', 'CAC Registration Number (RC No.)', 'e.g. RC1234567'],
-  ['tax_id', 'Tax Identification Number (TIN) â€” optional', 'e.g. 1234567-0001'],
+  ['tax_id', 'Tax Identification Number (TIN) — optional', 'e.g. 1234567-0001'],
   ['address', 'Registered Address', 'Ibadan, Oyo State, Nigeria'],
   ['email', 'Official Email', 'director@wissenhaus.org'],
   ['signatory_name', 'Authorised Signatory Name', 'Benz Olagbaye'],
@@ -36,7 +36,7 @@ const FIELDS: [keyof FoundationDetails, string, string][] = [
 const INTL_FIELDS: [keyof FoundationDetails, string, string][] = [
   ['intl_legal_name', 'International Legal Entity Name', 'e.g. Wissen-Haus Foundation CIC'],
   ['intl_company_number', 'Company / Registration Number', 'e.g. Companies House number'],
-  ['intl_tax_id', 'Tax / Charity Reference â€” optional', ''],
+  ['intl_tax_id', 'Tax / Charity Reference — optional', ''],
   ['intl_address', 'Registered Address', ''],
   ['intl_email', 'Official Email', ''],
   ['intl_signatory_name', 'Authorised Signatory Name', ''],
@@ -81,12 +81,12 @@ export default function FoundationDetailsEditor() {
         </div>
         <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
           {saved && <span style={{ fontSize: '.8rem', color: '#16a34a' }}>Saved!</span>}
-          <button style={s('#1a3c2e')} onClick={save} disabled={saving}>{saving ? 'Savingâ€¦' : 'Save Details'}</button>
+          <button style={s('#1a3c2e')} onClick={save} disabled={saving}>{saving ? 'Saving…' : 'Save Details'}</button>
         </div>
       </div>
 
       <div style={{ background: '#fffdf5', border: '1px solid rgba(184,149,42,0.3)', borderRadius: 8, padding: '16px 20px', marginBottom: 20, fontSize: '.8rem', color: '#5a5a4a', lineHeight: 1.6 }}>
-        <strong style={{ color: '#0F2D1D' }}>ðŸ’¡ Important:</strong> Fill in your CAC registration number and TIN before issuing donation receipts. These are required for the receipts to be valid for tax purposes.
+        <strong style={{ color: '#0F2D1D' }}>💡 Important:</strong> Fill in your CAC registration number and TIN before issuing donation receipts. These are required for the receipts to be valid for tax purposes.
       </div>
 
       <div className="rgrid-2" style={{ gap: 14 }}>
@@ -106,7 +106,7 @@ export default function FoundationDetailsEditor() {
       </div>
 
       <div style={{ marginTop: 32, paddingTop: 20, borderTop: '1px solid #e8e4dc' }}>
-        <h3 style={{ margin: '0 0 4px', fontSize: '1rem' }}>International Entity â€” Optional</h3>
+        <h3 style={{ margin: '0 0 4px', fontSize: '1rem' }}>International Entity — Optional</h3>
         <p style={{ margin: '0 0 14px', fontSize: '.8rem', color: '#8a9a8f' }}>
           Leave blank until you register a separate international entity (e.g. a UK Community Interest Company). Once filled in, non-Naira donation receipts will be issued under these details instead of the Nigerian entity above.
         </p>

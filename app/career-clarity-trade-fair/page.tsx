@@ -1,4 +1,4 @@
-﻿import type { Metadata } from 'next'
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import Image from 'next/image'
 
@@ -16,7 +16,7 @@ export default function BootcampPage() {
             <div className="reveal">
               <span className="eyebrow">Programmes · Career Clarity Fair</span>
               <h1 className="display-lg mt-s">Career Clarity Fair</h1>
-              <p className="lead mt-m">A one-day career exploration fair open to all secondary school students in Ibadan â€” from JS1 to SS3. Meet real professionals, explore careers you&#39;ve never heard of, and leave with a clear direction.</p>
+              <p className="lead mt-m">A one-day career exploration fair open to all secondary school students in Ibadan — from JS1 to SS3. Meet real professionals, explore careers you&#39;ve never heard of, and leave with a clear direction.</p>
               <div className="hero-cta mt-m">
                 <Link href="/volunteer" className="btn btn--lg">Bring it to your school</Link>
                 <Link href="/donate" className="btn btn--ghost">Support the Fair</Link>
@@ -41,7 +41,7 @@ export default function BootcampPage() {
             <div className="feature reveal">
               <div className="feature__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M3 7l9-4 9 4-9 4-9-4z" /><path d="M6 12v4c0 1 2.7 3 6 3s6-2 6-3v-4" /></svg></div>
               <h3>All Secondary School Students</h3>
-              <p>From JS1 to SS3 â€” whether you&apos;re choosing subjects, thinking about university, or taking your first career steps. The earlier, the better.</p>
+              <p>From JS1 to SS3 — whether you&apos;re choosing subjects, thinking about university, or taking your first career steps. The earlier, the better.</p>
             </div>
             <div className="feature reveal" data-d="1">
               <div className="feature__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><circle cx="9" cy="8" r="3.2" /><path d="M3.5 20a5.5 5.5 0 0 1 11 0" /><path d="M16 5.5a3.2 3.2 0 0 1 0 6M17.5 20a5.5 5.5 0 0 0-3-4.9" /></svg></div>
@@ -92,7 +92,7 @@ export default function BootcampPage() {
         <div className="wrap">
           <div className="cta-band reveal">
             <h2>Bring the Career Clarity Fair to your school.</h2>
-            <p className="lead">We partner with schools across Ibadan and beyond. If you&#39;re a teacher, administrator, or parent â€” reach out and let&#39;s talk.</p>
+            <p className="lead">We partner with schools across Ibadan and beyond. If you&#39;re a teacher, administrator, or parent — reach out and let&#39;s talk.</p>
             <div className="cta-actions">
               <Link href="/partner" className="btn btn--light btn--lg">Partner with us</Link>
               <Link href="/donate" className="btn btn--outline-light btn--lg">Sponsor the Fair</Link>

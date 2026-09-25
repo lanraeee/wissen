@@ -1,11 +1,11 @@
-﻿import type { Metadata } from 'next'
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import Image from 'next/image'
 import DonateWidget from '@/components/DonateWidget'
 
 export const metadata: Metadata = {
   title: 'Donation Drive: Series 1 · Career Clarity Fair · Wissen-Haus',
-  description: 'Help us deliver the Career Clarity Fair to 500â€“1,000 students in Ibadan on 5 December 2026. Our first public donation drive â€” fund the event that changes what young Nigerians believe is possible.',
+  description: 'Help us deliver the Career Clarity Fair to 500–1,000 students in Ibadan on 5 December 2026. Our first public donation drive — fund the event that changes what young Nigerians believe is possible.',
 }
 
 const ARROW = (
@@ -20,9 +20,9 @@ const CHECK = (
   </svg>
 )
 
-// 5 December 2026 â€” days from 7 September 2026
+// 5 December 2026 — days from 7 September 2026
 const DAYS_LEFT = 89
-const STUDENTS_TARGET = '500â€“1,000'
+const STUDENTS_TARGET = '500–1,000'
 const SCHOOLS = '3+'
 const SECTORS = '15+'
 
@@ -30,52 +30,52 @@ const STAGES = [
   {
     n: '1',
     title: 'Reach',
-    desc: 'Animated content screened in front of 500â€“1,000 Ibadan students â€” JSS1 through SS3 â€” in a single day, in one room.',
+    desc: 'Animated content screened in front of 500–1,000 Ibadan students — JSS1 through SS3 — in a single day, in one room.',
     color: '#E0A83E',
   },
   {
     n: '2',
     title: 'Engage',
-    desc: 'Watch, quiz, discuss, create. Six touchpoints with the same content â€” not passive viewing, but participation that leaves something behind.',
+    desc: 'Watch, quiz, discuss, create. Six touchpoints with the same content — not passive viewing, but participation that leaves something behind.',
     color: '#2C7A4B',
   },
   {
     n: '3',
     title: 'Learn',
-    desc: 'Every activity is tied to named learning outcomes agreed with our partners â€” cultural identity, self-belief, aspiration, resilience.',
+    desc: 'Every activity is tied to named learning outcomes agreed with our partners — cultural identity, self-belief, aspiration, resilience.',
     color: '#1E5E3B',
   },
   {
     n: '4',
     title: 'Measure',
-    desc: 'Before, during, and after. Student voice captured as evidence â€” the same children measured at each stage with a consistent instrument.',
+    desc: 'Before, during, and after. Student voice captured as evidence — the same children measured at each stage with a consistent instrument.',
     color: '#16452C',
   },
   {
     n: '5',
     title: 'Extend',
-    desc: 'The Fair produces an Impact Snapshot: a co-branded report on what the content did â€” evidence that opens the door to Ibadan school activations and further funding.',
+    desc: 'The Fair produces an Impact Snapshot: a co-branded report on what the content did — evidence that opens the door to Ibadan school activations and further funding.',
     color: '#0F2D1D',
   },
 ]
 
 const BUDGET_LINES = [
-  { item: 'Student resource packs (Passport, Workbook, Action Card, Badge)', amount: 'â‚¦15,000,000' },
-  { item: 'Facilitator & volunteer coordination, transport', amount: 'â‚¦9,500,000' },
-  { item: 'Event environment â€” signage, banners, stage backdrop', amount: 'â‚¦7,500,000' },
-  { item: 'Measurement tools â€” pre/during/after surveys, quiz printing', amount: 'â‚¦6,000,000' },
-  { item: 'Photography & videography â€” student voice capture', amount: 'â‚¦8,000,000' },
-  { item: 'Logistics & contingency', amount: 'â‚¦4,000,000' },
+  { item: 'Student resource packs (Passport, Workbook, Action Card, Badge)', amount: '₦15,000,000' },
+  { item: 'Facilitator & volunteer coordination, transport', amount: '₦9,500,000' },
+  { item: 'Event environment — signage, banners, stage backdrop', amount: '₦7,500,000' },
+  { item: 'Measurement tools — pre/during/after surveys, quiz printing', amount: '₦6,000,000' },
+  { item: 'Photography & videography — student voice capture', amount: '₦8,000,000' },
+  { item: 'Logistics & contingency', amount: '₦4,000,000' },
 ]
 
 const FAQ = [
   {
     q: 'What exactly is the Career Clarity Fair?',
-    a: 'A one-day career discovery marketplace for secondary school students in Ibadan â€” hands-on exploration across 15+ career sectors, in three age-appropriate tracks (JSS1â€“JSS2, JSS3, SS1â€“SS3). Design principle: 70% hands-on participation, 30% talks. Scheduled for Saturday 5 December 2026.',
+    a: 'A one-day career discovery marketplace for secondary school students in Ibadan — hands-on exploration across 15+ career sectors, in three age-appropriate tracks (JSS1–JSS2, JSS3, SS1–SS3). Design principle: 70% hands-on participation, 30% talks. Scheduled for Saturday 5 December 2026.',
   },
   {
     q: 'Who is the animation studio partner and what role do they play?',
-    a: 'Our animation studio partner (name withheld until the partnership is fully confirmed) is a Nigerian animation studio. At the Fair, their content becomes the centrepiece of a designed activation â€” a screening with guided discussion, built around a confidence-building challenge where students publicly name one thing they believe they can do.',
+    a: 'Our animation studio partner (name withheld until the partnership is fully confirmed) is a Nigerian animation studio. At the Fair, their content becomes the centrepiece of a designed activation — a screening with guided discussion, built around a confidence-building challenge where students publicly name one thing they believe they can do.',
   },
   {
     q: 'What does my donation specifically fund?',
@@ -83,14 +83,14 @@ const FAQ = [
   },
   {
     q: 'Will I receive an update on impact?',
-    a: 'Yes. After the Fair (December 2026 â€“ January 2027), we publish the Career Clarity Fair Impact Snapshot â€” measuring reach, student engagement, learning outcomes, and student voice. All donors will receive this report. Donors of â‚¦50,000 or more receive a personalised acknowledgement.',
+    a: 'Yes. After the Fair (December 2026 – January 2027), we publish the Career Clarity Fair Impact Snapshot — measuring reach, student engagement, learning outcomes, and student voice. All donors will receive this report. Donors of ₦50,000 or more receive a personalised acknowledgement.',
   },
 ]
 
 export default function DonationDriveSeries1Page() {
   return (
     <>
-      {/* â”€â”€ Hero â”€â”€ */}
+      {/* ── Hero ── */}
       <section className="section section--tight panel-dark" style={{ paddingTop: 'clamp(48px,6vw,84px)' }}>
         <div className="wrap">
           <div className="rgrid-hero" style={{ gap: 'clamp(40px,6vw,72px)', alignItems: 'center' }}>
@@ -107,14 +107,14 @@ export default function DonationDriveSeries1Page() {
               </div>
 
               <h1 className="display-lg" style={{ color: '#fff', lineHeight: .95, marginBottom: '1rem' }}>
-                500â€“1,000 Ibadan<br />students.<br />
+                500–1,000 Ibadan<br />students.<br />
                 <span style={{ color: 'var(--gold)' }}>5 December 2026.</span>
               </h1>
 
               <p className="lead" style={{ color: 'rgba(244,240,231,.78)', maxWidth: 540 }}>
                 The Career Clarity Fair is happening. One day. One campus in Ibadan.
                 Fifteen career sectors. Three age tracks. Hands-on career discovery for every
-                secondary student who walks through the door â€” free.
+                secondary student who walks through the door — free.
               </p>
               <p style={{ color: 'rgba(244,240,231,.55)', fontSize: '.95rem', lineHeight: 1.65, marginTop: '.85rem', maxWidth: 520 }}>
                 This campaign funds the student materials, facilitators, event environment and
@@ -136,7 +136,7 @@ export default function DonationDriveSeries1Page() {
                 { num: STUDENTS_TARGET, lbl: 'Students expected', sub: 'JSS1 through SS3' },
                 { num: SCHOOLS, lbl: 'Partner schools', sub: 'Ibadan, Oyo State' },
                 { num: SECTORS, lbl: 'Career sectors', sub: 'Represented on the day' },
-                { num: '1 day', lbl: '5 December 2026', sub: '8:00am â€“ 5:00pm' },
+                { num: '1 day', lbl: '5 December 2026', sub: '8:00am – 5:00pm' },
               ].map(({ num, lbl, sub }, i) => (
                 <div key={lbl} style={{
                   paddingBlock: 16,
@@ -154,7 +154,7 @@ export default function DonationDriveSeries1Page() {
 
       <div className="pattern-edge" aria-hidden="true" />
 
-      {/* â”€â”€ Event overview â”€â”€ */}
+      {/* ── Event overview ── */}
       <section className="section section--tight" id="event">
         <div className="wrap">
           <div className="split" style={{ gap: 'clamp(40px,6vw,80px)', alignItems: 'center' }}>
@@ -172,7 +172,7 @@ export default function DonationDriveSeries1Page() {
               }}>
                 <div style={{ fontSize: '.65rem', letterSpacing: '.18em', textTransform: 'uppercase', color: 'var(--gold)', marginBottom: 4 }}>Date confirmed</div>
                 <div style={{ fontFamily: 'var(--ff-display)', fontWeight: 900, fontSize: '1.1rem' }}>Saturday 5 December 2026</div>
-                <div style={{ fontSize: '.72rem', color: 'rgba(255,255,255,.55)', marginTop: 3 }}>Ibadan, Oyo State · 8:00am â€“ 5:00pm</div>
+                <div style={{ fontSize: '.72rem', color: 'rgba(255,255,255,.55)', marginTop: 3 }}>Ibadan, Oyo State · 8:00am – 5:00pm</div>
               </div>
             </div>
 
@@ -182,7 +182,7 @@ export default function DonationDriveSeries1Page() {
               <p className="lead mt-m">
                 The Career Clarity Fair is a full-day career discovery marketplace for secondary
                 students in Ibadan. Hands-on exploration across 15+ sectors, in three age-appropriate
-                tracks. Students do â€” they do not sit and listen.
+                tracks. Students do — they do not sit and listen.
               </p>
               <p style={{ color: 'var(--ink-60)', lineHeight: 1.65, marginTop: '1rem' }}>
                 Hosted on a partner school campus, provided in-kind. Schools recruited and
@@ -193,7 +193,7 @@ export default function DonationDriveSeries1Page() {
               <div className="rgrid-2" style={{ gap: 14, marginTop: '1.75rem' }}>
                 {[
                   { label: 'Design', value: '70% hands-on, 30% talks' },
-                  { label: 'Age tracks', value: 'JSS1â€“JSS2 · JSS3 · SS1â€“SS3' },
+                  { label: 'Age tracks', value: 'JSS1–JSS2 · JSS3 · SS1–SS3' },
                   { label: 'Entry', value: 'Free for every student' },
                   { label: 'Venue', value: 'Partner campus, Ibadan' },
                 ].map(({ label, value }) => (
@@ -216,12 +216,12 @@ export default function DonationDriveSeries1Page() {
         </div>
       </section>
 
-      {/* â”€â”€ Content Partnership (partner name withheld pending confirmation) â”€â”€ */}
+      {/* ── Content Partnership (partner name withheld pending confirmation) ── */}
       <section className="section" style={{ background: 'var(--cream-2)' }}>
         <div className="wrap">
           <div className="section-head center mb-l reveal">
             <span className="eyebrow">Featured Partnership</span>
-            <h2>Career Clarity Fair Ã— Animation Studio Partner</h2>
+            <h2>Career Clarity Fair × Animation Studio Partner</h2>
             <p className="lead mt-m" style={{ maxWidth: 640, marginInline: 'auto' }}>
               We are not screening their films and moving on. We have designed a multi-stage
               activation that starts with content and ends with measurable evidence of what it did.
@@ -241,7 +241,7 @@ export default function DonationDriveSeries1Page() {
               </div>
               <h3 style={{ color: '#fff', marginBottom: 12, lineHeight: 1.05 }}>Animation Studio Partner</h3>
               <p style={{ color: 'rgba(244,240,231,.75)', lineHeight: 1.65, fontSize: '.95rem' }}>
-                Our partner brings youth-focused animated storytelling to the Fair â€” content chosen
+                Our partner brings youth-focused animated storytelling to the Fair — content chosen
                 to build cultural pride and self-belief. Hundreds of students. One day to understand
                 what happens after they watch it.
               </p>
@@ -249,7 +249,7 @@ export default function DonationDriveSeries1Page() {
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               {[
                 'Animated content screening with guided discussion',
-                'Confidence Challenge â€” students name one thing they believe they can do',
+                'Confidence Challenge — students name one thing they believe they can do',
                 'Creative response captured and celebrated on the day',
               ].map(t => (
                 <div key={t} style={{ display: 'flex', gap: 10, alignItems: 'flex-start', color: 'rgba(244,240,231,.8)', fontSize: '.9rem', lineHeight: 1.5 }}>
@@ -295,7 +295,7 @@ export default function DonationDriveSeries1Page() {
         </div>
       </section>
 
-      {/* â”€â”€ Impact what donors fund â”€â”€ */}
+      {/* ── Impact what donors fund ── */}
       <section className="section section--tight">
         <div className="wrap">
           <div className="split" style={{ gap: 'clamp(40px,6vw,80px)', alignItems: 'flex-start' }}>
@@ -325,7 +325,7 @@ export default function DonationDriveSeries1Page() {
                   background: 'var(--green-800)',
                 }}>
                   <span style={{ fontFamily: 'var(--ff-display)', fontWeight: 800, color: '#fff', fontSize: '1rem' }}>Total campaign target</span>
-                  <span style={{ fontFamily: 'var(--ff-display)', fontWeight: 900, fontSize: '1.1rem', color: 'var(--gold)' }}>â‚¦50,000,000</span>
+                  <span style={{ fontFamily: 'var(--ff-display)', fontWeight: 900, fontSize: '1.1rem', color: 'var(--gold)' }}>₦50,000,000</span>
                 </div>
               </div>
             </div>
@@ -334,7 +334,7 @@ export default function DonationDriveSeries1Page() {
               <span className="eyebrow">The Impact</span>
               <h2 className="mt-s">What the day produces.</h2>
               <p style={{ color: 'var(--ink-60)', marginTop: '1rem', lineHeight: 1.65 }}>
-                After the Fair, we publish the <strong>Career Clarity Fair Impact Snapshot</strong> â€”
+                After the Fair, we publish the <strong>Career Clarity Fair Impact Snapshot</strong> —
                 a report both organisations can use with funders, brands, and school
                 partners.
               </p>
@@ -368,23 +368,23 @@ export default function DonationDriveSeries1Page() {
         </div>
       </section>
 
-      {/* â”€â”€ Donate â”€â”€ */}
+      {/* ── Donate ── */}
       <section className="section" id="give" style={{ background: 'var(--cream-2)' }}>
         <div className="wrap">
           <div className="section-head center mb-l reveal">
             <span className="eyebrow">Give Now</span>
             <h2>Fund a student&apos;s day.</h2>
             <p className="lead mt-m" style={{ maxWidth: 560, marginInline: 'auto' }}>
-              Give by card or direct bank transfer, in Naira, Dollars, Pounds or Euros. Card payments are processed securely by Stripe. Every contribution â€” of any size â€” fills a seat at the Fair.
+              Give by card or direct bank transfer, in Naira, Dollars, Pounds or Euros. Card payments are processed securely by Stripe. Every contribution — of any size — fills a seat at the Fair.
             </p>
           </div>
 
           {/* Illustrative equivalents */}
           <div className="rgrid-3" style={{ gap: 12, maxWidth: 680, margin: '0 auto 2.5rem', textAlign: 'center' }}>
             {[
-              { amount: 'â‚¦15,000', equiv: 'A student\'s workbook, passport & action card' },
-              { amount: 'â‚¦60,000', equiv: 'All materials for four students for the full day' },
-              { amount: 'â‚¦50,000', equiv: 'Sponsors one facilitator\'s transport and day rate' },
+              { amount: '₦15,000', equiv: 'A student\'s workbook, passport & action card' },
+              { amount: '₦60,000', equiv: 'All materials for four students for the full day' },
+              { amount: '₦50,000', equiv: 'Sponsors one facilitator\'s transport and day rate' },
             ].map(({ amount, equiv }) => (
               <div key={amount} className="reveal" style={{
                 background: '#fff', border: '1px solid var(--line)',
@@ -403,14 +403,14 @@ export default function DonationDriveSeries1Page() {
             <p style={{ color: 'var(--ink-60)', marginBottom: '.75rem', fontSize: '.9rem' }}>
               Corporate sponsorships and named partnerships available.
             </p>
-            <a href="mailto:director@wissenhaus.org?subject=Career Clarity Fair â€” Sponsorship Enquiry" className="textlink">
+            <a href="mailto:director@wissenhaus.org?subject=Career Clarity Fair — Sponsorship Enquiry" className="textlink">
               Contact director@wissenhaus.org {ARROW}
             </a>
           </div>
         </div>
       </section>
 
-      {/* â”€â”€ Accountability â”€â”€ */}
+      {/* ── Accountability ── */}
       <section className="section panel-dark">
         <div className="wrap">
           <div className="section-head mb-l reveal">
@@ -427,12 +427,12 @@ export default function DonationDriveSeries1Page() {
               {
                 icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z" strokeLinecap="round" strokeLinejoin="round" /></svg>,
                 title: 'Impact Snapshot',
-                desc: 'After the Fair, all donors receive the Career Clarity Fair Impact Snapshot â€” real numbers, real student voices.',
+                desc: 'After the Fair, all donors receive the Career Clarity Fair Impact Snapshot — real numbers, real student voices.',
               },
               {
                 icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><rect x="3" y="11" width="18" height="11" rx="2" /><path d="M7 11V7a5 5 0 0110 0v4" strokeLinecap="round" /></svg>,
                 title: 'Secure Payments',
-                desc: 'Processed by Stripe â€” PCI-compliant and encrypted, for Naira, Dollar and Pound gifts alike. Payment details never stored by Wissen-Haus.',
+                desc: 'Processed by Stripe — PCI-compliant and encrypted, for Naira, Dollar and Pound gifts alike. Payment details never stored by Wissen-Haus.',
               },
             ].map((f, i) => (
               <div key={f.title} className="feature reveal" data-d={i > 0 ? String(i) : undefined}>
@@ -445,7 +445,7 @@ export default function DonationDriveSeries1Page() {
         </div>
       </section>
 
-      {/* â”€â”€ FAQ â”€â”€ */}
+      {/* ── FAQ ── */}
       <section className="section section--tight">
         <div className="wrap" style={{ maxWidth: 760 }}>
           <div className="section-head center mb-l reveal">
@@ -470,7 +470,7 @@ export default function DonationDriveSeries1Page() {
         </div>
       </section>
 
-      {/* â”€â”€ Final CTA â”€â”€ */}
+      {/* ── Final CTA ── */}
       <section className="section section--tight" style={{ background: 'var(--cream-2)' }}>
         <div className="wrap">
           <div className="cta-band reveal" style={{ textAlign: 'center' }}>

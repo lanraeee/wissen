@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 
 import { useState, useEffect } from 'react'
 
@@ -6,7 +6,7 @@ interface Thread { title: string; author: string; replies: number; tag: string }
 
 const DEFAULTS: Thread[] = [
   { title: 'How do I get my first remote job with no experience?', author: 'Adaeze O.', replies: 12, tag: 'Jobs' },
-  { title: "Share your JAMB score and what you studied â€” let's see the range!", author: 'Kola A.', replies: 34, tag: 'Education' },
+  { title: "Share your JAMB score and what you studied — let's see the range!", author: 'Kola A.', replies: 34, tag: 'Education' },
   { title: 'Best free resources to learn Python in 2025', author: 'Emeka N.', replies: 8, tag: 'Tech' },
   { title: "I got a scholarship! Here's what I learned from the application process", author: 'Fatima A.', replies: 21, tag: 'Scholarships' },
   { title: 'Anyone else using AI tools to improve their CV?', author: 'Seun B.', replies: 15, tag: 'Career' },
@@ -58,7 +58,7 @@ export default function ThreadsEditor() {
         <h2 style={{ margin: 0, fontSize: '1.1rem' }}>Community Threads</h2>
         <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
           {saved && <span style={{ fontSize: '.8rem', color: '#16a34a' }}>Saved!</span>}
-          <button onClick={save} disabled={saving} style={{ padding: '7px 16px', borderRadius: 7, fontSize: '.82rem', fontWeight: 600, background: '#1a3c2e', color: '#fff', border: 'none', cursor: 'pointer' }}>{saving ? 'Savingâ€¦' : 'Save Changes'}</button>
+          <button onClick={save} disabled={saving} style={{ padding: '7px 16px', borderRadius: 7, fontSize: '.82rem', fontWeight: 600, background: '#1a3c2e', color: '#fff', border: 'none', cursor: 'pointer' }}>{saving ? 'Saving…' : 'Save Changes'}</button>
         </div>
       </div>
 
@@ -99,7 +99,7 @@ export default function ThreadsEditor() {
                 </div>
                 <div style={{ display: 'flex', gap: 5 }}>
                   <button style={s('#1d4ed8')} onClick={() => { setEditing(i); setDraft(t) }}>Edit</button>
-                  <button style={s('#dc2626')} onClick={() => remove(i)}>âœ•</button>
+                  <button style={s('#dc2626')} onClick={() => remove(i)}>✕</button>
                 </div>
               </div>
             )}

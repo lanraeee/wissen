@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 
 import { useState } from 'react'
 
@@ -88,7 +88,7 @@ export default function IssueCert({ onRefresh }: { onRefresh: () => void }) {
             disabled={busy}
             style={{ padding: '8px 18px', borderRadius: 8, fontSize: '.85rem', fontWeight: 600, background: '#1a3c2e', color: '#fff', border: 'none', cursor: busy ? 'not-allowed' : 'pointer', opacity: busy ? .7 : 1 }}
           >
-            {busy ? 'Issuingâ€¦' : 'Issue Certificate'}
+            {busy ? 'Issuing…' : 'Issue Certificate'}
           </button>
         </div>
       </form>

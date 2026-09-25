@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 
 import { useState, useEffect } from 'react'
 
@@ -37,7 +37,7 @@ export default function OpportunityGrid({ type, showFilter = true }: Props) {
   }, [type, localOnly])
 
   const typeIcon: Record<string, string> = {
-    job: 'ðŸ’¼', internship: 'ðŸŽ“', scholarship: 'ðŸ†', competition: 'âš¡'
+    job: '💼', internship: '🎓', scholarship: '🏆', competition: '⚡'
   }
 
   return (
@@ -50,7 +50,7 @@ export default function OpportunityGrid({ type, showFilter = true }: Props) {
       )}
 
       {loading ? (
-        <div style={{ textAlign: 'center', padding: '3rem', color: 'var(--ink-60)' }}>Loading opportunitiesâ€¦</div>
+        <div style={{ textAlign: 'center', padding: '3rem', color: 'var(--ink-60)' }}>Loading opportunities…</div>
       ) : opps.length === 0 ? (
         <div style={{ textAlign: 'center', padding: '3rem', color: 'var(--ink-60)' }}>
           <p>No opportunities found. Check back soon!</p>
@@ -67,7 +67,7 @@ export default function OpportunityGrid({ type, showFilter = true }: Props) {
               data-opp-type={opp.type}
             >
               <div className="card__body">
-                <span className="card__num">{typeIcon[opp.type] || 'ðŸ“Œ'} {opp.type.charAt(0).toUpperCase() + opp.type.slice(1)}</span>
+                <span className="card__num">{typeIcon[opp.type] || '📌'} {opp.type.charAt(0).toUpperCase() + opp.type.slice(1)}</span>
                 <h3 className="h4" style={{ marginTop: '.4rem' }}>{opp.title}</h3>
                 {opp.company && opp.company !== 'N/A' && (
                   <p style={{ fontSize: '.9rem', color: 'var(--ink-60)', marginTop: '.2rem' }}>{opp.company}</p>

@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 
 import { useState } from 'react'
 import Link from 'next/link'
@@ -46,7 +46,7 @@ export default function ForgotPasswordPage() {
                 If an account exists for <strong>{email}</strong>, we&#39;ve sent a link to reset your password. It expires in 1 hour.
               </p>
               <div style={{ textAlign: 'center', marginTop: 24 }}>
-                <Link href="/login?mode=login" style={{ color: 'var(--green-800)', fontSize: '.9rem', fontWeight: 600 }}>â† Back to Sign In</Link>
+                <Link href="/login?mode=login" style={{ color: 'var(--green-800)', fontSize: '.9rem', fontWeight: 600 }}>← Back to Sign In</Link>
               </div>
             </>
           ) : (
@@ -66,10 +66,10 @@ export default function ForgotPasswordPage() {
                   <input id="fp-email" type="email" required placeholder="you@example.com" value={email} onChange={e => setEmail(e.target.value)} />
                 </div>
                 <button type="submit" className="btn btn--block" disabled={status === 'loading'} style={{ marginTop: 8 }}>
-                  {status === 'loading' ? 'Sendingâ€¦' : 'Send reset link'}
+                  {status === 'loading' ? 'Sending…' : 'Send reset link'}
                 </button>
                 <div style={{ textAlign: 'center', marginTop: 20 }}>
-                  <Link href="/login?mode=login" style={{ color: 'var(--green-800)', fontSize: '.85rem' }}>â† Back to Sign In</Link>
+                  <Link href="/login?mode=login" style={{ color: 'var(--green-800)', fontSize: '.85rem' }}>← Back to Sign In</Link>
                 </div>
               </form>
             </>

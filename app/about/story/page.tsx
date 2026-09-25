@@ -1,4 +1,4 @@
-﻿import type { Metadata } from 'next'
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import Image from 'next/image'
 
@@ -16,7 +16,7 @@ export default function AboutStoryPage() {
             <div className="reveal">
               <span className="eyebrow">Our Story</span>
               <h1 className="display-lg mt-s">Building the bridge young Africans and the diaspora deserve.</h1>
-              <p className="lead mt-m">We started small in Ibadan, Nigeriaâ€”mentoring and counselling young people one by one, seeing firsthand how transformative real guidance can be. What we discovered is that this problem is bigger than one country or one person can solve. So we&#39;re building Wissen-Haus to scale what we&#39;ve learned and help thousands of talented young peopleâ€”across Nigeria, Africa, and the diasporaâ€”access the opportunities that should be available to everyone.</p>
+              <p className="lead mt-m">We started small in Ibadan, Nigeria—mentoring and counselling young people one by one, seeing firsthand how transformative real guidance can be. What we discovered is that this problem is bigger than one country or one person can solve. So we&#39;re building Wissen-Haus to scale what we&#39;ve learned and help thousands of talented young people—across Nigeria, Africa, and the diaspora—access the opportunities that should be available to everyone.</p>
             </div>
             <div className="split__media reveal" data-d="1">
               <Image src="/img/about-hero.jpg" alt="Wissen-Haus students and mentors" fill style={{ objectFit: 'cover' }} />
@@ -52,9 +52,9 @@ export default function AboutStoryPage() {
             </div>
             <div className="reveal" data-d="1">
               <p className="lead">We&#39;ve learned from mentoring 50+ young people that real transformation happens through three things:</p>
-              <p className="lead mt-m"><strong style={{ color: '#fff' }}>Career Clarity Fair</strong> â€” Intensive, practical training in the skills employers actually need. Not textbooks. Real tools for landing jobs and building careers.</p>
-              <p className="lead mt-m"><strong style={{ color: '#fff' }}>Opportunity Blueprint Podcast</strong> â€” Direct access to the stories of people who&#39;ve built what you dream about. Proof that it&#39;s possible. Inspiration that sticks.</p>
-              <p className="lead mt-m"><strong style={{ color: '#fff' }}>Community &amp; Mentorship</strong> â€” A network where you&#39;re not alone. Real mentors. Real peers. Real accountability. This is where lasting change happens.</p>
+              <p className="lead mt-m"><strong style={{ color: '#fff' }}>Career Clarity Fair</strong> — Intensive, practical training in the skills employers actually need. Not textbooks. Real tools for landing jobs and building careers.</p>
+              <p className="lead mt-m"><strong style={{ color: '#fff' }}>Opportunity Blueprint Podcast</strong> — Direct access to the stories of people who&#39;ve built what you dream about. Proof that it&#39;s possible. Inspiration that sticks.</p>
+              <p className="lead mt-m"><strong style={{ color: '#fff' }}>Community &amp; Mentorship</strong> — A network where you&#39;re not alone. Real mentors. Real peers. Real accountability. This is where lasting change happens.</p>
               <p className="lead mt-m">We&#39;re just getting started. Every person we mentor teaches us how to build this better. Every success story shows us we&#39;re on the right path.</p>
             </div>
           </div>
@@ -65,7 +65,7 @@ export default function AboutStoryPage() {
         <div className="wrap">
           <div className="section-head mb-l reveal">
             <span className="eyebrow">Our Approach</span>
-            <h2>Three things set us apartâ€”and why they matter.</h2>
+            <h2>Three things set us apart—and why they matter.</h2>
           </div>
           <div className="grid grid-3">
             <div className="feature reveal">
@@ -73,7 +73,7 @@ export default function AboutStoryPage() {
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M12 3l2.2 5.5L20 9l-4.4 3.6L17 18l-5-3-5 3 1.4-5.4L4 9l5.8-.5z" /></svg>
               </div>
               <h3>Skills That Get Jobs</h3>
-              <p>Not theory. We teach what employers actually hire forâ€”communication, problem-solving, leadershipâ€”because classroom skills alone won&#39;t cut it.</p>
+              <p>Not theory. We teach what employers actually hire for—communication, problem-solving, leadership—because classroom skills alone won&#39;t cut it.</p>
             </div>
             <div className="feature reveal" data-d="1">
               <div className="feature__ic">

@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 
 import { useState, useEffect, useCallback } from 'react'
 import RevokeCert from '@/components/admin/RevokeCert'
@@ -52,7 +52,7 @@ export default function AdminCourses() {
   const th = (label: string) => <th>{label}</th>
   const section = (title: string, sub: string) => (
     <h3 className="admin-section-title" style={{ marginBottom: 14 }}>
-      {title} <span style={{ fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>â€” {sub}</span>
+      {title} <span style={{ fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>— {sub}</span>
     </h3>
   )
 

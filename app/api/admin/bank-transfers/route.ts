@@ -1,4 +1,4 @@
-﻿import { NextRequest, NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import sql from '@/lib/db'
 import { adminGuard } from '@/lib/admin-guard'
 import { getPledge, updatePledge } from '@/lib/bank-transfer'
@@ -19,7 +19,7 @@ export async function GET() {
 // where a bank transfer becomes a real donation: recordDonation issues the
 // certificate and sends the same receipt and admin notification a card
 // donation would, so the donor's experience from here on is identical.
-// Idempotent â€” recordDonation and the certificate issuer both no-op on a
+// Idempotent — recordDonation and the certificate issuer both no-op on a
 // reference that has already been recorded.
 export async function POST(req: NextRequest) {
   if (!await adminGuard()) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })

@@ -1,4 +1,4 @@
-﻿import type { Metadata } from 'next'
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import StreakBadge from '@/components/StreakBadge'
 import ThreadsClient from '@/components/ThreadsClient'
@@ -6,7 +6,7 @@ import sql from '@/lib/db'
 
 export const metadata: Metadata = {
   title: 'Discussion Threads · Wissen-Haus Community',
-  description: 'Discuss, share wins, ask questions â€” the Wissen-Haus community discussion board.',
+  description: 'Discuss, share wins, ask questions — the Wissen-Haus community discussion board.',
 }
 
 interface WAPost { text: string; date: string; image?: string }
@@ -84,7 +84,7 @@ export default async function ThreadsPage() {
               </div>
               <div>
                 <div style={{ color: '#fff', fontWeight: 700, fontSize: '1rem', lineHeight: 1.2 }}>{wa?.name ?? 'Wissen-Haus'} on WhatsApp</div>
-                <div style={{ color: 'rgba(255,255,255,0.75)', fontSize: '.82rem', marginTop: 3 }}>{wa?.description ?? 'Career tips, opportunities and community updates â€” straight from the team.'}</div>
+                <div style={{ color: 'rgba(255,255,255,0.75)', fontSize: '.82rem', marginTop: 3 }}>{wa?.description ?? 'Career tips, opportunities and community updates — straight from the team.'}</div>
               </div>
             </div>
             <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: '#25D366', color: '#fff', padding: '10px 20px', borderRadius: 99, fontSize: '.85rem', fontWeight: 700, flexShrink: 0, boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }}>

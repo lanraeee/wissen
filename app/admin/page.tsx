@@ -1,4 +1,4 @@
-﻿import type { Metadata } from 'next'
+import type { Metadata } from 'next'
 import sql from '@/lib/db'
 import { getSession } from '@/lib/auth'
 
@@ -100,7 +100,7 @@ export default async function AdminDashboard() {
               </div>
             ))}
             <div style={{ padding: '10px 16px', borderTop: '1px solid #f0ece4' }}>
-              <a href="/admin/users" style={{ fontSize: '.82rem', color: '#1a3c2e', fontWeight: 600 }}>View all users â†’</a>
+              <a href="/admin/users" style={{ fontSize: '.82rem', color: '#1a3c2e', fontWeight: 600 }}>View all users →</a>
             </div>
           </div>
         </div>
@@ -126,7 +126,7 @@ export default async function AdminDashboard() {
               )
             })}
             <div style={{ padding: '10px 16px', borderTop: '1px solid #f0ece4' }}>
-              <a href="/admin/submissions" style={{ fontSize: '.82rem', color: '#1a3c2e', fontWeight: 600 }}>View all submissions â†’</a>
+              <a href="/admin/submissions" style={{ fontSize: '.82rem', color: '#1a3c2e', fontWeight: 600 }}>View all submissions →</a>
             </div>
           </div>
         </div>

@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
@@ -116,7 +116,7 @@ export default function ThreadsClient({
               <textarea
                 value={body}
                 onChange={e => setBody(e.target.value)}
-                placeholder="Share more detailâ€¦"
+                placeholder="Share more detail…"
                 rows={5}
                 maxLength={5000}
                 style={{ width: '100%', padding: '9px 12px', fontSize: '.88rem', border: '1px solid var(--line)', borderRadius: 8, resize: 'vertical', fontFamily: 'inherit', boxSizing: 'border-box', outline: 'none' }}
@@ -126,7 +126,7 @@ export default function ThreadsClient({
             {error && <p style={{ margin: 0, color: '#dc2626', fontSize: '.82rem' }}>{error}</p>}
             <div style={{ display: 'flex', gap: 8 }}>
               <button onClick={post} disabled={posting || !title.trim() || !body.trim()} className="btn" style={{ opacity: posting ? 0.7 : 1 }}>
-                {posting ? 'Postingâ€¦' : 'Post Thread'}
+                {posting ? 'Posting…' : 'Post Thread'}
               </button>
               <button onClick={() => { setShowForm(false); setError('') }} style={{ padding: '8px 16px', borderRadius: 8, fontSize: '.85rem', background: 'none', border: '1px solid var(--line)', cursor: 'pointer', color: 'var(--ink-60)' }}>
                 Cancel
@@ -150,7 +150,7 @@ export default function ThreadsClient({
                 onMouseLeave={e => (e.currentTarget.style.background = 'var(--paper)')}>
                 <div style={{ flex: 1, minWidth: 200 }}>
                   <div style={{ display: 'flex', gap: '.5rem', alignItems: 'center', marginBottom: '.3rem', flexWrap: 'wrap' }}>
-                    {t.pinned && <span style={{ fontSize: '.68rem', color: '#B8952A' }}>ðŸ“Œ</span>}
+                    {t.pinned && <span style={{ fontSize: '.68rem', color: '#B8952A' }}>📌</span>}
                     <span style={{ fontSize: '.68rem', fontWeight: 700, background: tagColors[t.tag] ?? '#6b7280', color: '#fff', padding: '2px 8px', borderRadius: 99 }}>{t.tag}</span>
                   </div>
                   <h3 style={{ margin: '0 0 4px', fontSize: '.95rem', fontWeight: 600, color: 'var(--ink)', lineHeight: 1.35 }}>{t.title}</h3>

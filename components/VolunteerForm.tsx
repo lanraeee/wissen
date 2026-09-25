@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 
 import { useState, FormEvent } from 'react'
 import posthog from 'posthog-js'
@@ -66,7 +66,7 @@ export default function VolunteerForm() {
       <div className="field">
         <label htmlFor="v-role">How do you want to contribute?</label>
         <select id="v-role" name="role" required>
-          <option value="">Select an optionâ€¦</option>
+          <option value="">Select an option…</option>
           <option>Mentoring</option>
           <option>Technical Training</option>
           <option>Operations &amp; Events</option>
@@ -76,11 +76,11 @@ export default function VolunteerForm() {
       </div>
       <div className="field">
         <label htmlFor="v-bio">Brief background (current role, skills, why you want to volunteer)</label>
-        <textarea id="v-bio" name="bio" required placeholder="Tell us about yourselfâ€¦" />
+        <textarea id="v-bio" name="bio" required placeholder="Tell us about yourself…" />
       </div>
       {status === 'error' && <p style={{ color: '#c0392b', fontSize: '.875rem', margin: '-.5rem 0 .75rem' }}>{error}</p>}
       <button type="submit" className="btn btn--block" disabled={status === 'sending'}>
-        {status === 'sending' ? 'Submittingâ€¦' : 'Submit Application'}
+        {status === 'sending' ? 'Submitting…' : 'Submit Application'}
       </button>
     </form>
   )

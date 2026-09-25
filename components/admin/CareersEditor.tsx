@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 
 import { useState, useEffect } from 'react'
 
@@ -73,10 +73,10 @@ function RoleList({ roles, onChange }: { roles: Role[]; onChange: (r: Role[]) =>
                 <div style={{ fontSize: '.83rem', color: '#3a4a3f', marginTop: 4 }}>{r.desc}</div>
               </div>
               <div style={{ display: 'flex', gap: 5, flexShrink: 0 }}>
-                {i > 0 && <button style={s('#e8e4dc', '#3a4a3f')} onClick={() => move(i, -1)}>â†‘</button>}
-                {i < roles.length - 1 && <button style={s('#e8e4dc', '#3a4a3f')} onClick={() => move(i, 1)}>â†“</button>}
+                {i > 0 && <button style={s('#e8e4dc', '#3a4a3f')} onClick={() => move(i, -1)}>↑</button>}
+                {i < roles.length - 1 && <button style={s('#e8e4dc', '#3a4a3f')} onClick={() => move(i, 1)}>↓</button>}
                 <button style={s('#1d4ed8')} onClick={() => startEdit(i)}>Edit</button>
-                <button style={s('#dc2626')} onClick={() => remove(i)}>âœ•</button>
+                <button style={s('#dc2626')} onClick={() => remove(i)}>✕</button>
               </div>
             </div>
           )}
@@ -143,7 +143,7 @@ export default function CareersEditor() {
         <h2 style={{ margin: 0, fontSize: '1.1rem' }}>Careers Page Content</h2>
         <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
           {saved && <span style={{ fontSize: '.8rem', color: '#16a34a' }}>Saved!</span>}
-          <button style={s('#1a3c2e')} onClick={save} disabled={saving}>{saving ? 'Savingâ€¦' : 'Save All Changes'}</button>
+          <button style={s('#1a3c2e')} onClick={save} disabled={saving}>{saving ? 'Saving…' : 'Save All Changes'}</button>
         </div>
       </div>
 

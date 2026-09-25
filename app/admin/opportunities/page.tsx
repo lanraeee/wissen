@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 
 import { useState, useEffect, useCallback } from 'react'
 import OpportunityManager from '@/components/admin/OpportunityManager'
@@ -63,7 +63,7 @@ export default function AdminOpportunities() {
           <p className="admin-page-desc">{opps.length} total · {filtered.length} shown · auto-refreshed nightly</p>
         </div>
         <div style={{ display: 'flex', gap: 8 }}>
-          <input placeholder="Search title or companyâ€¦" value={filter} onChange={e => setFilter(e.target.value)}
+          <input placeholder="Search title or company…" value={filter} onChange={e => setFilter(e.target.value)}
             style={{ padding: '7px 12px', borderRadius: 8, border: '1px solid #d0ccc4', fontSize: '.88rem', width: 200 }} />
           <button onClick={exportCSV} style={{ padding: '7px 14px', borderRadius: 8, fontSize: '.82rem', fontWeight: 600, background: '#1a3c2e', color: '#fff', border: 'none', cursor: 'pointer' }}>
             Export CSV
@@ -102,13 +102,13 @@ export default function AdminOpportunities() {
                   <td style={{ padding: '10px 16px', fontSize: '.88rem', fontWeight: 500, maxWidth: 260 }}>
                     <a href={o.url} target="_blank" rel="noopener noreferrer" style={{ color: '#1a3c2e', textDecoration: 'none' }}>{o.title}</a>
                   </td>
-                  <td style={{ padding: '10px 16px', fontSize: '.85rem', color: '#3a4a3f' }}>{o.company || 'â€”'}</td>
+                  <td style={{ padding: '10px 16px', fontSize: '.85rem', color: '#3a4a3f' }}>{o.company || '—'}</td>
                   <td>
                     <span style={{ background: TYPE_COLORS[o.type] ?? '#f0ece4', borderRadius: 99, padding: '2px 8px', fontSize: '.72rem', fontWeight: 600, textTransform: 'capitalize', color: '#1a2e24' }}>{o.type}</span>
                   </td>
                   <td style={{ padding: '10px 16px', fontSize: '.8rem', color: '#3a4a3f' }}>{o.eligibility_label}</td>
                   <td style={{ padding: '10px 16px', fontSize: '.82rem', color: '#8a9a8f', textTransform: 'capitalize' }}>{o.source}</td>
-                  <td style={{ padding: '10px 16px', fontSize: '.82rem', color: '#8a9a8f', whiteSpace: 'nowrap' }}>{o.date_posted ? new Date(o.date_posted).toLocaleDateString('en-GB') : 'â€”'}</td>
+                  <td style={{ padding: '10px 16px', fontSize: '.82rem', color: '#8a9a8f', whiteSpace: 'nowrap' }}>{o.date_posted ? new Date(o.date_posted).toLocaleDateString('en-GB') : '—'}</td>
                   <td>
                     <OpportunityRowActions id={o.id} onRefresh={load} />
                   </td>

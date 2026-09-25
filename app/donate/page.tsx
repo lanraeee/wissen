@@ -1,4 +1,4 @@
-﻿import type { Metadata } from 'next'
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import Image from 'next/image'
 import DonateWidget from '@/components/DonateWidget'
@@ -58,7 +58,7 @@ export default function DonatePage() {
           <div className="section-head center mb-l reveal">
             <span className="eyebrow">Give Now</span>
             <h2>Choose a gift that changes a life.</h2>
-            <p className="lead">Pick a suggested amount or enter your own, then pay by card or direct bank transfer. Give in Naira, Dollars, Pounds or Euros â€” card donations are processed securely by Stripe. Every contribution goes directly to equipping students.</p>
+            <p className="lead">Pick a suggested amount or enter your own, then pay by card or direct bank transfer. Give in Naira, Dollars, Pounds or Euros — card donations are processed securely by Stripe. Every contribution goes directly to equipping students.</p>
           </div>
           <div className="card reveal" style={{ padding: 'clamp(24px,4vw,48px)', maxWidth: 640, margin: '0 auto' }}>
             <DonateWidget />
@@ -66,7 +66,7 @@ export default function DonatePage() {
 
           <div style={{ textAlign: 'center', marginTop: '2.5rem' }} className="reveal">
             <p style={{ color: 'var(--ink-60)', fontSize: '.9rem', maxWidth: '48ch', margin: '0 auto' }}>
-              Prefer a direct bank transfer? Choose <strong>Bank Transfer</strong> above â€” fill in the same details
+              Prefer a direct bank transfer? Choose <strong>Bank Transfer</strong> above — fill in the same details
               and we&#39;ll show you the account to pay into, then email your receipt and certificate once it clears.
             </p>
           </div>
@@ -80,7 +80,7 @@ export default function DonatePage() {
             <div style={{ flex: 1, minWidth: '280px' }}>
               <h3 style={{ color: '#fff', fontSize: '1.25rem', marginBottom: '.5rem' }}>Amplify Your Impact</h3>
               <p style={{ color: 'rgba(244,240,231,.78)', marginBottom: '1rem' }}>
-                Your donation provides Career Clarity Fairs and mentorship. Our partnership with DataCamp multiplies that impact by giving students free access to 500+ premium data science and AI courses â€” preparing them for the jobs of tomorrow.
+                Your donation provides Career Clarity Fairs and mentorship. Our partnership with DataCamp multiplies that impact by giving students free access to 500+ premium data science and AI courses — preparing them for the jobs of tomorrow.
               </p>
               <Link href="/partners/datacamp" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, color: '#fff', fontWeight: 600, textDecoration: 'none', fontSize: '.95rem' }}>
                 Learn about our DataCamp partnership <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" style={{ width: 16, height: 16 }}><path d="M5 12h14M13 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" /></svg>
@@ -99,7 +99,7 @@ export default function DonatePage() {
           <div className="section-head mb-l reveal">
             <span className="eyebrow eyebrow--light">Transparency</span>
             <h2>Your money, clearly accounted for.</h2>
-            <p className="lead">We publish annual reports and provide detailed impact statements to all donors above â‚¦20,000.</p>
+            <p className="lead">We publish annual reports and provide detailed impact statements to all donors above ₦20,000.</p>
           </div>
           <div className="grid grid-3">
             <div className="feature reveal">

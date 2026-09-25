@@ -1,4 +1,4 @@
-﻿import { ImageResponse } from 'next/og'
+import { ImageResponse } from 'next/og'
 
 export const runtime = 'edge'
 export const alt = 'Wissen-Haus Empowerment Foundation'
@@ -27,7 +27,7 @@ export default async function Image() {
           overflow: 'hidden',
         }}
       >
-        {/* Left panel â€” deep green */}
+        {/* Left panel — deep green */}
         <div
           style={{
             width: 420,
@@ -124,7 +124,7 @@ export default async function Image() {
           />
         </div>
 
-        {/* Right panel â€” ivory/cream */}
+        {/* Right panel — ivory/cream */}
         <div
           style={{
             flex: 1,

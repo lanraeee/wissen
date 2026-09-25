@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 
 import { useState, useEffect } from 'react'
 import {
@@ -52,7 +52,7 @@ export default function BankDetailsEditor() {
         body: JSON.stringify({ value: data }),
       })
       if (res.status === 403) throw new Error('Only the director can change bank details.')
-      if (!res.ok) throw new Error('Save failed â€” your changes have not been stored.')
+      if (!res.ok) throw new Error('Save failed — your changes have not been stored.')
       setSaved(true); setTimeout(() => setSaved(false), 2500)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Save failed.')
@@ -107,14 +107,14 @@ export default function BankDetailsEditor() {
           <h2 style={{ margin: '0 0 4px', fontSize: '1.1rem' }}>Bank Transfer Details</h2>
           <p style={{ margin: 0, fontSize: '.8rem', color: '#8a9a8f', maxWidth: '58ch' }}>
             Shown to donors who choose to give by bank transfer, and included in their instructions email.
-            Confirm incoming transfers under Submissions â†’ Bank Transfers.
+            Confirm incoming transfers under Submissions → Bank Transfers.
           </p>
         </div>
         <div style={{ display: 'flex', gap: 10, alignItems: 'center', flexShrink: 0 }}>
           {saved && <span style={{ fontSize: '.8rem', color: '#16a34a' }}>Saved!</span>}
           {error && <span style={{ fontSize: '.8rem', color: '#dc2626', maxWidth: '32ch' }}>{error}</span>}
           <button onClick={save} disabled={saving} style={{ padding: '7px 16px', borderRadius: 7, fontSize: '.82rem', fontWeight: 600, background: '#1a3c2e', color: '#fff', border: 'none', cursor: 'pointer' }}>
-            {saving ? 'Savingâ€¦' : 'Save Changes'}
+            {saving ? 'Saving…' : 'Save Changes'}
           </button>
         </div>
       </div>
@@ -134,7 +134,7 @@ export default function BankDetailsEditor() {
         <span style={{ fontSize: '.85rem', fontWeight: 600, color: '#1a2e24' }}>
           {data.enabled
             ? 'Bank transfer is offered to donors on the donate page'
-            : 'Bank transfer is hidden â€” donors can only give by card'}
+            : 'Bank transfer is hidden — donors can only give by card'}
         </span>
       </label>
 
@@ -151,7 +151,7 @@ export default function BankDetailsEditor() {
             <input style={inp} value={data.bank_name} onChange={e => setData(d => ({ ...d, bank_name: e.target.value }))} placeholder="UBA" />
           </div>
           <div style={{ gridColumn: '1/-1' }}>
-            <label style={lbl}>Bank Address (optional â€” often needed for international transfers)</label>
+            <label style={lbl}>Bank Address (optional — often needed for international transfers)</label>
             <input style={inp} value={data.bank_address ?? ''} onChange={e => setData(d => ({ ...d, bank_address: e.target.value }))} placeholder="57 Marina, Lagos Island, Lagos, Nigeria" />
           </div>
           <div style={{ gridColumn: '1/-1' }}>
@@ -160,7 +160,7 @@ export default function BankDetailsEditor() {
               style={{ ...inp, minHeight: 60, resize: 'vertical' }}
               value={data.instructions ?? ''}
               onChange={e => setData(d => ({ ...d, instructions: e.target.value }))}
-              placeholder="Please quote your donation reference in the transfer narrationâ€¦"
+              placeholder="Please quote your donation reference in the transfer narration…"
             />
           </div>
         </div>
@@ -180,7 +180,7 @@ export default function BankDetailsEditor() {
 
       {data.accounts.length === 0 && (
         <p style={{ color: '#c0392b', fontSize: '.85rem', padding: '12px 0' }}>
-          No accounts configured â€” donors will not be able to complete a bank transfer.
+          No accounts configured — donors will not be able to complete a bank transfer.
         </p>
       )}
 
@@ -218,14 +218,14 @@ export default function BankDetailsEditor() {
 
               {/* The intermediary leg, kept visually separate from the fields
                   above because the numbers here belong to our bank rather than
-                  to us â€” mixing the two is exactly how a donation gets
+                  to us — mixing the two is exactly how a donation gets
                   misrouted. */}
               <div style={{ gridColumn: '1/-1', borderTop: '1px solid #e4e0d8', paddingTop: 12, marginTop: 2 }}>
                 <div style={{ fontSize: '.75rem', fontWeight: 700, color: '#3a4a3f', marginBottom: 2 }}>
                   Correspondent / Intermediary Bank (for transfers from abroad)
                 </div>
                 <p style={{ margin: '0 0 10px', fontSize: '.73rem', color: '#8a9a8f', maxWidth: '62ch' }}>
-                  These belong to <strong>{data.bank_name || 'our bank'}</strong>, not to us â€” a sender&apos;s
+                  These belong to <strong>{data.bank_name || 'our bank'}</strong>, not to us — a sender&apos;s
                   bank pays them first, and the money is then credited to the account above. Leave the
                   block blank for domestic-only currencies. Both a name and a SWIFT are required before
                   any of it is shown to donors.

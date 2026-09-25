@@ -1,9 +1,9 @@
-﻿import { NextRequest, NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { userAdminGuard, isDirector } from '@/lib/admin-guard'
 import sql from '@/lib/db'
 
 // This returns every user's email address. Editors are content contributors and
-// have no need for the membership roll, so they are not admitted here â€” the
+// have no need for the membership roll, so they are not admitted here — the
 // same boundary the per-user handlers draw.
 export async function GET(req: NextRequest) {
   const session = await userAdminGuard()

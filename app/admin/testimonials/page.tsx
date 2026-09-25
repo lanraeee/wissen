@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 
 import { useState, useEffect, useCallback } from 'react'
 
@@ -157,14 +157,14 @@ export default function AdminTestimonials() {
                       {t.role && <div style={{ fontSize: '.76rem', fontWeight: 400, color: '#8a9a8f' }}>{t.role}</div>}
                     </td>
                     <td style={{ padding: '10px 16px', fontSize: '.82rem', color: '#3a4a3f', maxWidth: 320 }}>
-                      {t.quote.length > 110 ? t.quote.slice(0, 110) + 'â€¦' : t.quote}
+                      {t.quote.length > 110 ? t.quote.slice(0, 110) + '…' : t.quote}
                     </td>
                     <td style={{ padding: '10px 16px', fontSize: '.78rem', color: '#8a9a8f', textTransform: 'capitalize' }}>{t.source}</td>
                     <td>
                       <span style={{ background: STATUS_COLORS[t.status] + '22', color: STATUS_COLORS[t.status], borderRadius: 99, padding: '2px 10px', fontSize: '.72rem', fontWeight: 700, textTransform: 'capitalize' }}>{t.status}</span>
                     </td>
                     <td>
-                      <button onClick={() => toggleFeatured(t)} title="Toggle featured" style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.1rem', color: t.featured ? '#E0A83E' : '#d0ccc4' }}>â˜…</button>
+                      <button onClick={() => toggleFeatured(t)} title="Toggle featured" style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.1rem', color: t.featured ? '#E0A83E' : '#d0ccc4' }}>★</button>
                     </td>
                     <td style={{ padding: '10px 16px', whiteSpace: 'nowrap' }}>
                       {t.status === 'pending' && (
@@ -189,7 +189,7 @@ export default function AdminTestimonials() {
           <div style={{ background: '#fff', borderRadius: 14, padding: '28px 32px', width: '100%', maxWidth: 560, boxShadow: '0 24px 60px rgba(0,0,0,.25)' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
               <h2 style={{ margin: 0, fontSize: '1.25rem', color: '#1a2e24' }}>{e.id ? 'Edit Testimonial' : 'New Testimonial'}</h2>
-              <button onClick={() => setEditing(null)} style={{ background: '#f0ece4', border: 'none', borderRadius: 8, padding: '6px 14px', fontWeight: 700, cursor: 'pointer' }}>âœ• Close</button>
+              <button onClick={() => setEditing(null)} style={{ background: '#f0ece4', border: 'none', borderRadius: 8, padding: '6px 14px', fontWeight: 700, cursor: 'pointer' }}>✕ Close</button>
             </div>
 
             <div className="rgrid-2" style={{ gap: 12, marginBottom: 12 }}>
@@ -241,7 +241,7 @@ export default function AdminTestimonials() {
                 Cancel
               </button>
               <button onClick={handleSave} disabled={saving} style={{ padding: '9px 24px', borderRadius: 8, fontSize: '.88rem', fontWeight: 700, background: '#1a3c2e', color: '#fff', border: 'none', cursor: 'pointer', opacity: saving ? .65 : 1 }}>
-                {saving ? 'Savingâ€¦' : e.id ? 'Save Changes' : 'Create Testimonial'}
+                {saving ? 'Saving…' : e.id ? 'Save Changes' : 'Create Testimonial'}
               </button>
             </div>
           </div>

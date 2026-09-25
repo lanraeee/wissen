@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
@@ -103,13 +103,13 @@ export default function AuthModal({ onClose, defaultTab = 'login' }: Props) {
             </div>
             <div className="field">
               <label htmlFor="login-password">Password</label>
-              <input id="login-password" name="password" type="password" required placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢" />
+              <input id="login-password" name="password" type="password" required placeholder="••••••••" />
               <div style={{ textAlign: 'right', marginTop: 6 }}>
                 <Link href="/forgot-password" onClick={onClose} style={{ color: 'var(--ink-60)', fontSize: '.82rem' }}>Forgot password?</Link>
               </div>
             </div>
             <button type="submit" className="btn btn--block" disabled={loading}>
-              {loading ? 'Logging inâ€¦' : 'Log In'}
+              {loading ? 'Logging in…' : 'Log In'}
             </button>
             <p style={{ textAlign: 'center', fontSize: '.9rem', color: 'var(--ink-60)', marginTop: '.5rem' }}>
               No account?{' '}
@@ -136,10 +136,10 @@ export default function AuthModal({ onClose, defaultTab = 'login' }: Props) {
             </div>
             <div className="field">
               <label htmlFor="su-password">Password <span style={{ color: 'var(--ink-60)', fontWeight: 400 }}>(min 8 chars)</span></label>
-              <input id="su-password" name="password" type="password" required minLength={8} placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢" />
+              <input id="su-password" name="password" type="password" required minLength={8} placeholder="••••••••" />
             </div>
             <button type="submit" className="btn btn--block" disabled={loading}>
-              {loading ? 'Creating accountâ€¦' : 'Create Account'}
+              {loading ? 'Creating account…' : 'Create Account'}
             </button>
             <p style={{ textAlign: 'center', fontSize: '.9rem', color: 'var(--ink-60)', marginTop: '.5rem' }}>
               Already have one?{' '}

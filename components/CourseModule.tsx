@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
@@ -74,7 +74,7 @@ export default function CourseModule({ courseId, module, isCompleted, prevModule
         <div className="module__header">
           <div className="module__check">
             <div className="module__check-box" style={completed ? { background: 'var(--green-800)', borderColor: 'var(--green-800)', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center' } : {}}>
-              {completed && 'âœ“'}
+              {completed && '✓'}
             </div>
           </div>
           <h2 className="module__title">Module {module.id}: {module.title}</h2>
@@ -122,7 +122,7 @@ export default function CourseModule({ courseId, module, isCompleted, prevModule
                   onClick={handleSubmit}
                   disabled={!allAnswered || submitting}
                 >
-                  {submitting ? 'Savingâ€¦' : 'Submit Quiz'}
+                  {submitting ? 'Saving…' : 'Submit Quiz'}
                 </button>
               )}
 
@@ -130,7 +130,7 @@ export default function CourseModule({ courseId, module, isCompleted, prevModule
                 <div className="module__quiz-result">
                   {result.passed ? (
                     <div className="module__quiz-pass">
-                      âœ“ Passed with {result.score}%! Module complete.
+                      ✓ Passed with {result.score}%! Module complete.
                       {nextModuleId && (
                         <span> Ready for the next module!</span>
                       )}
@@ -144,7 +144,7 @@ export default function CourseModule({ courseId, module, isCompleted, prevModule
               )}
 
               {completed && (
-                <div className="module__quiz-pass">âœ“ Module completed</div>
+                <div className="module__quiz-pass">✓ Module completed</div>
               )}
             </div>
           )}
@@ -155,12 +155,12 @@ export default function CourseModule({ courseId, module, isCompleted, prevModule
 
       <div className="module-nav">
         {prevModuleId ? (
-          <a href={`/courses/${courseId}/modules/${prevModuleId}`} className="btn btn--ghost">â† Previous</a>
+          <a href={`/courses/${courseId}/modules/${prevModuleId}`} className="btn btn--ghost">← Previous</a>
         ) : <span />}
         {nextModuleId ? (
-          <a href={`/courses/${courseId}/modules/${nextModuleId}`} className="btn">Next Module â†’</a>
+          <a href={`/courses/${courseId}/modules/${nextModuleId}`} className="btn">Next Module →</a>
         ) : (
-          <a href={`/courses/${courseId}/certificate`} className="btn">View Certificate â†’</a>
+          <a href={`/courses/${courseId}/certificate`} className="btn">View Certificate →</a>
         )}
       </div>
     </div>

@@ -1,4 +1,4 @@
-﻿import type { Metadata } from 'next'
+import type { Metadata } from 'next'
 import sql from '@/lib/db'
 
 export const metadata: Metadata = { title: 'Analytics · Wissen-Haus Admin' }
@@ -166,7 +166,7 @@ export default async function AnalyticsPage() {
     <>
       <div style={{ marginBottom: 32 }}>
         <h1 className="admin-page-title">Analytics</h1>
-        <p className="admin-page-desc">Visitor traffic â€” your data, stored in your database.</p>
+        <p className="admin-page-desc">Visitor traffic — your data, stored in your database.</p>
       </div>
 
       <Section title="Overview">
@@ -249,11 +249,11 @@ export default async function AnalyticsPage() {
                 {recent.map((r, i) => (
                   <tr key={i} style={{ borderBottom: i < recent.length - 1 ? '1px solid #f0ece4' : 'none' }}>
                     <td style={{ padding: '9px 14px', color: '#1a2e24', maxWidth: 200, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={r.pathname as string}>{r.pathname as string}</td>
-                    <td style={{ padding: '9px 14px', color: '#8a9a8f', maxWidth: 160, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={(r.referrer as string) ?? ''}>{(r.referrer as string) || 'â€”'}</td>
-                    <td style={{ padding: '9px 14px', color: '#8a9a8f' }}>{(r.country as string) || 'â€”'}</td>
-                    <td style={{ padding: '9px 14px', color: '#8a9a8f' }}>{(r.city as string) || 'â€”'}</td>
-                    <td style={{ padding: '9px 14px', color: '#8a9a8f', textTransform: 'capitalize' }}>{(r.device_type as string) || 'â€”'}</td>
-                    <td style={{ padding: '9px 14px', color: '#8a9a8f' }}>{(r.browser as string) || 'â€”'}</td>
+                    <td style={{ padding: '9px 14px', color: '#8a9a8f', maxWidth: 160, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={(r.referrer as string) ?? ''}>{(r.referrer as string) || '—'}</td>
+                    <td style={{ padding: '9px 14px', color: '#8a9a8f' }}>{(r.country as string) || '—'}</td>
+                    <td style={{ padding: '9px 14px', color: '#8a9a8f' }}>{(r.city as string) || '—'}</td>
+                    <td style={{ padding: '9px 14px', color: '#8a9a8f', textTransform: 'capitalize' }}>{(r.device_type as string) || '—'}</td>
+                    <td style={{ padding: '9px 14px', color: '#8a9a8f' }}>{(r.browser as string) || '—'}</td>
                     <td style={{ padding: '9px 14px', color: '#8a9a8f', whiteSpace: 'nowrap' }}>
                       {new Date(r.created_at as string).toLocaleString('en-GB', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}
                     </td>

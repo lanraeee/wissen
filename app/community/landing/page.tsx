@@ -1,4 +1,4 @@
-﻿import type { Metadata } from 'next'
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import Image from 'next/image'
 
@@ -16,7 +16,7 @@ export default function CommunityLandingPage() {
             <div className="reveal">
               <span className="eyebrow">Community Hub</span>
               <h1 className="display-lg mt-s">Where Nigerian Youth Grow, Together.</h1>
-              <p className="lead mt-m">Access scholarships, internships, jobs, free courses, mentorship and a thriving communityâ€”everything a young changemaker needs in one place.</p>
+              <p className="lead mt-m">Access scholarships, internships, jobs, free courses, mentorship and a thriving community—everything a young changemaker needs in one place.</p>
               <div style={{ marginTop: 32, display: 'flex', gap: 16, flexWrap: 'wrap' }}>
                 <Link href="/login" className="btn">Join Now</Link>
                 <Link href="/login?mode=login" className="btn btn--ghost">Sign In</Link>
