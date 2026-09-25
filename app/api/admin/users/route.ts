@@ -15,9 +15,12 @@ export async function GET(req: NextRequest) {
   const [rows, count] = await Promise.all([
     sql`
       SELECT u.id, u.first_name, u.last_name, u.email, u.role, u.membership_expiry, u.created_at,
-        (SELECT COUNT(*) FROM course_progress cp WHERE cp.user_id = u.id)::int AS modules_done,
-        (SELECT COUNT(*) FROM certificates c WHERE c.user_id = u.id)::int AS certs
+        COALESCE(COUNT(DISTINCT cp.id), 0)::int AS modules_done,
+        COALESCE(COUNT(DISTINCT c.id), 0)::int AS certs
       FROM users u
+      LEFT JOIN course_progress cp ON cp.user_id = u.id
+      LEFT JOIN certificates c ON c.user_id = u.id
+      GROUP BY u.id, u.first_name, u.last_name, u.email, u.role, u.membership_expiry, u.created_at
       ORDER BY u.created_at DESC
       LIMIT ${limit} OFFSET ${offset}
     `,
