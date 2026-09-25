@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
-import { COURSES } from '@/lib/courseData'
+import { getCourse } from '@/lib/courses'
 import sql from '@/lib/db'
 
 interface Props {
@@ -17,7 +17,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     WHERE c.certificate_id = ${certId}
   `
   if (!row) return { title: 'Certificate Not Found — Wissen-Haus' }
-  const course = COURSES.find(c => c.id === row.course_id as string)
+  const course = await getCourse(row.course_id as string)
   return {
     title: `Certificate Verified — ${course?.title ?? 'Wissen-Haus'}`,
     description: `This certificate issued to ${row.name as string} by Wissen-Haus Empowerment Foundation has been verified as authentic.`,
@@ -51,7 +51,7 @@ export default async function VerifyCertPage({ params }: Props) {
     )
   }
 
-  const course = COURSES.find(c => c.id === row.course_id as string)
+  const course = await getCourse(row.course_id as string)
   const issuedDate = new Date(row.issued_at as string)
   const issuedFormatted = issuedDate.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
 

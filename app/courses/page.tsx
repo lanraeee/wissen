@@ -1,13 +1,16 @@
 ﻿import type { Metadata } from 'next'
 import Link from 'next/link'
-import { COURSES } from '@/lib/courseData'
+import { getCourses } from '@/lib/courses'
+
+export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
   title: 'Courses · Wissen-Haus',
   description: 'Free and premium certificate courses for Nigerian youth. Build real career skills.',
 }
 
-export default function CoursesPage() {
+export default async function CoursesPage() {
+  const COURSES = await getCourses()
   return (
     <>
       <section className="section section--tight" style={{ paddingTop: 'clamp(48px,6vw,84px)' }}>

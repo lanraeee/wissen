@@ -4,7 +4,7 @@ import { getSession } from '@/lib/auth'
 
 import sql from '@/lib/db'
 
-import { COURSES } from '@/lib/courseData'
+import { getCourses } from '@/lib/courses'
 
 import Link from 'next/link'
 
@@ -25,6 +25,8 @@ export default async function ProfilePage() {
   const session = await getSession()
 
   if (!session) redirect('/login')
+
+  const COURSES = await getCourses()
 
 
 

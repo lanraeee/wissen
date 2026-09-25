@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { getSession } from '@/lib/auth'
 import sql from '@/lib/db'
-import { COURSES } from '@/lib/courseData'
+import { getCourse } from '@/lib/courses'
 import { getPostHogClient } from '@/lib/posthog-server'
 import { sendCertificateEmail } from '@/lib/email'
 import { parseBody } from '@/lib/validation'
@@ -50,7 +50,7 @@ export async function POST(
   `
 
   // Check if all modules are complete — award certificate
-  const course = COURSES.find(c => c.id === courseId)
+  const course = await getCourse(courseId)
   if (course) {
     const completedRows = await sql`
       SELECT module_id FROM course_progress

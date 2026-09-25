@@ -2,7 +2,7 @@
 import { z } from 'zod'
 import { adminGuard } from '@/lib/admin-guard'
 import sql from '@/lib/db'
-import { COURSES } from '@/lib/courseData'
+import { getCourse } from '@/lib/courses'
 import { sendCertificateEmail } from '@/lib/email'
 import { parseBody, zEmail } from '@/lib/validation'
 
@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
   if (error) return error
   const { email, courseId, markComplete } = data
 
-  const course = COURSES.find(c => c.id === courseId)
+  const course = await getCourse(courseId)
   if (!course) return NextResponse.json({ error: 'Unknown course' }, { status: 400 })
 
   const users = await sql`SELECT id, first_name, last_name FROM users WHERE email = ${email.toLowerCase().trim()}`

@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { COURSES } from '@/lib/courseData'
+import { getCourse } from '@/lib/courses'
 import { getSession } from '@/lib/auth'
 import sql from '@/lib/db'
 
@@ -11,14 +11,14 @@ interface Props {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { courseId } = await params
-  const course = COURSES.find(c => c.id === courseId)
+  const course = await getCourse(courseId)
   if (!course) return { title: 'Course Not Found' }
   return { title: `${course.title} · Wissen-Haus`, description: course.tagline }
 }
 
 export default async function CourseDetailPage({ params }: Props) {
   const { courseId } = await params
-  const course = COURSES.find(c => c.id === courseId)
+  const course = await getCourse(courseId)
   if (!course) notFound()
 
   const session = await getSession()

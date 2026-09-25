@@ -22,7 +22,9 @@ export interface Course {
   isPremium: boolean
 }
 
-export const COURSES: Course[] = [
+// Fallback used if the DB has no 'courses' row yet, or is unreachable.
+// Also the seed source for the one-time migration script.
+const DEFAULT_COURSES: Course[] = [
   {
     id: 'soft-skills',
     title: 'Soft Skills for the Modern Workplace',
@@ -831,3 +833,7 @@ export const COURSES: Course[] = [
     ]
   }
 ]
+
+// Retained for lib/quizUtils.test.ts and any other code that legitimately
+// wants the static defaults rather than the live (possibly admin-edited) data.
+export { DEFAULT_COURSES }

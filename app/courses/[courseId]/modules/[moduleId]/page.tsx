@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation'
-import { COURSES } from '@/lib/courseData'
+import { getCourse } from '@/lib/courses'
 import { getSession } from '@/lib/auth'
 import sql from '@/lib/db'
 import CourseModule from '@/components/CourseModule'
@@ -13,7 +13,7 @@ interface Props {
 export default async function ModulePage({ params }: Props) {
   const { courseId, moduleId: moduleIdStr } = await params
   const moduleId = parseInt(moduleIdStr, 10)
-  const course = COURSES.find(c => c.id === courseId)
+  const course = await getCourse(courseId)
   if (!course) notFound()
 
   const mod = course.modules.find(m => m.id === moduleId)

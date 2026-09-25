@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
-import { COURSES } from '@/lib/courseData'
+import { getCourse } from '@/lib/courses'
 import { getSession } from '@/lib/auth'
 import sql from '@/lib/db'
 import CertShareButtons from '@/components/CertShareButtons'
@@ -14,7 +14,7 @@ interface Props {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { courseId } = await params
-  const course = COURSES.find(c => c.id === courseId)
+  const course = await getCourse(courseId)
   if (!course) return {}
   return {
     title: `Certificate of Completion — ${course.title} | Wissen-Haus`,
@@ -29,7 +29,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function CertificatePage({ params }: Props) {
   const { courseId } = await params
-  const course = COURSES.find(c => c.id === courseId)
+  const course = await getCourse(courseId)
   if (!course) notFound()
 
   const session = await getSession()
@@ -92,7 +92,7 @@ export default async function CertificatePage({ params }: Props) {
             className="cert-left__logo"
           />
           <div className="cert-left__name">Wissen-Haus</div>
-          <div className="cert-left__sub">Youth Empowerment<br />Foundation</div>
+          <div className="cert-left__sub">Empowerment<br />Foundation</div>
 
           <div className="cert-left__rule" />
           <div className="cert-left__spacer" />
