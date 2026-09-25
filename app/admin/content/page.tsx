@@ -20,8 +20,8 @@ const TABS = [
   { key: 'threads', label: 'Community Threads' },
   { key: 'whatsapp', label: 'WhatsApp Channel' },
   { key: 'impact-stories', label: 'Impact Stories' },
-  { key: 'donation-certs', label: 'ðŸ§¾ Donation Receipts' },
-  { key: 'bank-details', label: 'ðŸ¦ Bank Transfer Details' },
+  { key: 'donation-certs', label: '🧾 Donation Receipts' },
+  { key: 'bank-details', label: '🏦 Bank Transfer Details' },
   { key: 'foundation', label: 'Foundation Details' },
 ]
 
