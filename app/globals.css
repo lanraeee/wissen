@@ -790,3 +790,41 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
 /* ─── Admin panel ─────────────────────────────────────── */
 .admin-nav-link{display:block;padding:9px 12px;border-radius:8px;color:rgba(244,240,231,.85);text-decoration:none;font-size:.88rem;margin-bottom:2px;font-weight:500;transition:background .15s}
 .admin-nav-link:hover{background:rgba(244,240,231,.1)}
+
+/* Admin form components */
+.admin-input{padding:7px 10px;border:1px solid #d0ccc4;border-radius:7px;font-size:.88rem;width:100%;font-family:var(--ff-body)}
+.admin-input:focus{outline:none;border-color:var(--red);box-shadow:0 0 0 3px rgba(200,16,46,.1)}
+.admin-textarea{padding:8px 10px;border:1px solid #d0ccc4;border-radius:7px;font-size:.88rem;width:100%;font-family:var(--ff-body);min-height:100px;resize:vertical}
+.admin-select{padding:7px 10px;border:1px solid #d0ccc4;border-radius:7px;font-size:.88rem;width:100%;font-family:var(--ff-body)}
+
+.admin-label{font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#8a9a8f;margin-bottom:4px;display:block}
+.admin-section-head{font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#1a3c2e;margin-top:24px;margin-bottom:10px;border-bottom:1px solid #e8e4dc;padding-bottom:6px}
+
+.admin-btn-add{font-size:.78rem;color:#1a3c2e;font-weight:600;background:#f0ece4;border:none;border-radius:6px;padding:5px 12px;cursor:pointer;margin-top:6px;transition:background .2s}
+.admin-btn-add:hover{background:#e8e4dc}
+
+.admin-btn-remove{font-size:.72rem;color:#dc2626;font-weight:600;background:#fee2e2;border:none;border-radius:5px;padding:3px 8px;cursor:pointer;transition:background .2s}
+.admin-btn-remove:hover{background:#fecaca}
+
+.admin-card{background:#fff;border:1px solid #e8e4dc;border-radius:10px;padding:20px 24px;box-shadow:0 1px 4px rgba(0,0,0,.06);transition:box-shadow .15s}
+.admin-card:hover{box-shadow:0 4px 12px rgba(0,0,0,.1)}
+
+.admin-status-dot{width:7px;height:7px;border-radius:50%;display:inline-block;flex-shrink:0;margin-right:8px}
+.admin-status-dot.pending{background:#f59e0b}
+.admin-status-dot.reviewed{background:#10b981}
+.admin-status-dot.actioned{background:#3b82f6}
+.admin-status-dot.closed{background:#6b7280}
+
+.admin-badge{font-size:.68rem;font-weight:700;border-radius:99px;padding:1px 7px;display:inline-block}
+.admin-badge-pending{background:#fee2e2;color:#dc2626}
+.admin-badge-success{background:#d1fae5;color:#047857}
+.admin-badge-info{background:#dbeafe;color:#1e40af}
+
+.admin-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.admin-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+@media(max-width:640px){.admin-grid-2,.admin-grid-3{grid-template-columns:1fr}}
+
+.admin-row-2col{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.admin-row-3col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.admin-row-2col-btn{display:grid;grid-template-columns:1fr 1fr auto;gap:12px;align-items:end}
+@media(max-width:560px){.admin-row-2col,.admin-row-3col,.admin-row-2col-btn{grid-template-columns:1fr}}

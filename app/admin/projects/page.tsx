@@ -49,21 +49,13 @@ const STATUS_COLORS: Record<string, string> = {
   draft: '#f59e0b', published: '#10b981', closed: '#6b7280',
 }
 
-const inp = (extra?: React.CSSProperties): React.CSSProperties => ({
-  padding: '7px 10px', border: '1px solid #d0ccc4', borderRadius: 7,
-  fontSize: '.88rem', width: '100%', ...extra,
-})
-const label = (text: string) => (
-  <div style={{ fontSize: '.72rem', fontWeight: 700, letterSpacing: '.08em', textTransform: 'uppercase', color: '#8a9a8f', marginBottom: 4 }}>{text}</div>
-)
-const sectionHead = (text: string) => (
-  <div style={{ fontSize: '.72rem', fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase', color: '#1a3c2e', marginTop: 24, marginBottom: 10, borderBottom: '1px solid #e8e4dc', paddingBottom: 6 }}>{text}</div>
-)
+const label = (text: string) => <div className="admin-label">{text}</div>
+const sectionHead = (text: string) => <div className="admin-section-head">{text}</div>
 const addBtn = (onClick: () => void, text: string) => (
-  <button type="button" onClick={onClick} style={{ fontSize: '.78rem', color: '#1a3c2e', fontWeight: 600, background: '#f0ece4', border: 'none', borderRadius: 6, padding: '5px 12px', cursor: 'pointer', marginTop: 6 }}>{text}</button>
+  <button type="button" onClick={onClick} className="admin-btn-add">{text}</button>
 )
 const removeBtn = (onClick: () => void) => (
-  <button type="button" onClick={onClick} style={{ fontSize: '.72rem', color: '#dc2626', fontWeight: 600, background: '#fee2e2', border: 'none', borderRadius: 5, padding: '3px 8px', cursor: 'pointer' }}>âœ•</button>
+  <button type="button" onClick={onClick} className="admin-btn-remove">✕</button>
 )
 
 export default function AdminProjects() {
@@ -209,7 +201,7 @@ export default function AdminProjects() {
             <div className="rgrid-2" style={{ gap: 12, marginBottom: 12 }}>
               <div>
                 {label('Title')}
-                <input style={inp()} value={e.title ?? ''} onChange={ev => {
+                <input className="admin-input" value={e.title ?? ''} onChange={ev => {
                   const t = ev.target.value
                   setField('title', t)
                   if (!e.id) setField('slug', slugify(t))
@@ -217,17 +209,17 @@ export default function AdminProjects() {
               </div>
               <div>
                 {label('Slug (URL: /donate/[slug])')}
-                <input style={inp()} value={e.slug ?? ''} onChange={ev => setField('slug', slugify(ev.target.value))} />
+                <input className="admin-input" value={e.slug ?? ''} onChange={ev => setField('slug', slugify(ev.target.value))} />
               </div>
             </div>
             <div style={{ marginBottom: 12 }}>
               {label('Subtitle (short tagline below title)')}
-              <input style={inp()} value={e.subtitle ?? ''} onChange={ev => setField('subtitle', ev.target.value || null)} />
+              <input className="admin-input" value={e.subtitle ?? ''} onChange={ev => setField('subtitle', ev.target.value || null)} />
             </div>
             <div className="rgrid-2" style={{ gap: 12, marginBottom: 12 }}>
               <div>
                 {label('Status')}
-                <select style={inp()} value={e.status ?? 'draft'} onChange={ev => setField('status', ev.target.value as Project['status'])}>
+                <select className="admin-input" value={e.status ?? 'draft'} onChange={ev => setField('status', ev.target.value as Project['status'])}>
                   <option value="draft">Draft (not public)</option>
                   <option value="published">Published (live)</option>
                   <option value="closed">Closed (campaign ended)</option>
@@ -236,25 +228,25 @@ export default function AdminProjects() {
             </div>
 
             {sectionHead('Hero Description')}
-            <textarea style={{ ...inp(), height: 90, resize: 'vertical' }} value={e.hero_desc ?? ''} onChange={ev => setField('hero_desc', ev.target.value || null)} placeholder="The main lead paragraph on the campaign pageâ€¦" />
+            <textarea className="admin-textarea" value={e.hero_desc ?? ''} onChange={ev => setField('hero_desc', ev.target.value || null)} placeholder="The main lead paragraph on the campaign pageâ€¦" />
 
             {sectionHead('Event Details')}
             <div className="rgrid-2" style={{ gap: 12, marginBottom: 12 }}>
               <div>
                 {label('Event Name')}
-                <input style={inp()} value={e.event_name ?? ''} onChange={ev => setField('event_name', ev.target.value || null)} placeholder="Career Clarity Fair" />
+                <input className="admin-input" value={e.event_name ?? ''} onChange={ev => setField('event_name', ev.target.value || null)} placeholder="Career Clarity Fair" />
               </div>
               <div>
                 {label('Event Date')}
-                <input type="date" style={inp()} value={e.event_date?.slice(0, 10) ?? ''} onChange={ev => setField('event_date', ev.target.value || null)} />
+                <input type="date" className="admin-input" value={e.event_date?.slice(0, 10) ?? ''} onChange={ev => setField('event_date', ev.target.value || null)} />
               </div>
               <div>
                 {label('Event Location')}
-                <input style={inp()} value={e.event_location ?? ''} onChange={ev => setField('event_location', ev.target.value || null)} placeholder="Ibadan, Oyo State" />
+                <input className="admin-input" value={e.event_location ?? ''} onChange={ev => setField('event_location', ev.target.value || null)} placeholder="Ibadan, Oyo State" />
               </div>
               <div>
                 {label('Event Time')}
-                <input style={inp()} value={e.event_time ?? ''} onChange={ev => setField('event_time', ev.target.value || null)} placeholder="8:00am â€“ 5:00pm" />
+                <input className="admin-input" value={e.event_time ?? ''} onChange={ev => setField('event_time', ev.target.value || null)} placeholder="8:00am â€“ 5:00pm" />
               </div>
             </div>
 
@@ -262,11 +254,11 @@ export default function AdminProjects() {
             <div className="rgrid-2" style={{ gap: 12, marginBottom: 12 }}>
               <div>
                 {label('Campaign Start Date')}
-                <input type="date" style={inp()} value={e.campaign_start?.slice(0, 10) ?? ''} onChange={ev => setField('campaign_start', ev.target.value || null)} />
+                <input type="date" className="admin-input" value={e.campaign_start?.slice(0, 10) ?? ''} onChange={ev => setField('campaign_start', ev.target.value || null)} />
               </div>
               <div>
                 {label('Campaign End Date')}
-                <input type="date" style={inp()} value={e.campaign_end?.slice(0, 10) ?? ''} onChange={ev => setField('campaign_end', ev.target.value || null)} />
+                <input type="date" className="admin-input" value={e.campaign_end?.slice(0, 10) ?? ''} onChange={ev => setField('campaign_end', ev.target.value || null)} />
               </div>
             </div>
 
@@ -274,23 +266,23 @@ export default function AdminProjects() {
             <div className="rgrid-3" style={{ gap: 12, marginBottom: 12 }}>
               <div>
                 {label('Goal (â‚¦)')}
-                <input type="number" style={inp()} value={e.goal_ngn ?? 0} onChange={ev => setField('goal_ngn', Number(ev.target.value))} />
+                <input type="number" className="admin-input" value={e.goal_ngn ?? 0} onChange={ev => setField('goal_ngn', Number(ev.target.value))} />
               </div>
               <div>
                 {label('Raised (â‚¦) â€” manual update')}
-                <input type="number" style={inp()} value={e.raised_ngn ?? 0} onChange={ev => setField('raised_ngn', Number(ev.target.value))} />
+                <input type="number" className="admin-input" value={e.raised_ngn ?? 0} onChange={ev => setField('raised_ngn', Number(ev.target.value))} />
               </div>
               <div>
                 {label('Donor Count')}
-                <input type="number" style={inp()} value={e.donor_count ?? 0} onChange={ev => setField('donor_count', Number(ev.target.value))} />
+                <input type="number" className="admin-input" value={e.donor_count ?? 0} onChange={ev => setField('donor_count', Number(ev.target.value))} />
               </div>
             </div>
 
             {sectionHead('Hero Stats Panel (4 figures shown in the sidebar)')}
             {(e.highlights ?? []).map((h, i) => (
               <div key={i} className="rgrid-row-a" style={{ gap: 8, marginBottom: 8, alignItems: 'center' }}>
-                <input style={inp()} placeholder="Label e.g. Students expected" value={h.label} onChange={ev => setField('highlights', updateArrayItem(e.highlights!, i, { label: ev.target.value }))} />
-                <input style={inp()} placeholder="Value e.g. 500â€“1,000" value={h.value} onChange={ev => setField('highlights', updateArrayItem(e.highlights!, i, { value: ev.target.value }))} />
+                <input className="admin-input" placeholder="Label e.g. Students expected" value={h.label} onChange={ev => setField('highlights', updateArrayItem(e.highlights!, i, { label: ev.target.value }))} />
+                <input className="admin-input" placeholder="Value e.g. 500â€“1,000" value={h.value} onChange={ev => setField('highlights', updateArrayItem(e.highlights!, i, { value: ev.target.value }))} />
                 {removeBtn(() => setField('highlights', removeArrayItem(e.highlights!, i)))}
               </div>
             ))}
@@ -299,8 +291,8 @@ export default function AdminProjects() {
             {sectionHead('What Your Donation Funds (budget lines)')}
             {(e.what_funded ?? []).map((w, i) => (
               <div key={i} className="rgrid-row-b" style={{ gap: 8, marginBottom: 8, alignItems: 'center' }}>
-                <input style={inp()} placeholder="Line item description" value={w.item} onChange={ev => setField('what_funded', updateArrayItem(e.what_funded!, i, { item: ev.target.value }))} />
-                <input style={inp()} placeholder="â‚¦250,000" value={w.amount} onChange={ev => setField('what_funded', updateArrayItem(e.what_funded!, i, { amount: ev.target.value }))} />
+                <input className="admin-input" placeholder="Line item description" value={w.item} onChange={ev => setField('what_funded', updateArrayItem(e.what_funded!, i, { item: ev.target.value }))} />
+                <input className="admin-input" placeholder="â‚¦250,000" value={w.amount} onChange={ev => setField('what_funded', updateArrayItem(e.what_funded!, i, { amount: ev.target.value }))} />
                 {removeBtn(() => setField('what_funded', removeArrayItem(e.what_funded!, i)))}
               </div>
             ))}
@@ -309,7 +301,7 @@ export default function AdminProjects() {
             {sectionHead('Impact Points (bullet list in the "Why" section)')}
             {(e.impact_points ?? []).map((pt, i) => (
               <div key={i} className="rgrid-row-c" style={{ gap: 8, marginBottom: 8, alignItems: 'center' }}>
-                <input style={inp()} placeholder="Impact statementâ€¦" value={pt} onChange={ev => {
+                <input className="admin-input" placeholder="Impact statementâ€¦" value={pt} onChange={ev => {
                   const arr = [...(e.impact_points ?? [])]
                   arr[i] = ev.target.value
                   setField('impact_points', arr)
@@ -323,11 +315,11 @@ export default function AdminProjects() {
             <div className="rgrid-2" style={{ gap: 12, marginBottom: 12 }}>
               <div>
                 {label('Partner Name')}
-                <input style={inp()} value={e.partnership_name ?? ''} onChange={ev => setField('partnership_name', ev.target.value || null)} placeholder="Creele Animation Studios" />
+                <input className="admin-input" value={e.partnership_name ?? ''} onChange={ev => setField('partnership_name', ev.target.value || null)} placeholder="Creele Animation Studios" />
               </div>
             </div>
             {label('Partner Description')}
-            <textarea style={{ ...inp(), height: 80, resize: 'vertical', marginBottom: 12 }} value={e.partnership_desc ?? ''} onChange={ev => setField('partnership_desc', ev.target.value || null)} placeholder="What the partner brings and why they matter to this campaignâ€¦" />
+            <textarea className="admin-textarea" style={{ height: 80, marginBottom: 12 }} value={e.partnership_desc ?? ''} onChange={ev => setField('partnership_desc', ev.target.value || null)} placeholder="What the partner brings and why they matter to this campaignâ€¦" />
 
             {sectionHead('FAQ')}
             {(e.faq ?? []).map((item, i) => (
@@ -336,8 +328,8 @@ export default function AdminProjects() {
                   {label(`Question ${i + 1}`)}
                   {removeBtn(() => setField('faq', removeArrayItem(e.faq!, i)))}
                 </div>
-                <input style={{ ...inp(), marginBottom: 6 }} placeholder="Questionâ€¦" value={item.q} onChange={ev => setField('faq', updateArrayItem(e.faq!, i, { q: ev.target.value }))} />
-                <textarea style={{ ...inp(), height: 70, resize: 'vertical' }} placeholder="Answerâ€¦" value={item.a} onChange={ev => setField('faq', updateArrayItem(e.faq!, i, { a: ev.target.value }))} />
+                <input className="admin-input" style={{ marginBottom: 6 }} placeholder="Questionâ€¦" value={item.q} onChange={ev => setField('faq', updateArrayItem(e.faq!, i, { q: ev.target.value }))} />
+                <textarea className="admin-textarea" style={{ height: 70 }} placeholder="Answerâ€¦" value={item.a} onChange={ev => setField('faq', updateArrayItem(e.faq!, i, { a: ev.target.value }))} />
               </div>
             ))}
             {addBtn(() => setField('faq', [...(e.faq ?? []), { q: '', a: '' }]), '+ Add FAQ')}
