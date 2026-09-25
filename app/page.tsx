@@ -4,6 +4,8 @@ import Image from 'next/image'
 import sql from '@/lib/db'
 import TestimonialCarousel from '@/components/TestimonialCarousel'
 
+export const dynamic = 'force-dynamic'
+
 export const metadata: Metadata = {
   title: 'Wissen-Haus Empowerment Foundation · Bridging the Skills Gap',
   description: 'We equip African youth and the diaspora with practical skills, mentorship and global exposure for economic independence. 500+ students reached since launching in Ibadan, Nigeria.',
@@ -26,14 +28,53 @@ const ARROW = (
   </svg>
 )
 
+interface HeroContent {
+  eyebrow: string
+  headlineLine1: string
+  headlineLine2: string
+  lead: string
+  ctaText: string
+  ctaHref: string
+}
+
+interface StatItem {
+  count: string
+  suffix: string
+  label: string
+}
+
+const DEFAULT_HERO: HeroContent = {
+  eyebrow: 'Ibadan, Nigeria · Est. 2025',
+  headlineLine1: 'Your Roadmap to',
+  headlineLine2: 'Opportunity Starts Here.',
+  lead: "Confused about what's next? Don't know where to start? We've built resources that help you discover careers that match your interests, understand what it takes to succeed, and connect with people doing the work you're curious about.",
+  ctaText: 'Take the Career Assessment',
+  ctaHref: '/career-pathways',
+}
+
+const DEFAULT_STATS: StatItem[] = [
+  { count: '500', suffix: '+', label: 'Students Reached' },
+  { count: '30', suffix: '+', label: 'Mentors Involved' },
+  { count: '15', suffix: '+', label: 'School Partnerships' },
+  { count: '1', suffix: '', label: 'Year Since Launch' },
+]
+
 export default async function HomePage() {
   let tagline = 'Every young African and diaspora changemaker deserves the tools to thrive.'
+  let hero = DEFAULT_HERO
+  let stats = DEFAULT_STATS
   try {
-    const rows = await sql`SELECT value FROM site_content WHERE key = 'site_settings'`
-    const val = rows[0]?.value as { tagline?: string } | undefined
-    if (val?.tagline) tagline = val.tagline
+    const rows = await sql`SELECT key, value FROM site_content WHERE key IN ('site_settings', 'homepage_hero', 'homepage_stats')`
+    for (const r of rows) {
+      if (r.key === 'site_settings') {
+        const val = r.value as { tagline?: string }
+        if (val?.tagline) tagline = val.tagline
+      }
+      if (r.key === 'homepage_hero' && r.value) hero = { ...DEFAULT_HERO, ...(r.value as Partial<HeroContent>) }
+      if (r.key === 'homepage_stats' && Array.isArray(r.value) && r.value.length === 4) stats = r.value as StatItem[]
+    }
   } catch {
-    // use default tagline
+    // use defaults
   }
 
   return (
@@ -45,14 +86,14 @@ export default async function HomePage() {
         <div className="wrap wrap-wide">
           <div className="hero-grid">
             <div className="hero-copy">
-              <span className="eyebrow reveal">Ibadan, Nigeria · Est. 2025</span>
-              <h1 className="display-xl mt-s reveal-words">Your Roadmap to<br />Opportunity Starts Here.</h1>
+              <span className="eyebrow reveal">{hero.eyebrow}</span>
+              <h1 className="display-xl mt-s reveal-words">{hero.headlineLine1}<br />{hero.headlineLine2}</h1>
               <p className="lead mt-s reveal" data-d="1">
-                Confused about what&#39;s next? Don&#39;t know where to start? We&#39;ve built resources that help you discover careers that match your interests, understand what it takes to succeed, and connect with people doing the work you&#39;re curious about.
+                {hero.lead}
               </p>
               <div className="hero-cta reveal" data-d="2">
-                <Link href="/career-pathways" className="btn btn--lg mag">
-                  Take the Career Assessment {ARROW}
+                <Link href={hero.ctaHref} className="btn btn--lg mag">
+                  {hero.ctaText} {ARROW}
                 </Link>
               </div>
             </div>
@@ -63,12 +104,12 @@ export default async function HomePage() {
                 <Image src="/img/hero-students.jpg" alt="Nigerian secondary school students smiling in class" fill style={{ objectFit: 'cover' }} />
               </div>
               <div className="hero-badge hero-badge--tl">
-                <span className="n" data-count="500" data-suffix="+">500+</span>
-                <span className="t">students reached</span>
+                <span className="n" data-count={stats[0].count} data-suffix={stats[0].suffix}>{stats[0].count}{stats[0].suffix}</span>
+                <span className="t">{stats[0].label.toLowerCase()}</span>
               </div>
               <div className="hero-badge hero-badge--br">
-                <span className="n" data-count="15" data-suffix="+">15+</span>
-                <span className="t">school partnerships</span>
+                <span className="n" data-count={stats[2].count} data-suffix={stats[2].suffix}>{stats[2].count}{stats[2].suffix}</span>
+                <span className="t">{stats[2].label.toLowerCase()}</span>
               </div>
             </div>
           </div>
@@ -97,10 +138,12 @@ export default async function HomePage() {
             </div>
           </div>
           <div className="stats mt-l stagger">
-            <div className="stat"><div className="num" data-count="500" data-suffix="+">500+</div><div className="lbl">Students Reached</div></div>
-            <div className="stat"><div className="num" data-count="30" data-suffix="+">30+</div><div className="lbl">Mentors Involved</div></div>
-            <div className="stat"><div className="num" data-count="15" data-suffix="+">15+</div><div className="lbl">School Partnerships</div></div>
-            <div className="stat"><div className="num" data-count="1" data-suffix="">1</div><div className="lbl">Year Since Launch</div></div>
+            {stats.map((s, i) => (
+              <div className="stat" key={i}>
+                <div className="num" data-count={s.count} data-suffix={s.suffix}>{s.count}{s.suffix}</div>
+                <div className="lbl">{s.label}</div>
+              </div>
+            ))}
           </div>
         </div>
       </section>

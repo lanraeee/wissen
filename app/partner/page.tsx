@@ -4,6 +4,8 @@ import PartnerForm from '@/components/PartnerForm'
 import PartnersCarousel from '@/components/PartnersCarousel'
 import sql from '@/lib/db'
 
+export const dynamic = 'force-dynamic'
+
 export const metadata: Metadata = {
   title: 'Partner With Us · Wissen-Haus',
   description: 'Partner with Wissen-Haus to empower African youth and the diaspora. For schools, companies, and individuals.',

@@ -1,5 +1,6 @@
 ﻿import type { Metadata } from 'next'
 import CareersEditor from '@/components/admin/CareersEditor'
+import HomeContentEditor from '@/components/admin/HomeContentEditor'
 import PolicyEditor from '@/components/admin/PolicyEditor'
 import FounderEditor from '@/components/admin/FounderEditor'
 import ThreadsEditor from '@/components/admin/ThreadsEditor'
@@ -14,6 +15,7 @@ import BankDetailsEditor from '@/components/admin/BankDetailsEditor'
 export const metadata: Metadata = { title: 'Content · Admin · Wissen-Haus' }
 
 const TABS = [
+  { key: 'homepage', label: 'Homepage Hero' },
   { key: 'careers', label: 'Careers Roles' },
   { key: 'policy', label: 'Policy Timeline' },
   { key: 'team', label: 'Team Members' },
@@ -49,6 +51,7 @@ export default async function AdminContent({ searchParams }: { searchParams: Pro
       </div>
 
       <div style={{ background: '#fff', borderRadius: 10, padding: 24, boxShadow: '0 1px 4px rgba(0,0,0,.06)' }}>
+        {tab === 'homepage' && <HomeContentEditor />}
         {tab === 'careers' && <CareersEditor />}
         {tab === 'policy' && <PolicyEditor />}
         {tab === 'team' && <TeamEditor />}
