@@ -114,18 +114,6 @@ export default async function Footer() {
         <div className="footer-mega" aria-hidden="true">WISSEN-HAUS</div>
 
         <div className="wrap wrap-wide">
-          <div style={{ paddingBottom: 32, borderBottom: '1px solid var(--line)', marginBottom: 24 }}>
-            <h5 style={{ fontSize: '.75rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--muted)', letterSpacing: '.06em', marginBottom: 16 }}>Partner Organizations</h5>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 24, flexWrap: 'wrap' }}>
-              <a href="/partners/datacamp" style={{ display: 'inline-flex', alignItems: 'center', opacity: 0.8, transition: 'opacity 0.2s', textDecoration: 'none' }}>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/img/partners/datacamp-logo-inverted.png" alt="DataCamp Donates" style={{ height: 32, objectFit: 'contain' }} />
-              </a>
-            </div>
-          </div>
-        </div>
-
-        <div className="wrap wrap-wide">
           <div className="footer-bottom">
             <span>Â© {year} Wissen-Haus Empowerment Foundation. All rights reserved.</span>
             <span style={{ display: 'flex', gap: 16, alignItems: 'center', flexWrap: 'wrap' }}>
