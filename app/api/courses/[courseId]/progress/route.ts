@@ -6,6 +6,7 @@ import { getCourse } from '@/lib/courses'
 import { getPostHogClient } from '@/lib/posthog-server'
 import { sendCertificateEmail } from '@/lib/email'
 import { parseBody } from '@/lib/validation'
+import { log } from '@/lib/logger'
 
 const ProgressSchema = z.object({
   moduleId: z.number().int().nonnegative(),
@@ -72,7 +73,7 @@ export async function POST(
       // re-emailing/re-tracking on every subsequent completion request.
       if (inserted) {
         sendCertificateEmail(session.email, session.name, course.title, certId)
-          .catch(err => console.error('[certificate email]', err))
+          .catch(err => log.error('certificate email', err))
 
         const posthog = getPostHogClient()
         posthog.capture({

@@ -1,5 +1,6 @@
 ﻿import { NextRequest, NextResponse } from 'next/server'
 import sql from '@/lib/db'
+import { log } from '@/lib/logger'
 
 export async function GET(req: NextRequest) {
   try {
@@ -43,7 +44,7 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json({ opportunities: rows })
   } catch (err) {
-    console.error('[opportunities GET]', err)
+    log.error('opportunities GET', err)
     return NextResponse.json({ opportunities: [] }, { status: 500 })
   }
 }

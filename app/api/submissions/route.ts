@@ -2,6 +2,7 @@
 import { z } from 'zod'
 import sql from '@/lib/db'
 import { parseBody, zEmail, zName } from '@/lib/validation'
+import { log } from '@/lib/logger'
 
 const SubmissionSchema = z.object({
   type: z.string().trim().min(1).max(50),
@@ -26,7 +27,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ success: true })
   } catch (err) {
-    console.error('[submissions]', err)
+    log.error('submissions', err)
     return NextResponse.json({ error: 'Server error' }, { status: 500 })
   }
 }

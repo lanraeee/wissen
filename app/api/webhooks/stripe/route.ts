@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import type Stripe from 'stripe'
 import { getStripe } from '@/lib/stripe'
 import { verifyStripeSession, recordDonation } from '@/lib/donations'
+import { log } from '@/lib/logger'
 
 // Without this, a donation was only ever recorded when the browser came back to
 // /donate/success and issued the PUT — so a closed tab or a dropped redirect
@@ -15,7 +16,7 @@ import { verifyStripeSession, recordDonation } from '@/lib/donations'
 export async function POST(req: NextRequest) {
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET
   if (!webhookSecret) {
-    console.error('[stripe webhook] STRIPE_WEBHOOK_SECRET is not set')
+    log.error('stripe webhook', new Error('STRIPE_WEBHOOK_SECRET is not set'))
     return NextResponse.json({ error: 'Webhook is not configured' }, { status: 503 })
   }
 
@@ -30,7 +31,7 @@ export async function POST(req: NextRequest) {
     event = await getStripe().webhooks.constructEventAsync(payload, signature, webhookSecret)
   } catch (err) {
     // Unsigned or tampered-with payload: never retried, never recorded.
-    console.error('[stripe webhook] signature verification failed', err)
+    log.error('stripe webhook', err, { stage: 'signature verification' })
     return NextResponse.json({ error: 'Invalid signature' }, { status: 400 })
   }
 
@@ -50,7 +51,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ received: true, recorded })
   } catch (err) {
     // 5xx so Stripe retries a transient database or email failure.
-    console.error('[stripe webhook] could not record donation', session.id, err)
+    log.error('stripe webhook', err, { stage: 'record donation', sessionId: session.id })
     return NextResponse.json({ error: 'Could not record donation' }, { status: 500 })
   }
 }

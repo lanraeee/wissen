@@ -3,6 +3,7 @@ import { z } from 'zod'
 import { sendContactNotification, sendContactConfirmation } from '@/lib/email'
 import sql from '@/lib/db'
 import { parseBody, zEmail, zName, zShortText, zLongText } from '@/lib/validation'
+import { log } from '@/lib/logger'
 
 const ContactSchema = z.object({
   name: zName,
@@ -26,7 +27,7 @@ export async function POST(req: NextRequest) {
       sendContactConfirmation(email, name),
     ])
   } catch (err) {
-    console.error('[contact email]', err)
+    log.error('contact email', err)
   }
 
   return NextResponse.json({ success: true })

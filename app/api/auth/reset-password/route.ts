@@ -5,6 +5,7 @@ import sql from '@/lib/db'
 import { hashPassword } from '@/lib/auth'
 import { sendPasswordChangedEmail } from '@/lib/email'
 import { parseBody } from '@/lib/validation'
+import { log } from '@/lib/logger'
 
 const ResetPasswordSchema = z.object({
   token: z.string().min(1).max(500),
@@ -36,7 +37,7 @@ export async function POST(req: NextRequest) {
 
   if (user) {
     sendPasswordChangedEmail(user.email as string, `${user.first_name} ${user.last_name}`)
-      .catch(err => console.error('[password changed email]', err))
+      .catch(err => log.error('password changed email', err))
   }
 
   return NextResponse.json({ success: true })

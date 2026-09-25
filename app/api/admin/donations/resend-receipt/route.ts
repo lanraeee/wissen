@@ -5,6 +5,7 @@ import sql from '@/lib/db'
 import { sendDonationReceipt } from '@/lib/email'
 import { issueOrGetCertificate, type VerifiedDonation } from '@/lib/donations'
 import { parseBody } from '@/lib/validation'
+import { log } from '@/lib/logger'
 
 const ReferenceSchema = z.object({ reference: z.string().trim().min(1).max(100) })
 
@@ -33,7 +34,7 @@ export async function POST(req: NextRequest) {
   try {
     await sendDonationReceipt(donation.email, donation.name, donation.amount, donation.currency, donation.reference, certUrl)
   } catch (err) {
-    console.error('[resend donation receipt]', err)
+    log.error('resend donation receipt', err)
     return NextResponse.json({ error: 'Failed to send email' }, { status: 502 })
   }
 

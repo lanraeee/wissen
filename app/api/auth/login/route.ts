@@ -3,6 +3,7 @@ import { z } from 'zod'
 import sql from '@/lib/db'
 import { verifyPassword, signToken, COOKIE_NAME } from '@/lib/auth'
 import { parseBody } from '@/lib/validation'
+import { log } from '@/lib/logger'
 
 const LoginSchema = z.object({
   email: z.string().trim().min(1).max(255),
@@ -63,7 +64,7 @@ export async function POST(req: NextRequest) {
     })
     return res
   } catch (err) {
-    console.error('[login]', err)
+    log.error('login', err)
     return NextResponse.json({ error: 'Server error' }, { status: 500 })
   }
 }

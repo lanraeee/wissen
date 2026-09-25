@@ -1,6 +1,7 @@
 ﻿import { NextResponse } from 'next/server'
 import { getSession } from '@/lib/auth'
 import sql from '@/lib/db'
+import { log } from '@/lib/logger'
 
 export async function GET() {
   const session = await getSession()
@@ -28,7 +29,7 @@ export async function GET() {
       certificates,
     })
   } catch (err) {
-    console.error('[me]', err)
+    log.error('me', err)
     return NextResponse.json({ user: null }, { status: 500 })
   }
 }

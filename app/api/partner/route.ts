@@ -3,6 +3,7 @@ import { z } from 'zod'
 import { sendPartnerNotification, sendPartnerConfirmation } from '@/lib/email'
 import sql from '@/lib/db'
 import { parseBody, zEmail, zName, zShortText, zMessage } from '@/lib/validation'
+import { log } from '@/lib/logger'
 
 const PartnerSchema = z.object({
   name: zName,
@@ -26,7 +27,7 @@ export async function POST(req: NextRequest) {
       sendPartnerConfirmation(email, name),
     ])
   } catch (err) {
-    console.error('[partner email]', err)
+    log.error('partner email', err)
   }
 
   return NextResponse.json({ success: true })

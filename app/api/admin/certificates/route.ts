@@ -5,6 +5,7 @@ import sql from '@/lib/db'
 import { getCourse } from '@/lib/courses'
 import { sendCertificateEmail } from '@/lib/email'
 import { parseBody, zEmail } from '@/lib/validation'
+import { log } from '@/lib/logger'
 
 const IssueCertSchema = z.object({
   email: zEmail,
@@ -54,7 +55,7 @@ export async function POST(req: NextRequest) {
   `
 
   sendCertificateEmail(email, userName, course.title, certId)
-    .catch(err => console.error('[admin certificate email]', err))
+    .catch(err => log.error('admin certificate email', err))
 
   return NextResponse.json({ success: true, certificateId: certId, alreadyExisted: false })
 }

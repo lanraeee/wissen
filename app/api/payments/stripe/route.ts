@@ -3,6 +3,7 @@ import { z } from 'zod'
 import { getStripe } from '@/lib/stripe'
 import { verifyStripeSession, recordDonation } from '@/lib/donations'
 import { parseBody, zEmail } from '@/lib/validation'
+import { log } from '@/lib/logger'
 
 const CheckoutSchema = z.object({
   amount: z.number().positive(),
@@ -60,7 +61,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ url: session.url })
   } catch (err) {
-    console.error('[stripe checkout create]', err)
+    log.error('stripe checkout create', err)
     const message = err instanceof Error ? err.message : 'Could not start checkout'
     return NextResponse.json({ error: message }, { status: 502 })
   }
@@ -82,7 +83,7 @@ export async function PUT(req: NextRequest) {
     await recordDonation(donation)
     return NextResponse.json({ success: true, amount: donation.amount, currency: donation.currency })
   } catch (err) {
-    console.error('[stripe checkout verify]', err)
+    log.error('stripe checkout verify', err)
     const message = err instanceof Error ? err.message : 'Could not verify payment'
     return NextResponse.json({ error: message }, { status: 502 })
   }

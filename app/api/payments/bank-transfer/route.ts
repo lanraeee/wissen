@@ -7,6 +7,7 @@ import {
 } from '@/lib/bank-transfer'
 import { sendBankTransferInstructions, sendBankTransferNotification } from '@/lib/email'
 import { parseBody, zEmail } from '@/lib/validation'
+import { log } from '@/lib/logger'
 
 const CURRENCIES: BankCurrency[] = ['NGN', 'USD', 'GBP', 'EUR']
 
@@ -55,7 +56,7 @@ export async function POST(req: NextRequest) {
       VALUES ('bank_transfer', ${pledge.name}, ${pledge.email}, ${JSON.stringify(pledge)}, 'pending')
     `
   } catch (err) {
-    console.error('[bank transfer pledge insert]', err)
+    log.error('bank transfer pledge insert', err)
     return NextResponse.json({ error: 'Could not start your donation. Please try again.' }, { status: 502 })
   }
 
@@ -108,7 +109,7 @@ export async function POST(req: NextRequest) {
       }),
     ])
   } catch (err) {
-    console.error('[bank transfer pledge email]', err)
+    log.error('bank transfer pledge email', err)
   }
 
   return NextResponse.json(
@@ -147,7 +148,7 @@ export async function PUT(req: NextRequest) {
       stage: 'declared_sent',
     })
   } catch (err) {
-    console.error('[bank transfer declared email]', err)
+    log.error('bank transfer declared email', err)
   }
 
   return NextResponse.json({ status: updated?.status ?? 'declared_sent' })

@@ -5,6 +5,7 @@ import { adminGuard } from '@/lib/admin-guard'
 import { getPledge, updatePledge } from '@/lib/bank-transfer'
 import { certIdForReference, recordDonation, type VerifiedDonation } from '@/lib/donations'
 import { parseBody } from '@/lib/validation'
+import { log } from '@/lib/logger'
 
 const ReferenceSchema = z.object({ reference: z.string().trim().min(1).max(100) })
 
@@ -53,7 +54,7 @@ export async function POST(req: NextRequest) {
   try {
     await recordDonation(donation)
   } catch (err) {
-    console.error('[bank transfer confirm]', err)
+    log.error('bank transfer confirm', err)
     return NextResponse.json({ error: 'Could not record the donation' }, { status: 502 })
   }
 

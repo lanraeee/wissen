@@ -3,6 +3,7 @@ import { z } from 'zod'
 import { sendVolunteerNotification, sendVolunteerConfirmation } from '@/lib/email'
 import sql from '@/lib/db'
 import { parseBody, zEmail, zName, zMessage } from '@/lib/validation'
+import { log } from '@/lib/logger'
 
 const VolunteerSchema = z.object({
   name: zName,
@@ -26,7 +27,7 @@ export async function POST(req: NextRequest) {
       sendVolunteerConfirmation(email, name, role),
     ])
   } catch (err) {
-    console.error('[volunteer email]', err)
+    log.error('volunteer email', err)
   }
 
   return NextResponse.json({ success: true })

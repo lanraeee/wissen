@@ -5,6 +5,7 @@ import { getSession } from '@/lib/auth'
 import { ensureTestimonialsTable } from '@/lib/testimonials-db'
 import { sendTestimonialNotification } from '@/lib/email'
 import { parseBody } from '@/lib/validation'
+import { log } from '@/lib/logger'
 
 const TestimonialSchema = z.object({
   quote: z.string().trim().min(1).max(1000),
@@ -40,7 +41,7 @@ export async function POST(req: NextRequest) {
   `
 
   sendTestimonialNotification({ name: session.name, role, quote })
-    .catch(err => console.error('[testimonial notification]', err))
+    .catch(err => log.error('testimonial notification', err))
 
   return NextResponse.json({ testimonial: row }, { status: 201 })
 }

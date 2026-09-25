@@ -4,6 +4,7 @@ import sql from '@/lib/db'
 import { hashPassword, signToken, COOKIE_NAME } from '@/lib/auth'
 import { sendWelcomeEmail } from '@/lib/email'
 import { parseBody, zEmail, zName } from '@/lib/validation'
+import { log } from '@/lib/logger'
 
 const SignupSchema = z.object({
   firstName: zName,
@@ -38,7 +39,7 @@ export async function POST(req: NextRequest) {
     })
 
     // Send welcome email (non-blocking)
-    sendWelcomeEmail(user.email as string, `${user.first_name} ${user.last_name}`).catch(e => console.error('[welcome email]', e))
+    sendWelcomeEmail(user.email as string, `${user.first_name} ${user.last_name}`).catch(e => log.error('welcome email', e))
 
     const res = NextResponse.json({ success: true, user: { id: user.id, email: user.email, name: `${user.first_name} ${user.last_name}` } })
     res.cookies.set(COOKIE_NAME, token, {
@@ -50,7 +51,7 @@ export async function POST(req: NextRequest) {
     })
     return res
   } catch (err) {
-    console.error('[signup]', err)
+    log.error('signup', err)
     return NextResponse.json({ error: 'Server error' }, { status: 500 })
   }
 }

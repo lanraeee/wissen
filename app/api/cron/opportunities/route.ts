@@ -1,5 +1,6 @@
 ﻿import { NextRequest, NextResponse } from 'next/server'
 import sql from '@/lib/db'
+import { log } from '@/lib/logger'
 
 const BROWSER_UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0 Safari/537.36'
 const GENERIC_UA = 'Mozilla/5.0 (compatible; WissenHaus/1.0)'
@@ -87,7 +88,7 @@ async function fetchRemoteOK(): Promise<OppItem[]> {
         tags: ((job.tags as string[]) || []).slice(0, 2)
       }
     }).filter(Boolean)
-  } catch (e) { console.error('RemoteOK error:', e); return [] }
+  } catch (e) { log.error('cron/opportunities:RemoteOK', e); return [] }
 }
 
 async function fetchWeWorkRemotely(): Promise<OppItem[]> {
@@ -126,7 +127,7 @@ async function fetchWeWorkRemotely(): Promise<OppItem[]> {
         tags: extractXmlTag(item, 'category').split(',').map(s => s.trim()).slice(0, 2)
       }
     }).filter(Boolean) as OppItem[]
-  } catch (e) { console.error('WeWorkRemotely error:', e); return [] }
+  } catch (e) { log.error('cron/opportunities:WeWorkRemotely', e); return [] }
 }
 
 async function fetchHimalayas(): Promise<OppItem[]> {
@@ -158,7 +159,7 @@ async function fetchHimalayas(): Promise<OppItem[]> {
         tags: ((job.categories as string[]) || []).slice(0, 2)
       }
     }).filter(Boolean) as OppItem[]
-  } catch (e) { console.error('Himalayas error:', e); return [] }
+  } catch (e) { log.error('cron/opportunities:Himalayas', e); return [] }
 }
 
 async function fetchArbeitnow(): Promise<OppItem[]> {
@@ -184,7 +185,7 @@ async function fetchArbeitnow(): Promise<OppItem[]> {
         tags: ((job.tags as string[]) || []).slice(0, 2)
       }
     }).filter(Boolean) as OppItem[]
-  } catch (e) { console.error('Arbeitnow error:', e); return [] }
+  } catch (e) { log.error('cron/opportunities:Arbeitnow', e); return [] }
 }
 
 async function fetchDevpost(): Promise<OppItem[]> {
@@ -213,7 +214,7 @@ async function fetchDevpost(): Promise<OppItem[]> {
         tags: ((h.themes as Array<{name:string}>) || []).map(t => t.name).slice(0, 2)
       }
     })
-  } catch (e) { console.error('Devpost error:', e); return [] }
+  } catch (e) { log.error('cron/opportunities:Devpost', e); return [] }
 }
 
 async function fetchScholarshipsForAfricans(): Promise<OppItem[]> {
@@ -240,7 +241,7 @@ async function fetchScholarshipsForAfricans(): Promise<OppItem[]> {
         tags: categories.slice(0, 2)
       }
     }).filter(Boolean) as OppItem[]
-  } catch (e) { console.error('ScholarshipsForAfricans error:', e); return [] }
+  } catch (e) { log.error('cron/opportunities:ScholarshipsForAfricans', e); return [] }
 }
 
 function shouldPrune(item: OppItem, now: Date) {
@@ -321,7 +322,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ success: true, upserted, total: items.length })
   } catch (err) {
-    console.error('[cron/opportunities]', err)
+    log.error('cron/opportunities', err)
     return NextResponse.json({ error: 'Server error' }, { status: 500 })
   }
 }
