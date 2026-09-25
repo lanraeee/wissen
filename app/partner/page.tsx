@@ -2,13 +2,24 @@
 import Link from 'next/link'
 import PartnerForm from '@/components/PartnerForm'
 import PartnersCarousel from '@/components/PartnersCarousel'
+import sql from '@/lib/db'
 
 export const metadata: Metadata = {
   title: 'Partner With Us · Wissen-Haus',
   description: 'Partner with Wissen-Haus to empower African youth and the diaspora. For schools, companies, and individuals.',
 }
 
-export default function PartnerPage() {
+async function getPartners() {
+  try {
+    const rows = await sql`SELECT value FROM site_content WHERE key = 'partners'`
+    return rows[0]?.value ?? []
+  } catch {
+    return []
+  }
+}
+
+export default async function PartnerPage() {
+  const partners = await getPartners()
   return (
     <>
       <section className="section section--tight" style={{ paddingTop: 'clamp(48px,6vw,84px)' }}>
@@ -100,7 +111,7 @@ export default function PartnerPage() {
           </div>
 
           <div className="reveal">
-            <PartnersCarousel />
+            <PartnersCarousel partners={partners} />
           </div>
         </div>
       </section>

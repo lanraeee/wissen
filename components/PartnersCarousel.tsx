@@ -10,7 +10,7 @@ interface Partner {
   url?: string
 }
 
-const PARTNERS: Partner[] = [
+const FALLBACK_PARTNERS: Partner[] = [
   {
     name: 'DataCamp Donates',
     logo: '/img/partners/datacamp-logo.jpg',
@@ -20,7 +20,8 @@ const PARTNERS: Partner[] = [
   },
 ]
 
-export default function PartnersCarousel() {
+export default function PartnersCarousel({ partners }: { partners?: Partner[] }) {
+  const PARTNERS = partners && partners.length > 0 ? partners : FALLBACK_PARTNERS
   const [current, setCurrent] = useState(0)
   const [autoplay, setAutoplay] = useState(true)
 
@@ -30,7 +31,7 @@ export default function PartnersCarousel() {
       setCurrent((c) => (c + 1) % PARTNERS.length)
     }, 5000)
     return () => clearInterval(timer)
-  }, [autoplay])
+  }, [autoplay, PARTNERS.length])
 
   const next = () => {
     setCurrent((c) => (c + 1) % PARTNERS.length)
@@ -43,6 +44,7 @@ export default function PartnersCarousel() {
   }
 
   if (PARTNERS.length === 0) return null
+  const active = PARTNERS[Math.min(current, PARTNERS.length - 1)]
 
   return (
     <div style={{ width: '100%' }}>
@@ -78,9 +80,9 @@ export default function PartnersCarousel() {
             padding: '20px',
           }}
         >
-          {PARTNERS[current].url ? (
+          {active.url ? (
             <a
-              href={PARTNERS[current].url}
+              href={active.url}
               style={{
                 display: 'flex',
                 flexDirection: 'column',
@@ -91,8 +93,8 @@ export default function PartnersCarousel() {
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src={PARTNERS[current].logo}
-                alt={PARTNERS[current].name}
+                src={active.logo}
+                alt={active.name}
                 style={{
                   maxHeight: 80,
                   maxWidth: 240,
@@ -100,9 +102,9 @@ export default function PartnersCarousel() {
                   transition: 'opacity 0.3s',
                 }}
               />
-              {PARTNERS[current].description && (
+              {active.description && (
                 <p style={{ margin: 0, fontSize: '.9rem', color: 'var(--muted)', textAlign: 'center' }}>
-                  {PARTNERS[current].description}
+                  {active.description}
                 </p>
               )}
             </a>
@@ -110,17 +112,17 @@ export default function PartnersCarousel() {
             <>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src={PARTNERS[current].logo}
-                alt={PARTNERS[current].name}
+                src={active.logo}
+                alt={active.name}
                 style={{
                   maxHeight: 80,
                   maxWidth: 240,
                   objectFit: 'contain',
                 }}
               />
-              {PARTNERS[current].description && (
+              {active.description && (
                 <p style={{ margin: 0, fontSize: '.9rem', color: 'var(--muted)', textAlign: 'center' }}>
-                  {PARTNERS[current].description}
+                  {active.description}
                 </p>
               )}
             </>

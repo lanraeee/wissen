@@ -72,7 +72,7 @@ export default async function VerifyCertPage({ params }: Props) {
           <Image src="/img/logo.png" alt="Wissen-Haus" width={80} height={80} style={{ borderRadius: 12, filter: 'drop-shadow(0 3px 8px rgba(0,0,0,0.22))' }} />
           <div>
             <div style={{ color: '#2a1a00', fontWeight: 800, fontSize: '1rem', lineHeight: 1.2 }}>Wissen-Haus</div>
-            <div style={{ color: 'rgba(42,26,0,0.65)', fontSize: '.68rem', letterSpacing: '.12em', textTransform: 'uppercase', fontWeight: 600 }}>Youth Empowerment Foundation</div>
+            <div style={{ color: 'rgba(42,26,0,0.65)', fontSize: '.68rem', letterSpacing: '.12em', textTransform: 'uppercase', fontWeight: 600 }}>Empowerment Foundation</div>
           </div>
           <div style={{ marginLeft: 'auto', background: '#16a34a', color: '#fff', borderRadius: 20, padding: '5px 16px', fontSize: '.75rem', fontWeight: 700, letterSpacing: '.08em', display: 'flex', alignItems: 'center', gap: 6, boxShadow: '0 1px 4px rgba(0,0,0,0.2)' }}>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" width="14" height="14"><path d="M20 6L9 17l-5-5" strokeLinecap="round" strokeLinejoin="round"/></svg>

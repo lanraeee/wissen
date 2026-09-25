@@ -4,6 +4,7 @@ import PolicyEditor from '@/components/admin/PolicyEditor'
 import FounderEditor from '@/components/admin/FounderEditor'
 import ThreadsEditor from '@/components/admin/ThreadsEditor'
 import TeamEditor from '@/components/admin/TeamEditor'
+import PartnersEditor from '@/components/admin/PartnersEditor'
 import DonationCertEditor from '@/components/admin/DonationCertEditor'
 import FoundationDetailsEditor from '@/components/admin/FoundationDetailsEditor'
 import ImpactStoriesEditor from '@/components/admin/ImpactStoriesEditor'
@@ -16,6 +17,7 @@ const TABS = [
   { key: 'careers', label: 'Careers Roles' },
   { key: 'policy', label: 'Policy Timeline' },
   { key: 'team', label: 'Team Members' },
+  { key: 'partners', label: 'Partners' },
   { key: 'founder', label: 'Founder Bio' },
   { key: 'threads', label: 'Community Threads' },
   { key: 'whatsapp', label: 'WhatsApp Channel' },
@@ -50,6 +52,7 @@ export default async function AdminContent({ searchParams }: { searchParams: Pro
         {tab === 'careers' && <CareersEditor />}
         {tab === 'policy' && <PolicyEditor />}
         {tab === 'team' && <TeamEditor />}
+        {tab === 'partners' && <PartnersEditor />}
         {tab === 'founder' && <FounderEditor />}
         {tab === 'threads' && <ThreadsEditor />}
         {tab === 'whatsapp' && <WhatsAppEditor />}

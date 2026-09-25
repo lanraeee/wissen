@@ -66,7 +66,7 @@ function shell(body: string) {
 <div class="wrap">
   <div class="head">
     <h1>Wissen-Haus</h1>
-    <p>Youth Empowerment Foundation</p>
+    <p>Empowerment Foundation</p>
   </div>
   <div class="body">${body}</div>
   <div class="foot">
