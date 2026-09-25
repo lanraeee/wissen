@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 
 import { useEffect } from 'react'
 import { usePathname } from 'next/navigation'
@@ -152,7 +152,7 @@ export default function ScrollEffects() {
         e.preventDefault()
         const btn = form.querySelector<HTMLButtonElement>('[type="submit"]')
         const original = btn ? btn.innerHTML : ''
-        if (btn) { btn.innerHTML = "Thank you, we'll be in touch âœ“"; btn.disabled = true }
+        if (btn) { btn.innerHTML = "Thank you, we'll be in touch ✓"; btn.disabled = true }
         form.reset()
         setTimeout(() => { if (btn) { btn.innerHTML = original; btn.disabled = false } }, 3400)
       })

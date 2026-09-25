@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 
 import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
@@ -26,7 +26,7 @@ const NAV = [
       ['/career-clarity-trade-fair', 'Career Clarity Trade Fair', 'For all secondary school students'],
       ['/opportunity-blueprint', 'Opportunity Blueprint', 'Our flagship podcast'],
       ['/impact-content', 'Impact Content', 'Social-impact storytelling'],
-      ['/events', 'Events & CafÃ©s', 'Networking, workshops & more'],
+      ['/events', 'Events & Cafés', 'Networking, workshops & more'],
     ]
   },
   {

@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 
 import { useState, useEffect, useRef, useCallback } from 'react'
 
@@ -60,7 +60,7 @@ export default function TestimonialCarousel() {
           <div className="testi tcarousel__card" key={t.id}>
             <span className="quote-mark" style={{ fontSize: '3rem' }}>&ldquo;</span>
             {t.rating && (
-              <div className="stars" aria-hidden="true">{'â˜…'.repeat(t.rating)}{'â˜†'.repeat(5 - t.rating)}</div>
+              <div className="stars" aria-hidden="true">{'★'.repeat(t.rating)}{'☆'.repeat(5 - t.rating)}</div>
             )}
             <p>{t.quote}</p>
             <div className="testi__who">
