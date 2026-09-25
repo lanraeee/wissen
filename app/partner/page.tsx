@@ -88,6 +88,30 @@ export default function PartnerPage() {
         </div>
       </section>
 
+      <div className="pattern-edge" aria-hidden="true" />
+
+      <section className="section">
+        <div className="wrap">
+          <div className="section-head center mb-l reveal">
+            <span className="eyebrow">Our Partners</span>
+            <h2>Organizations Making Impact Together</h2>
+            <p className="lead mt-m">We're proud to collaborate with leading organizations committed to youth empowerment and access to education.</p>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 32, alignItems: 'center', justifyContent: 'center' }}>
+            <a href="/partners/datacamp" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20, textDecoration: 'none', transition: 'transform 0.2s' }} className="reveal" onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.05)'} onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/img/partners/datacamp-logo.jpg" alt="DataCamp Donates" style={{ maxHeight: 80, maxWidth: 200, objectFit: 'contain' }} />
+            </a>
+          </div>
+
+          <p style={{ textAlign: 'center', marginTop: 24, color: 'var(--muted)', fontSize: '.9rem' }}>
+            Through DataCamp Donates, our students and team members get free access to 500+ premium data science and AI courses.{' '}
+            <a href="/partners/datacamp" style={{ color: 'var(--green-700)', fontWeight: 600 }}>Learn more →</a>
+          </p>
+        </div>
+      </section>
+
       <section className="section">
         <div className="wrap">
           <div className="section-head center mb-l reveal">

@@ -73,6 +73,27 @@ export default function DonatePage() {
         </div>
       </section>
 
+      {/* DataCamp Partnership Banner */}
+      <section className="section" style={{ background: 'linear-gradient(135deg, #1a3c2e 0%, #0F2D1D 100%)' }}>
+        <div className="wrap">
+          <div style={{ display: 'flex', alignItems: 'center', gap: 24, justifyContent: 'space-between', flexWrap: 'wrap' }} className="reveal">
+            <div style={{ flex: 1, minWidth: '280px' }}>
+              <h3 style={{ color: '#fff', fontSize: '1.25rem', marginBottom: '.5rem' }}>Amplify Your Impact</h3>
+              <p style={{ color: 'rgba(244,240,231,.78)', marginBottom: '1rem' }}>
+                Your donation provides Career Clarity Fairs and mentorship. Our partnership with DataCamp multiplies that impact by giving students free access to 500+ premium data science and AI courses — preparing them for the jobs of tomorrow.
+              </p>
+              <Link href="/partners/datacamp" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, color: '#fff', fontWeight: 600, textDecoration: 'none', fontSize: '.95rem' }}>
+                Learn about our DataCamp partnership <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" style={{ width: 16, height: 16 }}><path d="M5 12h14M13 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" /></svg>
+              </Link>
+            </div>
+            <div style={{ minWidth: '120px', opacity: 0.9 }}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/img/partners/datacamp-logo-inverted.png" alt="DataCamp Donates" style={{ height: 48, objectFit: 'contain' }} />
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section className="section panel-dark">
         <div className="wrap">
           <div className="section-head mb-l reveal">
