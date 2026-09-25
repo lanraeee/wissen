@@ -146,15 +146,18 @@ describe('quizUtils', () => {
     })
 
     it('should produce different order for different sessions', () => {
+      // mockQuestions only has 2 items (2 possible orderings), so any single
+      // session pair has a 50% chance of colliding by chance alone -- that's
+      // a flaky test, not a signal about shuffleQuestionOrder. Check across
+      // enough session pairs that at least one disagreement is overwhelmingly
+      // likely if the function is session-dependent at all.
       const questions = shuffleModuleQuestions(mockQuestions, 'session-1')
-      const shuffle1 = shuffleQuestionOrder(questions, 'session-1')
-      const shuffle2 = shuffleQuestionOrder(questions, 'session-2')
+      const baseline = shuffleQuestionOrder(questions, 'session-1').map(q => q.originalIndex).join('')
 
-      const order1 = shuffle1.map(q => q.originalIndex).join('')
-      const order2 = shuffle2.map(q => q.originalIndex).join('')
+      const sawDifferentOrder = Array.from({ length: 20 }, (_, i) => `session-${i + 2}`)
+        .some(session => shuffleQuestionOrder(questions, session).map(q => q.originalIndex).join('') !== baseline)
 
-      // Highly likely to be different for different sessions
-      expect(order1).not.toBe(order2)
+      expect(sawDifferentOrder).toBe(true)
     })
   })
 
