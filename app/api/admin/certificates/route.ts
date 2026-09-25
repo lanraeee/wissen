@@ -28,15 +28,15 @@ export async function POST(req: NextRequest) {
   const userId = users[0].id as string
   const userName = `${users[0].first_name} ${users[0].last_name}`
 
-  // Optionally mark all modules as complete first
-  if (markComplete) {
-    for (const mod of course.modules) {
-      await sql`
-        INSERT INTO course_progress (user_id, course_id, module_id)
-        VALUES (${userId}, ${courseId}, ${mod.id})
-        ON CONFLICT (user_id, course_id, module_id) DO NOTHING
-      `
-    }
+  // Optionally mark all modules as complete first -- one bulk insert instead
+  // of one round trip per module.
+  if (markComplete && course.modules.length > 0) {
+    const moduleIds = course.modules.map(m => m.id)
+    await sql`
+      INSERT INTO course_progress (user_id, course_id, module_id)
+      SELECT ${userId}, ${courseId}, id FROM UNNEST(${moduleIds}::int[]) AS id
+      ON CONFLICT (user_id, course_id, module_id) DO NOTHING
+    `
   }
 
   const certId = `WH-${courseId.toUpperCase()}-${userId.slice(0, 8).toUpperCase()}`
