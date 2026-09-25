@@ -1,5 +1,9 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import sql from '@/lib/db'
+import type { TeamMember } from '@/app/team/page'
+
+export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
   title: 'About Wissen-Haus · Encyclopedia Entry',
@@ -27,7 +31,8 @@ const TOC = [
   { id: 'references', label: 'References' },
 ]
 
-const PERSONNEL = [
+// Fallback shown only if no one has entered team members via /admin/content yet.
+const FALLBACK_PERSONNEL = [
   {
     name: 'Benz Olagbaye',
     role: 'Founder & Executive Director',
@@ -41,6 +46,31 @@ const PERSONNEL = [
   { name: 'Ope', role: 'Programme Co-ordinator', group: 'Volunteer', note: null, href: null },
   { name: 'Zaki', role: 'Programme Co-ordinator', group: 'Volunteer', note: null, href: null },
 ]
+
+const GROUP_LABEL: Record<TeamMember['group'], string> = {
+  leadership: 'Leadership',
+  advisor: 'Advisory Board',
+  mentor: 'Mentor',
+  team_member: 'Team Member',
+  volunteer: 'Volunteer',
+}
+
+async function getPersonnel() {
+  try {
+    const rows = await sql`SELECT value FROM site_content WHERE key = 'team_members'`
+    const members = rows[0]?.value as TeamMember[] | undefined
+    if (members && members.length > 0) {
+      return members.map(m => ({
+        name: m.name,
+        role: m.role,
+        group: GROUP_LABEL[m.group] ?? m.group,
+        note: m.group === 'leadership' ? m.bio : null,
+        href: /founder/i.test(m.role) ? '/founder' : null,
+      }))
+    }
+  } catch {}
+  return FALLBACK_PERSONNEL
+}
 
 const REFS = [
   { id: 1, label: 'Wissen-Haus Empowerment Foundation', url: 'https://www.wissenhaus.org' },
@@ -64,7 +94,8 @@ function Ref({ n }: { n: number }) {
   )
 }
 
-export default function WikiPage() {
+export default async function WikiPage() {
+  const PERSONNEL = await getPersonnel()
   return (
     <div style={{ background: '#fefcf5', minHeight: '100vh' }}>
       <div style={{ maxWidth: 900, margin: '0 auto', padding: 'clamp(32px,5vw,64px) clamp(20px,4vw,40px)' }}>
