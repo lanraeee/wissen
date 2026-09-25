@@ -23,6 +23,10 @@ CREATE TABLE IF NOT EXISTS course_progress (
   UNIQUE(user_id, course_id, module_id)
 );
 
+CREATE INDEX IF NOT EXISTS idx_cp_user_id ON course_progress(user_id);
+CREATE INDEX IF NOT EXISTS idx_cp_course_id ON course_progress(course_id);
+CREATE INDEX IF NOT EXISTS idx_cp_completed_at ON course_progress(completed_at DESC);
+
 CREATE TABLE IF NOT EXISTS certificates (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
@@ -31,6 +35,10 @@ CREATE TABLE IF NOT EXISTS certificates (
   issued_at TIMESTAMPTZ DEFAULT NOW(),
   UNIQUE(user_id, course_id)
 );
+
+CREATE INDEX IF NOT EXISTS idx_cert_user_id ON certificates(user_id);
+CREATE INDEX IF NOT EXISTS idx_cert_certificate_id ON certificates(certificate_id);
+CREATE INDEX IF NOT EXISTS idx_cert_issued_at ON certificates(issued_at DESC);
 
 CREATE TABLE IF NOT EXISTS submissions (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -42,6 +50,9 @@ CREATE TABLE IF NOT EXISTS submissions (
   status TEXT DEFAULT 'pending',
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
+
+CREATE INDEX IF NOT EXISTS idx_sub_type ON submissions(type);
+CREATE INDEX IF NOT EXISTS idx_sub_created_at ON submissions(created_at DESC);
 
 CREATE TABLE IF NOT EXISTS visit_streaks (
   user_id UUID PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
@@ -65,6 +76,10 @@ CREATE TABLE IF NOT EXISTS opportunities (
   tags TEXT[],
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
+
+CREATE INDEX IF NOT EXISTS idx_opp_type ON opportunities(type);
+CREATE INDEX IF NOT EXISTS idx_opp_source ON opportunities(source);
+CREATE INDEX IF NOT EXISTS idx_opp_updated_at ON opportunities(updated_at DESC);
 
 CREATE TABLE IF NOT EXISTS site_content (
   key TEXT PRIMARY KEY,
