@@ -1,4 +1,4 @@
-import posthog from 'posthog-js'
+﻿import posthog from 'posthog-js'
 
 if (!process.env.NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN) {
   if (process.env.NODE_ENV === 'development') {

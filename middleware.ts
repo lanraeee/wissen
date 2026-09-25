@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server'
+﻿import { NextRequest, NextResponse } from 'next/server'
 import { COOKIE_NAME, verifyToken } from '@/lib/auth-edge'
 
 const protectedRoutes = ['/community', '/jobs', '/internships', '/scholarships', '/competitions']

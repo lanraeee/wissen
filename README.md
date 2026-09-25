@@ -1,6 +1,6 @@
-# Wissen-Haus Empowerment
+﻿# Wissen-Haus Empowerment Foundation
 
-Web platform for Wissen-Haus — a Nigerian NGO bridging the skills gap by equipping young people with practical career guidance, mentorship, and global exposure.
+Web platform for Wissen-Haus â€” a Nigerian NGO bridging the skills gap by equipping young people with practical career guidance, mentorship, and global exposure.
 
 ## Tech Stack
 
@@ -14,7 +14,7 @@ Web platform for Wissen-Haus — a Nigerian NGO bridging the skills gap by equip
 ## Features
 
 - Career assessment tool
-- Community hub (threads, opportunities — jobs, internships, scholarships, competitions)
+- Community hub (threads, opportunities â€” jobs, internships, scholarships, competitions)
 - Course platform with progress tracking and certificates
 - Admin dashboard (users, submissions, stats)
 - Contact, volunteer, and partner intake forms
@@ -40,7 +40,7 @@ npm run dev
 | `FOUNDER_EMAIL` | Receives contact/volunteer/partner submissions |
 | `CRON_SECRET` | Authorises the `/api/cron/opportunities` endpoint |
 
-Additional variables for Stripe, Paystack, and Resend are required for payments and email — see your provider dashboards.
+Additional variables for Stripe, Paystack, and Resend are required for payments and email â€” see your provider dashboards.
 
 ## Database Setup
 
