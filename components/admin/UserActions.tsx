@@ -9,6 +9,11 @@ interface User {
   email: string
   role: string
   membership_expiry: string | null
+  created_at: string
+}
+
+function toDateInputValue(iso: string) {
+  return iso ? new Date(iso).toISOString().slice(0, 10) : ''
 }
 
 const btn = (bg: string, color = '#fff') => ({
@@ -25,7 +30,10 @@ const ROLE_COLORS: Record<string, string> = {
 export default function UserActions({ user, onRefresh, isDirector }: { user: User; onRefresh: () => void; isDirector: boolean }) {
   const [busy, setBusy] = useState(false)
   const [editing, setEditing] = useState(false)
-  const [form, setForm] = useState({ first_name: user.first_name, last_name: user.last_name, email: user.email })
+  const [form, setForm] = useState({
+    first_name: user.first_name, last_name: user.last_name, email: user.email,
+    created_at: toDateInputValue(user.created_at),
+  })
 
   // Several of these actions are director-only, so a refusal is an ordinary
   // outcome rather than a bug. Report it: without this the row simply reverts
@@ -72,6 +80,12 @@ export default function UserActions({ user, onRefresh, isDirector }: { user: Use
         style={{ padding: '3px 6px', fontSize: '.8rem', border: '1px solid #d0ccc4', borderRadius: 4, width: 90 }} />
       <input value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
         style={{ padding: '3px 6px', fontSize: '.8rem', border: '1px solid #d0ccc4', borderRadius: 4, width: 160 }} />
+      <label style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: '.72rem', color: '#8a9a8f' }}>
+        Joined
+        <input type="date" value={form.created_at} onChange={e => setForm(f => ({ ...f, created_at: e.target.value }))}
+          max={new Date().toISOString().slice(0, 10)}
+          style={{ padding: '3px 6px', fontSize: '.8rem', border: '1px solid #d0ccc4', borderRadius: 4 }} />
+      </label>
       <button style={btn('#1a3c2e')} onClick={save} disabled={busy}>Save</button>
       <button style={btn('#e8e4dc', '#3a4a3f')} onClick={() => setEditing(false)}>Cancel</button>
     </div>

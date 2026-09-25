@@ -1,6 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { z } from 'zod'
 import { userAdminGuard, isDirector } from '@/lib/admin-guard'
 import sql from '@/lib/db'
+import { parseBody, zEmail } from '@/lib/validation'
+
+const ActionSchema = z.discriminatedUnion('action', [
+  z.object({ action: z.literal('grant_premium') }),
+  z.object({ action: z.literal('revoke_premium') }),
+  z.object({
+    action: z.literal('update'),
+    first_name: z.string().trim().min(1).max(100).optional(),
+    last_name: z.string().trim().min(1).max(100).optional(),
+    email: zEmail.optional(),
+    // From a date input (YYYY-MM-DD) — refined below rather than at the
+    // field level so the error message can name the actual problem.
+    created_at: z.string().max(30).optional(),
+  }),
+  z.object({ action: z.literal('set_role'), role: z.string() }),
+])
 
 // The director is identified by email address (isDirector) and users.email is
 // UNIQUE, so whoever can rewrite email addresses can take over the
@@ -34,7 +51,8 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   if (!session) return forbidden()
 
   const { id } = await params
-  const body = await req.json()
+  const { data: body, error } = await parseBody(req, ActionSchema)
+  if (error) return error
 
   const target = await findUser(id)
   if (!target) return NextResponse.json({ error: 'Not found' }, { status: 404 })
@@ -52,7 +70,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     await sql`UPDATE users SET membership_expiry = NULL WHERE id = ${id}`
 
   } else if (body.action === 'update') {
-    const email = typeof body.email === 'string' ? body.email.toLowerCase().trim() : target.email
+    const email = body.email ? body.email.toLowerCase() : target.email
 
     // Changing an address, or claiming the founder address, is an identity
     // change rather than a profile edit. Admins may still fix names.
@@ -60,16 +78,31 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     if (isDirector(email) && !callerIsDirector) return forbidden()
 
     // first_name/last_name are NOT NULL; fall back rather than writing null.
-    const firstName = typeof body.first_name === 'string' && body.first_name.trim()
-      ? body.first_name.trim() : target.first_name
-    const lastName = typeof body.last_name === 'string' && body.last_name.trim()
-      ? body.last_name.trim() : target.last_name
+    const firstName = body.first_name || target.first_name
+    const lastName = body.last_name || target.last_name
 
-    await sql`
-      UPDATE users
-      SET first_name = ${firstName}, last_name = ${lastName}, email = ${email}
-      WHERE id = ${id}
-    `
+    let createdAt: string | undefined
+    if (body.created_at !== undefined) {
+      const parsed = new Date(body.created_at)
+      if (Number.isNaN(parsed.getTime()) || parsed.getTime() > Date.now()) {
+        return NextResponse.json({ error: 'Joined date must be a valid date not in the future' }, { status: 400 })
+      }
+      createdAt = parsed.toISOString()
+    }
+
+    if (createdAt) {
+      await sql`
+        UPDATE users
+        SET first_name = ${firstName}, last_name = ${lastName}, email = ${email}, created_at = ${createdAt}
+        WHERE id = ${id}
+      `
+    } else {
+      await sql`
+        UPDATE users
+        SET first_name = ${firstName}, last_name = ${lastName}, email = ${email}
+        WHERE id = ${id}
+      `
+    }
 
   } else if (body.action === 'set_role') {
     if (!callerIsDirector) return forbidden()
