@@ -123,6 +123,8 @@ export default function DonateWidget() {
             key={c}
             type="button"
             onClick={() => { setCurrency(c); setSelected(null); setCustom('') }}
+            aria-pressed={currency === c}
+            aria-label={`Select ${TOGGLE_LABEL[c]} currency`}
             style={{
               flex: '1 1 140px', padding: '10px 0', borderRadius: 8, border: '2px solid',
               borderColor: currency === c ? 'var(--green-800,#1a3c2e)' : '#e8e4dc',
@@ -143,6 +145,8 @@ export default function DonateWidget() {
             key={a}
             type="button"
             onClick={() => { setSelected(a); setCustom('') }}
+            aria-pressed={selected === a && !custom}
+            aria-label={`Select ${symbol}${a.toLocaleString()}`}
             style={{
               padding: '12px 4px', borderRadius: 8, border: '2px solid',
               borderColor: selected === a && !custom ? 'var(--green-800,#1a3c2e)' : '#e8e4dc',
