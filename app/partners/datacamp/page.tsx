@@ -18,7 +18,7 @@ export default function DataCampPartnerPage() {
               Free DataCamp Access for Our Community
             </h1>
             <p className="lead mt-m" style={{ color: 'rgba(244,240,231,.78)' }}>
-              Starting October 5, 2026, Wissen-Haus students and team members get free access to DataCamp&apos;s world-class data science and AI courses.
+              Wissen-Haus students and team members now have free access to DataCamp&apos;s world-class data science and AI courses.
             </p>
             <div className="cta-actions mt-l">
               <a href="mailto:info@wissenhaus.org?subject=DataCamp Access Request" className="btn btn--light btn--lg">Request Access</a>
@@ -135,7 +135,7 @@ export default function DataCampPartnerPage() {
             <div style={{ background: '#fff', borderRadius: 10, padding: 24, boxShadow: '0 1px 4px rgba(0,0,0,.06)' }} className="reveal" data-d="1">
               <h4 style={{ fontSize: '1rem', marginBottom: '.5rem' }}>Hands-On Learning</h4>
               <p style={{ margin: 0, color: 'var(--muted)', fontSize: '.9rem', lineHeight: 1.6 }}>
-                Code in the browser with instant feedback. No setup requiredâ€”start learning immediately.
+                Code in the browser with instant feedback. No setup required&mdash;start learning immediately.
               </p>
             </div>
             <div style={{ background: '#fff', borderRadius: 10, padding: 24, boxShadow: '0 1px 4px rgba(0,0,0,.06)' }} className="reveal" data-d="2">

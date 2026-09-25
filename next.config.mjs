@@ -1,8 +1,5 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  env: {
-    JWT_SECRET: process.env.JWT_SECRET,
-  },
   // This is required to support PostHog trailing slash API requests
   skipTrailingSlashRedirect: true,
   async rewrites() {
