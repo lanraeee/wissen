@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { SpeedInsights } from '@vercel/speed-insights/next'
 import './globals.css'
 import SiteShell from '@/components/SiteShell'
 import Footer from '@/components/Footer'
@@ -58,6 +59,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <AnalyticsTracker />
         <SiteShell footer={<Footer />}>{children}</SiteShell>
+        <SpeedInsights />
       </body>
     </html>
   )
