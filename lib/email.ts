@@ -34,6 +34,52 @@ function esc(s: string) {
     .replace(/'/g, '&#39;')
 }
 
+// ─── Shared building blocks ────────────────────────────────────────────────
+// Nearly every admin-notification email below is "a badge, a heading, a list
+// of label/value rows, and a reply button" — these factor out that repetition
+// without changing any email's rendered output.
+function firstNameOf(name: string) {
+  return esc(name.split(' ')[0])
+}
+
+function formatMoney(amount: number, currency: string) {
+  return new Intl.NumberFormat('en-NG', { style: 'currency', currency }).format(amount)
+}
+
+/** One `.field` row: a label above a value. `value` may itself contain markup. */
+function field(label: string, value: string) {
+  return `<div class="field"><div class="k">${esc(label)}</div><div class="v">${value}</div></div>`
+}
+
+/** field() with the value HTML-escaped, for plain-text values. */
+function fieldText(label: string, value: string) {
+  return field(label, esc(value))
+}
+
+/** field() for longer free-text (messages, quotes) that should preserve line breaks. */
+function fieldPre(label: string, value: string) {
+  return field(label, `<span style="white-space:pre-wrap">${esc(value)}</span>`)
+}
+
+/** Multiple field() rows, skipping any whose value is falsy. */
+function fields(rows: Array<[label: string, value: string] | string | false | null | undefined>) {
+  return rows.filter((r): r is [string, string] => Array.isArray(r)).map(([l, v]) => field(l, v)).join('')
+}
+
+/** field() for a code-like value (reference numbers, IDs) rendered in monospace. */
+function fieldMono(label: string, value: string, size = '.85rem') {
+  return field(label, `<span style="font-family:monospace;font-size:${size}">${esc(value)}</span>`)
+}
+
+function mailtoLink(email: string) {
+  return `<a href="mailto:${esc(email)}" style="color:#1a3c2e">${esc(email)}</a>`
+}
+
+/** The "Reply to <name> →" call-to-action button used on every admin notification. */
+function replyButton(email: string, name: string) {
+  return `<a href="mailto:${esc(email)}" class="btn">Reply to ${esc(name)} →</a>`
+}
+
 // ─── Shared HTML shell ─────────────────────────────────────────────────────
 function shell(body: string) {
   return `<!DOCTYPE html>
@@ -80,7 +126,7 @@ function shell(body: string) {
 
 // ─── Welcome email ──────────────────────────────────────────────────────────
 export async function sendWelcomeEmail(to: string, name: string) {
-  const firstName = esc(name.split(' ')[0])
+  const firstName = firstNameOf(name)
   return sendEmail({
     from: FROM,
     to,
@@ -114,18 +160,18 @@ export async function sendContactNotification(data: {
     html: shell(`
       <span class="badge">New Contact</span>
       <h2>New message received</h2>
-      <div class="field"><div class="k">Name</div><div class="v">${esc(data.name)}</div></div>
-      <div class="field"><div class="k">Email</div><div class="v"><a href="mailto:${esc(data.email)}" style="color:#1a3c2e">${esc(data.email)}</a></div></div>
-      <div class="field"><div class="k">Subject</div><div class="v">${esc(data.subject)}</div></div>
-      <div class="field"><div class="k">Message</div><div class="v" style="white-space:pre-wrap">${esc(data.message)}</div></div>
-      <a href="mailto:${esc(data.email)}" class="btn">Reply to ${esc(data.name)} →</a>
+      ${fieldText('Name', data.name)}
+      ${field('Email', mailtoLink(data.email))}
+      ${fieldText('Subject', data.subject)}
+      ${fieldPre('Message', data.message)}
+      ${replyButton(data.email, data.name)}
     `),
   })
 }
 
 // ─── Contact confirmation (to user) ────────────────────────────────────────
 export async function sendContactConfirmation(to: string, name: string) {
-  const firstName = esc(name.split(' ')[0])
+  const firstName = firstNameOf(name)
   return sendEmail({
     from: FROM,
     to,
@@ -152,18 +198,18 @@ export async function sendVolunteerNotification(data: {
     html: shell(`
       <span class="badge">Volunteer Application</span>
       <h2>New volunteer application</h2>
-      <div class="field"><div class="k">Name</div><div class="v">${esc(data.name)}</div></div>
-      <div class="field"><div class="k">Email</div><div class="v"><a href="mailto:${esc(data.email)}" style="color:#1a3c2e">${esc(data.email)}</a></div></div>
-      <div class="field"><div class="k">Role</div><div class="v">${esc(data.role)}</div></div>
-      <div class="field"><div class="k">Message</div><div class="v" style="white-space:pre-wrap">${esc(data.message)}</div></div>
-      <a href="mailto:${esc(data.email)}" class="btn">Reply to ${esc(data.name)} →</a>
+      ${fieldText('Name', data.name)}
+      ${field('Email', mailtoLink(data.email))}
+      ${fieldText('Role', data.role)}
+      ${fieldPre('Message', data.message)}
+      ${replyButton(data.email, data.name)}
     `),
   })
 }
 
 // ─── Volunteer confirmation (to user) ──────────────────────────────────────
 export async function sendVolunteerConfirmation(to: string, name: string, role: string) {
-  const firstName = esc(name.split(' ')[0])
+  const firstName = firstNameOf(name)
   return sendEmail({
     from: FROM,
     to,
@@ -180,8 +226,8 @@ export async function sendVolunteerConfirmation(to: string, name: string, role: 
 
 // ─── Donation receipt ───────────────────────────────────────────────────────
 export async function sendDonationReceipt(to: string, name: string, amount: number, currency: string, ref: string, certUrl?: string) {
-  const firstName = esc(name.split(' ')[0])
-  const formatted = new Intl.NumberFormat('en-NG', { style: 'currency', currency }).format(amount)
+  const firstName = firstNameOf(name)
+  const formatted = formatMoney(amount, currency)
   return sendEmail({
     from: FROM,
     to,
@@ -190,8 +236,8 @@ export async function sendDonationReceipt(to: string, name: string, amount: numb
       <span class="badge">Donation Confirmed</span>
       <h2>Thank you for your gift, ${firstName}!</h2>
       <p>Your generous donation has been received. Every naira (and pound) goes directly toward empowering young people across Africa and the diaspora.</p>
-      <div class="field"><div class="k">Amount</div><div class="v"><strong>${formatted}</strong></div></div>
-      <div class="field"><div class="k">Reference</div><div class="v" style="font-family:monospace;font-size:.85rem">${esc(ref)}</div></div>
+      ${field('Amount', `<strong>${formatted}</strong>`)}
+      ${fieldMono('Reference', ref)}
       ${certUrl ? `<a href="${esc(certUrl)}" class="btn">View &amp; print your donation certificate →</a>` : ''}
       <div class="divider"></div>
       <p>Your support helps us run free Career Clarity Fairs, mentorship programmes and global exposure events for students who need it most.</p>
@@ -204,7 +250,7 @@ export async function sendDonationReceipt(to: string, name: string, amount: numb
 export async function sendDonationNotification(data: {
   name: string; email: string; amount: number; currency: string; ref: string; provider: string
 }) {
-  const formatted = new Intl.NumberFormat('en-NG', { style: 'currency', currency: data.currency }).format(data.amount)
+  const formatted = formatMoney(data.amount, data.currency)
   return sendEmail({
     from: FROM,
     to: ADMIN,
@@ -212,11 +258,11 @@ export async function sendDonationNotification(data: {
     html: shell(`
       <span class="badge">New Donation</span>
       <h2>New donation received</h2>
-      <div class="field"><div class="k">Donor</div><div class="v">${esc(data.name)}</div></div>
-      <div class="field"><div class="k">Email</div><div class="v"><a href="mailto:${esc(data.email)}" style="color:#1a3c2e">${esc(data.email)}</a></div></div>
-      <div class="field"><div class="k">Amount</div><div class="v"><strong>${formatted}</strong></div></div>
-      <div class="field"><div class="k">Provider</div><div class="v">${esc(data.provider)}</div></div>
-      <div class="field"><div class="k">Reference</div><div class="v" style="font-family:monospace;font-size:.85rem">${esc(data.ref)}</div></div>
+      ${fieldText('Donor', data.name)}
+      ${field('Email', mailtoLink(data.email))}
+      ${field('Amount', `<strong>${formatted}</strong>`)}
+      ${fieldText('Provider', data.provider)}
+      ${fieldMono('Reference', data.ref)}
     `),
   })
 }
@@ -239,12 +285,9 @@ export async function sendBankTransferInstructions(opts: {
   extras?: Array<{ label: string; value: string }>
   instructions?: string
 }) {
-  const firstName = esc(opts.name.split(' ')[0])
-  const formatted = new Intl.NumberFormat('en-NG', { style: 'currency', currency: opts.currency }).format(opts.amount)
-  const extraRows = (opts.extras ?? [])
-    .filter(e => e.value)
-    .map(e => `<div class="field"><div class="k">${esc(e.label)}</div><div class="v">${esc(e.value)}</div></div>`)
-    .join('')
+  const firstName = firstNameOf(opts.name)
+  const formatted = formatMoney(opts.amount, opts.currency)
+  const extraRows = fields((opts.extras ?? []).map(e => e.value && [e.label, esc(e.value)]))
 
   return sendEmail({
     from: FROM,
@@ -254,11 +297,11 @@ export async function sendBankTransferInstructions(opts: {
       <span class="badge">Awaiting Transfer</span>
       <h2>Thank you, ${firstName} — here are your transfer details.</h2>
       <p>You've chosen to give <strong>${formatted}</strong> by bank transfer. Please send it to the account below, quoting your reference so we can match your gift to your receipt.</p>
-      <div class="field"><div class="k">Account Name</div><div class="v"><strong>${esc(opts.accountName)}</strong></div></div>
-      <div class="field"><div class="k">Bank</div><div class="v">${esc(opts.bankName)}</div></div>
-      <div class="field"><div class="k">Account Number (${esc(opts.currency)})</div><div class="v" style="font-family:monospace;font-size:1.05rem;letter-spacing:.04em"><strong>${esc(opts.accountNumber)}</strong></div></div>
+      ${field('Account Name', `<strong>${esc(opts.accountName)}</strong>`)}
+      ${fieldText('Bank', opts.bankName)}
+      ${field(`Account Number (${opts.currency})`, `<span style="font-family:monospace;font-size:1.05rem;letter-spacing:.04em"><strong>${esc(opts.accountNumber)}</strong></span>`)}
       ${extraRows}
-      <div class="field"><div class="k">Your Reference</div><div class="v" style="font-family:monospace;font-size:1rem"><strong>${esc(opts.reference)}</strong></div></div>
+      ${field('Your Reference', `<span style="font-family:monospace;font-size:1rem"><strong>${esc(opts.reference)}</strong></span>`)}
       ${opts.instructions ? `<p style="font-size:.88rem">${esc(opts.instructions)}</p>` : ''}
       <div class="divider"></div>
       <p>Once you've sent the transfer, let us know so we can watch for it:</p>
@@ -277,7 +320,7 @@ export async function sendBankTransferNotification(data: {
   reference: string
   stage: 'pledged' | 'declared_sent'
 }) {
-  const formatted = new Intl.NumberFormat('en-NG', { style: 'currency', currency: data.currency }).format(data.amount)
+  const formatted = formatMoney(data.amount, data.currency)
   const declared = data.stage === 'declared_sent'
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://wissenhaus.org'
 
@@ -291,10 +334,10 @@ export async function sendBankTransferNotification(data: {
     html: shell(`
       <span class="badge">${declared ? 'Awaiting Your Confirmation' : 'New Bank Transfer Pledge'}</span>
       <h2>${declared ? `${esc(data.name)} says the transfer has been sent` : 'A donor has chosen to give by bank transfer'}</h2>
-      <div class="field"><div class="k">Donor</div><div class="v">${esc(data.name)}</div></div>
-      <div class="field"><div class="k">Email</div><div class="v"><a href="mailto:${esc(data.email)}" style="color:#1a3c2e">${esc(data.email)}</a></div></div>
-      <div class="field"><div class="k">Amount</div><div class="v"><strong>${formatted}</strong></div></div>
-      <div class="field"><div class="k">Reference</div><div class="v" style="font-family:monospace;font-size:.85rem">${esc(data.reference)}</div></div>
+      ${fieldText('Donor', data.name)}
+      ${field('Email', mailtoLink(data.email))}
+      ${field('Amount', `<strong>${formatted}</strong>`)}
+      ${fieldMono('Reference', data.reference)}
       <div class="divider"></div>
       <p>${declared
         ? 'Check the account for this reference. Once the money has landed, confirm it in the dashboard — that issues the donor\'s receipt and certificate automatically.'
@@ -306,7 +349,7 @@ export async function sendBankTransferNotification(data: {
 
 // ─── Certificate email ──────────────────────────────────────────────────────
 export async function sendCertificateEmail(to: string, name: string, courseName: string, certId: string) {
-  const firstName = esc(name.split(' ')[0])
+  const firstName = firstNameOf(name)
   return sendEmail({
     from: FROM,
     to,
@@ -315,7 +358,7 @@ export async function sendCertificateEmail(to: string, name: string, courseName:
       <span class="badge">Certificate Earned</span>
       <h2>Congratulations, ${firstName}! 🎓</h2>
       <p>You've successfully completed <strong>${esc(courseName)}</strong> and earned your Wissen-Haus certificate.</p>
-      <div class="field"><div class="k">Certificate ID</div><div class="v" style="font-family:monospace;font-size:.85rem">${esc(certId)}</div></div>
+      ${fieldMono('Certificate ID', certId)}
       <p>Share this achievement with your network — it's a real credential that shows commitment to your career development.</p>
       <a href="https://wissenhaus.org/courses" class="btn">Explore more courses →</a>
     `),
@@ -334,18 +377,18 @@ export async function sendPartnerNotification(data: {
     html: shell(`
       <span class="badge">Partnership Inquiry</span>
       <h2>New partnership inquiry</h2>
-      <div class="field"><div class="k">Name</div><div class="v">${esc(data.name)}</div></div>
-      <div class="field"><div class="k">Email</div><div class="v"><a href="mailto:${esc(data.email)}" style="color:#1a3c2e">${esc(data.email)}</a></div></div>
-      <div class="field"><div class="k">Organisation</div><div class="v">${esc(data.organisation)}</div></div>
-      <div class="field"><div class="k">Message</div><div class="v" style="white-space:pre-wrap">${esc(data.message)}</div></div>
-      <a href="mailto:${esc(data.email)}" class="btn">Reply to ${esc(data.name)} →</a>
+      ${fieldText('Name', data.name)}
+      ${field('Email', mailtoLink(data.email))}
+      ${fieldText('Organisation', data.organisation)}
+      ${fieldPre('Message', data.message)}
+      ${replyButton(data.email, data.name)}
     `),
   })
 }
 
 // ─── Partner confirmation (to inquirer) ────────────────────────────────────
 export async function sendPartnerConfirmation(to: string, name: string) {
-  const firstName = esc(name.split(' ')[0])
+  const firstName = firstNameOf(name)
   return sendEmail({
     from: FROM,
     to,
@@ -368,9 +411,8 @@ export async function sendTestimonialNotification(data: { name: string; role: st
     html: shell(`
       <span class="badge">Pending Review</span>
       <h2>New impact story submitted</h2>
-      <div class="field"><div class="k">Name</div><div class="v">${esc(data.name)}</div></div>
-      ${data.role ? `<div class="field"><div class="k">Role</div><div class="v">${esc(data.role)}</div></div>` : ''}
-      <div class="field"><div class="k">Quote</div><div class="v" style="white-space:pre-wrap">${esc(data.quote)}</div></div>
+      ${fields([['Name', esc(data.name)], data.role && ['Role', esc(data.role)]])}
+      ${fieldPre('Quote', data.quote)}
       <a href="https://wissenhaus.org/admin/testimonials" class="btn">Review in admin →</a>
     `),
   })
@@ -378,7 +420,7 @@ export async function sendTestimonialNotification(data: { name: string; role: st
 
 // ─── Password reset request (to user) ──────────────────────────────────────
 export async function sendPasswordResetEmail(to: string, name: string, resetUrl: string) {
-  const firstName = esc(name.split(' ')[0])
+  const firstName = firstNameOf(name)
   return sendEmail({
     from: FROM,
     to,
@@ -395,7 +437,7 @@ export async function sendPasswordResetEmail(to: string, name: string, resetUrl:
 
 // ─── Password changed confirmation (to user) ───────────────────────────────
 export async function sendPasswordChangedEmail(to: string, name: string) {
-  const firstName = esc(name.split(' ')[0])
+  const firstName = firstNameOf(name)
   return sendEmail({
     from: FROM,
     to,
