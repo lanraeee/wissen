@@ -1,5 +1,6 @@
 ﻿import type { Metadata } from 'next'
 import Link from 'next/link'
+import Image from 'next/image'
 
 export const metadata: Metadata = {
   title: 'DataCamp Donates Partnership Â· Wissen-Haus',
@@ -12,17 +13,22 @@ export default function DataCampPartnerPage() {
       {/* Hero */}
       <section className="section section--tight panel-dark" style={{ paddingTop: 'clamp(48px,6vw,84px)' }}>
         <div className="wrap">
-          <div className="reveal" style={{ textAlign: 'center' }}>
-            <span className="eyebrow eyebrow--light">New Partnership</span>
-            <h1 className="display-lg mt-s" style={{ color: '#fff' }}>
-              Free DataCamp Access for Our Community
-            </h1>
-            <p className="lead mt-m" style={{ color: 'rgba(244,240,231,.78)' }}>
-              Starting October 5, 2026, Wissen-Haus students and team members get free access to DataCamp&apos;s world-class data science and AI courses.
-            </p>
-            <div className="cta-actions mt-l">
-              <a href="mailto:info@wissenhaus.org?subject=DataCamp Access Request" className="btn btn--light btn--lg">Request Access</a>
-              <a href="https://www.datacamp.com" className="btn btn--outline-light btn--lg" target="_blank" rel="noopener noreferrer">Learn More</a>
+          <div className="split">
+            <div className="reveal">
+              <span className="eyebrow eyebrow--light">New Partnership</span>
+              <h1 className="display-lg mt-s" style={{ color: '#fff' }}>
+                Free DataCamp Access for Our Community
+              </h1>
+              <p className="lead mt-m" style={{ color: 'rgba(244,240,231,.78)' }}>
+                Starting October 5, 2026, Wissen-Haus students and team members get free access to DataCamp&apos;s world-class data science and AI courses.
+              </p>
+              <div className="cta-actions mt-l">
+                <a href="mailto:info@wissenhaus.org?subject=DataCamp Access Request" className="btn btn--light btn--lg">Request Access</a>
+                <a href="https://www.datacamp.com" className="btn btn--outline-light btn--lg" target="_blank" rel="noopener noreferrer">Learn More</a>
+              </div>
+            </div>
+            <div className="split__media reveal" data-d="1" style={{ borderRadius: 16, overflow: 'hidden' }}>
+              <Image src="/img/partners/datacamp-partnership.png" alt="Wissen-Haus and DataCamp partnership" fill style={{ objectFit: 'cover' }} />
             </div>
           </div>
         </div>
