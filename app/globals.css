@@ -858,3 +858,82 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
 .admin-btn-secondary{padding:9px 20px;border-radius:8px;font-size:.88rem;font-weight:600;background:#f0ece4;color:#1a3c2e;border:none;cursor:pointer}
 .admin-two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px}
 @media(max-width:760px){.admin-two-col{grid-template-columns:1fr}}
+
+/* ─── Admin mobile app shell ─────────────────────────────
+   Desktop keeps the fixed sidebar (app/admin/layout.tsx). Below the
+   breakpoint that sidebar hides and a top bar + bottom tab bar take over,
+   matching a native app's chrome instead of a squeezed desktop sidebar. */
+:root{ --admin-topbar-h: 56px; --admin-bottombar-h: 60px; }
+
+.admin-topbar,.admin-bottom-nav{display:none}
+
+@media(max-width:860px){
+  .admin-sidebar{display:none}
+
+  .admin-shell{display:block}
+  .admin-main{
+    padding:16px 16px calc(var(--admin-bottombar-h) + 24px);
+    max-width:none;
+  }
+
+  .admin-topbar{
+    display:flex;align-items:center;gap:12px;
+    position:sticky;top:0;z-index:120;height:var(--admin-topbar-h);
+    padding-inline:14px;background:#1a3c2e;color:#f4f0e7;
+    border-bottom:1px solid rgba(244,240,231,.12);
+  }
+  .admin-topbar__btn{
+    display:grid;place-items:center;width:36px;height:36px;border-radius:9px;
+    background:rgba(244,240,231,.1);color:#f4f0e7;border:none;cursor:pointer;flex-shrink:0;
+  }
+  .admin-topbar__title{flex:1;font-weight:700;font-size:.98rem;letter-spacing:-.01em}
+  .admin-topbar__avatar{
+    width:30px;height:30px;border-radius:50%;background:#B8952A;color:#1a3c2e;
+    display:grid;place-items:center;font-weight:800;font-size:.8rem;flex-shrink:0;
+  }
+
+  .admin-bottom-nav{
+    display:flex;position:fixed;left:0;right:0;bottom:0;z-index:120;
+    height:calc(var(--admin-bottombar-h) + env(safe-area-inset-bottom));
+    padding-bottom:env(safe-area-inset-bottom);
+    background:#fff;border-top:1px solid #e8e4dc;
+    box-shadow:0 -4px 16px rgba(0,0,0,.06);
+  }
+  .admin-bottom-nav__item{
+    flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+    color:#8a9a8f;font-size:.66rem;font-weight:600;background:none;border:none;cursor:pointer;
+    font-family:inherit;
+  }
+  .admin-bottom-nav__item.active{color:#1a3c2e}
+
+  .admin-sheet-backdrop{
+    position:fixed;inset:0;z-index:200;background:rgba(10,33,21,.5);
+    display:flex;
+  }
+
+  .admin-drawer{
+    width:min(78vw,300px);height:100%;background:#1a3c2e;color:#f4f0e7;
+    display:flex;flex-direction:column;
+    animation:admin-drawer-in .25s ease-out;
+  }
+  .admin-drawer__head{
+    display:flex;justify-content:space-between;align-items:flex-start;
+    padding:18px 20px 16px;border-bottom:1px solid rgba(244,240,231,.12);
+  }
+  @keyframes admin-drawer-in{from{transform:translateX(-100%)}to{transform:translateX(0)}}
+
+  .admin-more-sheet{
+    margin-top:auto;width:100%;max-height:70vh;overflow-y:auto;
+    background:#fff;border-radius:18px 18px 0 0;padding:10px 16px calc(20px + env(safe-area-inset-bottom));
+    animation:admin-sheet-in .25s ease-out;
+  }
+  @keyframes admin-sheet-in{from{transform:translateY(100%)}to{transform:translateY(0)}}
+  .admin-more-sheet__handle{width:36px;height:4px;border-radius:99px;background:#e8e4dc;margin:6px auto 14px}
+  .admin-more-sheet__grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  .admin-more-sheet__item{
+    display:flex;flex-direction:column;align-items:center;gap:6px;
+    padding:16px 8px;border-radius:12px;background:#f9f7f3;color:#3a4a3f;
+    font-size:.72rem;font-weight:600;text-align:center;
+  }
+  .admin-more-sheet__item.active{background:#1a3c2e;color:#f4f0e7}
+}
