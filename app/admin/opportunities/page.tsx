@@ -59,8 +59,8 @@ export default function AdminOpportunities() {
     <>
       <div style={{ marginBottom: 20, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: 12 }}>
         <div>
-          <h1 style={{ margin: '0 0 4px', fontSize: '1.5rem' }}>Opportunities</h1>
-          <p style={{ margin: 0, color: '#8a9a8f', fontSize: '.88rem' }}>{opps.length} total · {filtered.length} shown · auto-refreshed nightly</p>
+          <h1 className="admin-page-title">Opportunities</h1>
+          <p className="admin-page-desc">{opps.length} total · {filtered.length} shown · auto-refreshed nightly</p>
         </div>
         <div style={{ display: 'flex', gap: 8 }}>
           <input placeholder="Search title or companyâ€¦" value={filter} onChange={e => setFilter(e.target.value)}
@@ -85,12 +85,12 @@ export default function AdminOpportunities() {
       <OpportunityManager onRefresh={load} />
 
       {loading ? (
-        <div style={{ padding: 40, textAlign: 'center', color: '#8a9a8f' }}>Loading…</div>
+        <div className="admin-table-empty">Loading…</div>
       ) : (
         <div style={{ background: '#fff', borderRadius: 10, boxShadow: '0 1px 4px rgba(0,0,0,.06)', overflow: 'auto' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 800 }}>
+          <table className="admin-table" style={{ minWidth: 800 }}>
             <thead>
-              <tr style={{ background: '#f9f7f3' }}>
+              <tr>
                 {['Title', 'Company', 'Type', 'Eligibility', 'Source', 'Posted', ''].map(h => (
                   <th key={h} style={{ padding: '10px 16px', textAlign: 'left', fontSize: '.72rem', fontWeight: 700, letterSpacing: '.08em', textTransform: 'uppercase', color: '#8a9a8f', borderBottom: '1px solid #e8e4dc', whiteSpace: 'nowrap' }}>{h}</th>
                 ))}
@@ -98,18 +98,18 @@ export default function AdminOpportunities() {
             </thead>
             <tbody>
               {filtered.map(o => (
-                <tr key={o.id} style={{ borderBottom: '1px solid #f0ece4' }}>
+                <tr key={o.id}>
                   <td style={{ padding: '10px 16px', fontSize: '.88rem', fontWeight: 500, maxWidth: 260 }}>
                     <a href={o.url} target="_blank" rel="noopener noreferrer" style={{ color: '#1a3c2e', textDecoration: 'none' }}>{o.title}</a>
                   </td>
                   <td style={{ padding: '10px 16px', fontSize: '.85rem', color: '#3a4a3f' }}>{o.company || 'â€”'}</td>
-                  <td style={{ padding: '10px 16px' }}>
+                  <td>
                     <span style={{ background: TYPE_COLORS[o.type] ?? '#f0ece4', borderRadius: 99, padding: '2px 8px', fontSize: '.72rem', fontWeight: 600, textTransform: 'capitalize', color: '#1a2e24' }}>{o.type}</span>
                   </td>
                   <td style={{ padding: '10px 16px', fontSize: '.8rem', color: '#3a4a3f' }}>{o.eligibility_label}</td>
                   <td style={{ padding: '10px 16px', fontSize: '.82rem', color: '#8a9a8f', textTransform: 'capitalize' }}>{o.source}</td>
                   <td style={{ padding: '10px 16px', fontSize: '.82rem', color: '#8a9a8f', whiteSpace: 'nowrap' }}>{o.date_posted ? new Date(o.date_posted).toLocaleDateString('en-GB') : 'â€”'}</td>
-                  <td style={{ padding: '10px 16px' }}>
+                  <td>
                     <OpportunityRowActions id={o.id} onRefresh={load} />
                   </td>
                 </tr>

@@ -31,8 +31,8 @@ export default async function AdminContent({ searchParams }: { searchParams: Pro
   return (
     <>
       <div style={{ marginBottom: 28 }}>
-        <h1 style={{ margin: '0 0 4px', fontSize: '1.5rem' }}>Content Editor</h1>
-        <p style={{ margin: 0, color: '#8a9a8f', fontSize: '.88rem' }}>Edit page content displayed publicly on the site. Changes take effect on the next page load.</p>
+        <h1 className="admin-page-title">Content Editor</h1>
+        <p className="admin-page-desc">Edit page content displayed publicly on the site. Changes take effect on the next page load.</p>
       </div>
 
       <div style={{ display: 'flex', gap: 8, marginBottom: 28, flexWrap: 'wrap' }}>

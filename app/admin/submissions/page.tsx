@@ -127,8 +127,8 @@ export default function AdminSubmissions() {
     <>
       <div style={{ marginBottom: 20, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: 12 }}>
         <div>
-          <h1 style={{ margin: '0 0 4px', fontSize: '1.5rem' }}>Submissions</h1>
-          <p style={{ margin: 0, color: '#8a9a8f', fontSize: '.88rem' }}>
+          <h1 className="admin-page-title">Submissions</h1>
+          <p className="admin-page-desc">
             {rows.length} records
             {Object.entries(counts).map(([s, n]) => (
               <span key={s} style={{ marginLeft: 10, ...STATUS_COLORS[s], borderRadius: 99, padding: '1px 8px', fontSize: '.72rem', fontWeight: 700 }}>{n} {s}</span>
@@ -156,7 +156,7 @@ export default function AdminSubmissions() {
       </div>
 
       {loading ? (
-        <div style={{ padding: 40, textAlign: 'center', color: '#8a9a8f' }}>Loading…</div>
+        <div className="admin-table-empty">Loading…</div>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
           {filtered.length === 0 && (

@@ -115,8 +115,8 @@ export default function AdminTestimonials() {
     <>
       <div style={{ marginBottom: 24, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: 12 }}>
         <div>
-          <h1 style={{ margin: '0 0 4px', fontSize: '1.5rem' }}>Testimonials</h1>
-          <p style={{ margin: 0, color: '#8a9a8f', fontSize: '.88rem' }}>Manage the story carousel on the homepage and review candidate submissions.</p>
+          <h1 className="admin-page-title">Testimonials</h1>
+          <p className="admin-page-desc">Manage the story carousel on the homepage and review candidate submissions.</p>
         </div>
         <button onClick={startNew} style={{ padding: '9px 20px', borderRadius: 8, fontSize: '.88rem', fontWeight: 700, background: '#1a3c2e', color: '#fff', border: 'none', cursor: 'pointer' }}>
           + New Testimonial
@@ -135,15 +135,15 @@ export default function AdminTestimonials() {
       </div>
 
       {loading ? (
-        <div style={{ padding: 40, textAlign: 'center', color: '#8a9a8f' }}>Loading…</div>
+        <div className="admin-table-empty">Loading…</div>
       ) : (
         <div style={{ background: '#fff', borderRadius: 10, boxShadow: '0 1px 4px rgba(0,0,0,.06)', overflow: 'auto', marginBottom: 32 }}>
           {filtered.length === 0 ? (
-            <div style={{ padding: 40, textAlign: 'center', color: '#8a9a8f' }}>No testimonials here yet.</div>
+            <div className="admin-table-empty">No testimonials here yet.</div>
           ) : (
-            <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 760 }}>
+            <table className="admin-table" style={{ minWidth: 760 }}>
               <thead>
-                <tr style={{ background: '#f9f7f3' }}>
+                <tr>
                   {['Name', 'Quote', 'Source', 'Status', 'Featured', ''].map(h => (
                     <th key={h} style={{ padding: '10px 16px', textAlign: 'left', fontSize: '.72rem', fontWeight: 700, letterSpacing: '.08em', textTransform: 'uppercase', color: '#8a9a8f', borderBottom: '1px solid #e8e4dc', whiteSpace: 'nowrap' }}>{h}</th>
                   ))}
@@ -151,7 +151,7 @@ export default function AdminTestimonials() {
               </thead>
               <tbody>
                 {filtered.map(t => (
-                  <tr key={t.id} style={{ borderBottom: '1px solid #f0ece4' }}>
+                  <tr key={t.id}>
                     <td style={{ padding: '10px 16px', fontSize: '.88rem', fontWeight: 600, color: '#1a2e24', whiteSpace: 'nowrap' }}>
                       {t.name}
                       {t.role && <div style={{ fontSize: '.76rem', fontWeight: 400, color: '#8a9a8f' }}>{t.role}</div>}
@@ -160,10 +160,10 @@ export default function AdminTestimonials() {
                       {t.quote.length > 110 ? t.quote.slice(0, 110) + 'â€¦' : t.quote}
                     </td>
                     <td style={{ padding: '10px 16px', fontSize: '.78rem', color: '#8a9a8f', textTransform: 'capitalize' }}>{t.source}</td>
-                    <td style={{ padding: '10px 16px' }}>
+                    <td>
                       <span style={{ background: STATUS_COLORS[t.status] + '22', color: STATUS_COLORS[t.status], borderRadius: 99, padding: '2px 10px', fontSize: '.72rem', fontWeight: 700, textTransform: 'capitalize' }}>{t.status}</span>
                     </td>
-                    <td style={{ padding: '10px 16px' }}>
+                    <td>
                       <button onClick={() => toggleFeatured(t)} title="Toggle featured" style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.1rem', color: t.featured ? '#E0A83E' : '#d0ccc4' }}>â˜…</button>
                     </td>
                     <td style={{ padding: '10px 16px', whiteSpace: 'nowrap' }}>

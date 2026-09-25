@@ -165,8 +165,8 @@ export default async function AnalyticsPage() {
   return (
     <>
       <div style={{ marginBottom: 32 }}>
-        <h1 style={{ margin: '0 0 4px', fontSize: '1.5rem' }}>Analytics</h1>
-        <p style={{ margin: 0, color: '#8a9a8f', fontSize: '.88rem' }}>Visitor traffic â€” your data, stored in your database.</p>
+        <h1 className="admin-page-title">Analytics</h1>
+        <p className="admin-page-desc">Visitor traffic â€” your data, stored in your database.</p>
       </div>
 
       <Section title="Overview">
@@ -237,7 +237,7 @@ export default async function AnalyticsPage() {
       <Section title="Recent Visits">
         <Card>
           <div style={{ overflowX: 'auto' }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '.82rem' }}>
+            <table className="admin-table" style={{ fontSize: '.82rem' }}>
               <thead>
                 <tr style={{ borderBottom: '1px solid #f0ece4' }}>
                   {['Page', 'Referrer', 'Country', 'City', 'Device', 'Browser', 'Time'].map(h => (

@@ -125,7 +125,7 @@ export default function Navigation() {
           <nav className="nav" aria-label="Primary">
             <Link className="brand" href="/">
               <Image src="/img/logo.png" alt="Wissen-Haus logo" width={52} height={52} />
-              <span>Wissen-Haus<small>Empowerment</small></span>
+              <span>Wissen-Haus<small>Empowerment Foundation</small></span>
             </Link>
 
             <ul className="nav-links">

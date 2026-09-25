@@ -155,7 +155,7 @@ export default function AdminProjects() {
           ) : (
             <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 700 }}>
               <thead>
-                <tr style={{ background: '#f9f7f3' }}>
+                <tr>
                   {['Title', 'Slug', 'Event Date', 'Goal (â‚¦)', 'Raised (â‚¦)', 'Status', ''].map(h => (
                     <th key={h} style={{ padding: '10px 16px', textAlign: 'left', fontSize: '.72rem', fontWeight: 700, letterSpacing: '.08em', textTransform: 'uppercase', color: '#8a9a8f', borderBottom: '1px solid #e8e4dc', whiteSpace: 'nowrap' }}>{h}</th>
                   ))}
@@ -163,7 +163,7 @@ export default function AdminProjects() {
               </thead>
               <tbody>
                 {projects.map(p => (
-                  <tr key={p.id} style={{ borderBottom: '1px solid #f0ece4' }}>
+                  <tr key={p.id}>
                     <td style={{ padding: '10px 16px', fontSize: '.88rem', fontWeight: 600, color: '#1a2e24', maxWidth: 220 }}>{p.title}</td>
                     <td style={{ padding: '10px 16px', fontSize: '.8rem', color: '#8a9a8f', fontFamily: 'monospace' }}>
                       <a href={`/donate/${p.slug}`} target="_blank" rel="noopener noreferrer" style={{ color: '#1a3c2e' }}>/donate/{p.slug}</a>
@@ -173,7 +173,7 @@ export default function AdminProjects() {
                     </td>
                     <td style={{ padding: '10px 16px', fontSize: '.85rem', color: '#3a4a3f' }}>{p.goal_ngn.toLocaleString()}</td>
                     <td style={{ padding: '10px 16px', fontSize: '.85rem', color: '#3a4a3f' }}>{p.raised_ngn.toLocaleString()}</td>
-                    <td style={{ padding: '10px 16px' }}>
+                    <td>
                       <span style={{ background: STATUS_COLORS[p.status] + '22', color: STATUS_COLORS[p.status], borderRadius: 99, padding: '2px 10px', fontSize: '.72rem', fontWeight: 700, textTransform: 'capitalize' }}>{p.status}</span>
                     </td>
                     <td style={{ padding: '10px 16px', whiteSpace: 'nowrap' }}>

@@ -58,8 +58,8 @@ export default function AdminUsers() {
     <>
       <div style={{ marginBottom: 20, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
         <div>
-          <h1 style={{ margin: '0 0 4px', fontSize: '1.5rem' }}>Users</h1>
-          <p style={{ margin: 0, color: '#8a9a8f', fontSize: '.88rem' }}>{total} total members</p>
+          <h1 className="admin-page-title">Users</h1>
+          <p className="admin-page-desc">{total} total members</p>
         </div>
         <input
           placeholder="Search name or emailâ€¦"
@@ -70,7 +70,7 @@ export default function AdminUsers() {
       </div>
 
       {loading ? (
-        <div style={{ padding: 40, textAlign: 'center', color: '#8a9a8f' }}>Loading…</div>
+        <div className="admin-table-empty">Loading…</div>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
           {filtered.map(u => (

@@ -840,3 +840,21 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
 .admin-page-header{margin-bottom:32px}
 .admin-page-title{margin:0 0 4px;font-size:1.5rem}
 .admin-page-desc{margin:0;color:#8a9a8f;font-size:.88rem}
+
+/* Admin tables */
+.admin-table-wrap{background:#fff;border-radius:10px;box-shadow:0 1px 4px rgba(0,0,0,.06);overflow:auto}
+.admin-table{width:100%;border-collapse:collapse}
+.admin-table thead tr{background:#f9f7f3}
+.admin-table th{padding:10px 16px;text-align:left;font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#8a9a8f;border-bottom:1px solid #e8e4dc;white-space:nowrap}
+.admin-table td{padding:10px 16px;font-size:.85rem;color:#3a4a3f}
+.admin-table tr{border-bottom:1px solid #f0ece4}
+.admin-table-empty{padding:40px;text-align:center;color:#8a9a8f}
+.admin-list-row{padding:10px 16px;border-bottom:1px solid #f0ece4;display:flex;justify-content:space-between;align-items:center}
+.admin-list-row:last-child{border-bottom:none}
+.admin-list-footer{padding:10px 16px;border-top:1px solid #f0ece4}
+.admin-list-link{font-size:.82rem;color:#1a3c2e;font-weight:600}
+.admin-toolbar{margin-bottom:20px;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:12px}
+.admin-btn-primary{padding:9px 20px;border-radius:8px;font-size:.88rem;font-weight:700;background:#1a3c2e;color:#fff;border:none;cursor:pointer}
+.admin-btn-secondary{padding:9px 20px;border-radius:8px;font-size:.88rem;font-weight:600;background:#f0ece4;color:#1a3c2e;border:none;cursor:pointer}
+.admin-two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media(max-width:760px){.admin-two-col{grid-template-columns:1fr}}
