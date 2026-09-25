@@ -19,11 +19,20 @@ async function main() {
 
   console.log('Running Wissen-Haus database migration...')
 
-  // Split into individual statements and run each via neon's query method
+  // Split into individual statements and run each via neon's query method.
+  // Strip full-line comments from each statement before the emptiness/
+  // comment check -- a statement preceded by a multi-line `-- comment`
+  // block otherwise starts with '--' as a whole and gets silently dropped
+  // by the old check below, even though it has real SQL after the comment.
   const statements = schema
     .split(';')
-    .map(s => s.trim())
-    .filter(s => s.length > 0 && !s.startsWith('--'))
+    .map(s => s
+      .split('\n')
+      .filter(line => !line.trim().startsWith('--'))
+      .join('\n')
+      .trim()
+    )
+    .filter(s => s.length > 0)
 
   for (const statement of statements) {
     try {

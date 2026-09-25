@@ -104,3 +104,39 @@ CREATE TABLE IF NOT EXISTS page_views (
 CREATE INDEX IF NOT EXISTS idx_pv_created_at ON page_views(created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_pv_pathname   ON page_views(pathname);
 CREATE INDEX IF NOT EXISTS idx_pv_session    ON page_views(session_id);
+
+-- Ties a page view to the signed-in user who made it (nullable: most
+-- visitors are anonymous). Lets the admin activity view show "pages
+-- visited" and approximate location (country/city, already collected
+-- above) per user, not just in aggregate.
+ALTER TABLE page_views ADD COLUMN IF NOT EXISTS user_id UUID REFERENCES users(id) ON DELETE SET NULL;
+CREATE INDEX IF NOT EXISTS idx_pv_user ON page_views(user_id, created_at DESC);
+
+-- One row per successful login: when, from what IP/user agent. Distinct from
+-- visit_streaks (which only tracks daily granularity for the streak counter)
+-- -- this is the actual session history shown in a user's activity view.
+CREATE TABLE IF NOT EXISTS login_events (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  ip TEXT,
+  user_agent TEXT,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+CREATE INDEX IF NOT EXISTS idx_login_events_user ON login_events(user_id, created_at DESC);
+
+-- Audit trail of admin-panel write actions (who did what, to what, when).
+-- actor_role is captured at the time of the action rather than joined from
+-- users.role, so the log stays accurate even after a later role change.
+CREATE TABLE IF NOT EXISTS admin_activity_log (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  actor_id UUID REFERENCES users(id) ON DELETE SET NULL,
+  actor_email TEXT NOT NULL,
+  actor_role TEXT NOT NULL,
+  action TEXT NOT NULL,
+  target_type TEXT,
+  target_id TEXT,
+  details JSONB,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+CREATE INDEX IF NOT EXISTS idx_activity_actor      ON admin_activity_log(actor_id, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_activity_created_at ON admin_activity_log(created_at DESC);
