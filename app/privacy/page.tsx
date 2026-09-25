@@ -2,7 +2,7 @@
 import Link from 'next/link'
 
 export const metadata: Metadata = {
-  title: 'Privacy Policy Â· Wissen-Haus',
+  title: 'Privacy Policy · Wissen-Haus',
   description: 'How Wissen-Haus Empowerment Foundation collects, uses, and protects your personal information.',
 }
 

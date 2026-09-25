@@ -2,7 +2,7 @@
 import Link from 'next/link'
 
 export const metadata: Metadata = {
-  title: 'About Wissen-Haus Â· Encyclopedia Entry',
+  title: 'About Wissen-Haus · Encyclopedia Entry',
   description: 'An encyclopedic overview of the Wissen-Haus Empowerment Foundation â€” its history, programmes, and mission to bridge the skills gap for African youth and the diaspora.',
   openGraph: {
     title: 'Wissen-Haus Empowerment Foundation â€” Overview',
@@ -78,7 +78,7 @@ export default function WikiPage() {
             Wissen-Haus Empowerment Foundation
           </h1>
           <p style={{ margin: '10px 0 0', color: '#4a5a4f', fontSize: '.95rem' }}>
-            Non-profit organisation Â· Founded in Ibadan, Oyo State, Nigeria Â· Est. 2025 Â· Serving Africa &amp; the diaspora
+            Non-profit organisation · Founded in Ibadan, Oyo State, Nigeria · Est. 2025 · Serving Africa &amp; the diaspora
           </p>
         </div>
 

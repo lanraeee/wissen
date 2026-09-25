@@ -1,7 +1,7 @@
 ﻿import type { Metadata } from 'next'
 import SettingsEditor from '@/components/admin/SettingsEditor'
 
-export const metadata: Metadata = { title: 'Settings Â· Admin Â· Wissen-Haus' }
+export const metadata: Metadata = { title: 'Settings · Admin · Wissen-Haus' }
 
 export default function AdminSettings() {
   return (

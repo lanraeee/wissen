@@ -50,7 +50,7 @@ export default function SettingsEditor() {
     setTimeout(() => setSaved(false), 2500)
   }
 
-  if (!loaded) return <div style={{ padding: 24, color: '#8a9a8f' }}>Loadingâ€¦</div>
+  if (!loaded) return <div style={{ padding: 24, color: '#8a9a8f' }}>Loading…</div>
 
   const fields: [keyof Settings, string, string][] = [
     ['contact_email', 'Contact Email', 'email'],

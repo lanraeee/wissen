@@ -5,7 +5,7 @@ import sql from '@/lib/db'
 export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
-  title: 'Policy & Research Â· Wissen-Haus',
+  title: 'Policy & Research · Wissen-Haus',
   description: 'Comprehensive policy papers and research reports on youth employment, skills gap, and economic independence across Nigeria, Africa, and the diaspora.',
 }
 
@@ -42,19 +42,19 @@ export default async function PolicyResearchPage() {
               <h3>Beyond Unemployment: A Skills-First Framework for Nigerian Youth Economic Independence</h3>
               <p className="paper-cover__sub">Nigeria&#39;s youth unemployment crisis is not merely an employment problemâ€”it is a skills access problem. This paper proposes a three-pillar framework for systemic change.</p>
               <div className="paper-cover__meta">
-                <strong>Authors:</strong> Wissen-Haus Research Team Â· <strong>Published:</strong> 2026
+                <strong>Authors:</strong> Wissen-Haus Research Team · <strong>Published:</strong> 2026
               </div>
               <div className="sdg-row">
-                <span className="sdg">SDG 4 Â· Quality Education</span>
-                <span className="sdg">SDG 8 Â· Decent Work</span>
-                <span className="sdg">SDG 10 Â· Reduced Inequalities</span>
+                <span className="sdg">SDG 4 · Quality Education</span>
+                <span className="sdg">SDG 8 · Decent Work</span>
+                <span className="sdg">SDG 10 · Reduced Inequalities</span>
               </div>
               <div className="paper-cover__cta">
                 <a href="/Wissen-Haus_Policy_Position_Paper_No_001.pdf" className="paper-dl" target="_blank" rel="noopener noreferrer">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" style={{ width: '1.1em', height: '1.1em' }}><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" /></svg>
                   Download PDF
                 </a>
-                <span className="paper-fmt">Free Â· 11 pages</span>
+                <span className="paper-fmt">Free · 11 pages</span>
               </div>
             </div>
 

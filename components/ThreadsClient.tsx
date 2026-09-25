@@ -154,7 +154,7 @@ export default function ThreadsClient({
                     <span style={{ fontSize: '.68rem', fontWeight: 700, background: tagColors[t.tag] ?? '#6b7280', color: '#fff', padding: '2px 8px', borderRadius: 99 }}>{t.tag}</span>
                   </div>
                   <h3 style={{ margin: '0 0 4px', fontSize: '.95rem', fontWeight: 600, color: 'var(--ink)', lineHeight: 1.35 }}>{t.title}</h3>
-                  <p style={{ margin: 0, fontSize: '.75rem', color: 'var(--ink-60)' }}>by {t.author_name} Â· {ago(t.created_at)}</p>
+                  <p style={{ margin: 0, fontSize: '.75rem', color: 'var(--ink-60)' }}>by {t.author_name} · {ago(t.created_at)}</p>
                 </div>
                 <div style={{ textAlign: 'center', minWidth: 52, flexShrink: 0 }}>
                   <div style={{ fontFamily: 'var(--ff-display)', fontWeight: 700, fontSize: '1.2rem', color: 'var(--green-800)' }}>{t.reply_count}</div>

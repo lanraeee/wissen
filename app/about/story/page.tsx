@@ -3,7 +3,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 
 export const metadata: Metadata = {
-  title: 'Our Story Â· Wissen-Haus',
+  title: 'Our Story · Wissen-Haus',
   description: 'The Wissen-Haus journey: bridging the classroom and the world so every young African and diaspora changemaker can achieve economic independence.',
 }
 
@@ -31,7 +31,7 @@ export default function AboutStoryPage() {
         <div className="wrap">
           <div className="split">
             <div className="reveal">
-              <span className="section-index">01 Â· The Problem We Saw</span>
+              <span className="section-index">01 · The Problem We Saw</span>
               <h2 className="mt-s">What Sparked Our Mission</h2>
             </div>
             <div className="reveal" data-d="1">
@@ -47,7 +47,7 @@ export default function AboutStoryPage() {
         <div className="wrap">
           <div className="split">
             <div className="reveal">
-              <span className="section-index">02 Â· What We&#39;re Building</span>
+              <span className="section-index">02 · What We&#39;re Building</span>
               <h2 className="mt-s">Three Pillars of Change</h2>
             </div>
             <div className="reveal" data-d="1">

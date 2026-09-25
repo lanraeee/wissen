@@ -58,13 +58,13 @@ export default function AdminCourses() {
     </h3>
   )
 
-  if (loading) return <div style={{ padding: 40, textAlign: 'center', color: '#8a9a8f' }}>Loadingâ€¦</div>
+  if (loading) return <div style={{ padding: 40, textAlign: 'center', color: '#8a9a8f' }}>Loading…</div>
 
   return (
     <>
       <div style={{ marginBottom: 32 }}>
         <h1 style={{ margin: '0 0 4px', fontSize: '1.5rem' }}>Courses &amp; Certificates</h1>
-        <p style={{ margin: 0, color: '#8a9a8f', fontSize: '.88rem' }}>{certs.length} certificates Â· {progress.length} module completions Â· {byUser.length} active learners</p>
+        <p style={{ margin: 0, color: '#8a9a8f', fontSize: '.88rem' }}>{certs.length} certificates · {progress.length} module completions · {byUser.length} active learners</p>
       </div>
 
       <IssueCert onRefresh={load} />

@@ -18,7 +18,7 @@ const DEFAULTS: SiteSettings = {
   instagram_url: 'https://www.instagram.com/wissen_haus',
   linkedin_url: 'https://www.linkedin.com/company/wissen-haus-empowerment-foundation',
   twitter_url: '',
-  tagline: 'Empowering youth Â· Educating for all Â· Opportunity for all',
+  tagline: 'Empowering youth · Educating for all · Opportunity for all',
   footer_note: '',
 }
 
@@ -115,12 +115,12 @@ export default async function Footer() {
 
         <div className="wrap wrap-wide">
           <div className="footer-bottom">
-            <span>Â© {year} Wissen-Haus Empowerment Foundation. All rights reserved.</span>
+            <span> © {year} Wissen-Haus Empowerment Foundation. All rights reserved.</span>
             <span style={{ display: 'flex', gap: 16, alignItems: 'center', flexWrap: 'wrap' }}>
               <Link href="/privacy">Privacy Policy</Link>
               <Link href="/terms">Terms &amp; Conditions</Link>
             </span>
-            <span>{settings.tagline || 'Empowering youth Â· Educating for all Â· Opportunity for all'}</span>
+            <span>{settings.tagline || 'Empowering youth · Educating for all · Opportunity for all'}</span>
           </div>
           {settings.footer_note && (
             <p style={{ textAlign: 'center', fontSize: '.78rem', color: 'rgba(255,255,255,0.4)', marginTop: 8, marginBottom: 0 }}>

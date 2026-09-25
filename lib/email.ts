@@ -70,8 +70,8 @@ function shell(body: string) {
   </div>
   <div class="body">${body}</div>
   <div class="foot">
-    Wissen-Haus Empowerment Foundation Â· Ibadan, Nigeria<br/>
-    <a href="https://wissenhaus.org">wissenhaus.org</a> Â· <a href="mailto:info@wissenhaus.org">info@wissenhaus.org</a>
+    Wissen-Haus Empowerment Foundation · Ibadan, Nigeria<br/>
+    <a href="https://wissenhaus.org">wissenhaus.org</a> · <a href="mailto:info@wissenhaus.org">info@wissenhaus.org</a>
   </div>
 </div>
 </body>

@@ -61,7 +61,7 @@ export default function WhatsAppEditor() {
 
   function removePost(i: number) { setData(d => ({ ...d, posts: d.posts.filter((_, j) => j !== i) })) }
 
-  if (!loaded) return <div style={{ padding: 24, color: '#8a9a8f' }}>Loadingâ€¦</div>
+  if (!loaded) return <div style={{ padding: 24, color: '#8a9a8f' }}>Loading…</div>
 
   return (
     <div>

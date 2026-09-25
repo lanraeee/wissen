@@ -153,7 +153,7 @@ export default function AdminProjects() {
 
       {/* Project list */}
       {loading ? (
-        <div style={{ padding: 40, textAlign: 'center', color: '#8a9a8f' }}>Loadingâ€¦</div>
+        <div style={{ padding: 40, textAlign: 'center', color: '#8a9a8f' }}>Loading…</div>
       ) : (
         <div style={{ background: '#fff', borderRadius: 10, boxShadow: '0 1px 4px rgba(0,0,0,.06)', overflow: 'auto', marginBottom: 32 }}>
           {projects.length === 0 ? (

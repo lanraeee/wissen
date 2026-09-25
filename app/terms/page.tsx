@@ -2,7 +2,7 @@
 import Link from 'next/link'
 
 export const metadata: Metadata = {
-  title: 'Terms & Conditions of Use Â· Wissen-Haus',
+  title: 'Terms & Conditions of Use · Wissen-Haus',
   description: 'The terms and conditions governing your use of the Wissen-Haus Empowerment Foundation website and programmes.',
 }
 

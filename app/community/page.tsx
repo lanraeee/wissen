@@ -6,7 +6,7 @@ import StreakBadge from '@/components/StreakBadge'
 import TestimonialForm from '@/components/TestimonialForm'
 
 export const metadata: Metadata = {
-  title: 'Community Hub Â· Wissen-Haus',
+  title: 'Community Hub · Wissen-Haus',
   description: 'Scholarships, internships, mentorship, courses and a community feedâ€”everything a young Nigerian changemaker needs in one place.',
 }
 

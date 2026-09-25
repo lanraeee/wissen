@@ -6,7 +6,7 @@ import sql from '@/lib/db'
 export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
-  title: 'Our Team Â· Wissen-Haus',
+  title: 'Our Team · Wissen-Haus',
   description: 'Meet the people who hold Wissen-Haus together â€” the founder, advisors, mentors, and volunteers building something that matters.',
 }
 

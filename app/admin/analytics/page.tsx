@@ -1,7 +1,7 @@
 ﻿import type { Metadata } from 'next'
 import sql from '@/lib/db'
 
-export const metadata: Metadata = { title: 'Analytics Â· Wissen-Haus Admin' }
+export const metadata: Metadata = { title: 'Analytics · Wissen-Haus Admin' }
 
 async function getOverview() {
   const [today, week, month, sessions] = await Promise.all([

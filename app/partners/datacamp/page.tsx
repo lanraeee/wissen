@@ -2,7 +2,7 @@
 import Link from 'next/link'
 
 export const metadata: Metadata = {
-  title: 'DataCamp Donates Partnership Â· Wissen-Haus',
+  title: 'DataCamp Donates Partnership · Wissen-Haus',
   description: 'Wissen-Haus is now a DataCamp Donates partner. 500 DataCamp licenses available for students and team members.',
 }
 

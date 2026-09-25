@@ -2,7 +2,7 @@
 import sql from '@/lib/db'
 import { getSession } from '@/lib/auth'
 
-export const metadata: Metadata = { title: 'Admin Â· Wissen-Haus' }
+export const metadata: Metadata = { title: 'Admin · Wissen-Haus' }
 
 async function getStats() {
   const [users, certs, progress, opps, subs, streak] = await Promise.all([

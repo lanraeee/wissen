@@ -4,7 +4,7 @@ import Image from 'next/image'
 import sql from '@/lib/db'
 
 export const metadata: Metadata = {
-  title: 'Meet the Founder Â· Wissen-Haus',
+  title: 'Meet the Founder · Wissen-Haus',
   description: 'Meet Benz Olagbaye, Founder and Executive Director of Wissen-Haus Empowerment Foundation.',
 }
 

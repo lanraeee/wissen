@@ -50,7 +50,7 @@ export default function ThreadsEditor() {
   }
   function remove(i: number) { setThreads(t => t.filter((_, j) => j !== i)) }
 
-  if (!loaded) return <div style={{ padding: 24, color: '#8a9a8f' }}>Loadingâ€¦</div>
+  if (!loaded) return <div style={{ padding: 24, color: '#8a9a8f' }}>Loading…</div>
 
   return (
     <div>
@@ -95,7 +95,7 @@ export default function ThreadsEditor() {
                 <div>
                   <span style={{ fontSize: '.7rem', fontWeight: 700, background: '#e8e4dc', borderRadius: 4, padding: '1px 6px', marginRight: 8 }}>{t.tag}</span>
                   <strong style={{ fontSize: '.88rem' }}>{t.title}</strong>
-                  <div style={{ fontSize: '.75rem', color: '#8a9a8f', marginTop: 3 }}>By {t.author} Â· {t.replies} replies</div>
+                  <div style={{ fontSize: '.75rem', color: '#8a9a8f', marginTop: 3 }}>By {t.author} · {t.replies} replies</div>
                 </div>
                 <div style={{ display: 'flex', gap: 5 }}>
                   <button style={s('#1d4ed8')} onClick={() => { setEditing(i); setDraft(t) }}>Edit</button>

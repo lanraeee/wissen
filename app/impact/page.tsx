@@ -2,7 +2,7 @@
 import Link from 'next/link'
 
 export const metadata: Metadata = {
-  title: 'Impact Â· Wissen-Haus',
+  title: 'Impact · Wissen-Haus',
   description: 'Real stories from the Wissen-Haus community â€” students and mentors who have changed their trajectory.',
 }
 

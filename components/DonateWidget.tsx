@@ -12,11 +12,11 @@ const AMOUNTS: Record<Currency, number[]> = {
   GBP: [5, 10, 25, 50],
   EUR: [5, 10, 25, 50],
 }
-const SYMBOL: Record<Currency, string> = { NGN: 'â‚¦', USD: '$', GBP: 'Â£', EUR: 'â‚¬' }
+const SYMBOL: Record<Currency, string> = { NGN: 'â‚¦', USD: '$', GBP: ' £', EUR: 'â‚¬' }
 const TOGGLE_LABEL: Record<Currency, string> = {
   NGN: 'ðŸ‡³ðŸ‡¬ Naira (â‚¦)',
   USD: 'ðŸ‡ºðŸ‡¸ US Dollar ($)',
-  GBP: 'ðŸ‡¬ðŸ‡§ British Pound (Â£)',
+  GBP: 'ðŸ‡¬ðŸ‡§ British Pound ( £)',
   EUR: 'ðŸ‡ªðŸ‡º Euro (â‚¬)',
 }
 const CUSTOM_PLACEHOLDER: Record<Currency, string> = { NGN: '15000', USD: '30', GBP: '25', EUR: '25' }
@@ -198,8 +198,8 @@ export default function DonateWidget() {
 
       <p style={{ textAlign: 'center', fontSize: '.78rem', color: 'var(--ink-60,#8a9a8f)', marginTop: '1rem' }}>
         {method === 'bank'
-          ? 'Direct transfer in Naira, Dollars, Pounds or Euros Â· No card needed'
-          : 'Powered by Stripe Â· Secure payments in Naira, Dollars, Pounds or Euros'}
+          ? 'Direct transfer in Naira, Dollars, Pounds or Euros · No card needed'
+          : 'Powered by Stripe · Secure payments in Naira, Dollars, Pounds or Euros'}
       </p>
     </form>
   )

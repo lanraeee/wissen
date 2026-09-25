@@ -98,7 +98,7 @@ export const DEFAULT_BANK_DETAILS: BankDetails = {
   ],
 }
 
-export const CURRENCY_SYMBOL: Record<string, string> = { NGN: 'â‚¦', USD: '$', GBP: 'Â£', EUR: 'â‚¬' }
+export const CURRENCY_SYMBOL: Record<string, string> = { NGN: 'â‚¦', USD: '$', GBP: ' £', EUR: 'â‚¬' }
 
 export const BANK_CURRENCIES: BankCurrency[] = ['NGN', 'USD', 'GBP', 'EUR']
 

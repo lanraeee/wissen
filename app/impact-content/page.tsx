@@ -5,7 +5,7 @@ import sql from '@/lib/db'
 export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
-  title: 'Impact Content Â· Wissen-Haus',
+  title: 'Impact Content · Wissen-Haus',
   description: 'Social-impact storytelling that highlights African youth and diaspora changemakers doing extraordinary things.',
 }
 
@@ -46,7 +46,7 @@ export default async function ImpactContentPage() {
       <section className="section section--tight" style={{ paddingTop: 'clamp(48px,6vw,84px)' }}>
         <div className="wrap">
           <div className="section-head reveal">
-            <span className="eyebrow">Programmes Â· Impact Content</span>
+            <span className="eyebrow">Programmes · Impact Content</span>
             <h1 className="display-lg mt-s">Stories that inspire action.</h1>
             <p className="lead mt-m">African youth and diaspora changemakers doing extraordinary things. We tell their stories so the next generation knows what&#39;s possible.</p>
           </div>

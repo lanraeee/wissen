@@ -156,7 +156,7 @@ export default function AdminSubmissions() {
       </div>
 
       {loading ? (
-        <div style={{ padding: 40, textAlign: 'center', color: '#8a9a8f' }}>Loadingâ€¦</div>
+        <div style={{ padding: 40, textAlign: 'center', color: '#8a9a8f' }}>Loading…</div>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
           {filtered.length === 0 && (

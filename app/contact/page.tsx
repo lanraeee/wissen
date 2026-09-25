@@ -2,7 +2,7 @@
 import ContactForm from '@/components/ContactForm'
 
 export const metadata: Metadata = {
-  title: 'Contact Us Â· Wissen-Haus',
+  title: 'Contact Us · Wissen-Haus',
   description: 'Get in touch with Wissen-Haus. Contact us for inquiries, partnerships, volunteering, or general questions.',
 }
 

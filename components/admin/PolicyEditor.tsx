@@ -68,7 +68,7 @@ export default function PolicyEditor() {
     ['title', 'Title'], ['subtitle', 'Subtitle'], ['tag', 'Tag Label'],
   ]
 
-  if (!loaded) return <div style={{ padding: 24, color: '#8a9a8f' }}>Loadingâ€¦</div>
+  if (!loaded) return <div style={{ padding: 24, color: '#8a9a8f' }}>Loading…</div>
 
   return (
     <div>
@@ -110,7 +110,7 @@ export default function PolicyEditor() {
                 <div>
                   <span style={{ fontFamily: 'monospace', fontSize: '.72rem', color: '#8a9a8f', marginRight: 8 }}>{p.no}</span>
                   <strong style={{ fontSize: '.9rem' }}>{p.title}</strong>
-                  <div style={{ fontSize: '.75rem', color: '#8a9a8f', marginTop: 2 }}>{p.theme} Â· {p.date} Â· {p.tag}</div>
+                  <div style={{ fontSize: '.75rem', color: '#8a9a8f', marginTop: 2 }}>{p.theme} · {p.date} · {p.tag}</div>
                 </div>
                 <div style={{ display: 'flex', gap: 5 }}>
                   <button style={s('#1d4ed8')} onClick={() => startEdit(i)}>Edit</button>

@@ -3,7 +3,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 
 export const metadata: Metadata = {
-  title: 'Career Clarity Fair Â· Wissen-Haus',
+  title: 'Career Clarity Fair · Wissen-Haus',
   description: 'A one-day career exploration fair for secondary school students in Ibadan. Meet professionals, explore careers, and discover your path.',
 }
 
@@ -14,7 +14,7 @@ export default function BootcampPage() {
         <div className="wrap">
           <div className="split">
             <div className="reveal">
-              <span className="eyebrow">Programmes Â· Career Clarity Fair</span>
+              <span className="eyebrow">Programmes · Career Clarity Fair</span>
               <h1 className="display-lg mt-s">Career Clarity Fair</h1>
               <p className="lead mt-m">A one-day career exploration fair open to all secondary school students in Ibadan â€” from JS1 to SS3. Meet real professionals, explore careers you&#39;ve never heard of, and leave with a clear direction.</p>
               <div className="hero-cta mt-m">

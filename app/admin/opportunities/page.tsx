@@ -60,7 +60,7 @@ export default function AdminOpportunities() {
       <div style={{ marginBottom: 20, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: 12 }}>
         <div>
           <h1 style={{ margin: '0 0 4px', fontSize: '1.5rem' }}>Opportunities</h1>
-          <p style={{ margin: 0, color: '#8a9a8f', fontSize: '.88rem' }}>{opps.length} total Â· {filtered.length} shown Â· auto-refreshed nightly</p>
+          <p style={{ margin: 0, color: '#8a9a8f', fontSize: '.88rem' }}>{opps.length} total · {filtered.length} shown · auto-refreshed nightly</p>
         </div>
         <div style={{ display: 'flex', gap: 8 }}>
           <input placeholder="Search title or companyâ€¦" value={filter} onChange={e => setFilter(e.target.value)}
@@ -85,7 +85,7 @@ export default function AdminOpportunities() {
       <OpportunityManager onRefresh={load} />
 
       {loading ? (
-        <div style={{ padding: 40, textAlign: 'center', color: '#8a9a8f' }}>Loadingâ€¦</div>
+        <div style={{ padding: 40, textAlign: 'center', color: '#8a9a8f' }}>Loading…</div>
       ) : (
         <div style={{ background: '#fff', borderRadius: 10, boxShadow: '0 1px 4px rgba(0,0,0,.06)', overflow: 'auto' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 800 }}>

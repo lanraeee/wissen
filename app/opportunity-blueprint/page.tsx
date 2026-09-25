@@ -2,7 +2,7 @@
 import Link from 'next/link'
 
 export const metadata: Metadata = {
-  title: 'Opportunity Blueprint Podcast Â· Wissen-Haus',
+  title: 'Opportunity Blueprint Podcast · Wissen-Haus',
   description: 'Our flagship podcast featuring weekly career insights and guidance from professionals who\'ve walked the path.',
 }
 
@@ -11,7 +11,7 @@ export default function PodcastPage() {
     <>
       <section className="section section--tight panel-dark" style={{ paddingTop: 'clamp(48px,6vw,84px)', textAlign: 'center' }}>
         <div className="wrap">
-          <span className="eyebrow eyebrow--light reveal">Programmes Â· Podcast</span>
+          <span className="eyebrow eyebrow--light reveal">Programmes · Podcast</span>
           <h1 className="display-lg mt-s reveal" style={{ color: '#fff' }}>Opportunity Blueprint</h1>
           <p className="lead mt-m reveal" data-d="1" style={{ color: 'rgba(244,240,231,.78)', maxWidth: 600, marginInline: 'auto' }}>
             Weekly career insights, real stories, and practical guidance from professionals building careers across Africa and beyond. Launching soon.

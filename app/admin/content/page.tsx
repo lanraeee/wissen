@@ -10,7 +10,7 @@ import ImpactStoriesEditor from '@/components/admin/ImpactStoriesEditor'
 import WhatsAppEditor from '@/components/admin/WhatsAppEditor'
 import BankDetailsEditor from '@/components/admin/BankDetailsEditor'
 
-export const metadata: Metadata = { title: 'Content Â· Admin Â· Wissen-Haus' }
+export const metadata: Metadata = { title: 'Content · Admin · Wissen-Haus' }
 
 const TABS = [
   { key: 'careers', label: 'Careers Roles' },

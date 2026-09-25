@@ -6,7 +6,7 @@ import Link from 'next/link'
 import { redirect } from 'next/navigation'
 
 export const metadata: Metadata = {
-  title: 'My Profile Â· Wissen-Haus',
+  title: 'My Profile · Wissen-Haus',
 }
 
 export default async function ProfilePage() {

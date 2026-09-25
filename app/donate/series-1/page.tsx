@@ -4,7 +4,7 @@ import Image from 'next/image'
 import DonateWidget from '@/components/DonateWidget'
 
 export const metadata: Metadata = {
-  title: 'Donation Drive: Series 1 Â· Career Clarity Fair Â· Wissen-Haus',
+  title: 'Donation Drive: Series 1 · Career Clarity Fair · Wissen-Haus',
   description: 'Help us deliver the Career Clarity Fair to 500â€“1,000 students in Ibadan on 5 December 2026. Our first public donation drive â€” fund the event that changes what young Nigerians believe is possible.',
 }
 
@@ -96,7 +96,7 @@ export default function DonationDriveSeries1Page() {
           <div className="rgrid-hero" style={{ gap: 'clamp(40px,6vw,72px)', alignItems: 'center' }}>
             <div className="reveal">
               <div style={{ display: 'flex', gap: 10, alignItems: 'center', marginBottom: 20, flexWrap: 'wrap' }}>
-                <span className="eyebrow eyebrow--light">Donation Drive Â· Series 1</span>
+                <span className="eyebrow eyebrow--light">Donation Drive · Series 1</span>
                 <span style={{
                   background: 'var(--red)', color: '#fff',
                   fontFamily: 'var(--ff-mono)', fontSize: '.65rem', letterSpacing: '.14em',
@@ -172,7 +172,7 @@ export default function DonationDriveSeries1Page() {
               }}>
                 <div style={{ fontSize: '.65rem', letterSpacing: '.18em', textTransform: 'uppercase', color: 'var(--gold)', marginBottom: 4 }}>Date confirmed</div>
                 <div style={{ fontFamily: 'var(--ff-display)', fontWeight: 900, fontSize: '1.1rem' }}>Saturday 5 December 2026</div>
-                <div style={{ fontSize: '.72rem', color: 'rgba(255,255,255,.55)', marginTop: 3 }}>Ibadan, Oyo State Â· 8:00am â€“ 5:00pm</div>
+                <div style={{ fontSize: '.72rem', color: 'rgba(255,255,255,.55)', marginTop: 3 }}>Ibadan, Oyo State · 8:00am â€“ 5:00pm</div>
               </div>
             </div>
 
@@ -193,7 +193,7 @@ export default function DonationDriveSeries1Page() {
               <div className="rgrid-2" style={{ gap: 14, marginTop: '1.75rem' }}>
                 {[
                   { label: 'Design', value: '70% hands-on, 30% talks' },
-                  { label: 'Age tracks', value: 'JSS1â€“JSS2 Â· JSS3 Â· SS1â€“SS3' },
+                  { label: 'Age tracks', value: 'JSS1â€“JSS2 · JSS3 · SS1â€“SS3' },
                   { label: 'Entry', value: 'Free for every student' },
                   { label: 'Venue', value: 'Partner campus, Ibadan' },
                 ].map(({ label, value }) => (

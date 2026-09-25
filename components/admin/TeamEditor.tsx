@@ -87,7 +87,7 @@ export default function TeamEditor() {
     leadership: 'Leadership', advisor: 'Advisor', mentor: 'Mentor', team_member: 'Team Member', volunteer: 'Volunteer',
   }
 
-  if (!loaded) return <div style={{ padding: 24, color: '#8a9a8f' }}>Loadingâ€¦</div>
+  if (!loaded) return <div style={{ padding: 24, color: '#8a9a8f' }}>Loading…</div>
 
   return (
     <div>

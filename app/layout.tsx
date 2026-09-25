@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   metadataBase: new URL('https://www.wissenhaus.org'),
   title: {
     default: 'Wissen-Haus Empowerment Foundation',
-    template: '%s Â· Wissen-Haus',
+    template: '%s · Wissen-Haus',
   },
   description: 'Bridging the skills gap for African youth and the diaspora â€” practical guidance, mentorship and global exposure for economic independence. Founded in Ibadan, Nigeria, now reaching young people across Africa and internationally, including the UK.',
   keywords: ['youth empowerment Africa', 'career guidance Nigeria', 'skills gap Africa', 'African diaspora youth', 'Ibadan youth foundation', 'mentorship Nigeria UK', 'Wissen-Haus'],

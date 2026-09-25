@@ -5,7 +5,7 @@ import sql from '@/lib/db'
 import TestimonialCarousel from '@/components/TestimonialCarousel'
 
 export const metadata: Metadata = {
-  title: 'Wissen-Haus Empowerment Foundation Â· Bridging the Skills Gap',
+  title: 'Wissen-Haus Empowerment Foundation · Bridging the Skills Gap',
   description: 'We equip African youth and the diaspora with practical skills, mentorship and global exposure for economic independence. 500+ students reached since launching in Ibadan, Nigeria.',
   openGraph: {
     title: 'Wissen-Haus â€” Bridging the Skills Gap for African Youth',
@@ -45,7 +45,7 @@ export default async function HomePage() {
         <div className="wrap wrap-wide">
           <div className="hero-grid">
             <div className="hero-copy">
-              <span className="eyebrow reveal">Ibadan, Nigeria Â· Est. 2025</span>
+              <span className="eyebrow reveal">Ibadan, Nigeria · Est. 2025</span>
               <h1 className="display-xl mt-s reveal-words">Your Roadmap to<br />Opportunity Starts Here.</h1>
               <p className="lead mt-s reveal" data-d="1">
                 Confused about what&#39;s next? Don&#39;t know where to start? We&#39;ve built resources that help you discover careers that match your interests, understand what it takes to succeed, and connect with people doing the work you&#39;re curious about.
@@ -88,7 +88,7 @@ export default async function HomePage() {
         <div className="wrap">
           <div className="split">
             <div className="reveal--left">
-              <span className="section-index">01 Â· Our Mission</span>
+              <span className="section-index">01 · Our Mission</span>
               <h2 className="mt-s">{tagline}</h2>
             </div>
             <div className="reveal--right">
@@ -197,7 +197,7 @@ export default async function HomePage() {
         <div className="wrap">
           <div className="video-grid">
             <div className="reveal--left">
-              <span className="eyebrow eyebrow--light">Watch Â· @wissen_haus</span>
+              <span className="eyebrow eyebrow--light">Watch · @wissen_haus</span>
               <h2 className="mt-s">See the movement in motion.</h2>
               <p className="lead mt-s">Real students, real mentors, real impact. Get a glimpse of Wissen-Haus in action and the young people bridging their own skills gap.</p>
               <div className="hero-cta mt-m">
@@ -232,7 +232,7 @@ export default async function HomePage() {
               <Image src="/img/students-2.jpg" alt="Students engaged in learning and research" fill style={{ objectFit: 'cover' }} />
             </div>
             <div className="reveal">
-              <span className="section-index">02 Â· Policy &amp; Research</span>
+              <span className="section-index">02 · Policy &amp; Research</span>
               <h2 className="mt-s">Evidence for the future of work.</h2>
               <p className="lead mt-s">We publish comprehensive policy papers and research reports focused on the future of work, youth economic independence, and global exposure for African and diaspora students.</p>
               <Link href="/policy-research" className="btn mt-m">

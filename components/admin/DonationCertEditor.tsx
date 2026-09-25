@@ -176,9 +176,9 @@ export default function DonationCertEditor() {
     setCerts(updated)
   }
 
-  const CURRENCY_SYM: Record<string, string> = { NGN: 'â‚¦', USD: '$', GBP: 'Â£', EUR: 'â‚¬' }
+  const CURRENCY_SYM: Record<string, string> = { NGN: 'â‚¦', USD: '$', GBP: ' £', EUR: 'â‚¬' }
 
-  if (!loaded) return <div style={{ padding: 24, color: '#8a9a8f' }}>Loadingâ€¦</div>
+  if (!loaded) return <div style={{ padding: 24, color: '#8a9a8f' }}>Loading…</div>
 
   return (
     <div>
@@ -225,7 +225,7 @@ export default function DonationCertEditor() {
             <div key={c.cert_id}>
               {editId === c.cert_id ? (
                 <CertForm
-                  title={`Edit Â· ${c.cert_id}`}
+                  title={`Edit · ${c.cert_id}`}
                   draft={editDraft}
                   setDraft={setEditDraft}
                   onSave={saveEdit}
@@ -244,7 +244,7 @@ export default function DonationCertEditor() {
                       <span style={{ fontFamily: 'monospace', fontSize: '.68rem', color: '#B8952A', background: 'rgba(184,149,42,0.1)', padding: '1px 6px', borderRadius: 4 }}>{c.cert_id}</span>
                     </div>
                     <div style={{ fontSize: '.75rem', color: '#8a9a8f' }}>
-                      {CURRENCY_SYM[c.currency]}{c.amount.toLocaleString()} Â· Donated {new Date(c.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })} Â· Issued {new Date(c.issued_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+                      {CURRENCY_SYM[c.currency]}{c.amount.toLocaleString()} · Donated {new Date(c.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })} · Issued {new Date(c.issued_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
                     </div>
                   </div>
                   <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>

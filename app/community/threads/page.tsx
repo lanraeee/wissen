@@ -5,7 +5,7 @@ import ThreadsClient from '@/components/ThreadsClient'
 import sql from '@/lib/db'
 
 export const metadata: Metadata = {
-  title: 'Discussion Threads Â· Wissen-Haus Community',
+  title: 'Discussion Threads · Wissen-Haus Community',
   description: 'Discuss, share wins, ask questions â€” the Wissen-Haus community discussion board.',
 }
 
@@ -62,7 +62,7 @@ export default async function ThreadsPage() {
 
           <div className="head-row mb-l reveal">
             <div className="section-head">
-              <span className="eyebrow">Community Hub Â· Threads</span>
+              <span className="eyebrow">Community Hub · Threads</span>
               <h1 className="display-lg mt-s">Discussion Board</h1>
               <p className="lead mt-s">Ask questions, share wins, and learn from the community.</p>
             </div>
@@ -104,7 +104,7 @@ export default async function ThreadsPage() {
                 <div style={{ width: 36, height: 36, borderRadius: '50%', background: '#25D366', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', flexShrink: 0 }}>{WA_ICON}</div>
                 <div>
                   <div style={{ fontWeight: 700, fontSize: '.95rem' }}>{wa?.name ?? 'Wissen-Haus'}</div>
-                  <div style={{ fontSize: '.75rem', color: 'var(--ink-60)' }}>WhatsApp Channel Â· recent updates</div>
+                  <div style={{ fontSize: '.75rem', color: 'var(--ink-60)' }}>WhatsApp Channel · recent updates</div>
                 </div>
                 <a href={channelUrl} target="_blank" rel="noopener noreferrer" style={{ marginLeft: 'auto', fontSize: '.78rem', fontWeight: 600, color: '#128C7E', textDecoration: 'none', border: '1px solid #25D366', borderRadius: 99, padding: '4px 14px' }}>View channel</a>
               </div>

@@ -86,7 +86,7 @@ export default function BankDetailsEditor() {
 
   const unusedCurrencies = ALL_CURRENCIES.filter(c => !data.accounts.some(a => a.currency === c))
 
-  if (!loaded) return <div style={{ padding: 24, color: '#8a9a8f' }}>Loadingâ€¦</div>
+  if (!loaded) return <div style={{ padding: 24, color: '#8a9a8f' }}>Loading…</div>
 
   if (forbidden) {
     return (

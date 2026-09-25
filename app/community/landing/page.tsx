@@ -3,7 +3,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 
 export const metadata: Metadata = {
-  title: 'Community Hub Â· Wissen-Haus',
+  title: 'Community Hub · Wissen-Haus',
   description: 'Join the Wissen-Haus community hub to access scholarships, internships, jobs, courses, and mentorship.',
 }
 

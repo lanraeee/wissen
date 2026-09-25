@@ -162,7 +162,7 @@ export default async function Image() {
                 display: 'flex',
               }}
             >
-              Ibadan, Nigeria Â· Est. 2025
+              Ibadan, Nigeria · Est. 2025
             </span>
           </div>
 

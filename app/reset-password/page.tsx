@@ -58,7 +58,7 @@ export default function ResetPasswordPage() {
               <p style={{ textAlign: 'center', color: 'var(--ink-60)', fontSize: '.95rem' }}>Redirecting you to sign inâ€¦</p>
             </>
           ) : token === null ? (
-            <p style={{ textAlign: 'center', color: 'var(--ink-60)' }}>Loadingâ€¦</p>
+            <p style={{ textAlign: 'center', color: 'var(--ink-60)' }}>Loading…</p>
           ) : !token ? (
             <>
               <h1 style={{ fontSize: '1.4rem', textAlign: 'center', marginBottom: 12, color: 'var(--green-800)' }}>Invalid reset link</h1>

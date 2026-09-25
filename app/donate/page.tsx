@@ -4,7 +4,7 @@ import Image from 'next/image'
 import DonateWidget from '@/components/DonateWidget'
 
 export const metadata: Metadata = {
-  title: 'Donate Â· Wissen-Haus',
+  title: 'Donate · Wissen-Haus',
   description: 'Fuel a young African or diaspora changemaker\'s future. Your gift funds free Career Clarity Fairs, mentorship and global exposure for students who need it most.',
 }
 

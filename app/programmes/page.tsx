@@ -3,7 +3,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 
 export const metadata: Metadata = {
-  title: 'Programmes Â· Wissen-Haus',
+  title: 'Programmes · Wissen-Haus',
   description: 'Career Clarity Fair, Opportunity Blueprint Podcast, Impact Content, Events, and Career Hub â€” all our programmes in one place.',
 }
 
