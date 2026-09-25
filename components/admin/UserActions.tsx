@@ -1,6 +1,7 @@
 ﻿'use client'
 
 import { useState } from 'react'
+import UserActivityModal from './UserActivityModal'
 
 interface User {
   id: string
@@ -30,6 +31,7 @@ const ROLE_COLORS: Record<string, string> = {
 export default function UserActions({ user, onRefresh, isDirector }: { user: User; onRefresh: () => void; isDirector: boolean }) {
   const [busy, setBusy] = useState(false)
   const [editing, setEditing] = useState(false)
+  const [viewingActivity, setViewingActivity] = useState(false)
   const [form, setForm] = useState({
     first_name: user.first_name, last_name: user.last_name, email: user.email,
     created_at: toDateInputValue(user.created_at),
@@ -92,31 +94,35 @@ export default function UserActions({ user, onRefresh, isDirector }: { user: Use
   )
 
   return (
-    <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', alignItems: 'center' }}>
-      {user.role !== 'user' && (
-        <span style={{ background: ROLE_COLORS[user.role] ?? '#6b7280', color: '#fff', borderRadius: 99, padding: '1px 8px', fontSize: '.7rem', fontWeight: 600, textTransform: 'capitalize' }}>
-          {user.role}
-        </span>
-      )}
-      {isDirector && (
-        <select
-          value={user.role ?? 'user'}
-          onChange={e => act('set_role', { role: e.target.value })}
-          disabled={busy}
-          style={{ padding: '3px 6px', fontSize: '.75rem', border: '1px solid #d0ccc4', borderRadius: 4, background: '#fff', cursor: 'pointer' }}
-        >
-          <option value="user">User</option>
-          <option value="editor">Editor</option>
-          <option value="admin">Admin</option>
-        </select>
-      )}
-      <button style={btn('#e8e4dc', '#3a4a3f')} onClick={() => setEditing(true)} disabled={busy}>Edit</button>
-      {user.membership_expiry ? (
-        <button style={btn('#b45309')} onClick={() => act('revoke_premium')} disabled={busy}>Revoke Premium</button>
-      ) : (
-        <button style={btn('#1a3c2e')} onClick={() => act('grant_premium')} disabled={busy}>Grant Premium</button>
-      )}
-      <button style={btn('#dc2626')} onClick={del} disabled={busy}>Delete</button>
-    </div>
+    <>
+      <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', alignItems: 'center' }}>
+        {user.role !== 'user' && (
+          <span style={{ background: ROLE_COLORS[user.role] ?? '#6b7280', color: '#fff', borderRadius: 99, padding: '1px 8px', fontSize: '.7rem', fontWeight: 600, textTransform: 'capitalize' }}>
+            {user.role}
+          </span>
+        )}
+        {isDirector && (
+          <select
+            value={user.role ?? 'user'}
+            onChange={e => act('set_role', { role: e.target.value })}
+            disabled={busy}
+            style={{ padding: '3px 6px', fontSize: '.75rem', border: '1px solid #d0ccc4', borderRadius: 4, background: '#fff', cursor: 'pointer' }}
+          >
+            <option value="user">User</option>
+            <option value="editor">Editor</option>
+            <option value="admin">Admin</option>
+          </select>
+        )}
+        <button style={btn('#e8e4dc', '#3a4a3f')} onClick={() => setViewingActivity(true)} disabled={busy}>Activity</button>
+        <button style={btn('#e8e4dc', '#3a4a3f')} onClick={() => setEditing(true)} disabled={busy}>Edit</button>
+        {user.membership_expiry ? (
+          <button style={btn('#b45309')} onClick={() => act('revoke_premium')} disabled={busy}>Revoke Premium</button>
+        ) : (
+          <button style={btn('#1a3c2e')} onClick={() => act('grant_premium')} disabled={busy}>Grant Premium</button>
+        )}
+        <button style={btn('#dc2626')} onClick={del} disabled={busy}>Delete</button>
+      </div>
+      {viewingActivity && <UserActivityModal userId={user.id} onClose={() => setViewingActivity(false)} />}
+    </>
   )
 }

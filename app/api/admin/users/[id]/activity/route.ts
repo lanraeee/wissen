@@ -40,6 +40,15 @@ async function guardFor(tier: 'user' | 'editor' | 'privileged') {
 }
 
 export async function GET(_: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  // Baseline check first, before touching the database at all: adminGuard is
+  // the loosest of the three tiers, so passing it grants nothing extra (the
+  // tier-specific guard below still applies for editor/privileged targets).
+  // Checking it first means an unauthenticated request never reaches the DB,
+  // and never gets to distinguish "no such user" from "forbidden" --
+  // otherwise a 404-vs-403 response is a free user-ID enumeration oracle for
+  // anyone, logged in or not.
+  if (!await adminGuard()) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+
   const { id } = await params
   const target = await findUser(id)
   if (!target) return NextResponse.json({ error: 'Not found' }, { status: 404 })

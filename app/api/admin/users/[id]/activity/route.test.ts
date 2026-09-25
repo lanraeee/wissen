@@ -60,16 +60,17 @@ describe('GET /api/admin/users/[id]/activity', () => {
       expect(body).toHaveProperty('logins')
     })
 
-    it('is forbidden to an unauthenticated caller', async () => {
-      sqlMock.mockResolvedValueOnce([targetUser()])
+    it('is forbidden to an unauthenticated caller, without ever querying the target (no user-enumeration oracle)', async () => {
       adminGuardMock.mockResolvedValue(null)
       const res = await GET(req(), ctx())
       expect(res.status).toBe(403)
+      expect(sqlMock).not.toHaveBeenCalled()
     })
   })
 
   describe('target is an editor', () => {
-    it('is forbidden to a fellow editor (adminGuard would pass, but this route requires userAdminGuard)', async () => {
+    it('is forbidden to a fellow editor (passes the baseline adminGuard, denied by the tier-specific userAdminGuard)', async () => {
+      adminGuardMock.mockResolvedValue(EDITOR_VIEWER) // baseline: caller is at least staff
       sqlMock.mockResolvedValueOnce([targetUser({ role: 'editor' })])
       userAdminGuardMock.mockResolvedValue(null) // editor is not admitted by userAdminGuard
       const res = await GET(req(), ctx())
@@ -77,6 +78,7 @@ describe('GET /api/admin/users/[id]/activity', () => {
     })
 
     it('is viewable by an admin and returns the staff audit log', async () => {
+      adminGuardMock.mockResolvedValue(ADMIN_VIEWER)
       sqlMock.mockResolvedValueOnce([targetUser({ role: 'editor' })]).mockResolvedValueOnce([
         { action: 'content.update', target_type: 'site_content', target_id: 'homepage_hero', details: null, created_at: '2026-01-01' },
       ])
@@ -92,6 +94,7 @@ describe('GET /api/admin/users/[id]/activity', () => {
 
   describe('target is an admin (non-director)', () => {
     it('is forbidden to another admin -- only the director may view', async () => {
+      adminGuardMock.mockResolvedValue(ADMIN_VIEWER) // baseline passes: caller is staff
       sqlMock.mockResolvedValueOnce([targetUser({ email: 'other-admin@example.com', role: 'admin' })])
       directorGuardMock.mockResolvedValue(null) // caller is an admin, not the director
       const res = await GET(req(), ctx())
@@ -99,6 +102,7 @@ describe('GET /api/admin/users/[id]/activity', () => {
     })
 
     it('is viewable by the director', async () => {
+      adminGuardMock.mockResolvedValue(DIRECTOR_VIEWER)
       sqlMock.mockResolvedValueOnce([targetUser({ email: 'other-admin@example.com', role: 'admin' })]).mockResolvedValueOnce([])
       directorGuardMock.mockResolvedValue(DIRECTOR_VIEWER)
       const res = await GET(req(), ctx())
@@ -109,6 +113,7 @@ describe('GET /api/admin/users/[id]/activity', () => {
   })
 
   it('treats an account with a director email as privileged even if its role column is not "admin"', async () => {
+    adminGuardMock.mockResolvedValue(ADMIN_VIEWER) // baseline passes: caller is staff
     sqlMock.mockResolvedValueOnce([targetUser({ email: 'director@wissenhaus.org', role: 'user' })])
     directorGuardMock.mockResolvedValue(null)
     const res = await GET(req(), ctx())
