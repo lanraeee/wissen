@@ -2,8 +2,6 @@
 import Link from 'next/link'
 import { getCourses } from '@/lib/courses'
 
-export const dynamic = 'force-dynamic'
-
 export const metadata: Metadata = {
   title: 'Courses · Wissen-Haus',
   description: 'Free and premium certificate courses for Nigerian youth. Build real career skills.',

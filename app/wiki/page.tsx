@@ -1,9 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import sql from '@/lib/db'
+import { getSiteContent } from '@/lib/site-content'
 import type { TeamMember } from '@/app/team/page'
-
-export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
   title: 'About Wissen-Haus · Encyclopedia Entry',
@@ -56,19 +54,16 @@ const GROUP_LABEL: Record<TeamMember['group'], string> = {
 }
 
 async function getPersonnel() {
-  try {
-    const rows = await sql`SELECT value FROM site_content WHERE key = 'team_members'`
-    const members = rows[0]?.value as TeamMember[] | undefined
-    if (members && members.length > 0) {
-      return members.map(m => ({
-        name: m.name,
-        role: m.role,
-        group: GROUP_LABEL[m.group] ?? m.group,
-        note: m.group === 'leadership' ? m.bio : null,
-        href: /founder/i.test(m.role) ? '/founder' : null,
-      }))
-    }
-  } catch {}
+  const members = await getSiteContent<TeamMember[]>('team_members')
+  if (members && members.length > 0) {
+    return members.map(m => ({
+      name: m.name,
+      role: m.role,
+      group: GROUP_LABEL[m.group] ?? m.group,
+      note: m.group === 'leadership' ? m.bio : null,
+      href: /founder/i.test(m.role) ? '/founder' : null,
+    }))
+  }
   return FALLBACK_PERSONNEL
 }
 

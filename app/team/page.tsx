@@ -1,9 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import Image from 'next/image'
-import sql from '@/lib/db'
-
-export const dynamic = 'force-dynamic'
+import { getSiteContent } from '@/lib/site-content'
 
 export const metadata: Metadata = {
   title: 'Our Team · Wissen-Haus',
@@ -40,19 +38,12 @@ const LINKEDIN_ICON = (
 )
 
 async function getMembers(): Promise<TeamMember[]> {
-  try {
-    const rows = await sql`SELECT value FROM site_content WHERE key = 'team_members'`
-    if (rows[0]?.value) return rows[0].value as TeamMember[]
-  } catch {}
-  return []
+  return (await getSiteContent<TeamMember[]>('team_members')) ?? []
 }
 
 async function getSectionOrder(): Promise<TeamMember['group'][]> {
-  try {
-    const rows = await sql`SELECT value FROM site_content WHERE key = 'team_section_order'`
-    if (rows[0]?.value) return rows[0].value as TeamMember['group'][]
-  } catch {}
-  return ['leadership', 'advisor', 'mentor', 'team_member', 'volunteer']
+  const order = await getSiteContent<TeamMember['group'][]>('team_section_order')
+  return order ?? ['leadership', 'advisor', 'mentor', 'team_member', 'volunteer']
 }
 
 interface FounderInfo {
@@ -69,12 +60,8 @@ const DEFAULT_FOUNDER: FounderInfo = {
 }
 
 async function getFounder(): Promise<FounderInfo> {
-  try {
-    const rows = await sql`SELECT value FROM site_content WHERE key = 'founder_bio'`
-    const val = rows[0]?.value as Partial<FounderInfo> | undefined
-    if (val) return { ...DEFAULT_FOUNDER, ...val }
-  } catch {}
-  return DEFAULT_FOUNDER
+  const val = await getSiteContent<Partial<FounderInfo>>('founder_bio')
+  return val ? { ...DEFAULT_FOUNDER, ...val } : DEFAULT_FOUNDER
 }
 
 function MemberCard({ m, delay }: { m: TeamMember; delay?: number }) {

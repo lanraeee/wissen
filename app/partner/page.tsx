@@ -1,27 +1,16 @@
 ﻿import type { Metadata } from 'next'
 import Link from 'next/link'
 import PartnerForm from '@/components/PartnerForm'
-import PartnersCarousel from '@/components/PartnersCarousel'
-import sql from '@/lib/db'
-
-export const dynamic = 'force-dynamic'
+import PartnersCarousel, { type Partner } from '@/components/PartnersCarousel'
+import { getSiteContent } from '@/lib/site-content'
 
 export const metadata: Metadata = {
   title: 'Partner With Us · Wissen-Haus',
   description: 'Partner with Wissen-Haus to empower African youth and the diaspora. For schools, companies, and individuals.',
 }
 
-async function getPartners() {
-  try {
-    const rows = await sql`SELECT value FROM site_content WHERE key = 'partners'`
-    return rows[0]?.value ?? []
-  } catch {
-    return []
-  }
-}
-
 export default async function PartnerPage() {
-  const partners = await getPartners()
+  const partners = (await getSiteContent<Partner[]>('partners')) ?? []
   return (
     <>
       <section className="section section--tight" style={{ paddingTop: 'clamp(48px,6vw,84px)' }}>

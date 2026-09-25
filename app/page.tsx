@@ -1,10 +1,8 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import Image from 'next/image'
-import sql from '@/lib/db'
 import TestimonialCarousel from '@/components/TestimonialCarousel'
-
-export const dynamic = 'force-dynamic'
+import { getSiteContent } from '@/lib/site-content'
 
 export const metadata: Metadata = {
   title: 'Wissen-Haus Empowerment Foundation · Bridging the Skills Gap',
@@ -60,22 +58,15 @@ const DEFAULT_STATS: StatItem[] = [
 ]
 
 export default async function HomePage() {
-  let tagline = 'Every young African and diaspora changemaker deserves the tools to thrive.'
-  let hero = DEFAULT_HERO
-  let stats = DEFAULT_STATS
-  try {
-    const rows = await sql`SELECT key, value FROM site_content WHERE key IN ('site_settings', 'homepage_hero', 'homepage_stats')`
-    for (const r of rows) {
-      if (r.key === 'site_settings') {
-        const val = r.value as { tagline?: string }
-        if (val?.tagline) tagline = val.tagline
-      }
-      if (r.key === 'homepage_hero' && r.value) hero = { ...DEFAULT_HERO, ...(r.value as Partial<HeroContent>) }
-      if (r.key === 'homepage_stats' && Array.isArray(r.value) && r.value.length === 4) stats = r.value as StatItem[]
-    }
-  } catch {
-    // use defaults
-  }
+  const [settings, heroContent, statsContent] = await Promise.all([
+    getSiteContent<{ tagline?: string }>('site_settings'),
+    getSiteContent<Partial<HeroContent>>('homepage_hero'),
+    getSiteContent<StatItem[]>('homepage_stats'),
+  ])
+
+  const tagline = settings?.tagline || 'Every young African and diaspora changemaker deserves the tools to thrive.'
+  const hero: HeroContent = heroContent ? { ...DEFAULT_HERO, ...heroContent } : DEFAULT_HERO
+  const stats: StatItem[] = Array.isArray(statsContent) && statsContent.length === 4 ? statsContent : DEFAULT_STATS
 
   return (
     <>

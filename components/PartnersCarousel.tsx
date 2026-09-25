@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 
-interface Partner {
+export interface Partner {
   name: string
   logo: string
   logoInverted?: string

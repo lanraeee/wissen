@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
+import { revalidateTag } from 'next/cache'
 import { adminGuard, directorGuard } from '@/lib/admin-guard'
 import sql from '@/lib/db'
 import { parseBody } from '@/lib/validation'
+import { siteContentTag } from '@/lib/site-content'
 
 // site_content.value shape varies per key by design (each admin editor owns
 // its own shape) so this stays a generic JSON blob rather than a per-key
@@ -45,5 +47,6 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ key:
     VALUES (${key}, ${JSON.stringify(value)}, NOW())
     ON CONFLICT (key) DO UPDATE SET value = ${JSON.stringify(value)}, updated_at = NOW()
   `
+  revalidateTag(siteContentTag(key))
   return NextResponse.json({ success: true })
 }
