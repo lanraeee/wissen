@@ -43,11 +43,11 @@ describe('POST /api/auth/login', () => {
     // shift into the next test's first call. reset wipes implementations too.
     vi.resetAllMocks()
     signTokenMock.mockResolvedValue('signed.jwt.token')
-    // First call: SELECT user. Second: visit_streaks upsert. Third (fire-and-
-    // forget, not awaited by the route): login_events insert -- the fallback
-    // covers that and any other incidental call.
+    // First call: SELECT user. Second: visit_streaks upsert (RETURNING a
+    // row). Third (fire-and-forget, not awaited by the route): login_events
+    // insert -- the fallback covers that and any other incidental call.
     sqlMock.mockResolvedValue([])
-    sqlMock.mockResolvedValueOnce([DB_USER]).mockResolvedValueOnce([])
+    sqlMock.mockResolvedValueOnce([DB_USER]).mockResolvedValueOnce([{ streak_count: 1 }])
   })
 
   it('logs in with valid credentials and sets the session cookie', async () => {

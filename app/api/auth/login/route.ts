@@ -5,6 +5,7 @@ import { verifyPassword, signToken, COOKIE_NAME } from '@/lib/auth'
 import { parseBody } from '@/lib/validation'
 import { log } from '@/lib/logger'
 import { clientIp } from '@/lib/rate-limit'
+import { recordVisit } from '@/lib/streak'
 
 const LoginSchema = z.object({
   email: z.string().trim().min(1).max(255),
@@ -38,19 +39,7 @@ export async function POST(req: NextRequest) {
       membershipExpiry: user.membership_expiry,
     })
 
-    // update streak
-    await sql`
-      INSERT INTO visit_streaks (user_id, streak_count, last_visit)
-      VALUES (${user.id}, 1, CURRENT_DATE)
-      ON CONFLICT (user_id) DO UPDATE SET
-        streak_count = CASE
-          WHEN visit_streaks.last_visit = CURRENT_DATE THEN visit_streaks.streak_count
-          WHEN visit_streaks.last_visit = CURRENT_DATE - INTERVAL '1 day' THEN visit_streaks.streak_count + 1
-          ELSE 1
-        END,
-        last_visit = CURRENT_DATE,
-        updated_at = NOW()
-    `
+    await recordVisit(user.id)
 
     // Session history shown in the user's admin activity view. Best-effort --
     // not awaited alongside the response, a logging hiccup shouldn't delay login.

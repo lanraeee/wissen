@@ -2,15 +2,14 @@
 import { getSession } from '@/lib/auth'
 import sql from '@/lib/db'
 import { log } from '@/lib/logger'
+import { recordVisit } from '@/lib/streak'
 
 export async function GET() {
   const session = await getSession()
   if (!session) return NextResponse.json({ user: null }, { status: 401 })
 
   try {
-    const [streak] = await sql`
-      SELECT streak_count, last_visit FROM visit_streaks WHERE user_id = ${session.id}
-    `
+    const streakCount = await recordVisit(session.id)
     const completedModules = await sql`
       SELECT course_id, module_id FROM course_progress WHERE user_id = ${session.id}
     `
@@ -24,7 +23,7 @@ export async function GET() {
         name: session.name,
         membershipExpiry: session.membershipExpiry,
       },
-      streak: streak?.streak_count ?? 0,
+      streak: streakCount,
       completedModules,
       certificates,
     })
