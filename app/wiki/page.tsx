@@ -108,7 +108,7 @@ export default async function WikiPage() {
           </p>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 220px', gap: 40, alignItems: 'start' }}>
+        <div className="wiki-layout" style={{ gap: 40, alignItems: 'start' }}>
 
           {/* Article body */}
           <article style={{ color: '#1a2e24', lineHeight: 1.8, fontSize: '.97rem' }}>
@@ -188,26 +188,28 @@ export default async function WikiPage() {
             <h2 id="personnel" style={{ fontSize: '1.25rem', fontWeight: 800, borderBottom: '1px solid #ddd9d0', paddingBottom: 6, marginTop: 32, color: '#0f2d1d' }}>
               3. Key Personnel
             </h2>
-            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '.88rem', marginBottom: 8 }}>
-              <thead>
-                <tr style={{ background: '#f0ece4' }}>
-                  {['Name', 'Role', 'Group'].map(h => (
-                    <th key={h} style={{ padding: '8px 12px', textAlign: 'left', fontWeight: 700, fontSize: '.75rem', letterSpacing: '.08em', textTransform: 'uppercase', color: '#4a5a4f', border: '1px solid #ddd9d0' }}>{h}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {PERSONNEL.map((p, i) => (
-                  <tr key={p.name} style={{ background: i % 2 === 0 ? '#fff' : '#fafaf7' }}>
-                    <td style={{ padding: '9px 12px', border: '1px solid #ddd9d0', fontWeight: 600 }}>
-                      {p.href ? <Link href={p.href} style={{ color: '#1a3c2e' }}>{p.name}</Link> : p.name}
-                    </td>
-                    <td style={{ padding: '9px 12px', border: '1px solid #ddd9d0', color: '#1a2e24' }}>{p.role}</td>
-                    <td style={{ padding: '9px 12px', border: '1px solid #ddd9d0', color: '#4a5a4f' }}>{p.group}</td>
+            <div style={{ overflow: 'auto', marginBottom: 8 }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '.88rem', minWidth: 480 }}>
+                <thead>
+                  <tr style={{ background: '#f0ece4' }}>
+                    {['Name', 'Role', 'Group'].map(h => (
+                      <th key={h} style={{ padding: '8px 12px', textAlign: 'left', fontWeight: 700, fontSize: '.75rem', letterSpacing: '.08em', textTransform: 'uppercase', color: '#4a5a4f', border: '1px solid #ddd9d0' }}>{h}</th>
+                    ))}
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {PERSONNEL.map((p, i) => (
+                    <tr key={p.name} style={{ background: i % 2 === 0 ? '#fff' : '#fafaf7' }}>
+                      <td style={{ padding: '9px 12px', border: '1px solid #ddd9d0', fontWeight: 600 }}>
+                        {p.href ? <Link href={p.href} style={{ color: '#1a3c2e' }}>{p.name}</Link> : p.name}
+                      </td>
+                      <td style={{ padding: '9px 12px', border: '1px solid #ddd9d0', color: '#1a2e24' }}>{p.role}</td>
+                      <td style={{ padding: '9px 12px', border: '1px solid #ddd9d0', color: '#4a5a4f' }}>{p.group}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
             {PERSONNEL.filter(p => p.note).map(p => (
               <p key={p.name} style={{ fontSize: '.86rem', color: '#4a5a4f', marginTop: 8 }}>
                 <strong>{p.name}</strong> — {p.note}

@@ -69,8 +69,8 @@ export default function AdminCourses() {
 
       {/* Learner summary */}
       {section('Learners', `${byUser.length} users with progress`)}
-      <div style={{ background: '#fff', borderRadius: 10, boxShadow: '0 1px 4px rgba(0,0,0,.06)', overflow: 'hidden', marginBottom: 36 }}>
-        <table className="admin-table">
+      <div style={{ background: '#fff', borderRadius: 10, boxShadow: '0 1px 4px rgba(0,0,0,.06)', overflow: 'auto', marginBottom: 36 }}>
+        <table className="admin-table" style={{ minWidth: 700 }}>
           <thead><tr>{[th('Name'), th('Email'), th('Courses'), th('Modules'), th('Certs')]}</tr></thead>
           <tbody>
             {byUser.length === 0 && <tr><td colSpan={5} style={{ padding: '24px 16px', textAlign: 'center', color: '#8a9a8f' }}>No learners yet.</td></tr>}
@@ -89,8 +89,8 @@ export default function AdminCourses() {
 
       {/* Certificates */}
       {section('Certificates Issued', `${certs.length} total`)}
-      <div style={{ background: '#fff', borderRadius: 10, boxShadow: '0 1px 4px rgba(0,0,0,.06)', overflow: 'hidden', marginBottom: 36 }}>
-        <table className="admin-table">
+      <div style={{ background: '#fff', borderRadius: 10, boxShadow: '0 1px 4px rgba(0,0,0,.06)', overflow: 'auto', marginBottom: 36 }}>
+        <table className="admin-table" style={{ minWidth: 800 }}>
           <thead><tr>{[th('User'), th('Email'), th('Course'), th('Certificate ID'), th('Issued'), th('')]}</tr></thead>
           <tbody>
             {certs.length === 0 && <tr><td colSpan={6} style={{ padding: '24px 16px', textAlign: 'center', color: '#8a9a8f' }}>No certificates issued yet.</td></tr>}
@@ -112,8 +112,8 @@ export default function AdminCourses() {
 
       {/* Module progress */}
       {section('Recent Module Completions', `${progress.length} entries`)}
-      <div style={{ background: '#fff', borderRadius: 10, boxShadow: '0 1px 4px rgba(0,0,0,.06)', overflow: 'hidden' }}>
-        <table className="admin-table">
+      <div style={{ background: '#fff', borderRadius: 10, boxShadow: '0 1px 4px rgba(0,0,0,.06)', overflow: 'auto' }}>
+        <table className="admin-table" style={{ minWidth: 700 }}>
           <thead><tr>{[th('User'), th('Email'), th('Course'), th('Module'), th('Completed')]}</tr></thead>
           <tbody>
             {progress.length === 0 && <tr><td colSpan={5} style={{ padding: '24px 16px', textAlign: 'center', color: '#8a9a8f' }}>No progress recorded yet.</td></tr>}
