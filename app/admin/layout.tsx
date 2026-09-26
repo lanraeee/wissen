@@ -16,8 +16,8 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   if (!session || !hasAccess) redirect('/login?mode=login')
 
   return (
-    <div className="admin-shell" style={{ display: 'flex', minHeight: '100vh', marginTop: -1 }}>
-      <aside className="admin-sidebar" style={{ width: 220, background: '#1a3c2e', color: '#f4f0e7', padding: '28px 0', flexShrink: 0, position: 'sticky', top: 0, height: '100vh', display: 'flex', flexDirection: 'column' }}>
+    <div className="admin-shell">
+      <aside className="admin-sidebar">
         <div style={{ padding: '0 24px 28px', borderBottom: '1px solid rgba(244,240,231,.12)' }}>
           <div style={{ fontWeight: 700, fontSize: '.9rem', letterSpacing: '.06em', textTransform: 'uppercase' }}>Wissen-Haus</div>
           <div style={{ fontSize: '.72rem', color: 'rgba(244,240,231,.5)', marginTop: 2 }}>Admin Panel</div>
@@ -30,7 +30,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
 
       <AdminMobileNav email={session.email} />
 
-      <main className="admin-main" style={{ flex: 1, padding: '36px 40px', maxWidth: 1200, background: '#f4f0e7', overflowX: 'auto' }}>
+      <main className="admin-main">
         {children}
       </main>
     </div>

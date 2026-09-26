@@ -859,10 +859,20 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
 .admin-two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px}
 @media(max-width:760px){.admin-two-col{grid-template-columns:1fr}}
 
+/* ─── Admin shell (desktop base) ─────────────────────────
+   Layout structure for app/admin/layout.tsx. These live in CSS rather than
+   inline styles so the mobile media query below can actually override them
+   -- an inline style attribute beats any external stylesheet rule (media
+   queries included) regardless of specificity, which silently defeated the
+   mobile overrides when these were inline. */
+.admin-shell{display:flex;min-height:100vh;margin-top:-1px}
+.admin-sidebar{width:220px;background:#1a3c2e;color:#f4f0e7;padding:28px 0;flex-shrink:0;position:sticky;top:0;height:100vh;display:flex;flex-direction:column}
+.admin-main{flex:1;padding:36px 40px;max-width:1200px;background:#f4f0e7;overflow-x:auto}
+
 /* ─── Admin mobile app shell ─────────────────────────────
-   Desktop keeps the fixed sidebar (app/admin/layout.tsx). Below the
-   breakpoint that sidebar hides and a top bar + bottom tab bar take over,
-   matching a native app's chrome instead of a squeezed desktop sidebar. */
+   Below the breakpoint the sidebar above hides and a top bar + bottom tab
+   bar take over, matching a native app's chrome instead of a squeezed
+   desktop sidebar. */
 :root{ --admin-topbar-h: 56px; --admin-bottombar-h: 60px; }
 
 .admin-topbar,.admin-bottom-nav{display:none}
