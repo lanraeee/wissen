@@ -70,7 +70,7 @@ async function getPersonnel() {
 const REFS = [
   { id: 1, label: 'Wissen-Haus Empowerment Foundation', url: 'https://www.wissenhaus.org' },
   { id: 2, label: 'Our Story – Wissen-Haus', url: 'https://www.wissenhaus.org/about/story' },
-  { id: 3, label: 'Career Clarity Fair – Wissen-Haus', url: 'https://www.wissenhaus.org/career-clarity-trade-fair' },
+  { id: 3, label: 'Career Clarity Fair – Wissen-Haus', url: 'https://www.wissenhaus.org/career-clarity-fair' },
   { id: 4, label: 'Opportunity Blueprint – Wissen-Haus', url: 'https://www.wissenhaus.org/opportunity-blueprint' },
   { id: 5, label: 'Impact Content – Wissen-Haus', url: 'https://www.wissenhaus.org/impact-content' },
   { id: 6, label: 'Community Hub – Wissen-Haus', url: 'https://www.wissenhaus.org/community' },

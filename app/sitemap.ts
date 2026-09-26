@@ -12,7 +12,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${BASE}/team`, lastModified: now, changeFrequency: 'monthly', priority: 0.8 },
     { url: `${BASE}/contact`, lastModified: now, changeFrequency: 'monthly', priority: 0.6 },
     { url: `${BASE}/programmes`, lastModified: now, changeFrequency: 'weekly', priority: 0.9 },
-    { url: `${BASE}/career-clarity-trade-fair`, lastModified: now, changeFrequency: 'weekly', priority: 0.8 },
+    { url: `${BASE}/career-clarity-fair`, lastModified: now, changeFrequency: 'weekly', priority: 0.8 },
     { url: `${BASE}/opportunity-blueprint`, lastModified: now, changeFrequency: 'weekly', priority: 0.8 },
     { url: `${BASE}/events`, lastModified: now, changeFrequency: 'weekly', priority: 0.8 },
     { url: `${BASE}/impact-content`, lastModified: now, changeFrequency: 'weekly', priority: 0.7 },

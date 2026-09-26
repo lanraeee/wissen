@@ -40,7 +40,7 @@ export default function ProgrammesPage() {
                 <span className="card__num">01</span>
                 <h3>Career Clarity Fair</h3>
                 <p>A one-day career exploration fair for secondary school students in Ibadan. Meet professionals, explore diverse careers, and discover your path forward.</p>
-                <Link href="/career-clarity-trade-fair" className="textlink">Learn more {ARROW}</Link>
+                <Link href="/career-clarity-fair" className="textlink">Learn more {ARROW}</Link>
               </div>
             </article>
 

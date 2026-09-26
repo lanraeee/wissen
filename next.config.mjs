@@ -24,7 +24,12 @@ const nextConfig = {
     return [
       {
         source: '/bootcamp',
-        destination: '/career-clarity-trade-fair',
+        destination: '/career-clarity-fair',
+        permanent: true,
+      },
+      {
+        source: '/career-clarity-trade-fair/:path*',
+        destination: '/career-clarity-fair/:path*',
         permanent: true,
       },
       {

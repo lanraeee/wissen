@@ -207,7 +207,7 @@ export default function DonationDriveSeries1Page() {
               </div>
 
               <div style={{ marginTop: '1.75rem' }}>
-                <Link href="/career-clarity-trade-fair" className="textlink" style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                <Link href="/career-clarity-fair" className="textlink" style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
                   Full programme details {ARROW}
                 </Link>
               </div>

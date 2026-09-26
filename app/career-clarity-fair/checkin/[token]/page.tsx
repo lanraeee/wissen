@@ -86,7 +86,7 @@ export default async function CareerFairCheckinPage({ params }: Props) {
         )}
 
         <div style={{ textAlign: 'center' }} className="mt-l">
-          <Link href="/career-clarity-trade-fair" className="btn btn--ghost">← Back to Career Clarity Fair</Link>
+          <Link href="/career-clarity-fair" className="btn btn--ghost">← Back to Career Clarity Fair</Link>
         </div>
       </div>
     </section>

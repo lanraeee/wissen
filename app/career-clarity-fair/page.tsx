@@ -18,7 +18,7 @@ export default function BootcampPage() {
               <h1 className="display-lg mt-s">Career Clarity Fair</h1>
               <p className="lead mt-m">A one-day career exploration fair open to all secondary school students in Ibadan — from JS1 to SS3. Meet real professionals, explore careers you&#39;ve never heard of, and leave with a clear direction.</p>
               <div className="hero-cta mt-m">
-                <Link href="/career-clarity-trade-fair/register" className="btn btn--lg">Register to attend</Link>
+                <Link href="/career-clarity-fair/register" className="btn btn--lg">Register to attend</Link>
                 <Link href="/volunteer" className="btn btn--ghost">Bring it to your school</Link>
               </div>
             </div>
@@ -94,7 +94,7 @@ export default function BootcampPage() {
             <h2>Bring the Career Clarity Fair to your school.</h2>
             <p className="lead">We partner with schools across Ibadan and beyond. If you&#39;re a teacher, administrator, or parent — reach out and let&#39;s talk.</p>
             <div className="cta-actions">
-              <Link href="/career-clarity-trade-fair/register" className="btn btn--light btn--lg">Register to attend</Link>
+              <Link href="/career-clarity-fair/register" className="btn btn--light btn--lg">Register to attend</Link>
               <Link href="/partner" className="btn btn--outline-light btn--lg">Partner with us</Link>
             </div>
           </div>

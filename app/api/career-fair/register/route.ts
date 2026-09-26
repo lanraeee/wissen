@@ -53,7 +53,7 @@ export async function POST(req: NextRequest) {
 
   const booths = recommendBooths(event.booths as Booth[], careerInterest ?? null, assessmentSnapshot ?? null)
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://wissenhaus.org'
-  const guideUrl = `${siteUrl}/career-clarity-trade-fair/checkin/${token}`
+  const guideUrl = `${siteUrl}/career-clarity-fair/checkin/${token}`
 
   Promise.all([
     sendFairRegistrationConfirmation({

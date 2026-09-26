@@ -27,7 +27,7 @@ export async function POST(_: NextRequest, { params }: { params: Promise<{ id: s
       eventDate: event.event_date as string | null,
       eventTime: event.event_time as string | null,
       eventLocation: event.location as string | null,
-      guideUrl: `${siteUrl}/career-clarity-trade-fair/checkin/${r.checkin_token}`,
+      guideUrl: `${siteUrl}/career-clarity-fair/checkin/${r.checkin_token}`,
     }))
   )
   const sent = results.filter(r => r.status === 'fulfilled').length
