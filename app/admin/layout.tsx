@@ -2,6 +2,7 @@
 import { getSession } from '@/lib/auth'
 import AdminNav from '@/components/admin/AdminNav'
 import AdminMobileNav from '@/components/admin/AdminMobileNav'
+import AdminLogoutButton from '@/components/admin/AdminLogoutButton'
 
 const ADMIN_EMAIL = process.env.FOUNDER_EMAIL || 'director@wissenhaus.org'
 
@@ -23,8 +24,11 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           <div style={{ fontSize: '.72rem', color: 'rgba(244,240,231,.5)', marginTop: 2 }}>Admin Panel</div>
         </div>
         <AdminNav />
-        <div style={{ padding: '16px 24px', borderTop: '1px solid rgba(244,240,231,.12)', fontSize: '.78rem', color: 'rgba(244,240,231,.45)' }}>
-          {session.email}
+        <div style={{ padding: '16px 24px', borderTop: '1px solid rgba(244,240,231,.12)' }}>
+          <div style={{ fontSize: '.78rem', color: 'rgba(244,240,231,.45)', marginBottom: 10, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+            {session.email}
+          </div>
+          <AdminLogoutButton style={{ fontSize: '.8rem', fontWeight: 600, color: 'rgba(244,240,231,.75)' }} />
         </div>
       </aside>
 

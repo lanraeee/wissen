@@ -4,6 +4,9 @@ import { useState } from 'react'
 import { usePathname } from 'next/navigation'
 import { NAV, isNavActive } from './AdminNav'
 import { NAV_ICONS, MoreIcon, CloseIcon, MenuIcon } from './AdminIcons'
+import AdminLogoutButton from './AdminLogoutButton'
+import NavBadge from './NavBadge'
+import { useSubmissionsBadge, totalCount } from './useSubmissionsBadge'
 
 // The four most-reached-for sections get a permanent bottom-tab slot (mobile
 // app pattern -- Dashboard/Users/Submissions/Content are what a small-team
@@ -23,6 +26,8 @@ export default function AdminMobileNav({ email }: { email: string }) {
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [moreOpen, setMoreOpen] = useState(false)
   const overflowActive = OVERFLOW.some(([, href]) => isNavActive(pathname, href))
+  const submissionCounts = useSubmissionsBadge()
+  const pendingSubmissions = totalCount(submissionCounts)
 
   return (
     <>
@@ -40,9 +45,13 @@ export default function AdminMobileNav({ email }: { email: string }) {
         {PRIMARY.map(([label, href]) => {
           const Icon = NAV_ICONS[href]
           const active = isNavActive(pathname, href)
+          const badgeCount = href === '/admin/submissions' ? pendingSubmissions : 0
           return (
             <a key={href} href={href} className={`admin-bottom-nav__item${active ? ' active' : ''}`}>
-              <Icon size={21} />
+              <span style={{ position: 'relative', display: 'inline-flex' }}>
+                <Icon size={21} />
+                {badgeCount > 0 && <NavBadge count={badgeCount} style={{ position: 'absolute', top: -6, right: -8 }} />}
+              </span>
               <span>{label === 'Donation Projects' ? 'Projects' : label}</span>
             </a>
           )
@@ -80,12 +89,16 @@ export default function AdminMobileNav({ email }: { email: string }) {
                   >
                     <Icon size={18} />
                     {label}
+                    {href === '/admin/submissions' && <NavBadge count={pendingSubmissions} style={{ marginLeft: 'auto' }} />}
                   </a>
                 )
               })}
             </nav>
-            <div style={{ padding: '14px 24px', borderTop: '1px solid rgba(244,240,231,.12)', fontSize: '.78rem', color: 'rgba(244,240,231,.45)' }}>
-              {email}
+            <div style={{ padding: '14px 24px', borderTop: '1px solid rgba(244,240,231,.12)' }}>
+              <div style={{ fontSize: '.78rem', color: 'rgba(244,240,231,.45)', marginBottom: 10, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                {email}
+              </div>
+              <AdminLogoutButton style={{ fontSize: '.82rem', fontWeight: 600, color: 'rgba(244,240,231,.8)' }} />
             </div>
           </div>
         </div>

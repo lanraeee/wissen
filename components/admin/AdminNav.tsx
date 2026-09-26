@@ -2,6 +2,8 @@
 
 import { usePathname } from 'next/navigation'
 import { NAV_ICONS } from './AdminIcons'
+import NavBadge from './NavBadge'
+import { useSubmissionsBadge, totalCount } from './useSubmissionsBadge'
 
 export const NAV = [
   ['Dashboard', '/admin'],
@@ -23,6 +25,9 @@ export function isNavActive(pathname: string, href: string) {
 
 export default function AdminNav() {
   const pathname = usePathname()
+  const submissionCounts = useSubmissionsBadge()
+  const pendingSubmissions = totalCount(submissionCounts)
+
   return (
     <nav style={{ padding: '16px 12px', flex: 1, overflowY: 'auto' }}>
       {NAV.map(([label, href]) => {
@@ -40,6 +45,7 @@ export default function AdminNav() {
           >
             <Icon size={17} />
             {label}
+            {href === '/admin/submissions' && <NavBadge count={pendingSubmissions} style={{ marginLeft: 'auto' }} />}
           </a>
         )
       })}

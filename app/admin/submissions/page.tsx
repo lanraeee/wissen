@@ -2,6 +2,8 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import SubmissionActions from '@/components/admin/SubmissionActions'
+import NavBadge from '@/components/admin/NavBadge'
+import { useSubmissionsBadge } from '@/components/admin/useSubmissionsBadge'
 
 const TYPES = ['contact', 'volunteer', 'partner', 'donation', 'bank_transfer']
 
@@ -50,6 +52,7 @@ export default function AdminSubmissions() {
   const [search, setSearch] = useState('')
   const [resending, setResending] = useState<string | null>(null)
   const [resendMsg, setResendMsg] = useState<{ id: string; text: string; ok: boolean } | null>(null)
+  const pendingByType = useSubmissionsBadge()
 
   async function resendReceipt(rowId: string, reference: string) {
     setResending(rowId); setResendMsg(null)
@@ -147,11 +150,15 @@ export default function AdminSubmissions() {
       <div style={{ display: 'flex', gap: 8, marginBottom: 24, flexWrap: 'wrap' }}>
         {TYPES.map(t => (
           <button key={t} onClick={() => setActiveType(t)} style={{
+            display: 'flex', alignItems: 'center', gap: 6,
             padding: '6px 16px', borderRadius: 99, fontSize: '.82rem', fontWeight: 600,
             background: activeType === t ? '#1a3c2e' : '#fff',
             color: activeType === t ? '#f4f0e7' : '#3a4a3f',
             border: '1px solid #e8e4dc', cursor: 'pointer', textTransform: 'capitalize',
-          }}>{TYPE_LABELS[t] ?? t}</button>
+          }}>
+            {TYPE_LABELS[t] ?? t}
+            <NavBadge count={pendingByType[t] ?? 0} />
+          </button>
         ))}
       </div>
 
