@@ -28,7 +28,7 @@ const EVENT = {
 
 const VALID_BODY = {
   eventId: 1, name: 'Ada Lovelace', email: 'ada@example.com', phone: '08012345678',
-  school: 'Ibadan Grammar School', classGrade: 'SS2', careerInterest: 'Technology', newsletterOptIn: true,
+  school: 'Ibadan Grammar School', classGrade: 'SS2', careerInterest: 'Technology', attendingAs: 'Student', newsletterOptIn: true,
 }
 
 describe('POST /api/career-fair/register', () => {
@@ -70,6 +70,18 @@ describe('POST /api/career-fair/register', () => {
 
   it('rejects a careerInterest value outside the fixed list', async () => {
     const res = await POST(req({ ...VALID_BODY, careerInterest: 'Astrology' }))
+    expect(res.status).toBe(400)
+  })
+
+  it('rejects a missing attendingAs', async () => {
+    const { attendingAs, ...withoutAttendingAs } = VALID_BODY
+    const res = await POST(req(withoutAttendingAs))
+    expect(res.status).toBe(400)
+    expect(sqlMock).not.toHaveBeenCalled()
+  })
+
+  it('rejects an attendingAs value outside the fixed list', async () => {
+    const res = await POST(req({ ...VALID_BODY, attendingAs: 'Parent' }))
     expect(res.status).toBe(400)
   })
 

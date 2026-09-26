@@ -47,6 +47,9 @@ export type CareerInterest = typeof CAREER_INTERESTS[number]
 
 export const CLASS_GRADES = ['JS1', 'JS2', 'JS3', 'SS1', 'SS2', 'SS3'] as const
 
+export const ATTENDING_AS_OPTIONS = ['Student', 'Volunteer', 'Mentor'] as const
+export type AttendingAs = typeof ATTENDING_AS_OPTIONS[number]
+
 export interface AssessmentSnapshot {
   key: string
   score: number

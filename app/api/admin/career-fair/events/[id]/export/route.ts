@@ -15,16 +15,16 @@ export async function GET(_: NextRequest, { params }: { params: Promise<{ id: st
   if (!event) return NextResponse.json({ error: 'Not found' }, { status: 404 })
 
   const registrations = await sql`
-    SELECT name, email, phone, school, class_grade, career_interest, newsletter_opt_in,
+    SELECT name, email, phone, school, class_grade, career_interest, attending_as, newsletter_opt_in,
            checked_in, checked_in_at, created_at
     FROM fair_registrations
     WHERE event_id = ${id}
     ORDER BY created_at ASC
   `
 
-  const header = ['Name', 'Email', 'Phone', 'School', 'Class/Grade', 'Career Interest', 'Newsletter Opt-In', 'Checked In', 'Checked In At', 'Registered At']
+  const header = ['Name', 'Email', 'Phone', 'School', 'Class/Grade', 'Career Interest', 'Attending As', 'Newsletter Opt-In', 'Checked In', 'Checked In At', 'Registered At']
   const rows = registrations.map(r => [
-    r.name, r.email, r.phone, r.school, r.class_grade, r.career_interest,
+    r.name, r.email, r.phone, r.school, r.class_grade, r.career_interest, r.attending_as,
     r.newsletter_opt_in ? 'Yes' : 'No', r.checked_in ? 'Yes' : 'No', r.checked_in_at, r.created_at,
   ])
   const csv = [header, ...rows].map(row => row.map(csvCell).join(',')).join('\n')

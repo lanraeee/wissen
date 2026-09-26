@@ -170,6 +170,7 @@ CREATE TABLE IF NOT EXISTS fair_registrations (
   school               TEXT NOT NULL,
   class_grade          TEXT,
   career_interest      TEXT,
+  attending_as         TEXT NOT NULL DEFAULT 'Student' CHECK (attending_as IN ('Student', 'Volunteer', 'Mentor')),
   -- Best-effort snapshot of the visitor's existing Career Assessment result,
   -- read from browser localStorage at registration time (the assessment has
   -- no server-side/account-linked storage today -- see docs/adr/008). Null

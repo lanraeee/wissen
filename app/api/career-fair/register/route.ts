@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import sql from '@/lib/db'
 import { parseBody, zEmail, zName } from '@/lib/validation'
-import { CAREER_INTERESTS, CLASS_GRADES, generateCheckinToken, recommendBooths, type Booth } from '@/lib/career-fair'
+import { CAREER_INTERESTS, CLASS_GRADES, ATTENDING_AS_OPTIONS, generateCheckinToken, recommendBooths, type Booth } from '@/lib/career-fair'
 import { sendFairRegistrationConfirmation, sendFairRegistrationNotification } from '@/lib/email'
 import { log } from '@/lib/logger'
 
@@ -18,6 +18,7 @@ const RegisterSchema = z.object({
   school: z.string().trim().min(1).max(200),
   classGrade: z.enum(CLASS_GRADES).optional(),
   careerInterest: z.enum(CAREER_INTERESTS).optional(),
+  attendingAs: z.enum(ATTENDING_AS_OPTIONS),
   newsletterOptIn: z.boolean().optional(),
   assessmentSnapshot: AssessmentSnapshotSchema,
 })
@@ -25,7 +26,7 @@ const RegisterSchema = z.object({
 export async function POST(req: NextRequest) {
   const { data, error } = await parseBody(req, RegisterSchema)
   if (error) return error
-  const { eventId, name, email, phone, school, classGrade, careerInterest, newsletterOptIn, assessmentSnapshot } = data
+  const { eventId, name, email, phone, school, classGrade, careerInterest, attendingAs, newsletterOptIn, assessmentSnapshot } = data
 
   const [event] = await sql`
     SELECT id, slug, title, school, location, event_date, event_time, booths
@@ -39,10 +40,10 @@ export async function POST(req: NextRequest) {
   try {
     ;[row] = await sql`
       INSERT INTO fair_registrations
-        (event_id, name, email, phone, school, class_grade, career_interest, assessment_snapshot, newsletter_opt_in, checkin_token)
+        (event_id, name, email, phone, school, class_grade, career_interest, attending_as, assessment_snapshot, newsletter_opt_in, checkin_token)
       VALUES
         (${eventId}, ${name}, ${email.toLowerCase()}, ${phone || null}, ${school}, ${classGrade || null},
-         ${careerInterest || null}, ${assessmentSnapshot ? JSON.stringify(assessmentSnapshot) : null},
+         ${careerInterest || null}, ${attendingAs}, ${assessmentSnapshot ? JSON.stringify(assessmentSnapshot) : null},
          ${newsletterOptIn ?? false}, ${token})
       RETURNING id
     `

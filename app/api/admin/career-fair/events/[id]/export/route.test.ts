@@ -31,7 +31,7 @@ describe('GET /api/admin/career-fair/events/[id]/export', () => {
   it('produces a CSV with a header row and one row per registrant, quoting commas', async () => {
     adminGuardMock.mockResolvedValue({ id: 'a', email: 'a@x.com', role: 'admin' })
     sqlMock.mockResolvedValueOnce([{ slug: 'ibadan-2026', title: 'Ibadan Fair' }]).mockResolvedValueOnce([
-      { name: 'Ada, Lovelace', email: 'ada@example.com', phone: null, school: 'IGS', class_grade: 'SS2', career_interest: 'Technology', newsletter_opt_in: true, checked_in: false, checked_in_at: null, created_at: '2026-01-01' },
+      { name: 'Ada, Lovelace', email: 'ada@example.com', phone: null, school: 'IGS', class_grade: 'SS2', career_interest: 'Technology', attending_as: 'Student', newsletter_opt_in: true, checked_in: false, checked_in_at: null, created_at: '2026-01-01' },
     ])
     const res = await GET({} as NextRequest, ctx())
     expect(res.status).toBe(200)
@@ -39,7 +39,7 @@ describe('GET /api/admin/career-fair/events/[id]/export', () => {
     expect(res.headers.get('Content-Disposition')).toContain('ibadan-2026-registrations.csv')
     const text = await res.text()
     const lines = text.split('\n')
-    expect(lines[0]).toBe('Name,Email,Phone,School,Class/Grade,Career Interest,Newsletter Opt-In,Checked In,Checked In At,Registered At')
+    expect(lines[0]).toBe('Name,Email,Phone,School,Class/Grade,Career Interest,Attending As,Newsletter Opt-In,Checked In,Checked In At,Registered At')
     expect(lines[1]).toContain('"Ada, Lovelace"')
   })
 })

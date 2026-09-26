@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { useFormSubmit } from '@/lib/useFormSubmit'
 import { FormInput, FormSelect } from '@/components/form/FormField'
 import { FormError } from '@/components/form/FormSuccess'
-import { CAREER_INTERESTS, CLASS_GRADES, type FairEvent, type AssessmentSnapshot } from '@/lib/career-fair-shared'
+import { CAREER_INTERESTS, CLASS_GRADES, ATTENDING_AS_OPTIONS, type FairEvent, type AssessmentSnapshot } from '@/lib/career-fair-shared'
 
 interface RegisterResponse {
   registrationId: string
@@ -42,6 +42,7 @@ export default function CareerFairRegisterForm() {
       email: fd.get('email'),
       phone: fd.get('phone') || undefined,
       school: fd.get('school'),
+      attendingAs: fd.get('attendingAs'),
       classGrade: fd.get('classGrade') || undefined,
       careerInterest: fd.get('careerInterest') || undefined,
       newsletterOptIn: fd.get('newsletterOptIn') === 'on',
@@ -97,6 +98,10 @@ export default function CareerFairRegisterForm() {
         <input type="hidden" name="eventId" value={events[0].id} />
       )}
       <FormInput label="Full Name" id="cf-name" name="name" required placeholder="Ada Lovelace" />
+      <FormSelect label="Attending As" id="cf-attending-as" name="attendingAs" required>
+        <option value="">Select…</option>
+        {ATTENDING_AS_OPTIONS.map(a => <option key={a} value={a}>{a}</option>)}
+      </FormSelect>
       <div className="form-row">
         <FormInput label="Email" id="cf-email" name="email" type="email" required placeholder="you@example.com" />
         <FormInput label="Phone (optional)" id="cf-phone" name="phone" type="tel" placeholder="080..." />

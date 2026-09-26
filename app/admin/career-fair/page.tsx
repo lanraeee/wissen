@@ -16,6 +16,7 @@ interface Registration {
   school: string
   class_grade: string | null
   career_interest: string | null
+  attending_as: string
   newsletter_opt_in: boolean
   checked_in: boolean
   checked_in_at: string | null
@@ -369,10 +370,10 @@ function RegistrationsPanel({ event, onClose }: { event: AdminEvent; onClose: ()
           <div style={{ padding: 40, textAlign: 'center', color: '#8a9a8f' }}>No registrations match.</div>
         ) : (
           <div style={{ overflow: 'auto' }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 800 }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 900 }}>
               <thead>
                 <tr>
-                  {['Name', 'Contact', 'School', 'Grade', 'Interest', 'Checked In', ''].map(h => (
+                  {['Name', 'Contact', 'School', 'Grade', 'Interest', 'Attending As', 'Checked In', ''].map(h => (
                     <th key={h} style={{ padding: '8px 12px', textAlign: 'left', fontSize: '.7rem', fontWeight: 700, letterSpacing: '.06em', textTransform: 'uppercase', color: '#8a9a8f', borderBottom: '1px solid #e8e4dc', whiteSpace: 'nowrap' }}>{h}</th>
                   ))}
                 </tr>
@@ -385,6 +386,7 @@ function RegistrationsPanel({ event, onClose }: { event: AdminEvent; onClose: ()
                     <td style={{ padding: '8px 12px', fontSize: '.8rem', color: '#3a4a3f' }}>{r.school}</td>
                     <td style={{ padding: '8px 12px', fontSize: '.8rem', color: '#3a4a3f' }}>{r.class_grade ?? '—'}</td>
                     <td style={{ padding: '8px 12px', fontSize: '.8rem', color: '#3a4a3f' }}>{r.career_interest ?? '—'}</td>
+                    <td style={{ padding: '8px 12px', fontSize: '.8rem', color: '#3a4a3f' }}>{r.attending_as}</td>
                     <td style={{ padding: '8px 12px' }}>
                       <label style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer' }}>
                         <input type="checkbox" checked={r.checked_in} onChange={() => toggleCheckedIn(r)} />
