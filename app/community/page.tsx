@@ -4,6 +4,19 @@ import Image from 'next/image'
 import OpportunityGrid from '@/components/OpportunityGrid'
 import StreakBadge from '@/components/StreakBadge'
 import TestimonialForm from '@/components/TestimonialForm'
+import { getSiteContent } from '@/lib/site-content'
+
+interface Thread { title: string; author: string; replies: number; tag: string }
+
+const TAG_COLOR: Record<string, string> = {
+  Jobs: '#1d4ed8', Education: '#7c3aed', Tech: '#0891b2',
+  Scholarships: '#b45309', Career: '#15803d', Discussion: '#6b7280',
+  Community: '#c026d3', Opportunities: '#0f766e',
+}
+
+async function getThreads(): Promise<Thread[]> {
+  return (await getSiteContent<Thread[]>('community_threads')) ?? []
+}
 
 export const metadata: Metadata = {
   title: 'Community Hub · Wissen-Haus',
@@ -16,7 +29,8 @@ const ARROW = (
   </svg>
 )
 
-export default function CommunityPage() {
+export default async function CommunityPage() {
+  const threads = await getThreads()
   return (
     <>
       <StreakBadge />
@@ -45,7 +59,7 @@ export default function CommunityPage() {
           <div className="pillrow mb-l">
             <Link className="p p--active" href="#opportunities">Opportunity Hub</Link>
             <Link className="p" href="#learning">Learning Library</Link>
-            <Link className="p" href="/community/threads">Discussion Threads</Link>
+            <Link className="p" href="#discussions">Discussion Threads</Link>
             <Link className="p" href="#share-story">Share Your Story</Link>
           </div>
         </div>
@@ -106,6 +120,34 @@ export default function CommunityPage() {
           </div>
           <div className="hero-cta mt-l reveal">
             <Link href="/courses" className="btn btn--light">View all courses</Link>
+          </div>
+        </div>
+      </section>
+
+      {/* DISCUSSION THREADS */}
+      <section className="section" id="discussions">
+        <div className="wrap">
+          <div className="section-head mb-m reveal">
+            <span className="eyebrow">Discussion Threads</span>
+            <h2>Ask questions, share wins, learn from each other.</h2>
+          </div>
+          {threads.length > 0 ? (
+            <div className="grid grid-3">
+              {threads.map((t, i) => (
+                <Link key={i} href="/community/threads" className="card reveal" data-d={(i % 3 || undefined) as unknown as string}>
+                  <div className="card__body">
+                    <span className="card__num" style={{ color: TAG_COLOR[t.tag] ?? '#6b7280' }}>{t.tag.toUpperCase()}</span>
+                    <h3 style={{ marginTop: '.4rem' }}>{t.title}</h3>
+                    <p style={{ color: 'var(--ink-60)' }}>{t.author} · {t.replies} {t.replies === 1 ? 'reply' : 'replies'}</p>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          ) : (
+            <p className="lead">Be the first to start a discussion.</p>
+          )}
+          <div className="hero-cta mt-l reveal">
+            <Link href="/community/threads" className="btn btn--lg">View all discussions {ARROW}</Link>
           </div>
         </div>
       </section>
