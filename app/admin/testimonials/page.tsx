@@ -185,7 +185,7 @@ export default function AdminTestimonials() {
       )}
 
       {e && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,.5)', zIndex: 200, display: 'flex', alignItems: 'flex-start', justifyContent: 'center', padding: '24px 16px', overflowY: 'auto' }}>
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,.5)', zIndex: 150, display: 'flex', alignItems: 'flex-start', justifyContent: 'center', padding: '24px 16px', overflowY: 'auto' }}>
           <div style={{ background: '#fff', borderRadius: 14, padding: '28px 32px', width: '100%', maxWidth: 560, boxShadow: '0 24px 60px rgba(0,0,0,.25)' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
               <h2 style={{ margin: 0, fontSize: '1.25rem', color: '#1a2e24' }}>{e.id ? 'Edit Testimonial' : 'New Testimonial'}</h2>

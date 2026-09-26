@@ -115,8 +115,8 @@ export default function CareerFairRegisterForm() {
         <option value="">Select…</option>
         {CAREER_INTERESTS.map(i => <option key={i} value={i}>{i}</option>)}
       </FormSelect>
-      <label className="field" style={{ flexDirection: 'row', alignItems: 'center', gap: '.5rem', display: 'flex' }}>
-        <input type="checkbox" name="newsletterOptIn" id="cf-newsletter" />
+      <label className="field" style={{ flexDirection: 'row', alignItems: 'flex-start', gap: '.5rem', display: 'flex' }}>
+        <input type="checkbox" name="newsletterOptIn" id="cf-newsletter" style={{ marginTop: 3 }} />
         <span>Add me to the Wissen-Haus Empowerment Foundation newsletter list</span>
       </label>
       {status === 'error' && <FormError error={error} />}

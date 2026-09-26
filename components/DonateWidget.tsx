@@ -139,7 +139,7 @@ export default function DonateWidget() {
       </div>
 
       {/* Pre-set amounts */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 10, marginBottom: 16 }}>
+      <div className="donate-amounts" style={{ gap: 10, marginBottom: 16 }}>
         {amounts.map(a => (
           <button
             key={a}
