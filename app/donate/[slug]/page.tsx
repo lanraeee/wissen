@@ -26,7 +26,20 @@ type Project = {
   what_funded: Array<{ item: string; amount: string }>
   impact_points: string[]
   faq: Array<{ q: string; a: string }>
+  stages: Array<{ n: string; title: string; desc: string }>
+  accountability: Array<{ title: string; desc: string }>
+  donation_equivalents: Array<{ amount: string; equiv: string }>
 }
+
+// Fixed dark-to-light green ramp for however many stages exist -- lets the
+// admin add/reorder/remove stages without also having to pick a colour.
+const STAGE_COLORS = ['#E0A83E', '#2C7A4B', '#1E5E3B', '#16452C', '#0F2D1D']
+
+const ACCOUNTABILITY_ICONS = [
+  <svg key="0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M22 12h-4l-3 9L9 3l-3 9H2" strokeLinecap="round" strokeLinejoin="round" /></svg>,
+  <svg key="1" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z" strokeLinecap="round" strokeLinejoin="round" /></svg>,
+  <svg key="2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><rect x="3" y="11" width="18" height="11" rx="2" /><path d="M7 11V7a5 5 0 0110 0v4" strokeLinecap="round" /></svg>,
+]
 
 async function getProject(slug: string): Promise<Project | null> {
   try {
@@ -220,6 +233,35 @@ export default async function DonationProjectPage({ params }: { params: Promise<
         </section>
       )}
 
+      {/* ── Stages ── */}
+      {p.stages?.length > 0 && (
+        <section className="section" style={{ background: 'var(--cream-2)' }}>
+          <div className="wrap">
+            <div className="section-head mb-l reveal">
+              <span className="eyebrow">How It Works</span>
+              <h2>How the campaign is designed.</h2>
+            </div>
+            <div className="rgrid-5" style={{ gap: 12 }}>
+              {p.stages.map((s, i) => (
+                <div
+                  key={i}
+                  className="reveal"
+                  data-d={String(i)}
+                  style={{
+                    background: STAGE_COLORS[i % STAGE_COLORS.length], borderRadius: 'var(--radius)', padding: '24px 20px',
+                    display: 'flex', flexDirection: 'column', gap: 12,
+                  }}
+                >
+                  <div style={{ fontFamily: 'var(--ff-mono)', fontSize: '.65rem', letterSpacing: '.2em', textTransform: 'uppercase', color: 'rgba(255,255,255,.5)' }}>Stage {s.n} of {p.stages.length}</div>
+                  <div style={{ fontFamily: 'var(--ff-display)', fontWeight: 900, fontSize: '1.3rem', color: '#fff', lineHeight: 1 }}>{s.title}</div>
+                  <p style={{ color: 'rgba(255,255,255,.72)', fontSize: '.82rem', lineHeight: 1.55 }}>{s.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* ── What funds cover ── */}
       {p.what_funded?.length > 0 && (
         <section className="section section--tight">
@@ -261,6 +303,18 @@ export default async function DonationProjectPage({ params }: { params: Promise<
               Give by card or direct bank transfer, in Naira, Dollars, Pounds or Euros. Card payments are processed securely by Stripe. Every gift counts.
             </p>
           </div>
+
+          {p.donation_equivalents?.length > 0 && (
+            <div className="rgrid-3" style={{ gap: 12, maxWidth: 680, margin: '0 auto 2.5rem', textAlign: 'center' }}>
+              {p.donation_equivalents.map((eq, i) => (
+                <div key={i} className="reveal" style={{ background: '#fff', border: '1px solid var(--line)', borderRadius: 'var(--radius)', padding: '16px 14px' }}>
+                  <div style={{ fontFamily: 'var(--ff-display)', fontWeight: 900, fontSize: '1.2rem', color: 'var(--green-800)', marginBottom: 6 }}>{eq.amount}</div>
+                  <div style={{ fontSize: '.78rem', color: 'var(--ink-60)', lineHeight: 1.4 }}>{eq.equiv}</div>
+                </div>
+              ))}
+            </div>
+          )}
+
           <div className="card reveal" style={{ padding: 'clamp(24px,4vw,48px)', maxWidth: 640, margin: '0 auto' }}>
             <DonateWidget />
           </div>
@@ -272,6 +326,27 @@ export default async function DonationProjectPage({ params }: { params: Promise<
           </div>
         </div>
       </section>
+
+      {/* ── Accountability ── */}
+      {p.accountability?.length > 0 && (
+        <section className="section panel-dark">
+          <div className="wrap">
+            <div className="section-head mb-l reveal">
+              <span className="eyebrow eyebrow--light">Accountability</span>
+              <h2>Your money, clearly traced.</h2>
+            </div>
+            <div className="grid grid-3">
+              {p.accountability.map((item, i) => (
+                <div key={i} className="feature reveal" data-d={i > 0 ? String(i) : undefined}>
+                  <div className="feature__ic">{ACCOUNTABILITY_ICONS[i % ACCOUNTABILITY_ICONS.length]}</div>
+                  <h3>{item.title}</h3>
+                  <p>{item.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* ── FAQ ── */}
       {p.faq?.length > 0 && (

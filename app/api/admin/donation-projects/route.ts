@@ -8,6 +8,9 @@ import { logActivity } from '@/lib/audit-log'
 const HighlightSchema = z.object({ label: z.string().max(200), value: z.string().max(200) })
 const FundedSchema = z.object({ item: z.string().max(200), amount: z.string().max(100) })
 const FaqSchema = z.object({ q: z.string().max(500), a: z.string().max(2000) })
+const StageSchema = z.object({ n: z.string().max(10), title: z.string().max(100), desc: z.string().max(1000) })
+const AccountabilityItemSchema = z.object({ title: z.string().max(150), desc: z.string().max(1000) })
+const EquivalentSchema = z.object({ amount: z.string().max(100), equiv: z.string().max(300) })
 
 const ProjectCreateSchema = z.object({
   slug: z.string().trim().min(1).max(200),
@@ -30,6 +33,9 @@ const ProjectCreateSchema = z.object({
   what_funded: z.array(FundedSchema).max(50).optional(),
   impact_points: z.array(z.string().max(500)).max(50).optional(),
   faq: z.array(FaqSchema).max(50).optional(),
+  stages: z.array(StageSchema).max(20).optional(),
+  accountability: z.array(AccountabilityItemSchema).max(20).optional(),
+  donation_equivalents: z.array(EquivalentSchema).max(20).optional(),
 })
 
 const ProjectUpdateSchema = ProjectCreateSchema.partial().extend({
@@ -73,11 +79,20 @@ async function ensureTable() {
       what_funded   JSONB NOT NULL DEFAULT '[]',
       impact_points JSONB NOT NULL DEFAULT '[]',
       faq           JSONB NOT NULL DEFAULT '[]',
+      stages               JSONB NOT NULL DEFAULT '[]',
+      accountability       JSONB NOT NULL DEFAULT '[]',
+      donation_equivalents JSONB NOT NULL DEFAULT '[]',
 
       created_at   TIMESTAMPTZ NOT NULL DEFAULT NOW(),
       updated_at   TIMESTAMPTZ NOT NULL DEFAULT NOW()
     )
   `
+  // CREATE TABLE IF NOT EXISTS is a no-op against an already-created table --
+  // these three columns were added after the table first existed in
+  // production, so an explicit ALTER is needed for that table to pick them up.
+  await sql`ALTER TABLE donation_projects ADD COLUMN IF NOT EXISTS stages JSONB NOT NULL DEFAULT '[]'`
+  await sql`ALTER TABLE donation_projects ADD COLUMN IF NOT EXISTS accountability JSONB NOT NULL DEFAULT '[]'`
+  await sql`ALTER TABLE donation_projects ADD COLUMN IF NOT EXISTS donation_equivalents JSONB NOT NULL DEFAULT '[]'`
 }
 
 export async function GET() {
@@ -100,6 +115,7 @@ export async function POST(req: NextRequest) {
     goal_ngn = 0, raised_ngn = 0, donor_count = 0,
     hero_desc = null, partnership_name = null, partnership_desc = null,
     highlights = [], what_funded = [], impact_points = [], faq = [],
+    stages = [], accountability = [], donation_equivalents = [],
   } = body
 
   const [row] = await sql`
@@ -107,13 +123,14 @@ export async function POST(req: NextRequest) {
       (slug, title, subtitle, status, event_name, event_date, event_location, event_time,
        campaign_start, campaign_end, goal_ngn, raised_ngn, donor_count,
        hero_desc, partnership_name, partnership_desc,
-       highlights, what_funded, impact_points, faq)
+       highlights, what_funded, impact_points, faq, stages, accountability, donation_equivalents)
     VALUES
       (${slug}, ${title}, ${subtitle}, ${status}, ${event_name}, ${event_date}, ${event_location}, ${event_time},
        ${campaign_start}, ${campaign_end}, ${goal_ngn}, ${raised_ngn}, ${donor_count},
        ${hero_desc}, ${partnership_name}, ${partnership_desc},
        ${JSON.stringify(highlights)}, ${JSON.stringify(what_funded)},
-       ${JSON.stringify(impact_points)}, ${JSON.stringify(faq)})
+       ${JSON.stringify(impact_points)}, ${JSON.stringify(faq)},
+       ${JSON.stringify(stages)}, ${JSON.stringify(accountability)}, ${JSON.stringify(donation_equivalents)})
     RETURNING *
   `
   logActivity(session, 'donation_project.create', { targetType: 'donation_project', targetId: String(row.id), details: { slug, title } })
@@ -127,7 +144,7 @@ export async function PUT(req: NextRequest) {
   if (error) return error
   const { id, ...fields } = body as Record<string, unknown>
 
-  const jsonFields = ['highlights', 'what_funded', 'impact_points', 'faq']
+  const jsonFields = ['highlights', 'what_funded', 'impact_points', 'faq', 'stages', 'accountability', 'donation_equivalents']
   for (const f of jsonFields) {
     if (fields[f] !== undefined) fields[f] = JSON.stringify(fields[f])
   }
@@ -154,6 +171,9 @@ export async function PUT(req: NextRequest) {
       what_funded      = COALESCE(${fields.what_funded ?? null}::jsonb, what_funded),
       impact_points    = COALESCE(${fields.impact_points ?? null}::jsonb, impact_points),
       faq              = COALESCE(${fields.faq ?? null}::jsonb, faq),
+      stages               = COALESCE(${fields.stages ?? null}::jsonb, stages),
+      accountability       = COALESCE(${fields.accountability ?? null}::jsonb, accountability),
+      donation_equivalents = COALESCE(${fields.donation_equivalents ?? null}::jsonb, donation_equivalents),
       updated_at       = NOW()
     WHERE id = ${id}
     RETURNING *

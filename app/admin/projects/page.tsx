@@ -24,6 +24,9 @@ interface Project {
   what_funded: Array<{ item: string; amount: string }>
   impact_points: string[]
   faq: Array<{ q: string; a: string }>
+  stages: Array<{ n: string; title: string; desc: string }>
+  accountability: Array<{ title: string; desc: string }>
+  donation_equivalents: Array<{ amount: string; equiv: string }>
   created_at: string
   updated_at: string
 }
@@ -43,6 +46,9 @@ const EMPTY_PROJECT: Omit<Project, 'id' | 'created_at' | 'updated_at'> = {
   what_funded: [{ item: '', amount: '' }],
   impact_points: [''],
   faq: [{ q: '', a: '' }],
+  stages: [],
+  accountability: [],
+  donation_equivalents: [],
 }
 
 const STATUS_COLORS: Record<string, string> = {
@@ -333,6 +339,45 @@ export default function AdminProjects() {
               </div>
             ))}
             {addBtn(() => setField('faq', [...(e.faq ?? []), { q: '', a: '' }]), '+ Add FAQ')}
+
+            {sectionHead('Campaign Stages (optional — e.g. Reach, Engage, Learn)')}
+            {(e.stages ?? []).map((st, i) => (
+              <div key={i} style={{ marginBottom: 12, background: '#f9f7f3', borderRadius: 8, padding: 12 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
+                  {label(`Stage ${i + 1}`)}
+                  {removeBtn(() => setField('stages', removeArrayItem(e.stages!, i)))}
+                </div>
+                <div className="rgrid-row-a" style={{ gap: 8, marginBottom: 6 }}>
+                  <input className="admin-input" placeholder="Number e.g. 1" value={st.n} onChange={ev => setField('stages', updateArrayItem(e.stages!, i, { n: ev.target.value }))} />
+                  <input className="admin-input" placeholder="Stage title e.g. Reach" value={st.title} onChange={ev => setField('stages', updateArrayItem(e.stages!, i, { title: ev.target.value }))} />
+                </div>
+                <textarea className="admin-textarea" style={{ height: 70 }} placeholder="What happens at this stage…" value={st.desc} onChange={ev => setField('stages', updateArrayItem(e.stages!, i, { desc: ev.target.value }))} />
+              </div>
+            ))}
+            {addBtn(() => setField('stages', [...(e.stages ?? []), { n: String((e.stages?.length ?? 0) + 1), title: '', desc: '' }]), '+ Add stage')}
+
+            {sectionHead('Accountability (optional — 3 short trust points)')}
+            {(e.accountability ?? []).map((item, i) => (
+              <div key={i} style={{ marginBottom: 12, background: '#f9f7f3', borderRadius: 8, padding: 12 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
+                  {label(`Point ${i + 1}`)}
+                  {removeBtn(() => setField('accountability', removeArrayItem(e.accountability!, i)))}
+                </div>
+                <input className="admin-input" style={{ marginBottom: 6 }} placeholder="Title e.g. Secure Payments" value={item.title} onChange={ev => setField('accountability', updateArrayItem(e.accountability!, i, { title: ev.target.value }))} />
+                <textarea className="admin-textarea" style={{ height: 70 }} placeholder="Explanation…" value={item.desc} onChange={ev => setField('accountability', updateArrayItem(e.accountability!, i, { desc: ev.target.value }))} />
+              </div>
+            ))}
+            {addBtn(() => setField('accountability', [...(e.accountability ?? []), { title: '', desc: '' }]), '+ Add point')}
+
+            {sectionHead('Illustrative Donation Equivalents (optional — shown above the donate form)')}
+            {(e.donation_equivalents ?? []).map((eq, i) => (
+              <div key={i} className="rgrid-row-a" style={{ gap: 8, marginBottom: 8, alignItems: 'center' }}>
+                <input className="admin-input" placeholder="₦15,000" value={eq.amount} onChange={ev => setField('donation_equivalents', updateArrayItem(e.donation_equivalents!, i, { amount: ev.target.value }))} />
+                <input className="admin-input" placeholder="What that amount buys" value={eq.equiv} onChange={ev => setField('donation_equivalents', updateArrayItem(e.donation_equivalents!, i, { equiv: ev.target.value }))} />
+                {removeBtn(() => setField('donation_equivalents', removeArrayItem(e.donation_equivalents!, i)))}
+              </div>
+            ))}
+            {addBtn(() => setField('donation_equivalents', [...(e.donation_equivalents ?? []), { amount: '', equiv: '' }]), '+ Add equivalent')}
 
             {err && <div style={{ marginTop: 16, color: '#dc2626', fontSize: '.88rem', background: '#fee2e2', padding: '8px 14px', borderRadius: 7 }}>{err}</div>}
 
