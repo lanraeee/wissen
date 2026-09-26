@@ -289,17 +289,36 @@ function RegistrationsPanel({ event, onClose }: { event: AdminEvent; onClose: ()
   useEffect(() => { load() }, [load])
 
   async function toggleCheckedIn(r: Registration) {
-    await fetch(`/api/admin/career-fair/registrations/${r.id}`, {
-      method: 'PATCH', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ checkedIn: !r.checked_in }),
-    })
-    await load()
+    const next = !r.checked_in
+    // Optimistic update: this checkbox is bound directly to server data, so
+    // without updating local state right away, React re-renders with the
+    // OLD value before the request resolves and the checkbox visibly snaps
+    // back -- invisible on a fast connection, but a real "reacts then
+    // reverts" glitch on slower mobile networks. Roll back on failure.
+    setRegs(prev => prev?.map(x => x.id === r.id ? { ...x, checked_in: next, checked_in_at: next ? new Date().toISOString() : null } : x) ?? prev)
+    try {
+      const res = await fetch(`/api/admin/career-fair/registrations/${r.id}`, {
+        method: 'PATCH', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ checkedIn: next }),
+      })
+      if (!res.ok) throw new Error('Failed')
+    } catch {
+      setRegs(prev => prev?.map(x => x.id === r.id ? { ...x, checked_in: r.checked_in, checked_in_at: r.checked_in_at } : x) ?? prev)
+      alert('Could not update check-in status. Please try again.')
+    }
   }
 
   async function handleDeleteReg(id: string) {
     if (!confirm('Remove this registration?')) return
-    await fetch(`/api/admin/career-fair/registrations/${id}`, { method: 'DELETE' })
-    await load()
+    const prevRegs = regs
+    setRegs(prev => prev?.filter(x => x.id !== id) ?? prev)
+    try {
+      const res = await fetch(`/api/admin/career-fair/registrations/${id}`, { method: 'DELETE' })
+      if (!res.ok) throw new Error('Failed')
+    } catch {
+      setRegs(prevRegs)
+      alert('Could not remove that registration. Please try again.')
+    }
   }
 
   async function handleSendReminders() {
