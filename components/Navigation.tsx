@@ -23,7 +23,7 @@ const NAV = [
   {
     key: 'programmes', label: 'Programmes', menu: [
       ['/programmes', 'All Programmes', 'The full overview'],
-      ['/career-clarity-trade-fair', 'Career Clarity Trade Fair', 'For all secondary school students'],
+      ['/career-clarity-trade-fair', 'Career Clarity Fair', 'For all secondary school students'],
       ['/opportunity-blueprint', 'Opportunity Blueprint', 'Our flagship podcast'],
       ['/impact-content', 'Impact Content', 'Social-impact storytelling'],
       ['/events', 'Events & Cafés', 'Networking, workshops & more'],
