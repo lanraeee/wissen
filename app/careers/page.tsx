@@ -1,6 +1,6 @@
 ﻿import type { Metadata } from 'next'
 import Link from 'next/link'
-import sql from '@/lib/db'
+import { getSiteContent } from '@/lib/site-content'
 
 export const metadata: Metadata = {
   title: 'Careers · Wissen-Haus',
@@ -25,16 +25,13 @@ const DEFAULT_INTERNSHIPS: Role[] = [
 ]
 
 async function getContent() {
-  try {
-    const rows = await sql`SELECT key, value FROM site_content WHERE key IN ('careers_roles', 'careers_internships')`
-    const map: Record<string, Role[]> = {}
-    for (const r of rows) map[r.key as string] = r.value as Role[]
-    return {
-      roles: map.careers_roles ?? DEFAULT_ROLES,
-      internships: map.careers_internships ?? DEFAULT_INTERNSHIPS,
-    }
-  } catch {
-    return { roles: DEFAULT_ROLES, internships: DEFAULT_INTERNSHIPS }
+  const [roles, internships] = await Promise.all([
+    getSiteContent<Role[]>('careers_roles'),
+    getSiteContent<Role[]>('careers_internships'),
+  ])
+  return {
+    roles: roles ?? DEFAULT_ROLES,
+    internships: internships ?? DEFAULT_INTERNSHIPS,
   }
 }
 

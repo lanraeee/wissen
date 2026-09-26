@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import Image from 'next/image'
-import sql from '@/lib/db'
+import { getSiteContent } from '@/lib/site-content'
 
 export const metadata: Metadata = {
   title: 'Meet the Founder · Wissen-Haus',
@@ -31,11 +31,8 @@ const DEFAULT: FounderContent = {
 }
 
 async function getFounder(): Promise<FounderContent> {
-  try {
-    const rows = await sql`SELECT value FROM site_content WHERE key = 'founder_bio'`
-    if (rows[0]?.value) return { ...DEFAULT, ...(rows[0].value as Partial<FounderContent>) }
-  } catch {}
-  return DEFAULT
+  const value = await getSiteContent<Partial<FounderContent>>('founder_bio')
+  return value ? { ...DEFAULT, ...value } : DEFAULT
 }
 
 export default async function FounderPage() {
