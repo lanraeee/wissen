@@ -140,3 +140,46 @@ CREATE TABLE IF NOT EXISTS admin_activity_log (
 );
 CREATE INDEX IF NOT EXISTS idx_activity_actor      ON admin_activity_log(actor_id, created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_activity_created_at ON admin_activity_log(created_at DESC);
+
+-- Career Clarity Fair: multiple concurrent events (different schools/dates),
+-- each with its own registration list and set of booths. Booths are a JSONB
+-- array rather than a child table -- a handful of entries per event, always
+-- read/written as a whole with the event, never queried independently.
+CREATE TABLE IF NOT EXISTS fair_events (
+  id          SERIAL PRIMARY KEY,
+  slug        TEXT UNIQUE NOT NULL,
+  title       TEXT NOT NULL,
+  school      TEXT,
+  location    TEXT,
+  event_date  DATE,
+  event_time  TEXT,
+  status      TEXT NOT NULL DEFAULT 'draft' CHECK (status IN ('draft','published','closed')),
+  description TEXT,
+  booths      JSONB NOT NULL DEFAULT '[]',
+  created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+CREATE INDEX IF NOT EXISTS idx_fair_events_status ON fair_events(status, event_date);
+
+CREATE TABLE IF NOT EXISTS fair_registrations (
+  id                   UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  event_id             INTEGER NOT NULL REFERENCES fair_events(id) ON DELETE CASCADE,
+  name                 TEXT NOT NULL,
+  email                TEXT,
+  phone                TEXT,
+  school               TEXT NOT NULL,
+  class_grade          TEXT,
+  career_interest      TEXT,
+  -- Best-effort snapshot of the visitor's existing Career Assessment result,
+  -- read from browser localStorage at registration time (the assessment has
+  -- no server-side/account-linked storage today -- see docs/adr/008). Null
+  -- whenever they registered on a different device or never took it.
+  assessment_snapshot  JSONB,
+  newsletter_opt_in    BOOLEAN NOT NULL DEFAULT false,
+  checked_in           BOOLEAN NOT NULL DEFAULT false,
+  checked_in_at        TIMESTAMPTZ,
+  checkin_token        TEXT UNIQUE NOT NULL,
+  created_at           TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+CREATE INDEX IF NOT EXISTS idx_fair_reg_event    ON fair_registrations(event_id, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_fair_reg_token    ON fair_registrations(checkin_token);
