@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { Analytics } from '@vercel/analytics/next'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 import './globals.css'
 import SiteShell from '@/components/SiteShell'
@@ -60,6 +61,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <AnalyticsTracker />
         <SiteShell footer={<Footer />}>{children}</SiteShell>
         <SpeedInsights />
+        <Analytics />
       </body>
     </html>
   )
