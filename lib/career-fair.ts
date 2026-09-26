@@ -1,52 +1,16 @@
-// Shared types and logic for the Career Clarity Fair registration + booth
+// Server-only logic for the Career Clarity Fair registration + booth
 // recommendation feature. See docs/adr/008-career-fair-assessment-link.md
 // for why assessment linkage is a best-effort localStorage snapshot rather
 // than a real account-linked lookup.
+//
+// Client-safe types/constants live in lib/career-fair-shared.ts (this file
+// imports 'crypto', which can't go into a browser bundle) and are re-exported
+// below so existing server-side imports don't need to change.
 
 import { randomBytes } from 'crypto'
+import type { CareerInterest, Booth, AssessmentSnapshot } from './career-fair-shared'
 
-export interface Booth {
-  id: string
-  name: string
-  category: string
-  location?: string
-  description?: string
-}
-
-export interface FairEvent {
-  id: number
-  slug: string
-  title: string
-  school: string | null
-  location: string | null
-  event_date: string | null
-  event_time: string | null
-  status: 'draft' | 'published' | 'closed'
-  description: string | null
-  booths: Booth[]
-  created_at: string
-  updated_at: string
-}
-
-// Registration-form dropdown + the category each booth is tagged with.
-// Kept deliberately short (a fair has dozens of booths, not hundreds of
-// categories) so both the form and admin booth editor stay usable.
-export const CAREER_INTERESTS = [
-  'Technology',
-  'Healthcare & Medicine',
-  'Business & Finance',
-  'Creative Arts & Media',
-  'Engineering',
-  'Law, Policy & Social Impact',
-  'Education',
-  'Skilled Trades',
-  'Science & Research',
-  'Other',
-] as const
-
-export type CareerInterest = typeof CAREER_INTERESTS[number]
-
-export const CLASS_GRADES = ['JS1', 'JS2', 'JS3', 'SS1', 'SS2', 'SS3'] as const
+export * from './career-fair-shared'
 
 // The 12 keys/titles from the Career Assessment Accelerator (app/career-assessment),
 // which stores its results client-side only (localStorage key
@@ -65,12 +29,6 @@ const ASSESSMENT_KEY_TO_INTEREST: Record<string, CareerInterest> = {
   fp: 'Business & Finance',
   cc: 'Creative Arts & Media',
   pa: 'Law, Policy & Social Impact',
-}
-
-export interface AssessmentSnapshot {
-  key: string
-  score: number
-  reasons?: string[]
 }
 
 /** Best-effort: turns a stored top assessment result into a booth category. */

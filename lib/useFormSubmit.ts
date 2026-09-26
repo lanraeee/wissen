@@ -13,6 +13,8 @@ interface UseFormSubmitOptions<T> {
   event?: string
   /** Extra PostHog event properties, derived from the same FormData. */
   eventProperties?: (fd: FormData) => Record<string, unknown>
+  /** Called with the parsed JSON response body when the request succeeds. */
+  onSuccess?: (data: unknown) => void
 }
 
 /**
@@ -21,7 +23,7 @@ interface UseFormSubmitOptions<T> {
  * volunteer, ...). Each form still owns its own fields and success copy --
  * this only factors out the submit plumbing.
  */
-export function useFormSubmit<T>({ endpoint, buildPayload, event, eventProperties }: UseFormSubmitOptions<T>) {
+export function useFormSubmit<T>({ endpoint, buildPayload, event, eventProperties, onSuccess }: UseFormSubmitOptions<T>) {
   const [status, setStatus] = useState<FormStatus>('idle')
   const [error, setError] = useState('')
 
@@ -36,11 +38,10 @@ export function useFormSubmit<T>({ endpoint, buildPayload, event, eventPropertie
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(buildPayload(fd)),
       })
-      if (!res.ok) {
-        const d = await res.json().catch(() => ({}))
-        throw new Error(d.error || 'Something went wrong')
-      }
+      const d = await res.json().catch(() => ({}))
+      if (!res.ok) throw new Error(d.error || 'Something went wrong')
       if (event) posthog.capture(event, eventProperties?.(fd))
+      onSuccess?.(d)
       setStatus('done')
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Something went wrong')

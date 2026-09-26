@@ -31,6 +31,9 @@ export function CoursesIcon({ size = 20 }: IconProps) {
 export function ProjectsIcon({ size = 20 }: IconProps) {
   return <svg {...base(size)}><path d="M12 21s-7-4.5-9.5-9A5.5 5.5 0 0 1 12 6a5.5 5.5 0 0 1 9.5 6c-2.5 4.5-9.5 9-9.5 9z" /></svg>
 }
+export function CareerFairIcon({ size = 20 }: IconProps) {
+  return <svg {...base(size)}><rect x="3" y="4" width="18" height="17" rx="2" /><path d="M3 9h18" /><path d="M8 2v4M16 2v4" /><path d="M8 13.5l2 2 4-4.5" /></svg>
+}
 export function TestimonialsIcon({ size = 20 }: IconProps) {
   return <svg {...base(size)}><path d="M7 15h2l1.5-3V7H5v5h2.5zM15 15h2l1.5-3V7H13v5h2.5z" /></svg>
 }
@@ -58,6 +61,7 @@ export const NAV_ICONS: Record<string, (props: IconProps) => React.ReactElement>
   '/admin/opportunities': OpportunitiesIcon,
   '/admin/courses': CoursesIcon,
   '/admin/projects': ProjectsIcon,
+  '/admin/career-fair': CareerFairIcon,
   '/admin/testimonials': TestimonialsIcon,
   '/admin/content': ContentIcon,
   '/admin/settings': SettingsIcon,

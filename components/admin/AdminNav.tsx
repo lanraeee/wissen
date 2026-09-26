@@ -11,6 +11,7 @@ export const NAV = [
   ['Opportunities', '/admin/opportunities'],
   ['Courses & Certs', '/admin/courses'],
   ['Donation Projects', '/admin/projects'],
+  ['Career Fair', '/admin/career-fair'],
   ['Testimonials', '/admin/testimonials'],
   ['Content', '/admin/content'],
   ['Settings', '/admin/settings'],
