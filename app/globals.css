@@ -203,6 +203,14 @@ strong{font-weight:600}
 .hero-badge .t{font-size:.72rem;line-height:1.25;color:var(--ink-60);max-width:12ch}
 .hero-badge--tl{top:6%;left:-4%;transform:rotate(-3deg)}
 .hero-badge--br{bottom:8%;right:-5%;transform:rotate(2deg)}
+
+/* ---- Hero slider ---- */
+@keyframes heroSlideIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.hero-slide-in{animation:heroSlideIn .7s var(--ease) both}
+.hero-dots{display:flex;gap:9px;margin-top:1.75rem}
+.hero-dot{width:9px;height:9px;border-radius:50%;background:rgba(15,45,29,.18);border:none;cursor:pointer;padding:0;transition:background .3s,transform .3s}
+.hero-dot:hover{background:rgba(15,45,29,.35)}
+.hero-dot.active{background:var(--red);transform:scale(1.35)}
 .blob{position:absolute;border-radius:50%;filter:blur(60px);opacity:.5;z-index:0}
 .blob--green{width:420px;height:420px;background:var(--green-100);top:-120px;right:-80px}
 .blob--red{width:300px;height:300px;background:var(--red-50);bottom:-100px;left:-80px}

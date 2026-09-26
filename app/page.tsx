@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import Image from 'next/image'
 import TestimonialCarousel from '@/components/TestimonialCarousel'
+import HeroSlider, { type HeroContent } from '@/components/HeroSlider'
 import { getSiteContent } from '@/lib/site-content'
 
 export const metadata: Metadata = {
@@ -26,15 +27,6 @@ const ARROW = (
   </svg>
 )
 
-interface HeroContent {
-  eyebrow: string
-  headlineLine1: string
-  headlineLine2: string
-  lead: string
-  ctaText: string
-  ctaHref: string
-}
-
 interface StatItem {
   count: string
   suffix: string
@@ -58,54 +50,27 @@ const DEFAULT_STATS: StatItem[] = [
 ]
 
 export default async function HomePage() {
-  const [settings, heroContent, statsContent] = await Promise.all([
+  const [settings, heroSlidesContent, legacyHeroContent, statsContent] = await Promise.all([
     getSiteContent<{ tagline?: string }>('site_settings'),
+    getSiteContent<Partial<HeroContent>[]>('homepage_hero_slides'),
     getSiteContent<Partial<HeroContent>>('homepage_hero'),
     getSiteContent<StatItem[]>('homepage_stats'),
   ])
 
   const tagline = settings?.tagline || 'Every young African and diaspora changemaker deserves the tools to thrive.'
-  const hero: HeroContent = heroContent ? { ...DEFAULT_HERO, ...heroContent } : DEFAULT_HERO
+  // homepage_hero_slides is the current multi-slide store; homepage_hero is
+  // the pre-slider single-hero key, read as a fallback until the admin saves
+  // at least once through the new editor.
+  const heroSlides: HeroContent[] =
+    Array.isArray(heroSlidesContent) && heroSlidesContent.length > 0
+      ? heroSlidesContent.map(h => ({ ...DEFAULT_HERO, ...h }))
+      : [legacyHeroContent ? { ...DEFAULT_HERO, ...legacyHeroContent } : DEFAULT_HERO]
   const stats: StatItem[] = Array.isArray(statsContent) && statsContent.length === 4 ? statsContent : DEFAULT_STATS
 
   return (
     <>
       {/* HERO */}
-      <section className="hero">
-        <span className="blob blob--green" />
-        <span className="blob blob--red" />
-        <div className="wrap wrap-wide">
-          <div className="hero-grid">
-            <div className="hero-copy">
-              <span className="eyebrow reveal">{hero.eyebrow}</span>
-              <h1 className="display-xl mt-s reveal-words">{hero.headlineLine1}<br />{hero.headlineLine2}</h1>
-              <p className="lead mt-s reveal" data-d="1">
-                {hero.lead}
-              </p>
-              <div className="hero-cta reveal" data-d="2">
-                <Link href={hero.ctaHref} className="btn btn--lg mag">
-                  {hero.ctaText} {ARROW}
-                </Link>
-              </div>
-            </div>
-            <div className="hero-media reveal--scale tilt" data-d="2">
-              <span className="hero-ring hero-ring--1" />
-              <span className="hero-ring hero-ring--2" />
-              <div className="frame tilt-inner shine">
-                <Image src="/img/hero-students.jpg" alt="Nigerian secondary school students smiling in class" fill style={{ objectFit: 'cover' }} />
-              </div>
-              <div className="hero-badge hero-badge--tl">
-                <span className="n" data-count={stats[0].count} data-suffix={stats[0].suffix}>{stats[0].count}{stats[0].suffix}</span>
-                <span className="t">{stats[0].label.toLowerCase()}</span>
-              </div>
-              <div className="hero-badge hero-badge--br">
-                <span className="n" data-count={stats[2].count} data-suffix={stats[2].suffix}>{stats[2].count}{stats[2].suffix}</span>
-                <span className="t">{stats[2].label.toLowerCase()}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      <HeroSlider slides={heroSlides} stats={stats} />
 
       {/* TICKER */}
       <div className="ticker" aria-hidden="true">

@@ -32,7 +32,7 @@ export default function BootcampPage() {
       <div className="pattern-edge" aria-hidden="true" />
 
       {/* Donation drive — prominent, high-contrast callout so it can't be missed */}
-      <section className="section section--tight" style={{ paddingTop: 0 }}>
+      <section className="section section--tight" style={{ paddingBlock: 0, marginBottom: 'clamp(32px,5vw,56px)' }}>
         <div className="wrap">
           <Link
             href="/donate/series-1"
