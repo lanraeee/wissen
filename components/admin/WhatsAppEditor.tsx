@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { resizeImageToDataUrl } from '@/lib/resizeImageClient'
 
 interface WAPost {
   text: string
@@ -33,6 +34,7 @@ export default function WhatsAppEditor() {
   const [loaded, setLoaded] = useState(false)
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
+  const [error, setError] = useState('')
   const [editing, setEditing] = useState<number | null>(null)
   const [draft, setDraft] = useState<WAPost>(BLANK_POST)
 
@@ -44,13 +46,30 @@ export default function WhatsAppEditor() {
   }, [])
 
   async function save() {
-    setSaving(true)
-    await fetch('/api/admin/content/whatsapp_channel', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ value: data }),
-    })
-    setSaving(false); setSaved(true); setTimeout(() => setSaved(false), 2500)
+    setSaving(true); setError('')
+    try {
+      const res = await fetch('/api/admin/content/whatsapp_channel', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ value: data }),
+      })
+      if (!res.ok) {
+        const d = await res.json().catch(() => ({}))
+        throw new Error(d?.error || 'Save failed — your changes have not been stored. Post images may be too large in total.')
+      }
+      setSaved(true); setTimeout(() => setSaved(false), 2500)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Save failed.')
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  function handleImageUpload(file: File) {
+    resizeImageToDataUrl(file).then(
+      dataUrl => setDraft(d => ({ ...d, image: dataUrl })),
+      err => setError(err instanceof Error ? err.message : 'Could not process the image.')
+    )
   }
 
   function commitPost() {
@@ -72,6 +91,7 @@ export default function WhatsAppEditor() {
           <button onClick={save} disabled={saving} style={{ padding: '7px 16px', borderRadius: 7, fontSize: '.82rem', fontWeight: 600, background: '#25D366', color: '#fff', border: 'none', cursor: 'pointer' }}>{saving ? 'Saving…' : 'Save Changes'}</button>
         </div>
       </div>
+      {error && <div style={{ marginBottom: 16, color: '#dc2626', fontSize: '.85rem', background: '#fee2e2', padding: '8px 14px', borderRadius: 7 }}>{error}</div>}
 
       {/* Channel settings */}
       <div style={{ background: '#f9f7f3', borderRadius: 8, padding: '16px', marginBottom: 24 }}>
@@ -122,10 +142,7 @@ export default function WhatsAppEditor() {
                     <label style={{ ...s('#e8e4dc', '#3a4a3f'), cursor: 'pointer' }}>
                       {draft.image ? 'Change' : 'Upload'}
                       <input type="file" accept="image/*" style={{ display: 'none' }} onChange={e => {
-                        const file = e.target.files?.[0]; if (!file) return
-                        const reader = new FileReader()
-                        reader.onload = () => setDraft(d => ({ ...d, image: reader.result as string }))
-                        reader.readAsDataURL(file)
+                        const file = e.target.files?.[0]; if (file) handleImageUpload(file)
                       }} />
                     </label>
                     {draft.image && <button style={s('#dc2626')} onClick={() => setDraft(d => ({ ...d, image: undefined }))}>✕</button>}
@@ -164,10 +181,7 @@ export default function WhatsAppEditor() {
                       <label style={{ ...s('#e8e4dc', '#3a4a3f'), cursor: 'pointer' }}>
                         {draft.image ? 'Change' : 'Upload'}
                         <input type="file" accept="image/*" style={{ display: 'none' }} onChange={e => {
-                          const file = e.target.files?.[0]; if (!file) return
-                          const reader = new FileReader()
-                          reader.onload = () => setDraft(d => ({ ...d, image: reader.result as string }))
-                          reader.readAsDataURL(file)
+                          const file = e.target.files?.[0]; if (file) handleImageUpload(file)
                         }} />
                       </label>
                       {draft.image && <button style={s('#dc2626')} onClick={() => setDraft(d => ({ ...d, image: undefined }))}>✕</button>}

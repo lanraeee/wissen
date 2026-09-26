@@ -111,6 +111,7 @@ export default function CareersEditor() {
   const [loaded, setLoaded] = useState(false)
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
+  const [error, setError] = useState('')
 
   useEffect(() => {
     Promise.all([
@@ -124,14 +125,23 @@ export default function CareersEditor() {
   }, [])
 
   async function save() {
-    setSaving(true)
-    await Promise.all([
-      fetch('/api/admin/content/careers_roles', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ value: roles }) }),
-      fetch('/api/admin/content/careers_internships', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ value: internships }) }),
-    ])
-    setSaving(false)
-    setSaved(true)
-    setTimeout(() => setSaved(false), 2500)
+    setSaving(true); setError('')
+    try {
+      const [rolesRes, internsRes] = await Promise.all([
+        fetch('/api/admin/content/careers_roles', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ value: roles }) }),
+        fetch('/api/admin/content/careers_internships', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ value: internships }) }),
+      ])
+      if (!rolesRes.ok || !internsRes.ok) {
+        const failed = !rolesRes.ok ? await rolesRes.json().catch(() => ({})) : await internsRes.json().catch(() => ({}))
+        throw new Error(failed?.error || 'Save failed — your changes have not been stored.')
+      }
+      setSaved(true)
+      setTimeout(() => setSaved(false), 2500)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Save failed.')
+    } finally {
+      setSaving(false)
+    }
   }
 
   if (!loaded) return <div style={{ padding: 24, color: '#8a9a8f' }}>Loading…</div>
@@ -145,6 +155,7 @@ export default function CareersEditor() {
           <button style={s('#1a3c2e')} onClick={save} disabled={saving}>{saving ? 'Saving…' : 'Save All Changes'}</button>
         </div>
       </div>
+      {error && <div style={{ marginBottom: 16, color: '#dc2626', fontSize: '.85rem', background: '#fee2e2', padding: '8px 14px', borderRadius: 7 }}>{error}</div>}
 
       <h3 style={{ fontSize: '.8rem', letterSpacing: '.1em', textTransform: 'uppercase', color: '#8a9a8f', margin: '0 0 12px' }}>Freelance &amp; Volunteer Roles</h3>
       <RoleList roles={roles} onChange={setRoles} />

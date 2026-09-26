@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { resizeImageToDataUrl } from '@/lib/resizeImageClient'
 
 interface Partner {
   name: string
@@ -23,6 +24,7 @@ export default function PartnersEditor() {
   const [loaded, setLoaded] = useState(false)
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
+  const [error, setError] = useState('')
   const [editing, setEditing] = useState<number | null>(null)
   const [draft, setDraft] = useState<Partner>(BLANK)
 
@@ -34,15 +36,24 @@ export default function PartnersEditor() {
   }, [])
 
   async function save() {
-    setSaving(true)
-    await fetch('/api/admin/content/partners', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ value: partners }),
-    })
-    setSaving(false)
-    setSaved(true)
-    setTimeout(() => setSaved(false), 2500)
+    setSaving(true); setError('')
+    try {
+      const res = await fetch('/api/admin/content/partners', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ value: partners }),
+      })
+      if (!res.ok) {
+        const d = await res.json().catch(() => ({}))
+        throw new Error(d?.error || 'Save failed — your changes have not been stored. A logo may be too large.')
+      }
+      setSaved(true)
+      setTimeout(() => setSaved(false), 2500)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Save failed.')
+    } finally {
+      setSaving(false)
+    }
   }
 
   function startEdit(i: number) { setEditing(i); setDraft(partners[i]) }
@@ -63,9 +74,10 @@ export default function PartnersEditor() {
   function uploadTo(field: 'logo' | 'logoInverted') {
     return (e: React.ChangeEvent<HTMLInputElement>) => {
       const file = e.target.files?.[0]; if (!file) return
-      const reader = new FileReader()
-      reader.onload = () => setDraft(d => ({ ...d, [field]: reader.result as string }))
-      reader.readAsDataURL(file)
+      resizeImageToDataUrl(file, 400, 'image/png').then(
+        dataUrl => setDraft(d => ({ ...d, [field]: dataUrl })),
+        err => setError(err instanceof Error ? err.message : 'Could not process the image.')
+      )
     }
   }
 
@@ -131,6 +143,7 @@ export default function PartnersEditor() {
           <button style={s('#1a3c2e')} onClick={save} disabled={saving}>{saving ? 'Saving…' : 'Save Changes'}</button>
         </div>
       </div>
+      {error && <div style={{ marginBottom: 16, color: '#dc2626', fontSize: '.85rem', background: '#fee2e2', padding: '8px 14px', borderRadius: 7 }}>{error}</div>}
 
       <p style={{ margin: '0 0 16px', fontSize: '.85rem', color: '#8a9a8f' }}>
         Manage organizations shown in the &quot;Our Partners&quot; carousel on the /partner page.

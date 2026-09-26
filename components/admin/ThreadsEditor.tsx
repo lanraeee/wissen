@@ -23,6 +23,7 @@ export default function ThreadsEditor() {
   const [loaded, setLoaded] = useState(false)
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
+  const [error, setError] = useState('')
   const [editing, setEditing] = useState<number | null>(null)
   const [draft, setDraft] = useState<Thread>(BLANK)
 
@@ -34,13 +35,23 @@ export default function ThreadsEditor() {
   }, [])
 
   async function save() {
-    setSaving(true)
-    await fetch('/api/admin/content/community_threads', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ value: threads }),
-    })
-    setSaving(false); setSaved(true); setTimeout(() => setSaved(false), 2500)
+    setSaving(true); setError('')
+    try {
+      const res = await fetch('/api/admin/content/community_threads', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ value: threads }),
+      })
+      if (!res.ok) {
+        const d = await res.json().catch(() => ({}))
+        throw new Error(d?.error || 'Save failed — your changes have not been stored.')
+      }
+      setSaved(true); setTimeout(() => setSaved(false), 2500)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Save failed.')
+    } finally {
+      setSaving(false)
+    }
   }
 
   function commit() {
@@ -61,6 +72,7 @@ export default function ThreadsEditor() {
           <button onClick={save} disabled={saving} style={{ padding: '7px 16px', borderRadius: 7, fontSize: '.82rem', fontWeight: 600, background: '#1a3c2e', color: '#fff', border: 'none', cursor: 'pointer' }}>{saving ? 'Saving…' : 'Save Changes'}</button>
         </div>
       </div>
+      {error && <div style={{ marginBottom: 16, color: '#dc2626', fontSize: '.85rem', background: '#fee2e2', padding: '8px 14px', borderRadius: 7 }}>{error}</div>}
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
         {threads.map((t, i) => (

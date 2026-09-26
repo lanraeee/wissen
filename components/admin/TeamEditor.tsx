@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import type { TeamMember } from '@/app/team/page'
+import { resizeImageToDataUrl } from '@/lib/resizeImageClient'
 
 const GROUP_OPTIONS: { value: TeamMember['group']; label: string }[] = [
   { value: 'leadership', label: 'Leadership' },
@@ -26,6 +27,7 @@ export default function TeamEditor() {
   const [loaded, setLoaded] = useState(false)
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
+  const [error, setError] = useState('')
   const [editing, setEditing] = useState<number | null>(null)
   const [draft, setDraft] = useState<TeamMember>(BLANK)
 
@@ -41,22 +43,30 @@ export default function TeamEditor() {
   }, [])
 
   async function save() {
-    setSaving(true)
-    await Promise.all([
-      fetch('/api/admin/content/team_members', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ value: members }),
-      }),
-      fetch('/api/admin/content/team_section_order', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ value: sectionOrder }),
-      }),
-    ])
-    setSaving(false)
-    setSaved(true)
-    setTimeout(() => setSaved(false), 2500)
+    setSaving(true); setError('')
+    try {
+      const [membersRes, orderRes] = await Promise.all([
+        fetch('/api/admin/content/team_members', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ value: members }),
+        }),
+        fetch('/api/admin/content/team_section_order', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ value: sectionOrder }),
+        }),
+      ])
+      if (!membersRes.ok || !orderRes.ok) {
+        const failed = !membersRes.ok ? await membersRes.json().catch(() => ({})) : await orderRes.json().catch(() => ({}))
+        throw new Error(failed?.error || 'Save failed — your changes have not been stored. A member photo may be too large.')
+      }
+      setSaved(true); setTimeout(() => setSaved(false), 2500)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Save failed.')
+    } finally {
+      setSaving(false)
+    }
   }
 
   function moveSectionOrder(i: number, dir: -1 | 1) {
@@ -97,6 +107,7 @@ export default function TeamEditor() {
           <button style={s('#1a3c2e')} onClick={save} disabled={saving}>{saving ? 'Saving…' : 'Save Changes'}</button>
         </div>
       </div>
+      {error && <div style={{ marginBottom: 16, color: '#dc2626', fontSize: '.85rem', background: '#fee2e2', padding: '8px 14px', borderRadius: 7 }}>{error}</div>}
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
         {members.map((m, i) => (
@@ -132,9 +143,10 @@ export default function TeamEditor() {
                         {draft.photo ? 'Change' : 'Upload'}
                         <input type="file" accept="image/*" style={{ display: 'none' }} onChange={e => {
                           const file = e.target.files?.[0]; if (!file) return
-                          const reader = new FileReader()
-                          reader.onload = () => setDraft(d => ({ ...d, photo: reader.result as string }))
-                          reader.readAsDataURL(file)
+                          resizeImageToDataUrl(file).then(
+                            dataUrl => setDraft(d => ({ ...d, photo: dataUrl })),
+                            err => setError(err instanceof Error ? err.message : 'Could not process the image.')
+                          )
                         }} />
                       </label>
                       {draft.photo && <button style={s('#dc2626')} onClick={() => setDraft(d => ({ ...d, photo: undefined }))}>✕</button>}
@@ -207,9 +219,10 @@ export default function TeamEditor() {
                     {draft.photo ? 'Change' : 'Upload'}
                     <input type="file" accept="image/*" style={{ display: 'none' }} onChange={e => {
                       const file = e.target.files?.[0]; if (!file) return
-                      const reader = new FileReader()
-                      reader.onload = () => setDraft(d => ({ ...d, photo: reader.result as string }))
-                      reader.readAsDataURL(file)
+                      resizeImageToDataUrl(file).then(
+                        dataUrl => setDraft(d => ({ ...d, photo: dataUrl })),
+                        err => setError(err instanceof Error ? err.message : 'Could not process the image.')
+                      )
                     }} />
                   </label>
                   {draft.photo && <button style={s('#dc2626')} onClick={() => setDraft(d => ({ ...d, photo: undefined }))}>✕</button>}

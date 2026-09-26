@@ -112,6 +112,7 @@ export default function DonationCertEditor() {
   const [loaded, setLoaded] = useState(false)
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
+  const [error, setError] = useState('')
   const [showForm, setShowForm] = useState(false)
   const [draft, setDraft] = useState<DraftCert>(BLANK)
   const [newCertId, setNewCertId] = useState<string | null>(null)
@@ -128,19 +129,28 @@ export default function DonationCertEditor() {
     const cert_id = genId()
     const newCert: DonationCert = { ...draft, cert_id, issued_at: toIso(draft.issued_at) }
     const updated = [newCert, ...certs]
-    setSaving(true)
-    await fetch('/api/admin/content/donation_certificates', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ value: updated }),
-    })
-    setCerts(updated)
-    setSaving(false)
-    setSaved(true)
-    setNewCertId(cert_id)
-    setShowForm(false)
-    setDraft(BLANK)
-    setTimeout(() => setSaved(false), 5000)
+    setSaving(true); setError('')
+    try {
+      const res = await fetch('/api/admin/content/donation_certificates', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ value: updated }),
+      })
+      if (!res.ok) {
+        const d = await res.json().catch(() => ({}))
+        throw new Error(d?.error || 'Could not issue the certificate — nothing was saved.')
+      }
+      setCerts(updated)
+      setSaved(true)
+      setNewCertId(cert_id)
+      setShowForm(false)
+      setDraft(BLANK)
+      setTimeout(() => setSaved(false), 5000)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Save failed.')
+    } finally {
+      setSaving(false)
+    }
   }
 
   function startEdit(cert: DonationCert) {
@@ -154,26 +164,44 @@ export default function DonationCertEditor() {
     const updated = certs.map(c =>
       c.cert_id === editId ? { ...editDraft, cert_id: editId, issued_at: toIso(editDraft.issued_at) } : c
     )
-    setSaving(true)
-    await fetch('/api/admin/content/donation_certificates', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ value: updated }),
-    })
-    setCerts(updated)
-    setSaving(false)
-    setEditId(null)
+    setSaving(true); setError('')
+    try {
+      const res = await fetch('/api/admin/content/donation_certificates', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ value: updated }),
+      })
+      if (!res.ok) {
+        const d = await res.json().catch(() => ({}))
+        throw new Error(d?.error || 'Could not save — your changes have not been stored.')
+      }
+      setCerts(updated)
+      setEditId(null)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Save failed.')
+    } finally {
+      setSaving(false)
+    }
   }
 
   async function revoke(certId: string) {
     if (!confirm(`Revoke certificate ${certId}? This removes it from the public record.`)) return
     const updated = certs.filter(c => c.cert_id !== certId)
-    await fetch('/api/admin/content/donation_certificates', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ value: updated }),
-    })
-    setCerts(updated)
+    setError('')
+    try {
+      const res = await fetch('/api/admin/content/donation_certificates', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ value: updated }),
+      })
+      if (!res.ok) {
+        const d = await res.json().catch(() => ({}))
+        throw new Error(d?.error || 'Could not revoke the certificate.')
+      }
+      setCerts(updated)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Revoke failed.')
+    }
   }
 
   const CURRENCY_SYM: Record<string, string> = { NGN: '₦', USD: '$', GBP: ' £', EUR: '€' }
@@ -199,6 +227,7 @@ export default function DonationCertEditor() {
           )}
         </div>
       </div>
+      {error && <div style={{ marginBottom: 16, color: '#dc2626', fontSize: '.85rem', background: '#fee2e2', padding: '8px 14px', borderRadius: 7 }}>{error}</div>}
 
       {/* Issue form */}
       {showForm && (

@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { resizeImageToDataUrl } from '@/lib/resizeImageClient'
 
 interface FounderContent {
   name: string
@@ -32,6 +33,7 @@ export default function FounderEditor() {
   const [loaded, setLoaded] = useState(false)
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
+  const [error, setError] = useState('')
 
   useEffect(() => {
     fetch('/api/admin/content/founder_bio').then(r => r.json()).then(res => {
@@ -41,13 +43,23 @@ export default function FounderEditor() {
   }, [])
 
   async function save() {
-    setSaving(true)
-    await fetch('/api/admin/content/founder_bio', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ value: data }),
-    })
-    setSaving(false); setSaved(true); setTimeout(() => setSaved(false), 2500)
+    setSaving(true); setError('')
+    try {
+      const res = await fetch('/api/admin/content/founder_bio', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ value: data }),
+      })
+      if (!res.ok) {
+        const d = await res.json().catch(() => ({}))
+        throw new Error(d?.error || 'Save failed — your changes have not been stored. The photo may be too large.')
+      }
+      setSaved(true); setTimeout(() => setSaved(false), 2500)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Save failed.')
+    } finally {
+      setSaving(false)
+    }
   }
 
   function updatePara(i: number, val: string) {
@@ -72,6 +84,7 @@ export default function FounderEditor() {
           <button onClick={save} disabled={saving} style={{ padding: '7px 16px', borderRadius: 7, fontSize: '.82rem', fontWeight: 600, background: '#1a3c2e', color: '#fff', border: 'none', cursor: 'pointer' }}>{saving ? 'Saving…' : 'Save Changes'}</button>
         </div>
       </div>
+      {error && <div style={{ marginBottom: 16, color: '#dc2626', fontSize: '.85rem', background: '#fee2e2', padding: '8px 14px', borderRadius: 7 }}>{error}</div>}
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginBottom: 20 }}>
         {(['name', 'role'] as const).map(k => (
@@ -92,9 +105,10 @@ export default function FounderEditor() {
                 Upload photo
                 <input type="file" accept="image/*" style={{ display: 'none' }} onChange={e => {
                   const file = e.target.files?.[0]; if (!file) return
-                  const reader = new FileReader()
-                  reader.onload = () => setData(d => ({ ...d, photo: reader.result as string }))
-                  reader.readAsDataURL(file)
+                  resizeImageToDataUrl(file).then(
+                    dataUrl => setData(d => ({ ...d, photo: dataUrl })),
+                    err => setError(err instanceof Error ? err.message : 'Could not process the image.')
+                  )
                 }} />
               </label>
               {data.photo && <button style={s('#dc2626')} onClick={() => setData(d => ({ ...d, photo: undefined }))}>Remove</button>}

@@ -46,6 +46,7 @@ export default function HomeContentEditor() {
   const [loaded, setLoaded] = useState(false)
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
+  const [error, setError] = useState('')
 
   useEffect(() => {
     Promise.all([
@@ -59,20 +60,29 @@ export default function HomeContentEditor() {
   }, [])
 
   async function save() {
-    setSaving(true)
-    await Promise.all([
-      fetch('/api/admin/content/homepage_hero', {
-        method: 'PUT', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ value: hero }),
-      }),
-      fetch('/api/admin/content/homepage_stats', {
-        method: 'PUT', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ value: stats }),
-      }),
-    ])
-    setSaving(false)
-    setSaved(true)
-    setTimeout(() => setSaved(false), 2500)
+    setSaving(true); setError('')
+    try {
+      const [heroRes, statsRes] = await Promise.all([
+        fetch('/api/admin/content/homepage_hero', {
+          method: 'PUT', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ value: hero }),
+        }),
+        fetch('/api/admin/content/homepage_stats', {
+          method: 'PUT', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ value: stats }),
+        }),
+      ])
+      if (!heroRes.ok || !statsRes.ok) {
+        const failed = !heroRes.ok ? await heroRes.json().catch(() => ({})) : await statsRes.json().catch(() => ({}))
+        throw new Error(failed?.error || 'Save failed — your changes have not been stored.')
+      }
+      setSaved(true)
+      setTimeout(() => setSaved(false), 2500)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Save failed.')
+    } finally {
+      setSaving(false)
+    }
   }
 
   function setStat(i: number, patch: Partial<StatItem>) {
@@ -98,6 +108,7 @@ export default function HomeContentEditor() {
           <button style={s('#1a3c2e')} onClick={save} disabled={saving}>{saving ? 'Saving…' : 'Save Changes'}</button>
         </div>
       </div>
+      {error && <div style={{ marginBottom: 16, color: '#dc2626', fontSize: '.85rem', background: '#fee2e2', padding: '8px 14px', borderRadius: 7 }}>{error}</div>}
 
       <div style={{ background: '#f9f7f3', borderRadius: 8, padding: '14px 16px', display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 24 }}>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
