@@ -64,6 +64,6 @@ export const config = {
   matcher: [
     '/community/:path*', '/jobs', '/internships', '/scholarships', '/competitions', '/profile', '/admin/:path*',
     '/api/auth/:path*', '/api/contact', '/api/partner', '/api/volunteer', '/api/submissions',
-    '/api/payments/:path*', '/api/forum/:path*', '/api/testimonials',
+    '/api/payments/:path*', '/api/forum/:path*', '/api/testimonials', '/api/career-fair/:path*',
   ]
 }

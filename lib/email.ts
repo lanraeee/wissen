@@ -450,3 +450,82 @@ export async function sendPasswordChangedEmail(to: string, name: string) {
     `),
   })
 }
+
+// ─── Career Fair registration confirmation (to attendee) ───────────────────
+export async function sendFairRegistrationConfirmation(opts: {
+  to: string; name: string; eventTitle: string
+  eventDate: string | null; eventTime: string | null; eventLocation: string | null
+  guideUrl: string; recommendedBooths: string[]
+}) {
+  const firstName = firstNameOf(opts.name)
+  const dateLine = opts.eventDate ? new Date(opts.eventDate).toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }) : null
+  return sendEmail({
+    from: FROM,
+    to: opts.to,
+    subject: `You're registered — ${opts.eventTitle}`,
+    html: shell(`
+      <span class="badge">Registration Confirmed</span>
+      <h2>See you there, ${firstName}!</h2>
+      <p>You're registered for <strong>${esc(opts.eventTitle)}</strong>.</p>
+      ${fields([
+        dateLine && ['Date', dateLine],
+        opts.eventTime && ['Time', esc(opts.eventTime)],
+        opts.eventLocation && ['Location', esc(opts.eventLocation)],
+      ])}
+      ${opts.recommendedBooths.length > 0 ? `
+        <div class="divider"></div>
+        <p><strong>Booths picked for you:</strong> based on what you told us, start with ${esc(opts.recommendedBooths.join(', '))}.</p>
+      ` : ''}
+      <a href="${esc(opts.guideUrl)}" class="btn">View your personal booth guide →</a>
+      <p style="font-size:.85rem;color:#8a9a8f">Bring this email or the link above with you — it's your check-in reference at the door.</p>
+    `),
+  })
+}
+
+// ─── Career Fair registration notification (to admin) ──────────────────────
+export async function sendFairRegistrationNotification(data: {
+  name: string; email: string; phone: string; school: string; eventTitle: string
+}) {
+  return sendEmail({
+    from: FROM,
+    to: ADMIN,
+    replyTo: data.email,
+    subject: `[Career Fair] New registration — ${data.name} (${data.eventTitle})`,
+    html: shell(`
+      <span class="badge">New Registration</span>
+      <h2>New Career Fair registration</h2>
+      ${fieldText('Name', data.name)}
+      ${field('Email', mailtoLink(data.email))}
+      ${data.phone ? fieldText('Phone', data.phone) : ''}
+      ${fieldText('School', data.school)}
+      ${fieldText('Event', data.eventTitle)}
+    `),
+  })
+}
+
+// ─── Career Fair check-in reminder (to attendee, admin-triggered bulk send) ─
+export async function sendFairCheckinReminder(opts: {
+  to: string; name: string; eventTitle: string
+  eventDate: string | null; eventTime: string | null; eventLocation: string | null
+  guideUrl: string
+}) {
+  const firstName = firstNameOf(opts.name)
+  const dateLine = opts.eventDate ? new Date(opts.eventDate).toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }) : null
+  return sendEmail({
+    from: FROM,
+    to: opts.to,
+    subject: `Reminder — ${opts.eventTitle} is coming up`,
+    html: shell(`
+      <span class="badge">See You Soon</span>
+      <h2>Hi ${firstName}, don't forget!</h2>
+      <p>You're registered for <strong>${esc(opts.eventTitle)}</strong>.</p>
+      ${fields([
+        dateLine && ['Date', dateLine],
+        opts.eventTime && ['Time', esc(opts.eventTime)],
+        opts.eventLocation && ['Location', esc(opts.eventLocation)],
+      ])}
+      <a href="${esc(opts.guideUrl)}" class="btn">View your booth guide &amp; check in →</a>
+      <p style="font-size:.85rem;color:#8a9a8f">Show this link at the door so we can check you in quickly.</p>
+    `),
+  })
+}

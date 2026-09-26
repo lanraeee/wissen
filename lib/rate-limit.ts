@@ -67,6 +67,7 @@ export const RATE_LIMITS: Array<{ prefix: string; limit: number; windowMs: numbe
   { prefix: '/api/partner', limit: 5, windowMs: 10 * 60_000 },
   { prefix: '/api/volunteer', limit: 5, windowMs: 10 * 60_000 },
   { prefix: '/api/submissions', limit: 10, windowMs: 10 * 60_000 },
+  { prefix: '/api/career-fair/register', limit: 5, windowMs: 10 * 60_000 },
   // Payments — generous enough for legitimate retries, still bounded.
   { prefix: '/api/payments', limit: 20, windowMs: 10 * 60_000 },
   // Logged-in community actions — abuse-resistant but not restrictive.
