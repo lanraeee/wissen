@@ -144,7 +144,6 @@ export default async function TeamPage() {
       <section className="section">
         <div className="wrap">
           <div className="section-head mb-l reveal">
-            <span className="eyebrow">Leadership</span>
             <h2>Where it starts.</h2>
           </div>
 

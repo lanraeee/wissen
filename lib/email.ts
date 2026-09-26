@@ -28,7 +28,12 @@ const FROM = 'Wissen-Haus <noreply@noreply.wissenhaus.org>'
 // left every admin notification silently failing with a Resend "Invalid
 // `to` field" error. lib/admin-guard.ts and app/admin/layout.tsx already
 // read the same var with `||` for this reason.
-const ADMIN = process.env.FOUNDER_EMAIL || 'director@wissenhaus.org'
+// Admin notifications go to every director/admin inbox, not just the
+// primary one -- mirrors lib/admin-guard.ts's DIRECTOR_EMAILS list.
+const ADMIN_EMAILS = Array.from(new Set([
+  process.env.FOUNDER_EMAIL || 'director@wissenhaus.org',
+  'wissenhaus@outlook.com',
+]))
 
 function esc(s: string) {
   return String(s)
@@ -159,7 +164,7 @@ export async function sendContactNotification(data: {
 }) {
   return sendEmail({
     from: FROM,
-    to: ADMIN,
+    to: ADMIN_EMAILS,
     replyTo: data.email,
     subject: `[Contact] ${data.subject} — from ${data.name}`,
     html: shell(`
@@ -197,7 +202,7 @@ export async function sendVolunteerNotification(data: {
 }) {
   return sendEmail({
     from: FROM,
-    to: ADMIN,
+    to: ADMIN_EMAILS,
     replyTo: data.email,
     subject: `[Volunteer] New application — ${data.name} (${data.role})`,
     html: shell(`
@@ -258,7 +263,7 @@ export async function sendDonationNotification(data: {
   const formatted = formatMoney(data.amount, data.currency)
   return sendEmail({
     from: FROM,
-    to: ADMIN,
+    to: ADMIN_EMAILS,
     subject: `[Donation] ${formatted} from ${data.name} via ${data.provider}`,
     html: shell(`
       <span class="badge">New Donation</span>
@@ -331,7 +336,7 @@ export async function sendBankTransferNotification(data: {
 
   return sendEmail({
     from: FROM,
-    to: ADMIN,
+    to: ADMIN_EMAILS,
     replyTo: data.email,
     subject: declared
       ? `[Action] ${formatted} bank transfer marked as sent by ${data.name}`
@@ -376,7 +381,7 @@ export async function sendPartnerNotification(data: {
 }) {
   return sendEmail({
     from: FROM,
-    to: ADMIN,
+    to: ADMIN_EMAILS,
     replyTo: data.email,
     subject: `[Partner] Inquiry from ${data.organisation} — ${data.name}`,
     html: shell(`
@@ -411,7 +416,7 @@ export async function sendPartnerConfirmation(to: string, name: string) {
 export async function sendTestimonialNotification(data: { name: string; role: string | null; quote: string }) {
   return sendEmail({
     from: FROM,
-    to: ADMIN,
+    to: ADMIN_EMAILS,
     subject: `[Testimonial] New story from ${data.name} awaiting review`,
     html: shell(`
       <span class="badge">Pending Review</span>
@@ -493,7 +498,7 @@ export async function sendFairRegistrationNotification(data: {
 }) {
   return sendEmail({
     from: FROM,
-    to: ADMIN,
+    to: ADMIN_EMAILS,
     replyTo: data.email,
     subject: `[Career Fair] New registration — ${data.name} (${data.eventTitle})`,
     html: shell(`
