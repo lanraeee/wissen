@@ -150,6 +150,7 @@ export default async function DonationReceiptPage({ params }: Props) {
             background: 'linear-gradient(135deg, #A07820 0%, #C9A030 40%, #B8952A 70%, #8B6914 100%)',
             padding: '20px 36px',
             display: 'flex',
+            flexWrap: 'wrap',
             alignItems: 'center',
             justifyContent: 'space-between',
             borderBottom: '3px solid #7A5510',
@@ -214,7 +215,7 @@ export default async function DonationReceiptPage({ params }: Props) {
                   Donor Details
                 </span>
               </div>
-              <div className="receipt-box-inner" style={{ padding: '20px 20px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px 32px' }}>
+              <div className="receipt-box-inner rgrid-2" style={{ padding: '20px 20px', gap: '16px 32px' }}>
                 <div style={{ gridColumn: '1 / -1' }}>
                   <div style={{ fontSize: '.62rem', letterSpacing: '.12em', textTransform: 'uppercase', color: '#9a9a8a', marginBottom: 3 }}>Donor Name</div>
                   <div style={{ fontFamily: 'Georgia, serif', fontStyle: 'italic', fontSize: '1.3rem', color: '#0F2D1D', lineHeight: 1.2 }}>{cert.donor_name}</div>
@@ -246,7 +247,7 @@ export default async function DonationReceiptPage({ params }: Props) {
                   Donation Details
                 </span>
               </div>
-              <div className="receipt-box-inner" style={{ padding: '20px 20px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px 32px' }}>
+              <div className="receipt-box-inner rgrid-2" style={{ padding: '20px 20px', gap: '16px 32px' }}>
                 <div>
                   <div style={{ fontSize: '.62rem', letterSpacing: '.12em', textTransform: 'uppercase', color: '#9a9a8a', marginBottom: 3 }}>Amount</div>
                   <div style={{ fontSize: '1.4rem', fontWeight: 800, color: '#0F2D1D', letterSpacing: '-.01em' }}>

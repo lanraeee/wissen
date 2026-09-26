@@ -65,6 +65,7 @@ export default async function VerifyCertPage({ params }: Props) {
           borderRadius: '12px 12px 0 0',
           padding: '20px 32px',
           display: 'flex',
+          flexWrap: 'wrap',
           alignItems: 'center',
           gap: 16,
           borderBottom: '3px solid #7A5510',
@@ -105,7 +106,7 @@ export default async function VerifyCertPage({ params }: Props) {
 
           <hr style={{ border: 'none', borderTop: '1px solid rgba(184,149,42,0.25)', margin: '0 0 20px' }} />
 
-          <dl style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px 24px', margin: 0 }}>
+          <dl className="rgrid-2" style={{ gap: '12px 24px', margin: 0 }}>
             <div>
               <dt style={{ fontSize: '.62rem', letterSpacing: '.12em', textTransform: 'uppercase', color: '#9a9a8a', marginBottom: 2 }}>Date Issued</dt>
               <dd style={{ margin: 0, fontSize: '.88rem', color: '#3a3a2a', fontWeight: 600 }}>{issuedFormatted}</dd>
