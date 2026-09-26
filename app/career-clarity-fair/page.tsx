@@ -4,7 +4,7 @@ import Image from 'next/image'
 
 export const metadata: Metadata = {
   title: 'Career Clarity Fair · Wissen-Haus',
-  description: 'A one-day career exploration fair for secondary school students in Ibadan. Meet professionals, explore careers, and discover your path.',
+  description: 'A one-day career exploration fair for secondary school students in Africa and the diaspora. Meet professionals, explore careers, and discover your path.',
 }
 
 export default function BootcampPage() {
@@ -16,7 +16,7 @@ export default function BootcampPage() {
             <div className="reveal">
               <span className="eyebrow">Programmes · Career Clarity Fair</span>
               <h1 className="display-lg mt-s">Career Clarity Fair</h1>
-              <p className="lead mt-m">A one-day career exploration fair open to all secondary school students in Ibadan — from JS1 to SS3. Meet real professionals, explore careers you&#39;ve never heard of, and leave with a clear direction.</p>
+              <p className="lead mt-m">A one-day career exploration fair open to all secondary school students in Africa and the diaspora — from JS1 to SS3. Meet real professionals, explore careers you&#39;ve never heard of, and leave with a clear direction.</p>
               <div className="hero-cta mt-m">
                 <Link href="/career-clarity-fair/register" className="btn btn--lg">Register to attend</Link>
                 <Link href="/volunteer" className="btn btn--ghost">Bring it to your school</Link>
@@ -30,6 +30,44 @@ export default function BootcampPage() {
       </section>
 
       <div className="pattern-edge" aria-hidden="true" />
+
+      {/* Donation drive — prominent, high-contrast callout so it can't be missed */}
+      <section className="section section--tight" style={{ paddingTop: 0 }}>
+        <div className="wrap">
+          <Link
+            href="/donate/series-1"
+            className="reveal"
+            style={{
+              display: 'flex', flexWrap: 'wrap', gap: 24, alignItems: 'center', justifyContent: 'space-between',
+              background: 'linear-gradient(135deg, var(--green-900) 0%, var(--green-800) 60%, var(--green-700) 100%)',
+              border: '1px solid rgba(184,149,42,0.4)', borderRadius: 'var(--radius-lg)',
+              padding: 'clamp(24px,4vw,36px) clamp(24px,5vw,44px)',
+              boxShadow: '0 12px 40px rgba(15,45,29,0.25)',
+            }}
+          >
+            <div style={{ maxWidth: 560 }}>
+              <span style={{
+                display: 'inline-block', background: 'var(--red)', color: '#fff',
+                fontFamily: 'var(--ff-mono)', fontSize: '.65rem', letterSpacing: '.14em',
+                textTransform: 'uppercase', padding: '4px 12px', borderRadius: 99, marginBottom: 14,
+              }}>
+                Donation Drive · Series 1
+              </span>
+              <h2 style={{ color: '#fff', marginBottom: 10, lineHeight: 1.1 }}>Help us bring this Fair to life.</h2>
+              <p style={{ color: 'rgba(244,240,231,.8)', lineHeight: 1.6, margin: 0 }}>
+                We&#39;re raising ₦50,000,000 to fund student materials, facilitators and impact
+                measurement for 500–1,000 students. Every contribution fills a seat at the Fair.
+              </p>
+            </div>
+            <span className="btn btn--light btn--lg" style={{ flexShrink: 0 }}>
+              Donate now
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" style={{ width: 18, height: 18, marginLeft: 8 }}>
+                <path d="M5 12h14M13 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </span>
+          </Link>
+        </div>
+      </section>
 
       <section className="section">
         <div className="wrap">
