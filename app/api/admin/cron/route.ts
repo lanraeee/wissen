@@ -2,7 +2,7 @@
 import { getSession } from '@/lib/auth'
 import { logActivity } from '@/lib/audit-log'
 
-const ADMIN_EMAIL = process.env.FOUNDER_EMAIL ?? 'director@wissenhaus.org'
+const ADMIN_EMAIL = process.env.FOUNDER_EMAIL || 'director@wissenhaus.org'
 
 export async function POST() {
   const session = await getSession()

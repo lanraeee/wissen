@@ -23,7 +23,12 @@ async function sendEmail(payload: SendEmailPayload): Promise<ResendResult> {
 }
 
 const FROM = 'Wissen-Haus <noreply@noreply.wissenhaus.org>'
-const ADMIN = process.env.FOUNDER_EMAIL ?? 'director@wissenhaus.org'
+// `||` (not `??`): FOUNDER_EMAIL is set to an empty string in some
+// environments, and `??` only falls back on null/undefined, not "" -- which
+// left every admin notification silently failing with a Resend "Invalid
+// `to` field" error. lib/admin-guard.ts and app/admin/layout.tsx already
+// read the same var with `||` for this reason.
+const ADMIN = process.env.FOUNDER_EMAIL || 'director@wissenhaus.org'
 
 function esc(s: string) {
   return String(s)
