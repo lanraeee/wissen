@@ -35,7 +35,7 @@ function QuizEditor({ quiz, onChange }: { quiz: QuizQuestion[]; onChange: (q: Qu
             <button style={s('#fee2e2', '#dc2626')} onClick={() => onChange(quiz.filter((_, idx) => idx !== i))}>✕</button>
           </div>
           <input style={inp} value={q.question} onChange={e => update(i, { question: e.target.value })} placeholder="Question text" />
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6 }}>
+          <div className="rgrid-2" style={{ gap: 6 }}>
             {(['a', 'b', 'c', 'd'] as const).map(k => (
               <div key={k} style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
                 <input type="radio" name={`correct-${i}`} checked={q.correct === k} onChange={() => update(i, { correct: k })} title="Mark as correct answer" />
@@ -128,7 +128,7 @@ function CourseEditor({ course, onChange, onRemove }: { course: Course; onChange
       </div>
       {open && (
         <div style={{ marginTop: 12, display: 'flex', flexDirection: 'column', gap: 10 }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+          <div className="rgrid-2" style={{ gap: 8 }}>
             <div>
               <label style={fieldLabel}>Title</label>
               <input style={inp} value={course.title} onChange={e => {
@@ -145,7 +145,7 @@ function CourseEditor({ course, onChange, onRemove }: { course: Course; onChange
             <label style={fieldLabel}>Tagline</label>
             <input style={inp} value={course.tagline} onChange={e => onChange({ ...course, tagline: e.target.value })} />
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+          <div className="rgrid-2" style={{ gap: 8 }}>
             <div>
               <label style={fieldLabel}>Certificate Name</label>
               <input style={inp} value={course.certificateName} onChange={e => onChange({ ...course, certificateName: e.target.value })} />
@@ -219,7 +219,7 @@ export default function CoursesEditor() {
 
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', alignItems: 'center', marginBottom: 20 }}>
         <h2 style={{ margin: 0, fontSize: '1.1rem' }}>Courses</h2>
         <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
           {saved && <span style={{ fontSize: '.8rem', color: '#16a34a' }}>Saved!</span>}

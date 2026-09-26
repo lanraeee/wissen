@@ -51,7 +51,7 @@ export default function OpportunityManager({ onRefresh }: { onRefresh: () => voi
       </div>
 
       {showForm && (
-        <div style={{ background: '#fff', borderRadius: 10, padding: 20, boxShadow: '0 1px 4px rgba(0,0,0,.07)', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 16 }}>
+        <div className="rgrid-2" style={{ background: '#fff', borderRadius: 10, padding: 20, boxShadow: '0 1px 4px rgba(0,0,0,.07)', gap: 12, marginBottom: 16 }}>
           {([
             ['title', 'Title *'],
             ['company', 'Company'],

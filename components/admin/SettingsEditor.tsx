@@ -73,7 +73,7 @@ export default function SettingsEditor() {
 
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', alignItems: 'center', marginBottom: 24 }}>
         <div>
           <h2 style={{ margin: '0 0 4px', fontSize: '1.1rem' }}>Site Settings</h2>
           <p style={{ margin: 0, fontSize: '.83rem', color: '#8a9a8f' }}>Global settings used across the public site.</p>
@@ -87,7 +87,7 @@ export default function SettingsEditor() {
       </div>
       {error && <div style={{ marginBottom: 16, color: '#dc2626', fontSize: '.85rem', background: '#fee2e2', padding: '8px 14px', borderRadius: 7 }}>{error}</div>}
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+      <div className="rgrid-2" style={{ gap: 16 }}>
         {fields.map(([key, label, type]) => (
           <div key={key} style={key === 'tagline' || key === 'footer_note' ? { gridColumn: '1/-1' } : {}}>
             <label style={lbl}>{label}</label>

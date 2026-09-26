@@ -85,7 +85,7 @@ export default async function AdminDashboard() {
         {card('Donations', stats.donation, undefined, '/admin/submissions?type=donation')}
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20 }}>
+      <div className="rgrid-2" style={{ gap: 20 }}>
         {/* Recent signups */}
         <div>
           <h3 className="admin-section-title">Recent Signups</h3>

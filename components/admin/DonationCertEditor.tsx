@@ -59,7 +59,7 @@ function CertForm({ title, draft, setDraft, onSave, onCancel, saveLabel, saving,
   return (
     <div style={{ background: '#f0f7f3', border: '1px solid #c8e0d0', borderRadius: 10, padding: 20, marginBottom: 16 }}>
       <h3 style={{ margin: '0 0 16px', fontSize: '1rem', color: '#0F2D1D' }}>{title}</h3>
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+      <div className="rgrid-2" style={{ gap: 12 }}>
         <div style={{ gridColumn: '1 / -1' }}>
           <label style={lbl}>Donor Full Name *</label>
           <input style={inp} value={draft.donor_name} onChange={e => setDraft(d => ({ ...d, donor_name: e.target.value }))} placeholder="e.g. Adebayo Okafor" />
@@ -210,7 +210,7 @@ export default function DonationCertEditor() {
 
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', alignItems: 'center', marginBottom: 20 }}>
         <div>
           <h2 style={{ margin: '0 0 4px', fontSize: '1.1rem' }}>Donation Certificates</h2>
           <p style={{ margin: 0, fontSize: '.8rem', color: '#8a9a8f' }}>Issue official tax receipts to donors. Each certificate gets a unique public URL.</p>

@@ -79,7 +79,7 @@ export default function ImpactStoriesEditor() {
 
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', alignItems: 'center', marginBottom: 20 }}>
         <div>
           <h2 style={{ margin: '0 0 4px', fontSize: '1.1rem' }}>Impact Stories</h2>
           <p style={{ margin: 0, fontSize: '.83rem', color: '#8a9a8f' }}>Stories displayed on the public /impact-content page.</p>
@@ -96,7 +96,7 @@ export default function ImpactStoriesEditor() {
           <div key={i} style={{ background: '#f9f7f3', borderRadius: 8, padding: '12px 14px' }}>
             {editing === i ? (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+                <div className="rgrid-2" style={{ gap: 8 }}>
                   {fields.map(([k, label, multiline]) => (
                     <div key={k} style={multiline ? { gridColumn: '1 / -1' } : {}}>
                       <label style={lbl}>{label}</label>
@@ -132,7 +132,7 @@ export default function ImpactStoriesEditor() {
 
         {editing === -1 ? (
           <div style={{ background: '#f9f7f3', borderRadius: 8, padding: '12px 14px', display: 'flex', flexDirection: 'column', gap: 8 }}>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+            <div className="rgrid-2" style={{ gap: 8 }}>
               {fields.map(([k, label, multiline]) => (
                 <div key={k} style={multiline ? { gridColumn: '1 / -1' } : {}}>
                   <label style={lbl}>{label}</label>

@@ -81,7 +81,7 @@ export default function PolicyEditor() {
 
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', alignItems: 'center', marginBottom: 20 }}>
         <h2 style={{ margin: 0, fontSize: '1.1rem' }}>Policy &amp; Research Timeline</h2>
         <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
           {saved && <span style={{ fontSize: '.8rem', color: '#16a34a' }}>Saved!</span>}
@@ -95,7 +95,7 @@ export default function PolicyEditor() {
           <div key={i} style={{ background: '#f9f7f3', borderRadius: 8, padding: '12px 14px' }}>
             {editing === i ? (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+                <div className="rgrid-2" style={{ gap: 8 }}>
                   {fields.map(([k, label]) => (
                     <div key={k}>
                       <label style={{ fontSize: '.7rem', fontWeight: 700, textTransform: 'uppercase', color: '#8a9a8f', letterSpacing: '.06em' }}>{label}</label>
@@ -133,7 +133,7 @@ export default function PolicyEditor() {
 
         {editing === -1 ? (
           <div style={{ background: '#f9f7f3', borderRadius: 8, padding: '12px 14px', display: 'flex', flexDirection: 'column', gap: 8 }}>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+            <div className="rgrid-2" style={{ gap: 8 }}>
               {fields.map(([k, label]) => (
                 <div key={k}>
                   <label style={{ fontSize: '.7rem', fontWeight: 700, textTransform: 'uppercase', color: '#8a9a8f', letterSpacing: '.06em' }}>{label}</label>

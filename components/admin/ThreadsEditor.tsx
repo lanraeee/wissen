@@ -65,7 +65,7 @@ export default function ThreadsEditor() {
 
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', alignItems: 'center', marginBottom: 20 }}>
         <h2 style={{ margin: 0, fontSize: '1.1rem' }}>Community Threads</h2>
         <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
           {saved && <span style={{ fontSize: '.8rem', color: '#16a34a' }}>Saved!</span>}
@@ -78,7 +78,7 @@ export default function ThreadsEditor() {
         {threads.map((t, i) => (
           <div key={i} style={{ background: '#f9f7f3', borderRadius: 8, padding: '12px 14px' }}>
             {editing === i ? (
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+              <div className="rgrid-2" style={{ gap: 8 }}>
                 <div style={{ gridColumn: '1/-1' }}>
                   <label style={{ fontSize: '.7rem', fontWeight: 700, textTransform: 'uppercase', color: '#8a9a8f', letterSpacing: '.06em' }}>Title</label>
                   <input style={inp} value={draft.title} onChange={e => setDraft(d => ({ ...d, title: e.target.value }))} />
@@ -119,7 +119,7 @@ export default function ThreadsEditor() {
         ))}
 
         {editing === -1 ? (
-          <div style={{ background: '#f9f7f3', borderRadius: 8, padding: '12px 14px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+          <div className="rgrid-2" style={{ background: '#f9f7f3', borderRadius: 8, padding: '12px 14px', gap: 8 }}>
             <div style={{ gridColumn: '1/-1' }}>
               <label style={{ fontSize: '.7rem', fontWeight: 700, textTransform: 'uppercase', color: '#8a9a8f', letterSpacing: '.06em' }}>Title</label>
               <input style={inp} value={draft.title} onChange={e => setDraft(d => ({ ...d, title: e.target.value }))} />

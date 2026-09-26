@@ -178,7 +178,7 @@ export default async function AnalyticsPage() {
         </div>
       </Section>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24, marginBottom: 32 }}>
+      <div className="rgrid-2" style={{ gap: 24, marginBottom: 32 }}>
         <Section title="Top Pages (30 days)">
           <RowList
             rows={topPages.map(r => ({ label: r.pathname as string, value: Number(r.views) }))}
@@ -194,7 +194,7 @@ export default async function AnalyticsPage() {
         </Section>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24, marginBottom: 32 }}>
+      <div className="rgrid-2" style={{ gap: 24, marginBottom: 32 }}>
         <Section title="Countries (30 days)">
           <RowList
             rows={countries.map(r => ({ label: r.country as string, value: Number(r.views) }))}
@@ -210,7 +210,7 @@ export default async function AnalyticsPage() {
         </Section>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24, marginBottom: 32 }}>
+      <div className="rgrid-2" style={{ gap: 24, marginBottom: 32 }}>
         <Section title="Browsers (30 days)">
           <RowList
             rows={browsers.map(r => ({ label: (r.browser as string) ?? 'Unknown', value: Number(r.views) }))}

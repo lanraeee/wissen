@@ -77,7 +77,7 @@ export default function FounderEditor() {
 
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', alignItems: 'center', marginBottom: 20 }}>
         <h2 style={{ margin: 0, fontSize: '1.1rem' }}>Founder Bio</h2>
         <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
           {saved && <span style={{ fontSize: '.8rem', color: '#16a34a' }}>Saved!</span>}
@@ -86,7 +86,7 @@ export default function FounderEditor() {
       </div>
       {error && <div style={{ marginBottom: 16, color: '#dc2626', fontSize: '.85rem', background: '#fee2e2', padding: '8px 14px', borderRadius: 7 }}>{error}</div>}
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginBottom: 20 }}>
+      <div className="rgrid-2" style={{ gap: 14, marginBottom: 20 }}>
         {(['name', 'role'] as const).map(k => (
           <div key={k}>
             <label style={lbl}>{k === 'name' ? 'Full Name' : 'Title / Role'}</label>

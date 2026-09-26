@@ -185,7 +185,7 @@ export default function AdminSubmissions() {
                     <span style={{ fontSize: '.78rem', color: '#8a9a8f' }}>{new Date(row.created_at).toLocaleString('en-GB')}</span>
                   </div>
                 </div>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px 24px' }}>
+                <div className="rgrid-2" style={{ gap: '8px 24px' }}>
                   {Object.entries(row.data ?? {}).map(([k, v]) => v && (
                     <div key={k}>
                       <div style={{ fontSize: '.7rem', fontWeight: 700, letterSpacing: '.08em', textTransform: 'uppercase', color: '#8a9a8f' }}>{k}</div>

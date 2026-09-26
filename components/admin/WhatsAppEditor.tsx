@@ -84,7 +84,7 @@ export default function WhatsAppEditor() {
 
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', alignItems: 'center', marginBottom: 20 }}>
         <h2 style={{ margin: 0, fontSize: '1.1rem' }}>WhatsApp Channel</h2>
         <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
           {saved && <span style={{ fontSize: '.8rem', color: '#16a34a' }}>Saved!</span>}
@@ -96,7 +96,7 @@ export default function WhatsAppEditor() {
       {/* Channel settings */}
       <div style={{ background: '#f9f7f3', borderRadius: 8, padding: '16px', marginBottom: 24 }}>
         <div style={{ fontSize: '.8rem', fontWeight: 700, color: '#3a4a3f', marginBottom: 12 }}>Channel Settings</div>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+        <div className="rgrid-2" style={{ gap: 10 }}>
           <div style={{ gridColumn: '1/-1' }}>
             <label style={lbl}>WhatsApp Channel URL</label>
             <input style={inp} placeholder="https://whatsapp.com/channel/..." value={data.url} onChange={e => setData(d => ({ ...d, url: e.target.value }))} />
@@ -113,7 +113,7 @@ export default function WhatsAppEditor() {
       </div>
 
       {/* Posts */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', alignItems: 'center', marginBottom: 12 }}>
         <div style={{ fontSize: '.8rem', fontWeight: 700, color: '#3a4a3f' }}>Channel Posts ({data.posts.length})</div>
         {editing !== -1 && (
           <button style={s('#25D366')} onClick={() => { setEditing(-1); setDraft(BLANK_POST) }}>+ Add Post</button>
@@ -130,7 +130,7 @@ export default function WhatsAppEditor() {
                 <label style={lbl}>Message text</label>
                 <textarea style={{ ...inp, minHeight: 80, resize: 'vertical' }} placeholder="Type the post content…" value={draft.text} onChange={e => setDraft(d => ({ ...d, text: e.target.value }))} />
               </div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+              <div className="rgrid-2" style={{ gap: 8 }}>
                 <div>
                   <label style={lbl}>Date</label>
                   <input type="date" style={inp} value={draft.date} onChange={e => setDraft(d => ({ ...d, date: e.target.value }))} />
@@ -169,7 +169,7 @@ export default function WhatsAppEditor() {
                   <label style={lbl}>Message text</label>
                   <textarea style={{ ...inp, minHeight: 80, resize: 'vertical' }} value={draft.text} onChange={e => setDraft(d => ({ ...d, text: e.target.value }))} />
                 </div>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+                <div className="rgrid-2" style={{ gap: 8 }}>
                   <div>
                     <label style={lbl}>Date</label>
                     <input type="date" style={inp} value={draft.date} onChange={e => setDraft(d => ({ ...d, date: e.target.value }))} />

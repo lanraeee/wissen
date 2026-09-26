@@ -102,7 +102,7 @@ export default function BankDetailsEditor() {
 
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 20, gap: 12 }}>
+      <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 20, gap: 12 }}>
         <div>
           <h2 style={{ margin: '0 0 4px', fontSize: '1.1rem' }}>Bank Transfer Details</h2>
           <p style={{ margin: 0, fontSize: '.8rem', color: '#8a9a8f', maxWidth: '58ch' }}>
@@ -110,7 +110,7 @@ export default function BankDetailsEditor() {
             Confirm incoming transfers under Submissions → Bank Transfers.
           </p>
         </div>
-        <div style={{ display: 'flex', gap: 10, alignItems: 'center', flexShrink: 0 }}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, alignItems: 'center', flexShrink: 0 }}>
           {saved && <span style={{ fontSize: '.8rem', color: '#16a34a' }}>Saved!</span>}
           {error && <span style={{ fontSize: '.8rem', color: '#dc2626', maxWidth: '32ch' }}>{error}</span>}
           <button onClick={save} disabled={saving} style={{ padding: '7px 16px', borderRadius: 7, fontSize: '.82rem', fontWeight: 600, background: '#1a3c2e', color: '#fff', border: 'none', cursor: 'pointer' }}>
@@ -141,7 +141,7 @@ export default function BankDetailsEditor() {
       {/* Shared account holder details */}
       <div style={{ background: '#f9f7f3', borderRadius: 8, padding: 16, marginBottom: 24 }}>
         <div style={{ fontSize: '.8rem', fontWeight: 700, color: '#3a4a3f', marginBottom: 12 }}>Account Holder</div>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+        <div className="rgrid-2" style={{ gap: 10 }}>
           <div>
             <label style={lbl}>Account Name</label>
             <input style={inp} value={data.account_name} onChange={e => setData(d => ({ ...d, account_name: e.target.value }))} placeholder="Wissen Haus Empowerment Foundation" />
@@ -193,7 +193,7 @@ export default function BankDetailsEditor() {
               </strong>
               <button style={s('#dc2626')} onClick={() => removeAccount(acc.currency)}>Remove</button>
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+            <div className="rgrid-2" style={{ gap: 10 }}>
               <div style={{ gridColumn: '1/-1' }}>
                 <label style={lbl}>Account Number *</label>
                 <input
@@ -230,7 +230,7 @@ export default function BankDetailsEditor() {
                   block blank for domestic-only currencies. Both a name and a SWIFT are required before
                   any of it is shown to donors.
                 </p>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+                <div className="rgrid-2" style={{ gap: 10 }}>
                   <div>
                     <label style={lbl}>Correspondent Bank Name</label>
                     <input style={inp} value={acc.correspondent?.bank_name ?? ''}
