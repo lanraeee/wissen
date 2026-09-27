@@ -4,6 +4,7 @@ import crypto from 'crypto'
 import sql from '@/lib/db'
 import { hashPassword } from '@/lib/auth'
 import { sendPasswordChangedEmail } from '@/lib/email'
+import { runAfterResponse } from '@/lib/background'
 import { parseBody } from '@/lib/validation'
 import { log } from '@/lib/logger'
 
@@ -36,8 +37,10 @@ export async function POST(req: NextRequest) {
   await sql`UPDATE password_reset_tokens SET used_at = NOW() WHERE user_id = ${row.user_id} AND used_at IS NULL`
 
   if (user) {
-    sendPasswordChangedEmail(user.email as string, `${user.first_name} ${user.last_name}`)
-      .catch(err => log.error('password changed email', err))
+    runAfterResponse(() =>
+      sendPasswordChangedEmail(user.email as string, `${user.first_name} ${user.last_name}`)
+        .catch(err => log.error('password changed email', err))
+    )
   }
 
   return NextResponse.json({ success: true })

@@ -4,6 +4,7 @@ import { adminGuard } from '@/lib/admin-guard'
 import sql from '@/lib/db'
 import { getCourse } from '@/lib/courses'
 import { sendCertificateEmail } from '@/lib/email'
+import { runAfterResponse } from '@/lib/background'
 import { parseBody, zEmail } from '@/lib/validation'
 import { log } from '@/lib/logger'
 import { logActivity } from '@/lib/audit-log'
@@ -56,8 +57,10 @@ export async function POST(req: NextRequest) {
     VALUES (${userId}, ${courseId}, ${certId})
   `
 
-  sendCertificateEmail(email, userName, course.title, certId)
-    .catch(err => log.error('admin certificate email', err))
+  runAfterResponse(() =>
+    sendCertificateEmail(email, userName, course.title, certId)
+      .catch(err => log.error('admin certificate email', err))
+  )
 
   logActivity(session, 'certificate.issue', { targetType: 'user', targetId: userId, details: { courseId, certId, markComplete: !!markComplete } })
   return NextResponse.json({ success: true, certificateId: certId, alreadyExisted: false })

@@ -3,6 +3,7 @@ import { z } from 'zod'
 import crypto from 'crypto'
 import sql from '@/lib/db'
 import { sendPasswordResetEmail } from '@/lib/email'
+import { runAfterResponse } from '@/lib/background'
 import { parseBody, zEmail } from '@/lib/validation'
 import { log } from '@/lib/logger'
 
@@ -46,7 +47,7 @@ export async function POST(req: NextRequest) {
       const resetUrl = `${siteUrl}/reset-password?token=${token}`
       const name = `${user.first_name} ${user.last_name}`
 
-      sendPasswordResetEmail(email, name, resetUrl).catch(err => log.error('password reset email', err))
+      runAfterResponse(() => sendPasswordResetEmail(email, name, resetUrl).catch(err => log.error('password reset email', err)))
     }
   } catch (err) {
     log.error('forgot-password', err)

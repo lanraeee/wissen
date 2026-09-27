@@ -4,6 +4,7 @@ import sql from '@/lib/db'
 import { parseBody, zEmail, zName } from '@/lib/validation'
 import { CAREER_INTERESTS, CLASS_GRADES, ATTENDING_AS_OPTIONS, generateCheckinToken, recommendBooths, type Booth } from '@/lib/career-fair'
 import { sendFairRegistrationConfirmation, sendFairRegistrationNotification } from '@/lib/email'
+import { runAfterResponse } from '@/lib/background'
 import { log } from '@/lib/logger'
 
 const AssessmentSnapshotSchema = z.array(
@@ -56,14 +57,16 @@ export async function POST(req: NextRequest) {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://wissenhaus.org'
   const guideUrl = `${siteUrl}/career-clarity-fair/checkin/${token}`
 
-  Promise.all([
-    sendFairRegistrationConfirmation({
-      to: email, name, eventTitle: event.title as string,
-      eventDate: event.event_date as string | null, eventTime: event.event_time as string | null,
-      eventLocation: event.location as string | null, guideUrl, recommendedBooths: booths.map(b => b.name),
-    }),
-    sendFairRegistrationNotification({ name, email, phone: phone ?? '', school, eventTitle: event.title as string }),
-  ]).catch(err => log.error('career-fair register email', err))
+  runAfterResponse(() =>
+    Promise.all([
+      sendFairRegistrationConfirmation({
+        to: email, name, eventTitle: event.title as string,
+        eventDate: event.event_date as string | null, eventTime: event.event_time as string | null,
+        eventLocation: event.location as string | null, guideUrl, recommendedBooths: booths.map(b => b.name),
+      }),
+      sendFairRegistrationNotification({ name, email, phone: phone ?? '', school, eventTitle: event.title as string }),
+    ]).catch(err => log.error('career-fair register email', err))
+  )
 
   return NextResponse.json(
     { success: true, registrationId: row.id, guideUrl, recommendedBooths: booths },

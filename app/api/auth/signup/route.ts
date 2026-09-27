@@ -3,6 +3,7 @@ import { z } from 'zod'
 import sql from '@/lib/db'
 import { hashPassword, signToken, COOKIE_NAME } from '@/lib/auth'
 import { sendWelcomeEmail } from '@/lib/email'
+import { runAfterResponse } from '@/lib/background'
 import { parseBody, zEmail, zName } from '@/lib/validation'
 import { log } from '@/lib/logger'
 
@@ -38,8 +39,9 @@ export async function POST(req: NextRequest) {
       membershipExpiry: user.membership_expiry,
     })
 
-    // Send welcome email (non-blocking)
-    sendWelcomeEmail(user.email as string, `${user.first_name} ${user.last_name}`).catch(e => log.error('welcome email', e))
+    runAfterResponse(() =>
+      sendWelcomeEmail(user.email as string, `${user.first_name} ${user.last_name}`).catch(e => log.error('welcome email', e))
+    )
 
     const res = NextResponse.json({ success: true, user: { id: user.id, email: user.email, name: `${user.first_name} ${user.last_name}` } })
     res.cookies.set(COOKIE_NAME, token, {
