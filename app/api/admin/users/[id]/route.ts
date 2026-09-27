@@ -2,7 +2,12 @@ import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { userAdminGuard, isDirector } from '@/lib/admin-guard'
 import sql from '@/lib/db'
+import { hashPassword } from '@/lib/auth'
+import { sendPasswordResetEmail, sendTempPasswordEmail } from '@/lib/email'
+import { runAfterResponse } from '@/lib/background'
+import { createPasswordResetUrl, generateTempPassword } from '@/lib/password-reset'
 import { parseBody, zEmail } from '@/lib/validation'
+import { log } from '@/lib/logger'
 import { logActivity } from '@/lib/audit-log'
 
 const ActionSchema = z.discriminatedUnion('action', [
@@ -18,6 +23,8 @@ const ActionSchema = z.discriminatedUnion('action', [
     created_at: z.string().max(30).optional(),
   }),
   z.object({ action: z.literal('set_role'), role: z.string() }),
+  z.object({ action: z.literal('send_reset_email') }),
+  z.object({ action: z.literal('set_temp_password') }),
 ])
 
 // The director is identified by email address (isDirector) and users.email is
@@ -116,6 +123,21 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     const role = ['user', 'editor', 'admin'].includes(body.role) ? body.role : 'user'
     await sql`UPDATE users SET role = ${role} WHERE id = ${id}`
     logActivity(session, 'user.set_role', { targetType: 'user', targetId: id, details: { from: target.role, to: role } })
+
+  } else if (body.action === 'send_reset_email') {
+    const name = `${target.first_name} ${target.last_name}`
+    const resetUrl = await createPasswordResetUrl(target.id)
+    runAfterResponse(() => sendPasswordResetEmail(target.email, name, resetUrl).catch(err => log.error('admin-triggered reset email', err)))
+    logActivity(session, 'user.send_reset_email', { targetType: 'user', targetId: id })
+
+  } else if (body.action === 'set_temp_password') {
+    const name = `${target.first_name} ${target.last_name}`
+    const tempPassword = generateTempPassword()
+    const passwordHash = await hashPassword(tempPassword)
+    await sql`UPDATE users SET password_hash = ${passwordHash} WHERE id = ${id}`
+    runAfterResponse(() => sendTempPasswordEmail(target.email, name, tempPassword).catch(err => log.error('admin temp password email', err)))
+    logActivity(session, 'user.set_temp_password', { targetType: 'user', targetId: id })
+    return NextResponse.json({ success: true, tempPassword })
 
   } else {
     return NextResponse.json({ error: 'Unknown action' }, { status: 400 })

@@ -57,7 +57,19 @@ export default function UserActions({ user, onRefresh, isDirector }: { user: Use
     setBusy(false)
     const ok = await report(res)
     onRefresh()
-    return ok
+    return { ok, data: ok ? await res.json().catch(() => null) : null }
+  }
+
+  async function sendResetEmail() {
+    if (!confirm(`Send a password reset email to ${user.email}?`)) return
+    const { ok } = await act('send_reset_email')
+    if (ok) alert(`Reset email sent to ${user.email}.`)
+  }
+
+  async function setTempPassword() {
+    if (!confirm(`Set a new temporary password for ${user.first_name} ${user.last_name} and email it to them?`)) return
+    const { ok, data } = await act('set_temp_password')
+    if (ok && data?.tempPassword) alert(`Temporary password for ${user.email}:\n\n${data.tempPassword}\n\nThis has also been emailed to them.`)
   }
 
   async function del() {
@@ -71,7 +83,8 @@ export default function UserActions({ user, onRefresh, isDirector }: { user: Use
 
   async function save() {
     // Keep the form open on refusal so the edit is not silently discarded.
-    if (await act('update', form)) setEditing(false)
+    const { ok } = await act('update', form)
+    if (ok) setEditing(false)
   }
 
   if (editing) return (
@@ -115,6 +128,8 @@ export default function UserActions({ user, onRefresh, isDirector }: { user: Use
         )}
         <button style={btn('#e8e4dc', '#3a4a3f')} onClick={() => setViewingActivity(true)} disabled={busy}>Activity</button>
         <button style={btn('#e8e4dc', '#3a4a3f')} onClick={() => setEditing(true)} disabled={busy}>Edit</button>
+        <button style={btn('#1d4ed8')} onClick={sendResetEmail} disabled={busy}>Send Reset Email</button>
+        <button style={btn('#1d4ed8')} onClick={setTempPassword} disabled={busy}>Set Temp Password</button>
         {user.membership_expiry ? (
           <button style={btn('#b45309')} onClick={() => act('revoke_premium')} disabled={busy}>Revoke Premium</button>
         ) : (

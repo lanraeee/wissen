@@ -445,6 +445,25 @@ export async function sendPasswordResetEmail(to: string, name: string, resetUrl:
   })
 }
 
+// ─── Admin-issued temporary password ───────────────────────────────────────
+export async function sendTempPasswordEmail(to: string, name: string, tempPassword: string) {
+  const firstName = firstNameOf(name)
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://wissenhaus.org'
+  return sendEmail({
+    from: FROM,
+    to,
+    subject: 'Your Wissen-Haus temporary password',
+    html: shell(`
+      <span class="badge">Password Reset</span>
+      <h2>Hi ${firstName},</h2>
+      <p>A Wissen-Haus admin has reset your password on your behalf. Use the temporary password below to log in, then change it right away.</p>
+      ${fieldMono('Temporary password', tempPassword, '1.1rem')}
+      <a href="${esc(siteUrl)}/login" class="btn">Log in →</a>
+      <p style="font-size:.85rem;color:#8a9a8f">If you didn't request this, please contact us immediately at <a href="mailto:info@wissenhaus.org" style="color:#1a3c2e">info@wissenhaus.org</a>.</p>
+    `),
+  })
+}
+
 // ─── Password changed confirmation (to user) ───────────────────────────────
 export async function sendPasswordChangedEmail(to: string, name: string) {
   const firstName = firstNameOf(name)
