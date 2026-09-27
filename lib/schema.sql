@@ -184,3 +184,42 @@ CREATE TABLE IF NOT EXISTS fair_registrations (
 );
 CREATE INDEX IF NOT EXISTS idx_fair_reg_event    ON fair_registrations(event_id, created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_fair_reg_token    ON fair_registrations(checkin_token);
+
+CREATE TABLE IF NOT EXISTS newsletter_subscribers (
+  id                 UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  email              TEXT UNIQUE NOT NULL,
+  name               TEXT,
+  source             TEXT NOT NULL DEFAULT 'admin',
+  status             TEXT NOT NULL DEFAULT 'subscribed' CHECK (status IN ('subscribed', 'unsubscribed')),
+  unsubscribe_token  TEXT UNIQUE NOT NULL,
+  subscribed_at      TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  unsubscribed_at    TIMESTAMPTZ
+);
+CREATE INDEX IF NOT EXISTS idx_newsletter_subscribers_status ON newsletter_subscribers(status);
+
+-- `body` is plain text (paragraphs separated by a blank line) rather than raw
+-- HTML -- this codebase never renders admin-authored markup as HTML anywhere
+-- else, and a newsletter compose box is not the place to start. lib/email.ts's
+-- textToEmailHtml() escapes it and turns paragraph breaks into <p> tags at
+-- send/preview time.
+CREATE TABLE IF NOT EXISTS newsletter_templates (
+  id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  name        TEXT NOT NULL,
+  subject     TEXT NOT NULL DEFAULT '',
+  body        TEXT NOT NULL DEFAULT '',
+  created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS newsletter_campaigns (
+  id                UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  subject           TEXT NOT NULL,
+  body              TEXT NOT NULL,
+  status            TEXT NOT NULL DEFAULT 'draft' CHECK (status IN ('draft', 'sending', 'sent', 'failed')),
+  recipient_count   INTEGER NOT NULL DEFAULT 0,
+  sent_count        INTEGER NOT NULL DEFAULT 0,
+  failed_count      INTEGER NOT NULL DEFAULT 0,
+  created_at        TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  sent_at           TIMESTAMPTZ
+);
+CREATE INDEX IF NOT EXISTS idx_newsletter_campaigns_status ON newsletter_campaigns(status, created_at DESC);

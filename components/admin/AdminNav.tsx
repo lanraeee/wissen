@@ -17,6 +17,8 @@ export const NAV = [
   ['Career Fair', '/admin/career-fair'],
   ['Testimonials', '/admin/testimonials'],
   ['Content', '/admin/content'],
+  ['Newsletter', '/admin/newsletter'],
+  ['Email Templates', '/admin/email-templates'],
   ['Settings', '/admin/settings'],
 ] as const
 

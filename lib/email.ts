@@ -558,3 +558,27 @@ export async function sendFairCheckinReminder(opts: {
     `),
   })
 }
+
+// ─── Newsletter campaigns (admin-composed, sent to the subscriber list) ────
+// Campaign/template content is stored as plain text (see lib/schema.sql's
+// note on newsletter_campaigns.body), not raw HTML -- turns it into
+// paragraphs the same way it'll read in the compose box.
+export function textToEmailHtml(body: string) {
+  return body
+    .split(/\n{2,}/)
+    .map(para => `<p>${esc(para).replace(/\n/g, '<br/>')}</p>`)
+    .join('')
+}
+
+export async function sendNewsletterEmail(to: string, subject: string, body: string, unsubscribeUrl: string) {
+  return sendEmail({
+    from: FROM,
+    to,
+    subject,
+    html: shell(`
+      ${textToEmailHtml(body)}
+      <div class="divider"></div>
+      <p style="font-size:.78rem;color:#8a9a8f">You're receiving this because you're subscribed to Wissen-Haus updates. <a href="${esc(unsubscribeUrl)}" style="color:#8a9a8f;text-decoration:underline">Unsubscribe</a></p>
+    `),
+  })
+}
