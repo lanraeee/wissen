@@ -16,6 +16,9 @@ export function DashboardIcon({ size = 20 }: IconProps) {
 export function AnalyticsIcon({ size = 20 }: IconProps) {
   return <svg {...base(size)}><path d="M4 20V10M12 20V4M20 20v-7" /></svg>
 }
+export function ActivityIcon({ size = 20 }: IconProps) {
+  return <svg {...base(size)}><path d="M22 12h-4l-3 9L9 3l-3 9H2" /></svg>
+}
 export function UsersIcon({ size = 20 }: IconProps) {
   return <svg {...base(size)}><circle cx="9" cy="8" r="3.2" /><path d="M2.5 20a6.5 6.5 0 0 1 13 0" /><path d="M16 5.2a3.2 3.2 0 0 1 0 6.2M21.5 20a6.5 6.5 0 0 0-4-6" /></svg>
 }
@@ -56,6 +59,7 @@ export function MenuIcon({ size = 20 }: IconProps) {
 export const NAV_ICONS: Record<string, (props: IconProps) => React.ReactElement> = {
   '/admin': DashboardIcon,
   '/admin/analytics': AnalyticsIcon,
+  '/admin/activity': ActivityIcon,
   '/admin/users': UsersIcon,
   '/admin/submissions': SubmissionsIcon,
   '/admin/opportunities': OpportunitiesIcon,

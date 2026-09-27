@@ -96,6 +96,53 @@ async function getRecentViews() {
   `
 }
 
+async function getDailyTrend() {
+  const rows = await sql`
+    SELECT DATE(created_at) AS day, COUNT(*) AS views
+    FROM page_views
+    WHERE created_at >= NOW() - INTERVAL '14 days'
+    GROUP BY day
+    ORDER BY day ASC
+  `
+  const byDay = new Map(rows.map(r => [new Date(r.day as string).toISOString().slice(0, 10), Number(r.views)]))
+  const days: { date: string; views: number }[] = []
+  for (let i = 13; i >= 0; i--) {
+    const d = new Date()
+    d.setDate(d.getDate() - i)
+    const key = d.toISOString().slice(0, 10)
+    days.push({ date: key, views: byDay.get(key) ?? 0 })
+  }
+  return days
+}
+
+// Cross-referenced business metrics, not just raw traffic -- gives one
+// "overall" pulse rather than pure page-view counts. Each query is
+// independently defensive: donation_projects self-migrates its table on
+// first admin use, so a brand-new environment shouldn't 500 this page.
+async function getBusinessMetrics() {
+  const safe = async (fn: () => Promise<unknown[]>) => {
+    try { return await fn() } catch { return [{ c: 0 }] }
+  }
+  const [users, newUsers, fairRegs, fairCheckedIn, donations, pendingSubs] = await Promise.all([
+    safe(() => sql`SELECT COUNT(*) AS c FROM users`),
+    safe(() => sql`SELECT COUNT(*) AS c FROM users WHERE created_at >= NOW() - INTERVAL '7 days'`),
+    safe(() => sql`SELECT COUNT(*) AS c FROM fair_registrations`),
+    safe(() => sql`SELECT COUNT(*) AS c FROM fair_registrations WHERE checked_in`),
+    safe(() => sql`SELECT COALESCE(SUM(raised_ngn),0) AS raised, COALESCE(SUM(goal_ngn),0) AS goal FROM donation_projects WHERE status = 'published'`),
+    safe(() => sql`SELECT COUNT(*) AS c FROM submissions WHERE status = 'pending' OR status IS NULL`),
+  ])
+  const n = (rows: unknown[], key: string) => Number((rows[0] as Record<string, unknown> | undefined)?.[key] ?? 0)
+  return {
+    totalUsers: n(users, 'c'),
+    newUsersWeek: n(newUsers, 'c'),
+    fairRegistrations: n(fairRegs, 'c'),
+    fairCheckedIn: n(fairCheckedIn, 'c'),
+    donationsRaised: n(donations, 'raised'),
+    donationsGoal: n(donations, 'goal'),
+    pendingSubmissions: n(pendingSubs, 'c'),
+  }
+}
+
 function Bar({ value, max }: { value: number; max: number }) {
   const pct = max > 0 ? Math.round((value / max) * 100) : 0
   return (
@@ -114,6 +161,34 @@ function Section({ title, children }: { title: string; children: React.ReactNode
       <h3 style={{ margin: '0 0 12px', fontSize: '.8rem', letterSpacing: '.1em', textTransform: 'uppercase', color: '#8a9a8f' }}>{title}</h3>
       {children}
     </div>
+  )
+}
+
+function TrendChart({ days }: { days: { date: string; views: number }[] }) {
+  const max = Math.max(1, ...days.map(d => d.views))
+  return (
+    <Card style={{ padding: '20px 20px 12px' }}>
+      <div style={{ display: 'flex', alignItems: 'flex-end', gap: 6, height: 120 }}>
+        {days.map(d => (
+          <div key={d.date} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, height: '100%', justifyContent: 'flex-end' }}>
+            <div
+              title={`${d.views} views`}
+              style={{
+                width: '100%', minHeight: 2, borderRadius: '3px 3px 0 0',
+                background: '#1a3c2e', height: `${Math.max(2, Math.round((d.views / max) * 100))}%`,
+              }}
+            />
+          </div>
+        ))}
+      </div>
+      <div style={{ display: 'flex', gap: 6, marginTop: 8 }}>
+        {days.map(d => (
+          <div key={d.date} style={{ flex: 1, textAlign: 'center', fontSize: '.62rem', color: '#8a9a8f' }}>
+            {new Date(d.date).toLocaleDateString('en-GB', { day: 'numeric' })}
+          </div>
+        ))}
+      </div>
+    </Card>
   )
 }
 
@@ -142,9 +217,10 @@ function RowList({ rows, maxVal }: { rows: { label: string; value: number }[]; m
 }
 
 export default async function AnalyticsPage() {
-  const [overview, topPages, referrers, countries, devices, browsers, utmSources, recent] = await Promise.all([
+  const [overview, topPages, referrers, countries, devices, browsers, utmSources, recent, dailyTrend, business] = await Promise.all([
     getOverview(), getTopPages(), getReferrers(), getCountries(),
     getDevices(), getBrowsers(), getUTMSources(), getRecentViews(),
+    getDailyTrend(), getBusinessMetrics(),
   ])
 
   const statCard = (label: string, value: number | string, sub: string) => (
@@ -170,11 +246,21 @@ export default async function AnalyticsPage() {
       </div>
 
       <Section title="Overview">
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 14, marginBottom: 32 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 14, marginBottom: 24 }}>
           {statCard('Views Today', overview.today, 'last 24 hours')}
           {statCard('Views (7 days)', overview.week, 'last 7 days')}
           {statCard('Views (30 days)', overview.month, 'last 30 days')}
           {statCard('Unique Sessions', overview.sessions, 'last 30 days')}
+        </div>
+        <TrendChart days={dailyTrend} />
+      </Section>
+
+      <Section title="Overall Health">
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 14, marginBottom: 32 }}>
+          {statCard('Total Users', business.totalUsers, `+${business.newUsersWeek} this week`)}
+          {statCard('Fair Registrations', business.fairRegistrations, `${business.fairCheckedIn} checked in`)}
+          {statCard('Donations Raised', `₦${business.donationsRaised.toLocaleString()}`, business.donationsGoal > 0 ? `of ₦${business.donationsGoal.toLocaleString()} goal` : 'across published campaigns')}
+          {statCard('Pending Submissions', business.pendingSubmissions, 'awaiting review')}
         </div>
       </Section>
 

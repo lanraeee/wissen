@@ -8,6 +8,7 @@ import { useSubmissionsBadge, totalCount } from './useSubmissionsBadge'
 export const NAV = [
   ['Dashboard', '/admin'],
   ['Analytics', '/admin/analytics'],
+  ['Activity Log', '/admin/activity'],
   ['Users', '/admin/users'],
   ['Submissions', '/admin/submissions'],
   ['Opportunities', '/admin/opportunities'],
