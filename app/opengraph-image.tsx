@@ -1,19 +1,54 @@
 import { ImageResponse } from 'next/og'
+import sql from '@/lib/db'
 
 export const runtime = 'edge'
 export const alt = 'Wissen-Haus Empowerment Foundation'
 export const size = { width: 1200, height: 630 }
 export const contentType = 'image/png'
 
+interface StatItem { count: string; suffix: string; label: string }
+
+const FALLBACK_EYEBROW = 'Africa & the Diaspora · Est. 2025'
+const FALLBACK_STATS: StatItem[] = [
+  { count: '500', suffix: '+', label: 'Students' },
+  { count: '30', suffix: '+', label: 'Mentors' },
+  { count: '15', suffix: '+', label: 'Schools' },
+]
+
+// Best-effort: this card should always render something on-brand even if
+// the DB is briefly unreachable from the edge, so every field below falls
+// back to a sensible static default rather than failing the whole image.
+async function getContent() {
+  try {
+    const [settingsRow, statsRow, heroRow] = await Promise.all([
+      sql`SELECT value FROM site_content WHERE key = 'site_settings'`,
+      sql`SELECT value FROM site_content WHERE key = 'homepage_stats'`,
+      sql`SELECT value FROM site_content WHERE key = 'homepage_hero_slides'`,
+    ])
+    const tagline = (settingsRow[0]?.value as { tagline?: string } | undefined)?.tagline
+    const stats = statsRow[0]?.value as StatItem[] | undefined
+    const slides = heroRow[0]?.value as { eyebrow?: string }[] | undefined
+    return {
+      tagline: tagline || 'Empowering Youth, Shaping Futures',
+      eyebrow: slides?.[0]?.eyebrow || FALLBACK_EYEBROW,
+      stats: Array.isArray(stats) && stats.length >= 3 ? stats.slice(0, 3) : FALLBACK_STATS,
+    }
+  } catch {
+    return { tagline: 'Empowering Youth, Shaping Futures', eyebrow: FALLBACK_EYEBROW, stats: FALLBACK_STATS }
+  }
+}
+
 export default async function Image() {
-  // Load the actual logo
-  const logoSrc = await fetch('https://www.wissenhaus.org/img/logo.png')
-    .then((r) => r.arrayBuffer())
-    .catch(() => null)
+  const [logoSrc, { tagline, eyebrow, stats }] = await Promise.all([
+    fetch('https://www.wissenhaus.org/img/logo.png').then((r) => r.arrayBuffer()).catch(() => null),
+    getContent(),
+  ])
 
   const logoDataUrl = logoSrc
     ? `data:image/png;base64,${Buffer.from(logoSrc).toString('base64')}`
     : null
+
+  const [taglineLine1, taglineLine2] = tagline.split(',').map(s => s.trim())
 
   return new ImageResponse(
     (
@@ -162,7 +197,7 @@ export default async function Image() {
                 display: 'flex',
               }}
             >
-              Ibadan, Nigeria · Est. 2025
+              {eyebrow}
             </span>
           </div>
 
@@ -171,7 +206,7 @@ export default async function Image() {
             <div
               style={{
                 color: '#0F2D1D',
-                fontSize: 52,
+                fontSize: 56,
                 fontWeight: 900,
                 lineHeight: 1.05,
                 letterSpacing: -1.5,
@@ -179,9 +214,8 @@ export default async function Image() {
                 flexDirection: 'column',
               }}
             >
-              <span style={{ display: 'flex' }}>Bridging the</span>
-              <span style={{ display: 'flex', color: '#B8952A' }}>Skills Gap</span>
-              <span style={{ display: 'flex' }}>in Nigeria.</span>
+              <span style={{ display: 'flex' }}>{taglineLine1 || 'Empowering Youth'}</span>
+              <span style={{ display: 'flex', color: '#B8952A' }}>{taglineLine2 || 'Shaping Futures'}</span>
             </div>
             <p
               style={{
@@ -193,18 +227,14 @@ export default async function Image() {
                 maxWidth: 480,
               }}
             >
-              Practical career guidance, mentorship and global exposure for every young Nigerian.
+              Practical career guidance, mentorship and global exposure for young Africans and the diaspora.
             </p>
           </div>
 
           {/* Stats row */}
           <div style={{ display: 'flex', gap: 32, alignItems: 'flex-end', justifyContent: 'space-between' }}>
             <div style={{ display: 'flex', gap: 32 }}>
-              {[
-                ['500+', 'Students'],
-                ['30+', 'Mentors'],
-                ['15+', 'Schools'],
-              ].map(([num, label]) => (
+              {stats.map(s => [`${s.count}${s.suffix}`, s.label] as const).map(([num, label]) => (
                 <div key={label} style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                   <span
                     style={{

@@ -4,21 +4,19 @@ import Image from 'next/image'
 import TestimonialCarousel from '@/components/TestimonialCarousel'
 import HeroSlider, { type HeroContent } from '@/components/HeroSlider'
 import { getSiteContent } from '@/lib/site-content'
+import { pageMetadata } from '@/lib/seo'
 
-export const metadata: Metadata = {
-  title: 'Wissen-Haus Empowerment Foundation · Bridging the Skills Gap',
-  description: 'We equip African youth and the diaspora with practical skills, mentorship and global exposure for economic independence. 500+ students reached since launching in Ibadan, Nigeria.',
-  openGraph: {
-    title: 'Wissen-Haus — Bridging the Skills Gap for African Youth',
-    description: 'Empowering young Africans and the diaspora with practical career skills, mentorship, and global exposure. 500+ students reached since launching in Ibadan, Nigeria.',
-    images: [{ url: '/opengraph-image', width: 1200, height: 630, alt: 'Wissen-Haus Empowerment Foundation' }],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Wissen-Haus — Bridging the Skills Gap for African Youth',
-    description: 'Empowering young Africans and the diaspora with practical career skills, mentorship, and global exposure.',
-    images: ['/opengraph-image'],
-  },
+// Dynamic (not a static `metadata` export) so the OG title always matches
+// the live, admin-editable tagline (Settings tab) instead of a hardcoded
+// copy that drifts out of sync with it.
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSiteContent<{ tagline?: string }>('site_settings')
+  const tagline = settings?.tagline || 'Empowering Youth, Shaping Futures'
+  return pageMetadata({
+    title: `Wissen-Haus Empowerment Foundation · ${tagline}`,
+    ogTitle: `Wissen-Haus — ${tagline}`,
+    description: 'We equip African youth and the diaspora with practical skills, mentorship and global exposure for economic independence. Founded in Ibadan, Nigeria, now reaching young people across Africa and internationally.',
+  })
 }
 
 const ARROW = (
