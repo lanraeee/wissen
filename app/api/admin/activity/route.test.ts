@@ -19,14 +19,24 @@ describe('GET /api/admin/activity', () => {
     expect(sqlMock).not.toHaveBeenCalled()
   })
 
-  it('a director sees the unfiltered feed', async () => {
+  it('a director sees the unfiltered feed, minus the master admin', async () => {
     adminGuardMock.mockResolvedValue({ id: 'dir-1', email: 'director@wissenhaus.org', role: 'admin' })
     sqlMock.mockResolvedValueOnce([{ action: 'x' }])
     const res = await GET()
     const body = await res.json()
     expect(body.viewerTier).toBe('director')
     const query = (sqlMock.mock.calls[0][0] as string[]).join('')
-    expect(query).not.toContain('WHERE')
+    expect(query).not.toContain('actor_role')
+    expect(query).not.toContain('actor_id')
+    expect(query).toContain('actor_email')
+  })
+
+  it('excludes the master admin even from their own view', async () => {
+    adminGuardMock.mockResolvedValue({ id: 'master-1', email: 'wissenhaus@outlook.com', role: 'admin' })
+    sqlMock.mockResolvedValueOnce([])
+    await GET()
+    const query = (sqlMock.mock.calls[0][0] as string[]).join('')
+    expect(query).toContain('actor_email')
   })
 
   it('a non-director admin sees editor actions plus their own', async () => {
