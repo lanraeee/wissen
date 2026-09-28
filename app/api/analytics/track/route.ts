@@ -3,6 +3,7 @@ import { z } from 'zod'
 import sql from '@/lib/db'
 import { parseBody } from '@/lib/validation'
 import { getSession } from '@/lib/auth'
+import { log } from '@/lib/logger'
 
 const TrackSchema = z.object({
   pathname: z.string().min(1).max(500),
@@ -57,7 +58,14 @@ export async function POST(req: NextRequest) {
     `
 
     return NextResponse.json({ ok: true })
-  } catch {
+  } catch (err) {
+    // Log, don't swallow. The caller is AnalyticsTracker, whose fetch ends in
+    // `.catch(() => {})` so nothing surfaces client-side -- when this route
+    // started failing because the DB was missing a column the INSERT had
+    // begun referencing, page views silently stopped recording for days with
+    // no error anywhere. A failed view must never break the page, but it
+    // should always be visible in the logs.
+    log.error('analytics track', err)
     return NextResponse.json({ ok: false }, { status: 500 })
   }
 }

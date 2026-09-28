@@ -5,6 +5,13 @@ import RefreshButton from '@/components/admin/RefreshButton'
 
 export const metadata: Metadata = { title: 'Analytics · Wissen-Haus Admin' }
 
+// Always render per request. This is a live dashboard: every query below is
+// a relative window (NOW() - INTERVAL …), so a cached render would quietly
+// show a frozen snapshot. It renders dynamically today only because the
+// admin layout reads cookies -- stating it here means that stays true even
+// if the layout changes.
+export const dynamic = 'force-dynamic'
+
 // Same shape SettingsEditor/Footer read from site_content's 'site_settings'
 // key -- only the fields this page cares about.
 interface BusinessListings {
