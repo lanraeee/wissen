@@ -1,13 +1,15 @@
 ﻿import type { Metadata } from 'next'
+import { pageMetadata } from '@/lib/seo'
 import Link from 'next/link'
 import PartnerForm from '@/components/PartnerForm'
 import PartnersCarousel, { type Partner } from '@/components/PartnersCarousel'
 import { getSiteContent } from '@/lib/site-content'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: 'Partner With Us · Wissen-Haus',
+  ogTitle: 'Partner With Us',
   description: 'Partner with Wissen-Haus to empower African youth and the diaspora. For schools, companies, and individuals.',
-}
+})
 
 export default async function PartnerPage() {
   const partners = (await getSiteContent<Partner[]>('partners')) ?? []

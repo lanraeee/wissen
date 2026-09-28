@@ -1,11 +1,13 @@
 ﻿import type { Metadata } from 'next'
+import { pageMetadata } from '@/lib/seo'
 import Link from 'next/link'
 import { getCourses } from '@/lib/courses'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: 'Courses · Wissen-Haus',
+  ogTitle: 'Courses',
   description: 'Free and premium certificate courses for Nigerian youth. Build real career skills.',
-}
+})
 
 export default async function CoursesPage() {
   const COURSES = await getCourses()

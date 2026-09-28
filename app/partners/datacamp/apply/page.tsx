@@ -1,10 +1,12 @@
 import type { Metadata } from 'next'
+import { pageMetadata } from '@/lib/seo'
 import ScholarshipApplicationForm from '@/components/ScholarshipApplicationForm'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: 'DataCamp Scholarship Application · Wissen-Haus',
+  ogTitle: 'Apply for a DataCamp Scholarship',
   description: 'Apply for a Wissen-Haus × DataCamp scholarship — free access to DataCamp for motivated young people facing genuine barriers to learning data, analytics and AI skills.',
-}
+})
 
 export default function DataCampScholarshipApplyPage() {
   return (

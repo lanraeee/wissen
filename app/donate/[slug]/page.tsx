@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import sql from '@/lib/db'
 import DonateWidget from '@/components/DonateWidget'
+import { pageMetadata } from '@/lib/seo'
 
 type Project = {
   id: number
@@ -56,10 +57,12 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params
   const p = await getProject(slug)
   if (!p) return { title: 'Not Found · Wissen-Haus' }
-  return {
+  const description = p.subtitle ?? p.hero_desc?.slice(0, 160) ?? 'A Wissen-Haus donation drive.'
+  return pageMetadata({
     title: `${p.title} · Wissen-Haus`,
-    description: p.subtitle ?? p.hero_desc?.slice(0, 160) ?? 'A Wissen-Haus donation drive.',
-  }
+    ogTitle: p.title,
+    description,
+  })
 }
 
 const ARROW = (

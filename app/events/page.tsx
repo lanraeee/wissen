@@ -1,10 +1,12 @@
 import type { Metadata } from 'next'
+import { pageMetadata } from '@/lib/seo'
 import Link from 'next/link'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: 'Events & Cafés · Wissen-Haus',
+  ogTitle: 'Events & Cafés',
   description: 'Networking events, career cafés, and workshops that connect African youth and the diaspora with professionals in relaxed, inspiring settings.',
-}
+})
 
 const ARROW = (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">

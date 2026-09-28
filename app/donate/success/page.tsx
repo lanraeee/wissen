@@ -1,11 +1,13 @@
 ﻿import type { Metadata } from 'next'
+import { pageMetadata } from '@/lib/seo'
 import Link from 'next/link'
 import { verifyStripeSession, recordDonation } from '@/lib/donations'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: 'Thank You · Wissen-Haus',
+  ogTitle: 'Thank You',
   description: 'Your donation to Wissen-Haus has been received. Thank you for empowering youth across Africa and the diaspora.',
-}
+})
 
 interface Props {
   searchParams: Promise<{ session_id?: string }>

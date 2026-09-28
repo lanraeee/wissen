@@ -1,10 +1,12 @@
 ﻿import type { Metadata } from 'next'
+import { pageMetadata } from '@/lib/seo'
 import ContactForm from '@/components/ContactForm'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: 'Contact Us · Wissen-Haus',
+  ogTitle: 'Contact Us',
   description: 'Get in touch with Wissen-Haus. Contact us for inquiries, partnerships, volunteering, or general questions.',
-}
+})
 
 export default function ContactPage() {
   return (

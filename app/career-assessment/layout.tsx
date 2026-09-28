@@ -5,11 +5,11 @@ import { pageMetadata } from '@/lib/seo'
 // `metadata` itself -- a server-side layout in the same segment is the
 // standard way to attach metadata to a client-component page.
 export const metadata: Metadata = pageMetadata({
-  title: 'Career Pathways · Wissen-Haus',
-  ogTitle: 'Career Pathways',
-  description: 'Discover your career path with realistic salary ranges in Nigeria, the skills you need, and opportunities across Africa and the diaspora.',
+  title: 'Career Assessment · Wissen-Haus',
+  ogTitle: 'Career Assessment',
+  description: 'Take the free Wissen-Haus Career Assessment to discover career paths that match your interests and strengths, with personalised next steps.',
 })
 
-export default function CareerPathwaysLayout({ children }: { children: React.ReactNode }) {
+export default function CareerAssessmentLayout({ children }: { children: React.ReactNode }) {
   return children
 }

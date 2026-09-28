@@ -1,14 +1,16 @@
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
+import { pageMetadata } from '@/lib/seo'
 import Link from 'next/link'
 import { getPledge, getBankDetails, accountFor } from '@/lib/bank-transfer'
 import BankTransferPanel, { type DetailRow } from '@/components/BankTransferPanel'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: 'Complete Your Bank Transfer · Wissen-Haus',
+  ogTitle: 'Complete Your Bank Transfer',
   description: 'Bank account details for your donation to Wissen-Haus Empowerment Foundation.',
   robots: { index: false, follow: false },
-}
+})
 
 // A pledge's status changes as the donor and admin act on it, so this page must
 // never be cached.

@@ -1,11 +1,13 @@
 ﻿import type { Metadata } from 'next'
+import { pageMetadata } from '@/lib/seo'
 import OpportunityGrid from '@/components/OpportunityGrid'
 import StreakBadge from '@/components/StreakBadge'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: 'Competitions & Hackathons · Wissen-Haus Community',
+  ogTitle: 'Competitions & Hackathons',
   description: 'Online competitions, hackathons, and challenges open to African youth.',
-}
+})
 
 export default function CompetitionsPage() {
   return (

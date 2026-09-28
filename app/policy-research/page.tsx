@@ -1,13 +1,15 @@
 import type { Metadata } from 'next'
+import { pageMetadata } from '@/lib/seo'
 import PolicyTimeline, { type PolicyPaper } from '@/components/PolicyTimeline'
 import sql from '@/lib/db'
 
 export const dynamic = 'force-dynamic'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: 'Policy & Research · Wissen-Haus',
+  ogTitle: 'Policy & Research',
   description: 'Comprehensive policy papers and research reports on youth employment, skills gap, and economic independence across Nigeria, Africa, and the diaspora.',
-}
+})
 
 async function getPapers(): Promise<PolicyPaper[]> {
   try {

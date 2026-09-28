@@ -1,12 +1,14 @@
 import type { Metadata } from 'next'
+import { pageMetadata } from '@/lib/seo'
 import Link from 'next/link'
 import Image from 'next/image'
 import VolunteerForm from '@/components/VolunteerForm'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: 'Volunteer · Wissen-Haus',
+  ogTitle: 'Volunteer With Us',
   description: 'Volunteer with Wissen-Haus and help bridge the skills gap in Ibadan and beyond. Mentor, train and support African youth and the diaspora.',
-}
+})
 
 const ARROW = (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">

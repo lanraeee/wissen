@@ -1,12 +1,14 @@
 import type { Metadata } from 'next'
+import { pageMetadata } from '@/lib/seo'
 import Link from 'next/link'
 import Image from 'next/image'
 import DonateWidget from '@/components/DonateWidget'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: 'Donate · Wissen-Haus',
+  ogTitle: 'Donate to Wissen-Haus',
   description: 'Fuel a young African or diaspora changemaker\'s future. Your gift funds free Career Clarity Fairs, mentorship and global exposure for students who need it most.',
-}
+})
 
 const ARROW = (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">

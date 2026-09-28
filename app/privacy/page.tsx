@@ -1,10 +1,12 @@
 import type { Metadata } from 'next'
+import { pageMetadata } from '@/lib/seo'
 import Link from 'next/link'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: 'Privacy Policy · Wissen-Haus',
+  ogTitle: 'Privacy Policy',
   description: 'How Wissen-Haus Empowerment Foundation collects, uses, and protects your personal information.',
-}
+})
 
 const LAST_UPDATED = '13 September 2026'
 

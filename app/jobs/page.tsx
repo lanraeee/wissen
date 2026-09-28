@@ -1,11 +1,13 @@
 ﻿import type { Metadata } from 'next'
+import { pageMetadata } from '@/lib/seo'
 import OpportunityGrid from '@/components/OpportunityGrid'
 import StreakBadge from '@/components/StreakBadge'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: 'Remote Jobs · Wissen-Haus Community',
+  ogTitle: 'Remote Jobs',
   description: 'Remote job opportunities curated for Nigerian, African, and diaspora youth. Updated daily.',
-}
+})
 
 export default function JobsPage() {
   return (

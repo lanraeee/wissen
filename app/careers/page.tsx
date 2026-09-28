@@ -1,11 +1,13 @@
 ﻿import type { Metadata } from 'next'
+import { pageMetadata } from '@/lib/seo'
 import Link from 'next/link'
 import { getSiteContent } from '@/lib/site-content'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: 'Careers · Wissen-Haus',
+  ogTitle: 'Careers at Wissen-Haus',
   description: 'Join the Wissen-Haus team and help bridge the skills gap for African youth and the diaspora.',
-}
+})
 
 interface Role { title: string; type: string; desc: string }
 

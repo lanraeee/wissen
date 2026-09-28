@@ -1,10 +1,12 @@
 import type { Metadata } from 'next'
+import { pageMetadata } from '@/lib/seo'
 import Link from 'next/link'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: 'Opportunity Blueprint Podcast · Wissen-Haus',
+  ogTitle: 'Opportunity Blueprint Podcast',
   description: 'Our flagship podcast featuring weekly career insights and guidance from professionals who\'ve walked the path.',
-}
+})
 
 export default function PodcastPage() {
   return (

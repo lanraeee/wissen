@@ -1,15 +1,30 @@
 ﻿import type { MetadataRoute } from 'next'
+import sql from '@/lib/db'
+import { getCourses } from '@/lib/courses'
 
 const BASE = 'https://www.wissenhaus.org'
 
-export default function sitemap(): MetadataRoute.Sitemap {
+// Best-effort: a failed query drops that section of the sitemap rather than
+// failing the whole thing (Google will just see fewer URLs until the next
+// crawl of /sitemap.xml, not an error page).
+async function safe<T>(fn: () => Promise<T[]>): Promise<T[]> {
+  try {
+    return await fn()
+  } catch {
+    return []
+  }
+}
+
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date()
 
   const staticRoutes: MetadataRoute.Sitemap = [
     { url: BASE, lastModified: now, changeFrequency: 'weekly', priority: 1.0 },
+    { url: `${BASE}/about`, lastModified: now, changeFrequency: 'monthly', priority: 0.8 },
     { url: `${BASE}/about/story`, lastModified: now, changeFrequency: 'monthly', priority: 0.8 },
     { url: `${BASE}/founder`, lastModified: now, changeFrequency: 'monthly', priority: 0.8 },
     { url: `${BASE}/team`, lastModified: now, changeFrequency: 'monthly', priority: 0.8 },
+    { url: `${BASE}/impact`, lastModified: now, changeFrequency: 'monthly', priority: 0.7 },
     { url: `${BASE}/contact`, lastModified: now, changeFrequency: 'monthly', priority: 0.6 },
     { url: `${BASE}/programmes`, lastModified: now, changeFrequency: 'weekly', priority: 0.9 },
     { url: `${BASE}/career-clarity-fair`, lastModified: now, changeFrequency: 'weekly', priority: 0.8 },
@@ -23,7 +38,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${BASE}/policy-research`, lastModified: now, changeFrequency: 'weekly', priority: 0.7 },
     { url: `${BASE}/volunteer`, lastModified: now, changeFrequency: 'monthly', priority: 0.7 },
     { url: `${BASE}/partner`, lastModified: now, changeFrequency: 'monthly', priority: 0.7 },
+    { url: `${BASE}/partners/datacamp`, lastModified: now, changeFrequency: 'monthly', priority: 0.8 },
+    { url: `${BASE}/partners/datacamp/apply`, lastModified: now, changeFrequency: 'monthly', priority: 0.8 },
     { url: `${BASE}/donate`, lastModified: now, changeFrequency: 'monthly', priority: 0.7 },
+    { url: `${BASE}/courses`, lastModified: now, changeFrequency: 'weekly', priority: 0.8 },
     { url: `${BASE}/jobs`, lastModified: now, changeFrequency: 'daily', priority: 0.8 },
     { url: `${BASE}/internships`, lastModified: now, changeFrequency: 'daily', priority: 0.8 },
     { url: `${BASE}/scholarships`, lastModified: now, changeFrequency: 'daily', priority: 0.8 },
@@ -31,5 +49,27 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${BASE}/wiki`, lastModified: now, changeFrequency: 'monthly', priority: 0.8 },
   ]
 
-  return staticRoutes
+  const [courses, campaigns, threads] = await Promise.all([
+    safe(async () => await getCourses()),
+    safe(async () => (await sql`SELECT slug, updated_at FROM donation_projects WHERE status = 'published'`) as { slug: string; updated_at: string | null }[]),
+    safe(async () => (await sql`SELECT id, created_at FROM forum_threads`) as { id: string; created_at: string }[]),
+  ])
+
+  const courseRoutes: MetadataRoute.Sitemap = courses.map(c => ({
+    url: `${BASE}/courses/${c.id}`, lastModified: now, changeFrequency: 'monthly', priority: 0.7,
+  }))
+
+  const campaignRoutes: MetadataRoute.Sitemap = campaigns.map(c => ({
+    url: `${BASE}/donate/${c.slug}`,
+    lastModified: c.updated_at ? new Date(c.updated_at) : now,
+    changeFrequency: 'weekly', priority: 0.7,
+  }))
+
+  const threadRoutes: MetadataRoute.Sitemap = threads.map(t => ({
+    url: `${BASE}/community/threads/${t.id}`,
+    lastModified: new Date(t.created_at),
+    changeFrequency: 'monthly', priority: 0.5,
+  }))
+
+  return [...staticRoutes, ...courseRoutes, ...campaignRoutes, ...threadRoutes]
 }

@@ -9,10 +9,10 @@ import { getSiteContent } from '@/lib/site-content'
 
 const BASE_METADATA: Metadata = {
   metadataBase: new URL('https://www.wissenhaus.org'),
-  title: {
-    default: 'Wissen-Haus Empowerment Foundation',
-    template: '%s · Wissen-Haus',
-  },
+  // No title template: every page already writes its own full title
+  // ("X · Wissen-Haus") rather than just "X", since that's simpler to read
+  // at a glance in each page file. A template here would double the suffix.
+  title: 'Wissen-Haus Empowerment Foundation',
   description: 'Bridging the skills gap for African youth and the diaspora — practical guidance, mentorship and global exposure for economic independence. Founded in Ibadan, Nigeria, now reaching young people across Africa and internationally, including the UK.',
   keywords: ['youth empowerment Africa', 'career guidance Nigeria', 'skills gap Africa', 'African diaspora youth', 'Ibadan youth foundation', 'mentorship Nigeria UK', 'Wissen-Haus'],
   authors: [{ name: 'Wissen-Haus Empowerment Foundation' }],

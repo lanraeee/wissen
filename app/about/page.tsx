@@ -1,11 +1,13 @@
 ﻿import type { Metadata } from 'next'
 import Link from 'next/link'
 import Image from 'next/image'
+import { pageMetadata } from '@/lib/seo'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: 'About Us · Wissen-Haus',
+  ogTitle: 'About Us',
   description: 'The Wissen-Haus journey: bridging the classroom and the world so every young African and diaspora changemaker can achieve economic independence.',
-}
+})
 
 export default function AboutPage() {
   return (

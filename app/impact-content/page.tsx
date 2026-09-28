@@ -1,13 +1,15 @@
 import type { Metadata } from 'next'
+import { pageMetadata } from '@/lib/seo'
 import Link from 'next/link'
 import sql from '@/lib/db'
 
 export const dynamic = 'force-dynamic'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: 'Impact Content · Wissen-Haus',
+  ogTitle: 'Impact Content',
   description: 'Social-impact storytelling that highlights African youth and diaspora changemakers doing extraordinary things.',
-}
+})
 
 interface Story {
   name: string

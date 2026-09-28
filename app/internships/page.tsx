@@ -1,11 +1,13 @@
 ﻿import type { Metadata } from 'next'
+import { pageMetadata } from '@/lib/seo'
 import OpportunityGrid from '@/components/OpportunityGrid'
 import StreakBadge from '@/components/StreakBadge'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: 'Internships · Wissen-Haus Community',
+  ogTitle: 'Internships',
   description: 'Internship opportunities open to Nigerian, African, and diaspora youth.',
-}
+})
 
 export default function InternshipsPage() {
   return (

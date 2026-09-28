@@ -1,10 +1,12 @@
 import type { Metadata } from 'next'
+import { pageMetadata } from '@/lib/seo'
 import Link from 'next/link'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: 'Impact · Wissen-Haus',
+  ogTitle: 'Our Impact',
   description: 'Real stories from the Wissen-Haus community — students and mentors who have changed their trajectory.',
-}
+})
 
 const TESTIMONIALS = [
   { name: 'Adaeze Obi', role: 'SS3 Student, Ibadan', quote: 'Before Wissen-Haus, I had no idea what I wanted to do after school. The Career Clarity Fair changed everything. I met a product designer who looked exactly like me, doing work I\'d never heard of. I applied for an internship the same week.' },

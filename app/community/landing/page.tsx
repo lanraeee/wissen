@@ -1,11 +1,13 @@
 import type { Metadata } from 'next'
+import { pageMetadata } from '@/lib/seo'
 import Link from 'next/link'
 import Image from 'next/image'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: 'Community Hub · Wissen-Haus',
+  ogTitle: 'Community Hub',
   description: 'Join the Wissen-Haus community hub to access scholarships, internships, jobs, courses, and mentorship.',
-}
+})
 
 export default function CommunityLandingPage() {
   return (

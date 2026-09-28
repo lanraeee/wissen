@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation'
 import { getCourse } from '@/lib/courses'
 import { getSession } from '@/lib/auth'
 import sql from '@/lib/db'
+import { pageMetadata } from '@/lib/seo'
 
 interface Props {
   params: Promise<{ courseId: string }>
@@ -13,7 +14,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { courseId } = await params
   const course = await getCourse(courseId)
   if (!course) return { title: 'Course Not Found' }
-  return { title: `${course.title} · Wissen-Haus`, description: course.tagline }
+  return pageMetadata({ title: `${course.title} · Wissen-Haus`, ogTitle: course.title, description: course.tagline })
 }
 
 export default async function CourseDetailPage({ params }: Props) {

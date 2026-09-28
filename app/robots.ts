@@ -6,7 +6,7 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: '*',
         allow: '/',
-        disallow: ['/admin', '/api/', '/profile', '/login', '/verify/'],
+        disallow: ['/admin', '/api/', '/profile', '/login', '/verify/', '/forgot-password', '/reset-password', '/unsubscribe'],
       },
     ],
     sitemap: 'https://www.wissenhaus.org/sitemap.xml',

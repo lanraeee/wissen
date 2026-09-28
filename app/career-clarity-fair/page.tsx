@@ -1,11 +1,13 @@
 import type { Metadata } from 'next'
+import { pageMetadata } from '@/lib/seo'
 import Link from 'next/link'
 import Image from 'next/image'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: 'Career Clarity Fair · Wissen-Haus',
+  ogTitle: 'Career Clarity Fair',
   description: 'A one-day career exploration fair for secondary school students in Africa and the diaspora. Meet professionals, explore careers, and discover your path.',
-}
+})
 
 export default function BootcampPage() {
   return (

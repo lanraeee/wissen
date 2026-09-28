@@ -1,12 +1,14 @@
 import type { Metadata } from 'next'
+import { pageMetadata } from '@/lib/seo'
 import Link from 'next/link'
 import Image from 'next/image'
 import { getSiteContent } from '@/lib/site-content'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: 'Meet the Founder · Wissen-Haus',
+  ogTitle: 'Meet the Founder',
   description: 'Meet Benz Olagbaye, Founder and Executive Director of Wissen-Haus Empowerment Foundation.',
-}
+})
 
 interface FounderContent {
   name: string

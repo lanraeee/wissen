@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { pageMetadata } from '@/lib/seo'
 import Link from 'next/link'
 import Image from 'next/image'
 import OpportunityGrid from '@/components/OpportunityGrid'
@@ -18,10 +19,11 @@ async function getThreads(): Promise<Thread[]> {
   return (await getSiteContent<Thread[]>('community_threads')) ?? []
 }
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: 'Community Hub · Wissen-Haus',
+  ogTitle: 'Community Hub',
   description: 'Scholarships, internships, mentorship, courses and a community feed—everything a young Nigerian changemaker needs in one place.',
-}
+})
 
 const ARROW = (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">

@@ -1,13 +1,15 @@
 import type { Metadata } from 'next'
+import { pageMetadata } from '@/lib/seo'
 import Link from 'next/link'
 import StreakBadge from '@/components/StreakBadge'
 import ThreadsClient from '@/components/ThreadsClient'
 import sql from '@/lib/db'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: 'Discussion Threads · Wissen-Haus Community',
+  ogTitle: 'Discussion Threads',
   description: 'Discuss, share wins, ask questions — the Wissen-Haus community discussion board.',
-}
+})
 
 interface WAPost { text: string; date: string; image?: string }
 interface WAChannel { url: string; name: string; description: string; posts: WAPost[] }
