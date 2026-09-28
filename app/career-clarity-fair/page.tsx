@@ -2,6 +2,8 @@ import type { Metadata } from 'next'
 import { pageMetadata } from '@/lib/seo'
 import Link from 'next/link'
 import Image from 'next/image'
+import { getPageCopy } from '@/lib/page-copy'
+import { CAREER_CLARITY_FAIR_SCHEMA } from '@/lib/page-copy-schema'
 
 export const metadata: Metadata = pageMetadata({
   title: 'Career Clarity Fair · Wissen-Haus',
@@ -9,19 +11,20 @@ export const metadata: Metadata = pageMetadata({
   description: 'A one-day career exploration fair for secondary school students in Africa and the diaspora. Meet professionals, explore careers, and discover your path.',
 })
 
-export default function BootcampPage() {
+export default async function BootcampPage() {
+  const c = await getPageCopy(CAREER_CLARITY_FAIR_SCHEMA)
   return (
     <>
       <section className="section section--tight" style={{ paddingTop: 'clamp(48px,6vw,84px)' }}>
         <div className="wrap">
           <div className="split">
             <div className="reveal">
-              <span className="eyebrow">Programmes · Career Clarity Fair</span>
-              <h1 className="display-lg mt-s">Career Clarity Fair</h1>
-              <p className="lead mt-m">A one-day career exploration fair open to all secondary school students in Africa and the diaspora — from JS1 to SS3. Meet real professionals, explore careers you&#39;ve never heard of, and leave with a clear direction.</p>
+              <span className="eyebrow">{c.heroEyebrow}</span>
+              <h1 className="display-lg mt-s">{c.heroTitle}</h1>
+              <p className="lead mt-m">{c.heroLead}</p>
               <div className="hero-cta mt-m">
-                <Link href="/career-clarity-fair/register" className="btn btn--lg">Register to attend</Link>
-                <Link href="/volunteer" className="btn btn--ghost">Bring it to your school</Link>
+                <Link href="/career-clarity-fair/register" className="btn btn--lg">{c.heroBtn1Text}</Link>
+                <Link href="/volunteer" className="btn btn--ghost">{c.heroBtn2Text}</Link>
               </div>
             </div>
             <div className="split__media reveal" data-d="1">
@@ -53,16 +56,15 @@ export default function BootcampPage() {
                 fontFamily: 'var(--ff-mono)', fontSize: '.65rem', letterSpacing: '.14em',
                 textTransform: 'uppercase', padding: '4px 12px', borderRadius: 99, marginBottom: 14,
               }}>
-                Donation Drive · Series 1
+                {c.donationBadge}
               </span>
-              <h2 style={{ color: '#fff', marginBottom: 10, lineHeight: 1.1 }}>Help us bring this Fair to life.</h2>
+              <h2 style={{ color: '#fff', marginBottom: 10, lineHeight: 1.1 }}>{c.donationTitle}</h2>
               <p style={{ color: 'rgba(244,240,231,.8)', lineHeight: 1.6, margin: 0 }}>
-                We&#39;re raising ₦50,000,000 to fund student materials, facilitators and impact
-                measurement for 500–1,000 students. Every contribution fills a seat at the Fair.
+                {c.donationBody}
               </p>
             </div>
             <span className="btn btn--light btn--lg" style={{ flexShrink: 0 }}>
-              Donate now
+              {c.donationBtnText}
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" style={{ width: 18, height: 18, marginLeft: 8 }}>
                 <path d="M5 12h14M13 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
@@ -74,24 +76,24 @@ export default function BootcampPage() {
       <section className="section">
         <div className="wrap">
           <div className="section-head mb-l reveal">
-            <span className="eyebrow">Who Should Apply</span>
-            <h2>This Fair is for every secondary school student who has questions about their future.</h2>
+            <span className="eyebrow">{c.whoEyebrow}</span>
+            <h2>{c.whoHeading}</h2>
           </div>
           <div className="grid grid-3">
             <div className="feature reveal">
               <div className="feature__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M3 7l9-4 9 4-9 4-9-4z" /><path d="M6 12v4c0 1 2.7 3 6 3s6-2 6-3v-4" /></svg></div>
-              <h3>All Secondary School Students</h3>
-              <p>From JS1 to SS3 — whether you&apos;re choosing subjects, thinking about university, or taking your first career steps. The earlier, the better.</p>
+              <h3>{c.who1Title}</h3>
+              <p>{c.who1Body}</p>
             </div>
             <div className="feature reveal" data-d="1">
               <div className="feature__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><circle cx="9" cy="8" r="3.2" /><path d="M3.5 20a5.5 5.5 0 0 1 11 0" /><path d="M16 5.5a3.2 3.2 0 0 1 0 6M17.5 20a5.5 5.5 0 0 0-3-4.9" /></svg></div>
-              <h3>The Undecided</h3>
-              <p>If you have no idea what career path to pursue, this is the most important day you can spend. Come with questions.</p>
+              <h3>{c.who2Title}</h3>
+              <p>{c.who2Body}</p>
             </div>
             <div className="feature reveal" data-d="2">
               <div className="feature__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><circle cx="12" cy="12" r="9" /><path d="M12 6v6l4 2" /></svg></div>
-              <h3>The Ambitious</h3>
-              <p>You know what you want but don&#39;t know how to get there. The Career Clarity Fair connects you with professionals who have already walked the path.</p>
+              <h3>{c.who3Title}</h3>
+              <p>{c.who3Body}</p>
             </div>
           </div>
         </div>
@@ -100,29 +102,29 @@ export default function BootcampPage() {
       <section className="section panel-dark">
         <div className="wrap">
           <div className="section-head mb-l reveal">
-            <span className="eyebrow eyebrow--light">How It Works</span>
-            <h2>What happens at the Career Clarity Fair</h2>
+            <span className="eyebrow eyebrow--light">{c.howEyebrow}</span>
+            <h2>{c.howHeading}</h2>
           </div>
           <div className="steps">
             <div className="step reveal">
               <div className="step__n">01</div>
-              <h4>Arrive &amp; Explore</h4>
-              <p>Browse booths representing 20+ career paths from tech to healthcare to media.</p>
+              <h4>{c.step1Title}</h4>
+              <p>{c.step1Body}</p>
             </div>
             <div className="step reveal" data-d="1">
               <div className="step__n">02</div>
-              <h4>Meet the Pros</h4>
-              <p>Have real conversations with professionals. Ask the questions you couldn&#39;t ask a teacher.</p>
+              <h4>{c.step2Title}</h4>
+              <p>{c.step2Body}</p>
             </div>
             <div className="step reveal" data-d="2">
               <div className="step__n">03</div>
-              <h4>Skills Tasters</h4>
-              <p>Participate in short hands-on workshops and skill demonstrations.</p>
+              <h4>{c.step3Title}</h4>
+              <p>{c.step3Body}</p>
             </div>
             <div className="step reveal" data-d="3">
               <div className="step__n">04</div>
-              <h4>Leave with a Plan</h4>
-              <p>Get your personalised career direction worksheet and connect with a mentor.</p>
+              <h4>{c.step4Title}</h4>
+              <p>{c.step4Body}</p>
             </div>
           </div>
         </div>
@@ -131,11 +133,11 @@ export default function BootcampPage() {
       <section className="section section--tight">
         <div className="wrap">
           <div className="cta-band reveal">
-            <h2>Bring the Career Clarity Fair to your school.</h2>
-            <p className="lead">We partner with schools across Ibadan and beyond. If you&#39;re a teacher, administrator, or parent — reach out and let&#39;s talk.</p>
+            <h2>{c.ctaTitle}</h2>
+            <p className="lead">{c.ctaLead}</p>
             <div className="cta-actions">
-              <Link href="/career-clarity-fair/register" className="btn btn--light btn--lg">Register to attend</Link>
-              <Link href="/partner" className="btn btn--outline-light btn--lg">Partner with us</Link>
+              <Link href="/career-clarity-fair/register" className="btn btn--light btn--lg">{c.ctaBtn1Text}</Link>
+              <Link href="/partner" className="btn btn--outline-light btn--lg">{c.ctaBtn2Text}</Link>
             </div>
           </div>
         </div>

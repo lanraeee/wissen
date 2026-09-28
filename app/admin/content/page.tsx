@@ -12,10 +12,12 @@ import FoundationDetailsEditor from '@/components/admin/FoundationDetailsEditor'
 import ImpactStoriesEditor from '@/components/admin/ImpactStoriesEditor'
 import WhatsAppEditor from '@/components/admin/WhatsAppEditor'
 import BankDetailsEditor from '@/components/admin/BankDetailsEditor'
+import PageCopyEditor from '@/components/admin/PageCopyEditor'
 
 export const metadata: Metadata = { title: 'Content · Admin · Wissen-Haus' }
 
 const TABS = [
+  { key: 'page-copy', label: '✏️ Page Copy' },
   { key: 'homepage', label: 'Homepage Hero' },
   { key: 'careers', label: 'Careers Roles' },
   { key: 'courses', label: 'Courses' },
@@ -53,6 +55,7 @@ export default async function AdminContent({ searchParams }: { searchParams: Pro
       </div>
 
       <div style={{ background: '#fff', borderRadius: 10, padding: 24, boxShadow: '0 1px 4px rgba(0,0,0,.06)' }}>
+        {tab === 'page-copy' && <PageCopyEditor />}
         {tab === 'homepage' && <HomeContentEditor />}
         {tab === 'careers' && <CareersEditor />}
         {tab === 'courses' && <CoursesEditor />}

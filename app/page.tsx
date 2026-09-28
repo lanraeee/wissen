@@ -122,7 +122,7 @@ export default async function HomePage() {
                 <span className="card__num">01</span>
                 <h3>Career Clarity Fair</h3>
                 <p>A one-day career exploration fair for all secondary school students in Ibadan. Meet professionals, explore diverse careers, and discover your path forward.</p>
-                <Link href="/programmes" className="textlink">Learn more {ARROW}</Link>
+                <Link href="/career-clarity-fair" className="textlink">Learn more {ARROW}</Link>
               </div>
             </article>
             <article className="card reveal" data-d="1">

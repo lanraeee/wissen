@@ -2,6 +2,8 @@ import type { Metadata } from 'next'
 import { pageMetadata } from '@/lib/seo'
 import Link from 'next/link'
 import Image from 'next/image'
+import { getPageCopy } from '@/lib/page-copy'
+import { PROGRAMMES_SCHEMA } from '@/lib/page-copy-schema'
 
 export const metadata: Metadata = pageMetadata({
   title: 'Programmes · Wissen-Haus',
@@ -15,15 +17,16 @@ const ARROW = (
   </svg>
 )
 
-export default function ProgrammesPage() {
+export default async function ProgrammesPage() {
+  const c = await getPageCopy(PROGRAMMES_SCHEMA)
   return (
     <>
       <section className="section section--tight" style={{ paddingTop: 'clamp(48px,6vw,84px)' }}>
         <div className="wrap">
           <div className="section-head reveal">
-            <span className="eyebrow">Our Programmes</span>
-            <h1 className="display-lg mt-s">Everything we build, built for you.</h1>
-            <p className="lead mt-m">From one-day career fairs to podcasts to digital courses—every Wissen-Haus programme is designed to bridge a real gap in a young African or diaspora changemaker&#39;s journey.</p>
+            <span className="eyebrow">{c.heroEyebrow}</span>
+            <h1 className="display-lg mt-s">{c.heroTitle}</h1>
+            <p className="lead mt-m">{c.heroLead}</p>
           </div>
         </div>
       </section>
@@ -40,9 +43,9 @@ export default function ProgrammesPage() {
               </div>
               <div className="card__body">
                 <span className="card__num">01</span>
-                <h3>Career Clarity Fair</h3>
-                <p>A one-day career exploration fair for secondary school students in Ibadan. Meet professionals, explore diverse careers, and discover your path forward.</p>
-                <Link href="/career-clarity-fair" className="textlink">Learn more {ARROW}</Link>
+                <h3>{c.p1Title}</h3>
+                <p>{c.p1Body}</p>
+                <Link href="/career-clarity-fair" className="textlink">{c.p1LinkText} {ARROW}</Link>
               </div>
             </article>
 
@@ -53,9 +56,9 @@ export default function ProgrammesPage() {
               </div>
               <div className="card__body">
                 <span className="card__num">02</span>
-                <h3>Opportunity Blueprint</h3>
-                <p>Our flagship podcast featuring weekly career insights and guidance from professionals who&#39;ve walked the path. Launching soon.</p>
-                <Link href="/opportunity-blueprint" className="textlink">Find out more {ARROW}</Link>
+                <h3>{c.p2Title}</h3>
+                <p>{c.p2Body}</p>
+                <Link href="/opportunity-blueprint" className="textlink">{c.p2LinkText} {ARROW}</Link>
               </div>
             </article>
 
@@ -66,27 +69,27 @@ export default function ProgrammesPage() {
               </div>
               <div className="card__body">
                 <span className="card__num">03</span>
-                <h3>Impact Content</h3>
-                <p>Social-impact storytelling that highlights African youth and diaspora changemakers doing extraordinary things. Your story matters and deserves to be told.</p>
-                <Link href="/impact-content" className="textlink">Explore stories {ARROW}</Link>
+                <h3>{c.p3Title}</h3>
+                <p>{c.p3Body}</p>
+                <Link href="/impact-content" className="textlink">{c.p3LinkText} {ARROW}</Link>
               </div>
             </article>
 
             <article className="card reveal">
               <div className="card__body">
                 <span className="card__num">04</span>
-                <h3>Events &amp; Cafés</h3>
-                <p>Regular networking events, career cafés, and workshops that connect students with professionals in relaxed settings.</p>
-                <Link href="/events" className="textlink">See events {ARROW}</Link>
+                <h3>{c.p4Title}</h3>
+                <p>{c.p4Body}</p>
+                <Link href="/events" className="textlink">{c.p4LinkText} {ARROW}</Link>
               </div>
             </article>
 
             <article className="card reveal" data-d="1">
               <div className="card__body">
                 <span className="card__num">05</span>
-                <h3>Career Hub</h3>
-                <p>Online platform with job boards, scholarship listings, free courses, mentorship matching, and career tools—all in one place.</p>
-                <Link href="/community" className="textlink">Access the hub {ARROW}</Link>
+                <h3>{c.p5Title}</h3>
+                <p>{c.p5Body}</p>
+                <Link href="/community" className="textlink">{c.p5LinkText} {ARROW}</Link>
               </div>
             </article>
           </div>
@@ -96,11 +99,11 @@ export default function ProgrammesPage() {
       <section className="section section--tight">
         <div className="wrap">
           <div className="cta-band reveal">
-            <h2>Partner with a programme.</h2>
-            <p className="lead">Bring Wissen-Haus to your school, sponsor a cohort, or host a career fair. Let&#39;s talk about what&#39;s possible.</p>
+            <h2>{c.ctaTitle}</h2>
+            <p className="lead">{c.ctaLead}</p>
             <div className="cta-actions">
-              <Link href="/partner" className="btn btn--light btn--lg">Partner with us</Link>
-              <Link href="/contact" className="btn btn--outline-light btn--lg">Get in touch</Link>
+              <Link href="/partner" className="btn btn--light btn--lg">{c.ctaPartnerText}</Link>
+              <Link href="/contact" className="btn btn--outline-light btn--lg">{c.ctaContactText}</Link>
             </div>
           </div>
         </div>

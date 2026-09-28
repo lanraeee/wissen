@@ -2,6 +2,8 @@ import type { Metadata } from 'next'
 import { pageMetadata } from '@/lib/seo'
 import Link from 'next/link'
 import sql from '@/lib/db'
+import { getPageCopy } from '@/lib/page-copy'
+import { IMPACT_CONTENT_SCHEMA } from '@/lib/page-copy-schema'
 
 export const dynamic = 'force-dynamic'
 
@@ -41,16 +43,16 @@ async function getStories(): Promise<Story[]> {
 }
 
 export default async function ImpactContentPage() {
-  const stories = await getStories()
+  const [stories, c] = await Promise.all([getStories(), getPageCopy(IMPACT_CONTENT_SCHEMA)])
 
   return (
     <>
       <section className="section section--tight" style={{ paddingTop: 'clamp(48px,6vw,84px)' }}>
         <div className="wrap">
           <div className="section-head reveal">
-            <span className="eyebrow">Programmes · Impact Content</span>
-            <h1 className="display-lg mt-s">Stories that inspire action.</h1>
-            <p className="lead mt-m">African youth and diaspora changemakers doing extraordinary things. We tell their stories so the next generation knows what&#39;s possible.</p>
+            <span className="eyebrow">{c.heroEyebrow}</span>
+            <h1 className="display-lg mt-s">{c.heroTitle}</h1>
+            <p className="lead mt-m">{c.heroLead}</p>
           </div>
         </div>
       </section>
@@ -79,10 +81,10 @@ export default async function ImpactContentPage() {
       <section className="section section--tight">
         <div className="wrap">
           <div className="cta-band reveal">
-            <h2>Have a story to tell?</h2>
-            <p className="lead">We&#39;re always looking for young Africans and diaspora changemakers doing extraordinary things. If that&#39;s you — or if you know someone whose story deserves to be heard — reach out.</p>
+            <h2>{c.ctaTitle}</h2>
+            <p className="lead">{c.ctaLead}</p>
             <div className="cta-actions">
-              <Link href="/contact" className="btn btn--light btn--lg">Submit a story</Link>
+              <Link href="/contact" className="btn btn--light btn--lg">{c.ctaBtnText}</Link>
             </div>
           </div>
         </div>
