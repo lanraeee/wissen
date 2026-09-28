@@ -54,10 +54,10 @@ describe('GET /api/admin/users/[id]/activity', () => {
       const res = await GET(req(), ctx())
       expect(res.status).toBe(200)
       const body = await res.json()
-      expect(body.kind).toBe('user')
       expect(body).toHaveProperty('courseProgress')
       expect(body).toHaveProperty('pageViews')
       expect(body).toHaveProperty('logins')
+      expect(body).toHaveProperty('adminActions')
     })
 
     it('is forbidden to an unauthenticated caller, without ever querying the target (no user-enumeration oracle)', async () => {
@@ -77,7 +77,7 @@ describe('GET /api/admin/users/[id]/activity', () => {
       expect(res.status).toBe(403)
     })
 
-    it('is viewable by an admin and returns the staff audit log', async () => {
+    it('is viewable by an admin and returns both the staff audit log and platform usage', async () => {
       adminGuardMock.mockResolvedValue(ADMIN_VIEWER)
       sqlMock.mockResolvedValueOnce([targetUser({ role: 'editor' })]).mockResolvedValueOnce([
         { action: 'content.update', target_type: 'site_content', target_id: 'homepage_hero', details: null, created_at: '2026-01-01' },
@@ -86,9 +86,11 @@ describe('GET /api/admin/users/[id]/activity', () => {
       const res = await GET(req(), ctx())
       expect(res.status).toBe(200)
       const body = await res.json()
-      expect(body.kind).toBe('staff')
-      expect(body.entries).toHaveLength(1)
-      expect(body.entries[0].action).toBe('content.update')
+      expect(body.adminActions).toHaveLength(1)
+      expect(body.adminActions[0].action).toBe('content.update')
+      expect(body).toHaveProperty('courseProgress')
+      expect(body).toHaveProperty('forumThreads')
+      expect(body).toHaveProperty('pageViews')
     })
   })
 
@@ -108,7 +110,8 @@ describe('GET /api/admin/users/[id]/activity', () => {
       const res = await GET(req(), ctx())
       expect(res.status).toBe(200)
       const body = await res.json()
-      expect(body.kind).toBe('staff')
+      expect(body).toHaveProperty('adminActions')
+      expect(body).toHaveProperty('courseProgress')
     })
   })
 

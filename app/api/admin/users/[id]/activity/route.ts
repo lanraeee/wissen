@@ -57,22 +57,12 @@ export async function GET(_: NextRequest, { params }: { params: Promise<{ id: st
   const viewer = await guardFor(tier)
   if (!viewer) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 
-  if (tier !== 'user') {
-    // Staff account: show the admin-panel audit trail, not platform usage --
-    // an editor/admin doesn't "use" the site as a learner would.
-    const entries = await sql`
-      SELECT action, target_type, target_id, details, created_at
-      FROM admin_activity_log
-      WHERE actor_id = ${id}
-      ORDER BY created_at DESC
-      LIMIT ${LIMIT}
-    `
-    return NextResponse.json({ kind: 'staff', target, entries })
-  }
-
-  // Ordinary user: platform usage -- what they've done as a learner/community
-  // member/donor, plus session history and pages visited.
-  const [courseProgress, certificates, submissions, forumThreads, forumReplies, logins, pageViews] = await Promise.all([
+  // Staff accounts use the platform as members too -- courses, community
+  // threads, donations -- alongside their admin-panel actions. Show both, not
+  // just the audit trail, so reviewing an editor or admin gives the full
+  // picture rather than only what they did in the admin panel.
+  const [adminActions, courseProgress, certificates, submissions, forumThreads, forumReplies, logins, pageViews] = await Promise.all([
+    sql`SELECT action, target_type, target_id, details, created_at FROM admin_activity_log WHERE actor_id = ${id} ORDER BY created_at DESC LIMIT ${LIMIT}`,
     sql`SELECT course_id, module_id, completed_at FROM course_progress WHERE user_id = ${id} ORDER BY completed_at DESC LIMIT ${LIMIT}`,
     sql`SELECT course_id, certificate_id, issued_at FROM certificates WHERE user_id = ${id} ORDER BY issued_at DESC LIMIT ${LIMIT}`,
     sql`SELECT type, status, data, created_at FROM submissions WHERE email = ${target.email} ORDER BY created_at DESC LIMIT ${LIMIT}`,
@@ -83,7 +73,7 @@ export async function GET(_: NextRequest, { params }: { params: Promise<{ id: st
   ])
 
   return NextResponse.json({
-    kind: 'user', target,
+    target, adminActions,
     courseProgress, certificates, submissions, forumThreads, forumReplies, logins, pageViews,
   })
 }

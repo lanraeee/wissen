@@ -20,9 +20,14 @@ interface UsageData {
   pageViews: { pathname: string; referrer: string | null; country: string | null; city: string | null; device_type: string | null; browser: string | null; created_at: string }[]
 }
 
-type ActivityResponse =
-  | { kind: 'user'; target: { first_name: string; last_name: string }; courseProgress: UsageData['courseProgress']; certificates: UsageData['certificates']; submissions: UsageData['submissions']; forumThreads: UsageData['forumThreads']; forumReplies: UsageData['forumReplies']; logins: UsageData['logins']; pageViews: UsageData['pageViews'] }
-  | { kind: 'staff'; target: { first_name: string; last_name: string }; entries: StaffEntry[] }
+// Staff accounts (editor/admin/director) use the platform as members too, so
+// the response always carries both their admin-panel audit trail and their
+// platform usage -- an editor's community posts and course progress
+// shouldn't be invisible just because they also have admin actions.
+type ActivityResponse = UsageData & {
+  target: { first_name: string; last_name: string; role: string }
+  adminActions: StaffEntry[]
+}
 
 const fmt = (iso: string) => new Date(iso).toLocaleString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })
 
@@ -77,9 +82,9 @@ export default function UserActivityModal({ userId, onClose }: { userId: string;
         {loading && <p style={{ color: '#8a9a8f' }}>Loading…</p>}
         {error && <p style={{ color: '#dc2626' }}>{error}</p>}
 
-        {data?.kind === 'staff' && (
-          <Section title="Admin actions" count={data.entries.length}>
-            {data.entries.map((e, i) => (
+        {data && (data.target.role !== 'user' || data.adminActions.length > 0) && (
+          <Section title="Admin actions" count={data.adminActions.length}>
+            {data.adminActions.map((e, i) => (
               <div key={i} style={row}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12 }}>
                   <strong>{e.action}</strong>
@@ -100,7 +105,7 @@ export default function UserActivityModal({ userId, onClose }: { userId: string;
           </Section>
         )}
 
-        {data?.kind === 'user' && (
+        {data && (
           <>
             <Section title="Course progress" count={data.courseProgress.length}>
               {data.courseProgress.map((m, i) => (
