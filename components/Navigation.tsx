@@ -33,6 +33,7 @@ const NAV = [
     key: 'community', label: 'Community', menu: [
       ['/community', 'Community Hub', 'Where youth grow together'],
       ['/community#opportunities', 'Opportunity Hub', 'Scholarships, jobs & grants'],
+      ['/scholarships?tab=wissenhaus-partners', 'Wissen-Haus Partners', 'Free access through partners like DataCamp'],
       ['/community#learning', 'Learning Library', 'Free courses & toolkits'],
     ]
   },
