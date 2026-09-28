@@ -1,6 +1,7 @@
 ﻿import { NextRequest, NextResponse } from 'next/server'
 import { COOKIE_NAME, verifyToken } from '@/lib/auth-edge'
 import { hit, clientIp, findRateLimit } from '@/lib/rate-limit'
+import { RETURN_PARAM } from '@/lib/return-url'
 
 const protectedRoutes = ['/community', '/jobs', '/internships', '/scholarships', '/competitions']
 const publicCommunityRoutes = ['/community/landing']
@@ -48,8 +49,14 @@ export async function middleware(req: NextRequest) {
   const isAdmin = adminRoutes.some(p => pathname === p || pathname.startsWith(p + '/'))
   if (!isProtected && !isProfileRoute && !isAdmin) return NextResponse.next()
 
+  // Carry where they were headed, so signing in returns them to it rather
+  // than dumping everyone on /community -- which matters most on routes
+  // reached mid-task, like a partner scholarship application form.
+  const loginUrl = new URL('/login', req.url)
+  loginUrl.searchParams.set(RETURN_PARAM, pathname + req.nextUrl.search)
+
   const token = req.cookies.get(COOKIE_NAME)?.value
-  if (!token) return NextResponse.redirect(new URL('/login', req.url))
+  if (!token) return NextResponse.redirect(loginUrl)
 
   // Verify the signature here, not just the cookie's presence, so a forged or
   // expired token cannot reach a protected route at all. jose runs on the Edge
@@ -61,7 +68,7 @@ export async function middleware(req: NextRequest) {
     // The cookie is present but unusable (expired, tampered with, or signed
     // with a rotated secret). Clear it so the browser stops replaying a dead
     // token on every request.
-    const res = NextResponse.redirect(new URL('/login', req.url))
+    const res = NextResponse.redirect(loginUrl)
     res.cookies.delete(COOKIE_NAME)
     return res
   }

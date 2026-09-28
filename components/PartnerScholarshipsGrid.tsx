@@ -20,7 +20,12 @@ export default function PartnerScholarshipsGrid({ partners }: { partners?: Partn
   return (
     <div className="grid grid-3">
       {list.map(p => (
-        <article key={p.name} className="card reveal">
+        // No `reveal` class: it starts at opacity:0 and is only made visible by
+        // the IntersectionObserver in ScrollEffects, which re-runs on pathname
+        // change only. Tab switches here change just the query string, so
+        // cards rendered that way would never be observed and would stay
+        // invisible until a full reload.
+        <article key={p.name} className="card">
           <div className="card__body">
             {p.logo && (
               <div style={{ height: 40, display: 'flex', alignItems: 'center', marginBottom: '.2rem' }}>

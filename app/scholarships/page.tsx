@@ -34,7 +34,9 @@ export default async function ScholarshipsPage({ searchParams }: { searchParams:
           <h1 className="display-lg mt-s reveal">Scholarships</h1>
           <p className="lead mt-s reveal" data-d="1">Scholarship opportunities for Nigerian, African, and diaspora students — from undergrad funding to international grants, plus free access through Wissen-Haus&apos;s own partnerships.</p>
 
-          <div className="pillrow mt-l reveal" data-d="2">
+          {/* No `reveal` here either: these are navigation, and reveal's
+              opacity:0 is only cleared by an observer keyed on pathname. */}
+          <div className="pillrow mt-l">
             {TABS.map(t => (
               <Link key={t.key} href={`/scholarships?tab=${t.key}`} className={`p${tab === t.key ? ' active' : ''}`}>
                 {t.label}

@@ -12,6 +12,8 @@ import Image from 'next/image'
 
 import posthog from 'posthog-js'
 
+import { RETURN_PARAM, safeReturnPath } from '@/lib/return-url'
+
 
 
 export default function LoginPage() {
@@ -20,15 +22,24 @@ export default function LoginPage() {
 
   const [tab, setTab] = useState<'signup' | 'login'>('signup')
 
+  // Where middleware bounced them from, if anywhere. Read from
+  // window.location rather than useSearchParams() so this page doesn't need
+  // a Suspense boundary -- matching how `mode` is already read below.
+  const [returnTo, setReturnTo] = useState<string | null>(null)
+
 
 
   useEffect(() => {
 
-    if (new URLSearchParams(window.location.search).get('mode') === 'login') {
+    const params = new URLSearchParams(window.location.search)
+
+    if (params.get('mode') === 'login') {
 
       setTab('login')
 
     }
+
+    setReturnTo(safeReturnPath(params.get(RETURN_PARAM)))
 
   }, [])
 
@@ -68,7 +79,7 @@ export default function LoginPage() {
 
     posthog.capture('user_logged_in', { source: 'login_page' })
 
-    router.push('/community')
+    router.push(returnTo ?? '/community')
 
     router.refresh()
 
@@ -104,7 +115,7 @@ export default function LoginPage() {
 
     posthog.capture('user_signed_up', { source: 'login_page' })
 
-    router.push('/community')
+    router.push(returnTo ?? '/community')
 
     router.refresh()
 
@@ -145,6 +156,18 @@ export default function LoginPage() {
             <button onClick={() => { setTab('login'); setError('') }} style={{ fontFamily: 'var(--ff-display)', fontWeight: 700, fontSize: '1.1rem', color: tab === 'login' ? 'var(--green-800)' : 'var(--ink-60)', borderBottom: tab === 'login' ? '2px solid var(--red)' : '2px solid transparent', paddingBottom: 4, background: 'none', cursor: 'pointer' }}>Sign In</button>
 
           </div>
+
+
+
+          {returnTo && !error && (
+
+            <div style={{ background: 'var(--green-50, #f0f5f1)', color: 'var(--green-800)', padding: '12px 14px', borderRadius: 'var(--radius)', fontSize: '.9rem', marginBottom: 20 }}>
+
+              Create an account or sign in to continue — we&apos;ll take you straight back.
+
+            </div>
+
+          )}
 
 
 
