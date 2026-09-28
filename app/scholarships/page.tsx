@@ -6,6 +6,8 @@ import PartnerScholarshipsGrid from '@/components/PartnerScholarshipsGrid'
 import StreakBadge from '@/components/StreakBadge'
 import { getOgCopy } from '@/lib/og'
 import { ogSchemaFor } from '@/lib/og-schema'
+import { getSiteContent } from '@/lib/site-content'
+import type { PartnerScholarship } from '@/lib/partner-scholarships'
 
 export async function generateMetadata(): Promise<Metadata> {
   return pageMetadata(await getOgCopy(ogSchemaFor('scholarships')!))
@@ -19,6 +21,9 @@ const TABS = [
 export default async function ScholarshipsPage({ searchParams }: { searchParams: Promise<{ tab?: string }> }) {
   const { tab: rawTab } = await searchParams
   const tab = rawTab === 'wissenhaus-partners' ? 'wissenhaus-partners' : 'all'
+  const partnerScholarships = tab === 'wissenhaus-partners'
+    ? (await getSiteContent<PartnerScholarship[]>('partner_scholarships')) ?? []
+    : []
 
   return (
     <>
@@ -39,7 +44,7 @@ export default async function ScholarshipsPage({ searchParams }: { searchParams:
 
           <div className="mt-l">
             {tab === 'wissenhaus-partners' ? (
-              <PartnerScholarshipsGrid />
+              <PartnerScholarshipsGrid partners={partnerScholarships} />
             ) : (
               <OpportunityGrid type="scholarship" showFilter={true} />
             )}

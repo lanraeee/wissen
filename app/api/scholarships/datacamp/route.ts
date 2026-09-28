@@ -11,6 +11,7 @@ import { scoreApplication } from '@/lib/scholarship-scoring'
 import { sendScholarshipConfirmation, sendScholarshipNotification } from '@/lib/email'
 import { runAfterResponse } from '@/lib/background'
 import { log } from '@/lib/logger'
+import { getSession } from '@/lib/auth'
 
 const ScholarshipSchema = z.object({
   name: zName,
@@ -58,6 +59,13 @@ const ScholarshipSchema = z.object({
 )
 
 export async function POST(req: NextRequest) {
+  // The form page is gated by middleware, but that only stops a browser
+  // reaching the page -- without this check the endpoint itself would still
+  // accept an anonymous POST. Applying is members-only, so enforce it where
+  // the write actually happens.
+  const session = await getSession()
+  if (!session) return NextResponse.json({ error: 'Please sign in to apply.' }, { status: 401 })
+
   const { data, error } = await parseBody(req, ScholarshipSchema)
   if (error) return error
   const { name, email, phone, ageRange, country, stateRegion, city, ...answers } = data

@@ -4,6 +4,14 @@ import { hit, clientIp, findRateLimit } from '@/lib/rate-limit'
 
 const protectedRoutes = ['/community', '/jobs', '/internships', '/scholarships', '/competitions']
 const publicCommunityRoutes = ['/community/landing']
+
+// Partner scholarship application forms (/partners/<partner>/apply) are
+// members-only: applying should be tied to a real Wissen-Haus account, and
+// it gives applicants somewhere to come back to. The partnership's own info
+// page (/partners/<partner>) stays public so anyone can read about it and
+// decide to sign up -- so this deliberately matches the /apply leaf only,
+// not the whole /partners tree.
+const PARTNER_APPLY_ROUTE = /^\/partners\/[^/]+\/apply(\/|$)/
 const profileRoutes = ['/profile']
 const adminRoutes = ['/admin']
 
@@ -35,6 +43,7 @@ export async function middleware(req: NextRequest) {
 
   if (publicCommunityRoutes.some(p => pathname === p || pathname.startsWith(p + '/'))) return NextResponse.next()
   const isProtected = protectedRoutes.some(p => pathname === p || pathname.startsWith(p + '/'))
+    || PARTNER_APPLY_ROUTE.test(pathname)
   const isProfileRoute = profileRoutes.some(p => pathname === p || pathname.startsWith(p + '/'))
   const isAdmin = adminRoutes.some(p => pathname === p || pathname.startsWith(p + '/'))
   if (!isProtected && !isProfileRoute && !isAdmin) return NextResponse.next()
@@ -63,6 +72,7 @@ export async function middleware(req: NextRequest) {
 export const config = {
   matcher: [
     '/community/:path*', '/jobs', '/internships', '/scholarships', '/competitions', '/profile', '/admin/:path*',
+    '/partners/:partner/apply',
     '/api/auth/:path*', '/api/contact', '/api/partner', '/api/volunteer', '/api/submissions',
     '/api/payments/:path*', '/api/forum/:path*', '/api/testimonials', '/api/career-fair/:path*',
     '/api/scholarships/:path*',

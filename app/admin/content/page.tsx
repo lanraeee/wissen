@@ -13,6 +13,7 @@ import ImpactStoriesEditor from '@/components/admin/ImpactStoriesEditor'
 import WhatsAppEditor from '@/components/admin/WhatsAppEditor'
 import BankDetailsEditor from '@/components/admin/BankDetailsEditor'
 import PageCopyEditor from '@/components/admin/PageCopyEditor'
+import PartnerScholarshipsEditor from '@/components/admin/PartnerScholarshipsEditor'
 
 export const metadata: Metadata = { title: 'Content · Admin · Wissen-Haus' }
 
@@ -24,6 +25,7 @@ const TABS = [
   { key: 'policy', label: 'Policy Timeline' },
   { key: 'team', label: 'Team Members' },
   { key: 'partners', label: 'Partners' },
+  { key: 'partner-scholarships', label: '🎓 Partner Scholarships' },
   { key: 'founder', label: 'Founder Bio' },
   { key: 'threads', label: 'Community Threads' },
   { key: 'whatsapp', label: 'WhatsApp Channel' },
@@ -62,6 +64,7 @@ export default async function AdminContent({ searchParams }: { searchParams: Pro
         {tab === 'policy' && <PolicyEditor />}
         {tab === 'team' && <TeamEditor />}
         {tab === 'partners' && <PartnersEditor />}
+        {tab === 'partner-scholarships' && <PartnerScholarshipsEditor />}
         {tab === 'founder' && <FounderEditor />}
         {tab === 'threads' && <ThreadsEditor />}
         {tab === 'whatsapp' && <WhatsAppEditor />}
