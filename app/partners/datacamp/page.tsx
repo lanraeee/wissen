@@ -37,7 +37,7 @@ export default function DataCampPartnerPage() {
         <div className="wrap">
           <div className="section-head mb-l reveal">
             <span className="eyebrow">What You Get</span>
-            <h2>500 Premium Licenses</h2>
+            <h2>Premium Licenses</h2>
           </div>
 
           <div className="grid grid-2">
