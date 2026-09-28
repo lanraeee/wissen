@@ -10,6 +10,10 @@ interface Settings {
   twitter_url: string
   tagline: string
   footer_note: string
+  google_business_url: string
+  bing_places_url: string
+  google_site_verification: string
+  bing_site_verification: string
 }
 
 const DEFAULTS: Settings = {
@@ -20,6 +24,10 @@ const DEFAULTS: Settings = {
   twitter_url: '',
   tagline: 'Building the bridge young Nigerians deserve.',
   footer_note: '',
+  google_business_url: '',
+  bing_places_url: '',
+  google_site_verification: '',
+  bing_site_verification: '',
 }
 
 const lbl = { fontSize: '.72rem', fontWeight: 700, letterSpacing: '.08em', textTransform: 'uppercase' as const, color: '#8a9a8f', display: 'block', marginBottom: 4 }
@@ -71,6 +79,13 @@ export default function SettingsEditor() {
     ['footer_note', 'Footer Note', 'text'],
   ]
 
+  const listingFields: [keyof Settings, string, string, string][] = [
+    ['google_business_url', 'Google Business Profile URL', 'url', 'Shown as a footer link once set.'],
+    ['bing_places_url', 'Bing Places for Business URL', 'url', 'Shown as a footer link once set.'],
+    ['google_site_verification', 'Google Search Console Verification Code', 'text', "The value from Google's HTML meta tag verification method — not the whole tag, just the content."],
+    ['bing_site_verification', 'Bing Webmaster Tools Verification Code', 'text', "The value from Bing's meta tag verification method — not the whole tag, just the content."],
+  ]
+
   return (
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', alignItems: 'center', marginBottom: 24 }}>
@@ -87,7 +102,7 @@ export default function SettingsEditor() {
       </div>
       {error && <div style={{ marginBottom: 16, color: '#dc2626', fontSize: '.85rem', background: '#fee2e2', padding: '8px 14px', borderRadius: 7 }}>{error}</div>}
 
-      <div className="rgrid-2" style={{ gap: 16 }}>
+      <div className="rgrid-2" style={{ gap: 16, marginBottom: 28 }}>
         {fields.map(([key, label, type]) => (
           <div key={key} style={key === 'tagline' || key === 'footer_note' ? { gridColumn: '1/-1' } : {}}>
             <label style={lbl}>{label}</label>
@@ -97,6 +112,22 @@ export default function SettingsEditor() {
               value={settings[key] as string}
               onChange={e => setSettings(s => ({ ...s, [key]: e.target.value }))}
             />
+          </div>
+        ))}
+      </div>
+
+      <div style={{ fontSize: '.8rem', fontWeight: 700, color: '#3a4a3f', marginBottom: 12 }}>Business Listings &amp; Search Console</div>
+      <div className="rgrid-2" style={{ gap: 16 }}>
+        {listingFields.map(([key, label, type, hint]) => (
+          <div key={key}>
+            <label style={lbl}>{label}</label>
+            <input
+              type={type}
+              className="admin-input"
+              value={settings[key] as string}
+              onChange={e => setSettings(s => ({ ...s, [key]: e.target.value }))}
+            />
+            <p style={{ margin: '4px 0 0', fontSize: '.74rem', color: '#8a9a8f' }}>{hint}</p>
           </div>
         ))}
       </div>

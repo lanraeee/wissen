@@ -1,7 +1,16 @@
 import type { Metadata } from 'next'
 import sql from '@/lib/db'
+import { getSiteContent } from '@/lib/site-content'
+import RefreshButton from '@/components/admin/RefreshButton'
 
 export const metadata: Metadata = { title: 'Analytics · Wissen-Haus Admin' }
+
+// Same shape SettingsEditor/Footer read from site_content's 'site_settings'
+// key -- only the fields this page cares about.
+interface BusinessListings {
+  google_business_url?: string
+  bing_places_url?: string
+}
 
 async function getOverview() {
   const [today, week, month, sessions] = await Promise.all([
@@ -217,10 +226,10 @@ function RowList({ rows, maxVal }: { rows: { label: string; value: number }[]; m
 }
 
 export default async function AnalyticsPage() {
-  const [overview, topPages, referrers, countries, devices, browsers, utmSources, recent, dailyTrend, business] = await Promise.all([
+  const [overview, topPages, referrers, countries, devices, browsers, utmSources, recent, dailyTrend, business, listings] = await Promise.all([
     getOverview(), getTopPages(), getReferrers(), getCountries(),
     getDevices(), getBrowsers(), getUTMSources(), getRecentViews(),
-    getDailyTrend(), getBusinessMetrics(),
+    getDailyTrend(), getBusinessMetrics(), getSiteContent<BusinessListings>('site_settings'),
   ])
 
   const statCard = (label: string, value: number | string, sub: string) => (
@@ -240,9 +249,12 @@ export default async function AnalyticsPage() {
 
   return (
     <>
-      <div style={{ marginBottom: 32 }}>
-        <h1 className="admin-page-title">Analytics</h1>
-        <p className="admin-page-desc">Visitor traffic — your data, stored in your database.</p>
+      <div style={{ marginBottom: 32, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: 12 }}>
+        <div>
+          <h1 className="admin-page-title">Analytics</h1>
+          <p className="admin-page-desc">Visitor traffic — your data, stored in your database.</p>
+        </div>
+        <RefreshButton />
       </div>
 
       <Section title="Overview">
@@ -355,6 +367,46 @@ export default async function AnalyticsPage() {
           </div>
         </Card>
       </Section>
+
+      <Section title="Business Listings & Search Presence">
+        <div className="rgrid-2" style={{ gap: 14 }}>
+          <BusinessListingCard
+            name="Google Business Profile"
+            url={listings?.google_business_url}
+            note="Live insights (views, searches, calls) require a Google Business Profile API OAuth client set up in Google Cloud Console for your listing — not available yet."
+          />
+          <BusinessListingCard
+            name="Bing Places for Business"
+            url={listings?.bing_places_url}
+            note="Live insights require a Bing Webmaster Tools API key from your Bing Webmaster account — not available yet."
+          />
+        </div>
+        <p style={{ margin: '12px 2px 0', fontSize: '.78rem', color: '#8a9a8f' }}>
+          Set listing URLs and search-engine verification codes in Settings → Business Listings &amp; Search Console.
+        </p>
+      </Section>
     </>
+  )
+}
+
+function BusinessListingCard({ name, url, note }: { name: string; url?: string; note: string }) {
+  return (
+    <Card style={{ padding: 20 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12, marginBottom: 8 }}>
+        <div style={{ fontWeight: 700, color: '#1a2e24', fontSize: '.95rem' }}>{name}</div>
+        <span style={{
+          background: url ? '#10b98122' : '#6b728022', color: url ? '#10b981' : '#6b7280',
+          borderRadius: 99, padding: '2px 10px', fontSize: '.7rem', fontWeight: 700, whiteSpace: 'nowrap',
+        }}>
+          {url ? 'Listed' : 'Not set'}
+        </span>
+      </div>
+      {url ? (
+        <a href={url} target="_blank" rel="noopener noreferrer" style={{ fontSize: '.82rem', color: '#1a3c2e', wordBreak: 'break-all' }}>{url}</a>
+      ) : (
+        <p style={{ margin: 0, fontSize: '.82rem', color: '#8a9a8f' }}>No listing URL saved yet.</p>
+      )}
+      <p style={{ margin: '10px 0 0', fontSize: '.76rem', color: '#8a9a8f' }}>{note}</p>
+    </Card>
   )
 }

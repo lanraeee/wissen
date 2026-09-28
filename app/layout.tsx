@@ -5,8 +5,9 @@ import './globals.css'
 import SiteShell from '@/components/SiteShell'
 import Footer from '@/components/Footer'
 import AnalyticsTracker from '@/components/AnalyticsTracker'
+import { getSiteContent } from '@/lib/site-content'
 
-export const metadata: Metadata = {
+const BASE_METADATA: Metadata = {
   metadataBase: new URL('https://www.wissenhaus.org'),
   title: {
     default: 'Wissen-Haus Empowerment Foundation',
@@ -52,6 +53,25 @@ export const metadata: Metadata = {
     follow: true,
     googleBot: { index: true, follow: true, 'max-image-preview': 'large' },
   },
+}
+
+// Verification codes are admin-editable (Settings → Business Listings &
+// Search Console) rather than env vars, since they only exist once the site
+// is actually registered with Search Console / Bing Webmaster Tools, and
+// this way pasting one in takes effect immediately, no redeploy needed.
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSiteContent<{ google_site_verification?: string; bing_site_verification?: string }>('site_settings')
+  const google = settings?.google_site_verification || undefined
+  const bing = settings?.bing_site_verification || undefined
+  if (!google && !bing) return BASE_METADATA
+
+  return {
+    ...BASE_METADATA,
+    verification: {
+      ...(google ? { google } : {}),
+      ...(bing ? { other: { 'msvalidate.01': bing } } : {}),
+    },
+  }
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
