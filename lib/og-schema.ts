@@ -94,7 +94,7 @@ export const OG_PAGE_SCHEMAS: OgPageSchema[] = [
   {
     slug: 'partners-datacamp', label: 'Partners · DataCamp',
     defaultTitle: 'DataCamp Donates Partnership · Wissen-Haus', defaultOgTitle: 'Free DataCamp Access for Our Community',
-    defaultDescription: 'Wissen-Haus is now a DataCamp Donates partner. 500 DataCamp licenses available for students and team members.',
+    defaultDescription: 'Wissen-Haus is now a DataCamp Donates partner. Premium DataCamp licenses available for students and team members.',
   },
   {
     slug: 'partners-datacamp-apply', label: 'Partners · DataCamp Application',

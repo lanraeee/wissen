@@ -110,7 +110,7 @@ export default function DataCampPartnerPage() {
             <div className="step reveal" data-d="2">
               <div className="step__n">03</div>
               <h4>Start Learning</h4>
-              <p>Shortlisted applicants are contacted with their DataCamp invite. Accept it, create your account, and choose from 500+ courses to advance your skills.</p>
+              <p>Shortlisted applicants are contacted with their DataCamp invite. Accept it, create your account, and choose from the full course library to advance your skills.</p>
             </div>
           </div>
         </div>
