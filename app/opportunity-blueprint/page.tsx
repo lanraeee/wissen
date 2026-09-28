@@ -3,12 +3,12 @@ import { pageMetadata } from '@/lib/seo'
 import Link from 'next/link'
 import { getPageCopy } from '@/lib/page-copy'
 import { OPPORTUNITY_BLUEPRINT_SCHEMA } from '@/lib/page-copy-schema'
+import { getOgCopy } from '@/lib/og'
+import { ogSchemaFor } from '@/lib/og-schema'
 
-export const metadata: Metadata = pageMetadata({
-  title: 'Opportunity Blueprint Podcast · Wissen-Haus',
-  ogTitle: 'Opportunity Blueprint Podcast',
-  description: 'Our flagship podcast featuring weekly career insights and guidance from professionals who\'ve walked the path.',
-})
+export async function generateMetadata(): Promise<Metadata> {
+  return pageMetadata(await getOgCopy(ogSchemaFor('opportunity-blueprint')!))
+}
 
 export default async function PodcastPage() {
   const c = await getPageCopy(OPPORTUNITY_BLUEPRINT_SCHEMA)

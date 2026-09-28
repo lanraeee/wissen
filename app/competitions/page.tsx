@@ -2,12 +2,12 @@
 import { pageMetadata } from '@/lib/seo'
 import OpportunityGrid from '@/components/OpportunityGrid'
 import StreakBadge from '@/components/StreakBadge'
+import { getOgCopy } from '@/lib/og'
+import { ogSchemaFor } from '@/lib/og-schema'
 
-export const metadata: Metadata = pageMetadata({
-  title: 'Competitions & Hackathons · Wissen-Haus Community',
-  ogTitle: 'Competitions & Hackathons',
-  description: 'Online competitions, hackathons, and challenges open to African youth.',
-})
+export async function generateMetadata(): Promise<Metadata> {
+  return pageMetadata(await getOgCopy(ogSchemaFor('competitions')!))
+}
 
 export default function CompetitionsPage() {
   return (

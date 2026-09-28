@@ -4,12 +4,12 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { getPageCopy } from '@/lib/page-copy'
 import { CAREER_CLARITY_FAIR_SCHEMA } from '@/lib/page-copy-schema'
+import { getOgCopy } from '@/lib/og'
+import { ogSchemaFor } from '@/lib/og-schema'
 
-export const metadata: Metadata = pageMetadata({
-  title: 'Career Clarity Fair · Wissen-Haus',
-  ogTitle: 'Career Clarity Fair',
-  description: 'A one-day career exploration fair for secondary school students in Africa and the diaspora. Meet professionals, explore careers, and discover your path.',
-})
+export async function generateMetadata(): Promise<Metadata> {
+  return pageMetadata(await getOgCopy(ogSchemaFor('career-clarity-fair')!))
+}
 
 export default async function BootcampPage() {
   const c = await getPageCopy(CAREER_CLARITY_FAIR_SCHEMA)

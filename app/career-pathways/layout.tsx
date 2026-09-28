@@ -1,14 +1,14 @@
 import type { Metadata } from 'next'
 import { pageMetadata } from '@/lib/seo'
+import { getOgCopy } from '@/lib/og'
+import { ogSchemaFor } from '@/lib/og-schema'
 
 // page.tsx is a client component ('use client'), which can't export
 // `metadata` itself -- a server-side layout in the same segment is the
 // standard way to attach metadata to a client-component page.
-export const metadata: Metadata = pageMetadata({
-  title: 'Career Pathways · Wissen-Haus',
-  ogTitle: 'Career Pathways',
-  description: 'Discover your career path with realistic salary ranges in Nigeria, the skills you need, and opportunities across Africa and the diaspora.',
-})
+export async function generateMetadata(): Promise<Metadata> {
+  return pageMetadata(await getOgCopy(ogSchemaFor('career-pathways')!))
+}
 
 export default function CareerPathwaysLayout({ children }: { children: React.ReactNode }) {
   return children

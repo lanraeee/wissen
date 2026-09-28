@@ -1,12 +1,12 @@
 import type { Metadata } from 'next'
 import { pageMetadata } from '@/lib/seo'
 import Link from 'next/link'
+import { getOgCopy } from '@/lib/og'
+import { ogSchemaFor } from '@/lib/og-schema'
 
-export const metadata: Metadata = pageMetadata({
-  title: 'Privacy Policy · Wissen-Haus',
-  ogTitle: 'Privacy Policy',
-  description: 'How Wissen-Haus Empowerment Foundation collects, uses, and protects your personal information.',
-})
+export async function generateMetadata(): Promise<Metadata> {
+  return pageMetadata(await getOgCopy(ogSchemaFor('privacy')!))
+}
 
 const LAST_UPDATED = '13 September 2026'
 

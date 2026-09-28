@@ -3,12 +3,12 @@ import { pageMetadata } from '@/lib/seo'
 import ContactForm from '@/components/ContactForm'
 import { getPageCopy } from '@/lib/page-copy'
 import { CONTACT_SCHEMA } from '@/lib/page-copy-schema'
+import { getOgCopy } from '@/lib/og'
+import { ogSchemaFor } from '@/lib/og-schema'
 
-export const metadata: Metadata = pageMetadata({
-  title: 'Contact Us · Wissen-Haus',
-  ogTitle: 'Contact Us',
-  description: 'Get in touch with Wissen-Haus. Contact us for inquiries, partnerships, volunteering, or general questions.',
-})
+export async function generateMetadata(): Promise<Metadata> {
+  return pageMetadata(await getOgCopy(ogSchemaFor('contact')!))
+}
 
 export default async function ContactPage() {
   const c = await getPageCopy(CONTACT_SCHEMA)

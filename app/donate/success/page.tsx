@@ -2,12 +2,12 @@
 import { pageMetadata } from '@/lib/seo'
 import Link from 'next/link'
 import { verifyStripeSession, recordDonation } from '@/lib/donations'
+import { getOgCopy } from '@/lib/og'
+import { ogSchemaFor } from '@/lib/og-schema'
 
-export const metadata: Metadata = pageMetadata({
-  title: 'Thank You · Wissen-Haus',
-  ogTitle: 'Thank You',
-  description: 'Your donation to Wissen-Haus has been received. Thank you for empowering youth across Africa and the diaspora.',
-})
+export async function generateMetadata(): Promise<Metadata> {
+  return pageMetadata(await getOgCopy(ogSchemaFor('donate-success')!))
+}
 
 interface Props {
   searchParams: Promise<{ session_id?: string }>

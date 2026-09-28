@@ -4,14 +4,14 @@ import PolicyTimeline, { type PolicyPaper } from '@/components/PolicyTimeline'
 import sql from '@/lib/db'
 import { getPageCopy } from '@/lib/page-copy'
 import { POLICY_RESEARCH_SCHEMA } from '@/lib/page-copy-schema'
+import { getOgCopy } from '@/lib/og'
+import { ogSchemaFor } from '@/lib/og-schema'
 
 export const dynamic = 'force-dynamic'
 
-export const metadata: Metadata = pageMetadata({
-  title: 'Policy & Research · Wissen-Haus',
-  ogTitle: 'Policy & Research',
-  description: 'Comprehensive policy papers and research reports on youth employment, skills gap, and economic independence across Nigeria, Africa, and the diaspora.',
-})
+export async function generateMetadata(): Promise<Metadata> {
+  return pageMetadata(await getOgCopy(ogSchemaFor('policy-research')!))
+}
 
 async function getPapers(): Promise<PolicyPaper[]> {
   try {

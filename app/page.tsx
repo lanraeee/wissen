@@ -5,18 +5,21 @@ import TestimonialCarousel from '@/components/TestimonialCarousel'
 import HeroSlider, { type HeroContent } from '@/components/HeroSlider'
 import { getSiteContent } from '@/lib/site-content'
 import { pageMetadata } from '@/lib/seo'
+import { getOgCopy } from '@/lib/og'
+import { ogSchemaFor } from '@/lib/og-schema'
 
-// Dynamic (not a static `metadata` export) so the OG title always matches
-// the live, admin-editable tagline (Settings tab) instead of a hardcoded
-// copy that drifts out of sync with it.
+// Dynamic (not a static `metadata` export): the smart default tracks the
+// live, admin-editable tagline (Settings → General) so it never drifts out
+// of sync with it, but an explicit save on Settings → Open Graph still wins
+// over that computed default (see getOgCopy's overrideDefaults param).
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSiteContent<{ tagline?: string }>('site_settings')
   const tagline = settings?.tagline || 'Empowering Youth, Shaping Futures'
-  return pageMetadata({
+  const seo = await getOgCopy(ogSchemaFor('home')!, {
     title: `Wissen-Haus Empowerment Foundation · ${tagline}`,
     ogTitle: `Wissen-Haus — ${tagline}`,
-    description: 'We equip African youth and the diaspora with practical skills, mentorship and global exposure for economic independence. Founded in Ibadan, Nigeria, now reaching young people across Africa and internationally.',
   })
+  return pageMetadata(seo)
 }
 
 const ARROW = (

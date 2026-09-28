@@ -2,12 +2,12 @@ import type { Metadata } from 'next'
 import { pageMetadata } from '@/lib/seo'
 import { getSiteContent } from '@/lib/site-content'
 import ScholarshipApplicationForm from '@/components/ScholarshipApplicationForm'
+import { getOgCopy } from '@/lib/og'
+import { ogSchemaFor } from '@/lib/og-schema'
 
-export const metadata: Metadata = pageMetadata({
-  title: 'DataCamp Scholarship Application · Wissen-Haus',
-  ogTitle: 'Apply for a DataCamp Scholarship',
-  description: 'Apply for a Wissen-Haus × DataCamp scholarship — free access to DataCamp for motivated young people facing genuine barriers to learning data, analytics and AI skills.',
-})
+export async function generateMetadata(): Promise<Metadata> {
+  return pageMetadata(await getOgCopy(ogSchemaFor('partners-datacamp-apply')!))
+}
 
 export default async function DataCampScholarshipApplyPage() {
   const settings = await getSiteContent<{ tagline?: string }>('site_settings')

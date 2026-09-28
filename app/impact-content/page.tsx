@@ -4,14 +4,14 @@ import Link from 'next/link'
 import sql from '@/lib/db'
 import { getPageCopy } from '@/lib/page-copy'
 import { IMPACT_CONTENT_SCHEMA } from '@/lib/page-copy-schema'
+import { getOgCopy } from '@/lib/og'
+import { ogSchemaFor } from '@/lib/og-schema'
 
 export const dynamic = 'force-dynamic'
 
-export const metadata: Metadata = pageMetadata({
-  title: 'Impact Content · Wissen-Haus',
-  ogTitle: 'Impact Content',
-  description: 'Social-impact storytelling that highlights African youth and diaspora changemakers doing extraordinary things.',
-})
+export async function generateMetadata(): Promise<Metadata> {
+  return pageMetadata(await getOgCopy(ogSchemaFor('impact-content')!))
+}
 
 interface Story {
   name: string

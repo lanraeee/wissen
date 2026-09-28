@@ -2,12 +2,12 @@ import type { Metadata } from 'next'
 import { pageMetadata } from '@/lib/seo'
 import Link from 'next/link'
 import Image from 'next/image'
+import { getOgCopy } from '@/lib/og'
+import { ogSchemaFor } from '@/lib/og-schema'
 
-export const metadata: Metadata = pageMetadata({
-  title: 'Community Hub · Wissen-Haus',
-  ogTitle: 'Community Hub',
-  description: 'Join the Wissen-Haus community hub to access scholarships, internships, jobs, courses, and mentorship.',
-})
+export async function generateMetadata(): Promise<Metadata> {
+  return pageMetadata(await getOgCopy(ogSchemaFor('community-landing')!))
+}
 
 export default function CommunityLandingPage() {
   return (

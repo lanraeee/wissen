@@ -6,12 +6,12 @@ import DonateWidget from '@/components/DonateWidget'
 import { getPageCopy } from '@/lib/page-copy'
 import { DONATE_SCHEMA } from '@/lib/page-copy-schema'
 import { getSiteContent } from '@/lib/site-content'
+import { getOgCopy } from '@/lib/og'
+import { ogSchemaFor } from '@/lib/og-schema'
 
-export const metadata: Metadata = pageMetadata({
-  title: 'Donate · Wissen-Haus',
-  ogTitle: 'Donate to Wissen-Haus',
-  description: 'Fuel a young African or diaspora changemaker\'s future. Your gift funds free Career Clarity Fairs, mentorship and global exposure for students who need it most.',
-})
+export async function generateMetadata(): Promise<Metadata> {
+  return pageMetadata(await getOgCopy(ogSchemaFor('donate')!))
+}
 
 const ARROW = (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">

@@ -6,6 +6,8 @@ import OpportunityGrid from '@/components/OpportunityGrid'
 import StreakBadge from '@/components/StreakBadge'
 import TestimonialForm from '@/components/TestimonialForm'
 import { getSiteContent } from '@/lib/site-content'
+import { getOgCopy } from '@/lib/og'
+import { ogSchemaFor } from '@/lib/og-schema'
 
 interface Thread { title: string; author: string; replies: number; tag: string }
 
@@ -19,11 +21,9 @@ async function getThreads(): Promise<Thread[]> {
   return (await getSiteContent<Thread[]>('community_threads')) ?? []
 }
 
-export const metadata: Metadata = pageMetadata({
-  title: 'Community Hub · Wissen-Haus',
-  ogTitle: 'Community Hub',
-  description: 'Scholarships, internships, mentorship, courses and a community feed—everything a young Nigerian changemaker needs in one place.',
-})
+export async function generateMetadata(): Promise<Metadata> {
+  return pageMetadata(await getOgCopy(ogSchemaFor('community')!))
+}
 
 const ARROW = (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">

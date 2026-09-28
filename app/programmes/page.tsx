@@ -4,12 +4,12 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { getPageCopy } from '@/lib/page-copy'
 import { PROGRAMMES_SCHEMA } from '@/lib/page-copy-schema'
+import { getOgCopy } from '@/lib/og'
+import { ogSchemaFor } from '@/lib/og-schema'
 
-export const metadata: Metadata = pageMetadata({
-  title: 'Programmes · Wissen-Haus',
-  ogTitle: 'Our Programmes',
-  description: 'Career Clarity Fair, Opportunity Blueprint Podcast, Impact Content, Events, and Career Hub — all our programmes in one place.',
-})
+export async function generateMetadata(): Promise<Metadata> {
+  return pageMetadata(await getOgCopy(ogSchemaFor('programmes')!))
+}
 
 const ARROW = (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">

@@ -1,12 +1,12 @@
 ﻿import type { Metadata } from 'next'
 import { pageMetadata } from '@/lib/seo'
+import { getOgCopy } from '@/lib/og'
+import { ogSchemaFor } from '@/lib/og-schema'
 import Link from 'next/link'
 
-export const metadata: Metadata = pageMetadata({
-  title: 'DataCamp Donates Partnership · Wissen-Haus',
-  ogTitle: 'Free DataCamp Access for Our Community',
-  description: 'Wissen-Haus is now a DataCamp Donates partner. 500 DataCamp licenses available for students and team members.',
-})
+export async function generateMetadata(): Promise<Metadata> {
+  return pageMetadata(await getOgCopy(ogSchemaFor('partners-datacamp')!))
+}
 
 export default function DataCampPartnerPage() {
   return (

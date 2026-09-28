@@ -2,12 +2,12 @@
 import { pageMetadata } from '@/lib/seo'
 import OpportunityGrid from '@/components/OpportunityGrid'
 import StreakBadge from '@/components/StreakBadge'
+import { getOgCopy } from '@/lib/og'
+import { ogSchemaFor } from '@/lib/og-schema'
 
-export const metadata: Metadata = pageMetadata({
-  title: 'Remote Jobs · Wissen-Haus Community',
-  ogTitle: 'Remote Jobs',
-  description: 'Remote job opportunities curated for Nigerian, African, and diaspora youth. Updated daily.',
-})
+export async function generateMetadata(): Promise<Metadata> {
+  return pageMetadata(await getOgCopy(ogSchemaFor('jobs')!))
+}
 
 export default function JobsPage() {
   return (

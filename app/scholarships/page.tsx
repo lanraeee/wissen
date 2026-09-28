@@ -2,12 +2,12 @@ import type { Metadata } from 'next'
 import { pageMetadata } from '@/lib/seo'
 import OpportunityGrid from '@/components/OpportunityGrid'
 import StreakBadge from '@/components/StreakBadge'
+import { getOgCopy } from '@/lib/og'
+import { ogSchemaFor } from '@/lib/og-schema'
 
-export const metadata: Metadata = pageMetadata({
-  title: 'Scholarships · Wissen-Haus Community',
-  ogTitle: 'Scholarships',
-  description: 'Scholarships for Nigerian, African, and diaspora students.',
-})
+export async function generateMetadata(): Promise<Metadata> {
+  return pageMetadata(await getOgCopy(ogSchemaFor('scholarships')!))
+}
 
 export default function ScholarshipsPage() {
   return (

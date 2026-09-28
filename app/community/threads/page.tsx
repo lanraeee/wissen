@@ -4,12 +4,12 @@ import Link from 'next/link'
 import StreakBadge from '@/components/StreakBadge'
 import ThreadsClient from '@/components/ThreadsClient'
 import sql from '@/lib/db'
+import { getOgCopy } from '@/lib/og'
+import { ogSchemaFor } from '@/lib/og-schema'
 
-export const metadata: Metadata = pageMetadata({
-  title: 'Discussion Threads · Wissen-Haus Community',
-  ogTitle: 'Discussion Threads',
-  description: 'Discuss, share wins, ask questions — the Wissen-Haus community discussion board.',
-})
+export async function generateMetadata(): Promise<Metadata> {
+  return pageMetadata(await getOgCopy(ogSchemaFor('community-threads')!))
+}
 
 interface WAPost { text: string; date: string; image?: string }
 interface WAChannel { url: string; name: string; description: string; posts: WAPost[] }

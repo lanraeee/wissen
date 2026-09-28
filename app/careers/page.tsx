@@ -2,12 +2,12 @@
 import { pageMetadata } from '@/lib/seo'
 import Link from 'next/link'
 import { getSiteContent } from '@/lib/site-content'
+import { getOgCopy } from '@/lib/og'
+import { ogSchemaFor } from '@/lib/og-schema'
 
-export const metadata: Metadata = pageMetadata({
-  title: 'Careers · Wissen-Haus',
-  ogTitle: 'Careers at Wissen-Haus',
-  description: 'Join the Wissen-Haus team and help bridge the skills gap for African youth and the diaspora.',
-})
+export async function generateMetadata(): Promise<Metadata> {
+  return pageMetadata(await getOgCopy(ogSchemaFor('careers')!))
+}
 
 interface Role { title: string; type: string; desc: string }
 

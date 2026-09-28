@@ -1,15 +1,15 @@
 import type { Metadata } from 'next'
 import { pageMetadata } from '@/lib/seo'
+import { getOgCopy } from '@/lib/og'
+import { ogSchemaFor } from '@/lib/og-schema'
 import Link from 'next/link'
 import Image from 'next/image'
 import { getPageCopy } from '@/lib/page-copy'
 import { ABOUT_STORY_SCHEMA } from '@/lib/page-copy-schema'
 
-export const metadata: Metadata = pageMetadata({
-  title: 'Our Story · Wissen-Haus',
-  ogTitle: 'Our Story',
-  description: 'The Wissen-Haus journey: bridging the classroom and the world so every young African and diaspora changemaker can achieve economic independence.',
-})
+export async function generateMetadata(): Promise<Metadata> {
+  return pageMetadata(await getOgCopy(ogSchemaFor('about-story')!))
+}
 
 export default async function AboutStoryPage() {
   const c = await getPageCopy(ABOUT_STORY_SCHEMA)

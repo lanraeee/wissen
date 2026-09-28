@@ -6,12 +6,12 @@ import PartnersCarousel, { type Partner } from '@/components/PartnersCarousel'
 import { getSiteContent } from '@/lib/site-content'
 import { getPageCopy } from '@/lib/page-copy'
 import { PARTNER_SCHEMA } from '@/lib/page-copy-schema'
+import { getOgCopy } from '@/lib/og'
+import { ogSchemaFor } from '@/lib/og-schema'
 
-export const metadata: Metadata = pageMetadata({
-  title: 'Partner With Us · Wissen-Haus',
-  ogTitle: 'Partner With Us',
-  description: 'Partner with Wissen-Haus to empower African youth and the diaspora. For schools, companies, and individuals.',
-})
+export async function generateMetadata(): Promise<Metadata> {
+  return pageMetadata(await getOgCopy(ogSchemaFor('partner')!))
+}
 
 export default async function PartnerPage() {
   const [partners, c] = await Promise.all([

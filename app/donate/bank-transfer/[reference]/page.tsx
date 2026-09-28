@@ -4,13 +4,12 @@ import { pageMetadata } from '@/lib/seo'
 import Link from 'next/link'
 import { getPledge, getBankDetails, accountFor } from '@/lib/bank-transfer'
 import BankTransferPanel, { type DetailRow } from '@/components/BankTransferPanel'
+import { getOgCopy } from '@/lib/og'
+import { ogSchemaFor } from '@/lib/og-schema'
 
-export const metadata: Metadata = pageMetadata({
-  title: 'Complete Your Bank Transfer · Wissen-Haus',
-  ogTitle: 'Complete Your Bank Transfer',
-  description: 'Bank account details for your donation to Wissen-Haus Empowerment Foundation.',
-  robots: { index: false, follow: false },
-})
+export async function generateMetadata(): Promise<Metadata> {
+  return pageMetadata({ ...await getOgCopy(ogSchemaFor('donate-bank-transfer')!), robots: { index: false, follow: false } })
+}
 
 // A pledge's status changes as the donor and admin act on it, so this page must
 // never be cached.

@@ -2,12 +2,12 @@
 import { pageMetadata } from '@/lib/seo'
 import Link from 'next/link'
 import { getCourses } from '@/lib/courses'
+import { getOgCopy } from '@/lib/og'
+import { ogSchemaFor } from '@/lib/og-schema'
 
-export const metadata: Metadata = pageMetadata({
-  title: 'Courses · Wissen-Haus',
-  ogTitle: 'Courses',
-  description: 'Free and premium certificate courses for Nigerian youth. Build real career skills.',
-})
+export async function generateMetadata(): Promise<Metadata> {
+  return pageMetadata(await getOgCopy(ogSchemaFor('courses')!))
+}
 
 export default async function CoursesPage() {
   const COURSES = await getCourses()

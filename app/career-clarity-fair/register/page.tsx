@@ -1,12 +1,12 @@
 import type { Metadata } from 'next'
 import { pageMetadata } from '@/lib/seo'
 import CareerFairRegisterForm from '@/components/CareerFairRegisterForm'
+import { getOgCopy } from '@/lib/og'
+import { ogSchemaFor } from '@/lib/og-schema'
 
-export const metadata: Metadata = pageMetadata({
-  title: 'Register · Career Clarity Fair · Wissen-Haus',
-  ogTitle: 'Register for the Career Clarity Fair',
-  description: 'Register for the Wissen-Haus Career Clarity Fair and get your personal booth guide.',
-})
+export async function generateMetadata(): Promise<Metadata> {
+  return pageMetadata(await getOgCopy(ogSchemaFor('career-clarity-fair-register')!))
+}
 
 export default function CareerFairRegisterPage() {
   return (
