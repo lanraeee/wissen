@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 
 interface Subscriber {
   id: string
@@ -28,6 +28,7 @@ export default function SubscribersManager() {
   const [statusFilter, setStatusFilter] = useState<'all' | 'subscribed' | 'unsubscribed'>('subscribed')
   const [busy, setBusy] = useState(false)
   const [err, setErr] = useState('')
+  const csvInputRef = useRef<HTMLInputElement>(null)
 
   const load = useCallback(async () => {
     const res = await fetch('/api/admin/newsletter/subscribers')
@@ -66,6 +67,27 @@ export default function SubscribersManager() {
     load()
   }
 
+  async function importCsv(file: File) {
+    setBusy(true); setErr('')
+    try {
+      const csv = await file.text()
+      const res = await fetch('/api/admin/newsletter/subscribers/import-csv', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ csv }),
+      })
+      const d = await res.json().catch(() => null)
+      if (!res.ok) throw new Error(d?.error ?? 'CSV import failed.')
+      alert(`Imported ${d.imported} new subscriber(s).${d.skipped ? ` ${d.skipped} already subscribed.` : ''}${d.invalid ? ` ${d.invalid} row(s) had an invalid email.` : ''}`)
+      load()
+    } catch (err) {
+      setErr(err instanceof Error ? err.message : 'CSV import failed.')
+    } finally {
+      setBusy(false)
+      if (csvInputRef.current) csvInputRef.current.value = ''
+    }
+  }
+
   async function toggleStatus(s: Subscriber) {
     setBusy(true)
     await fetch(`/api/admin/newsletter/subscribers/${s.id}`, {
@@ -95,7 +117,17 @@ export default function SubscribersManager() {
         <input placeholder="Name (optional)" value={name} onChange={e => setName(e.target.value)} style={inp({ minWidth: 160 })} />
         <button type="submit" disabled={busy} style={btn('#1a3c2e')}>Add Subscriber</button>
         <button type="button" onClick={importFromFair} disabled={busy} style={btn('#1d4ed8')}>Import Career Fair Opt-Ins</button>
+        <label style={{ ...btn('#1d4ed8'), display: 'inline-flex', alignItems: 'center', cursor: busy ? 'default' : 'pointer', opacity: busy ? 0.6 : 1 }}>
+          Import CSV
+          <input
+            ref={csvInputRef} type="file" accept=".csv,text/csv" disabled={busy} style={{ display: 'none' }}
+            onChange={e => { const file = e.target.files?.[0]; if (file) importCsv(file) }}
+          />
+        </label>
       </form>
+      <p style={{ fontSize: '.76rem', color: '#8a9a8f', marginTop: -6, marginBottom: 12 }}>
+        CSV needs a header row with an <code style={{ background: '#f0ece4', padding: '1px 4px', borderRadius: 3 }}>email</code> column (and optionally <code style={{ background: '#f0ece4', padding: '1px 4px', borderRadius: 3 }}>name</code>).
+      </p>
       {err && <p style={{ color: '#dc2626', fontSize: '.82rem', marginBottom: 12 }}>{err}</p>}
 
       <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 16, flexWrap: 'wrap' }}>
