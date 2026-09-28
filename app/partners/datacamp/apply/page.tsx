@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { pageMetadata } from '@/lib/seo'
+import { getSiteContent } from '@/lib/site-content'
 import ScholarshipApplicationForm from '@/components/ScholarshipApplicationForm'
 
 export const metadata: Metadata = pageMetadata({
@@ -8,7 +9,10 @@ export const metadata: Metadata = pageMetadata({
   description: 'Apply for a Wissen-Haus × DataCamp scholarship — free access to DataCamp for motivated young people facing genuine barriers to learning data, analytics and AI skills.',
 })
 
-export default function DataCampScholarshipApplyPage() {
+export default async function DataCampScholarshipApplyPage() {
+  const settings = await getSiteContent<{ tagline?: string }>('site_settings')
+  const tagline = settings?.tagline || 'Empowering Youth, Shaping Futures'
+
   return (
     <section className="section" style={{ paddingTop: 'clamp(48px,6vw,84px)' }}>
       <div className="wrap">
@@ -24,7 +28,7 @@ export default function DataCampScholarshipApplyPage() {
           <p className="mt-s" style={{ fontSize: '.85rem', color: 'var(--ink-60)' }}>Estimated completion time: 7–10 minutes.</p>
         </div>
 
-        <ScholarshipApplicationForm />
+        <ScholarshipApplicationForm tagline={tagline} />
       </div>
     </section>
   )

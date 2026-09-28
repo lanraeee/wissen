@@ -57,7 +57,7 @@ export default async function HomePage() {
     getSiteContent<StatItem[]>('homepage_stats'),
   ])
 
-  const tagline = settings?.tagline || 'Every young African and diaspora changemaker deserves the tools to thrive.'
+  const tagline = settings?.tagline || 'Empowering Youth, Shaping Futures'
   // homepage_hero_slides is the current multi-slide store; homepage_hero is
   // the pre-slider single-hero key, read as a fallback until the admin saves
   // at least once through the new editor.

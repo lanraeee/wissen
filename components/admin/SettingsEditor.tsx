@@ -22,7 +22,7 @@ const DEFAULTS: Settings = {
   instagram_url: '',
   linkedin_url: '',
   twitter_url: '',
-  tagline: 'Building the bridge young Nigerians deserve.',
+  tagline: 'Empowering Youth, Shaping Futures',
   footer_note: '',
   google_business_url: '',
   bing_places_url: '',

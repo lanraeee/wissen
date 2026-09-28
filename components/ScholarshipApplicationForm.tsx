@@ -94,7 +94,7 @@ function validateStep(step: number, f: FormState): string | null {
   }
 }
 
-export default function ScholarshipApplicationForm() {
+export default function ScholarshipApplicationForm({ tagline }: { tagline: string }) {
   const [step, setStep] = useState(0)
   const [f, setF] = useState<FormState>(INITIAL_STATE)
   const [error, setError] = useState('')
@@ -152,10 +152,15 @@ export default function ScholarshipApplicationForm() {
 
   if (done) {
     return (
-      <FormSuccess
-        title="🎉 Application Received"
-        message="Thank you for applying for the Wissen-Haus × DataCamp Scholarship Programme. Our team will review applications based on need, motivation, commitment, relevance of goals and potential impact. Only shortlisted applicants will be contacted. Your next opportunity could start here."
-      />
+      <div style={{ maxWidth: 640, margin: '0 auto' }}>
+        <FormSuccess
+          title="🎉 Application Received"
+          message="Thank you for applying for the Wissen-Haus × DataCamp Scholarship Programme. Our team will review applications based on need, motivation, commitment, relevance of goals and potential impact. Only shortlisted applicants will be contacted. Your next opportunity could start here."
+        />
+        <p style={{ textAlign: 'center', marginTop: '-1.5rem', fontWeight: 700, color: 'var(--green-800,#1a3c2e)' }}>
+          Wissen-Haus · {tagline}
+        </p>
+      </div>
     )
   }
 

@@ -64,7 +64,9 @@ export function replyButton(email: string, name: string) {
 // clients that support it (Apple Mail, Outlook.com, newer Gmail) so the card
 // doesn't stay stark white against a dark chrome. No flexbox/grid — email
 // rendering engines are still effectively table-and-block CSS only.
-export function shell(body: string) {
+export const DEFAULT_TAGLINE = 'Empowering Youth, Shaping Futures'
+
+export function shell(body: string, tagline: string = DEFAULT_TAGLINE) {
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -113,6 +115,7 @@ export function shell(body: string) {
   </div>
   <div class="body">${body}</div>
   <div class="foot">
+    <strong>${esc(tagline)}</strong><br/>
     Wissen-Haus Empowerment Foundation · Ibadan, Nigeria<br/>
     <a href="https://wissenhaus.org">wissenhaus.org</a> · <a href="mailto:info@wissenhaus.org">info@wissenhaus.org</a>
   </div>

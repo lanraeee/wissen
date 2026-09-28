@@ -1,5 +1,5 @@
 import sql from './db'
-import { shell } from './email-shell'
+import { shell, DEFAULT_TAGLINE } from './email-shell'
 
 export function fillVars(tpl: string, vars: Record<string, string>) {
   return tpl.replace(/\{\{\s*(\w+)\s*\}\}/g, (_, k) => vars[k] ?? '')
@@ -27,6 +27,20 @@ export async function getTemplateOverride(id: string): Promise<TemplateOverride 
   }
 }
 
+// A direct query rather than lib/site-content.ts's getSiteContent(): that
+// helper wraps next/cache's unstable_cache, which needs a real Next.js
+// request context and throws under plain unit tests (and there's no need
+// for the request-scoped/tag-invalidated caching here anyway -- email sends
+// are low-frequency compared to page renders).
+async function getTagline(): Promise<string> {
+  try {
+    const [row] = await sql`SELECT value FROM site_content WHERE key = 'site_settings'`
+    return (row?.value as { tagline?: string } | undefined)?.tagline || DEFAULT_TAGLINE
+  } catch {
+    return DEFAULT_TAGLINE
+  }
+}
+
 /**
  * Renders a transactional email: an admin-saved override in email_templates
  * if one exists, else the built-in default passed by the caller. Both are
@@ -39,7 +53,8 @@ export async function renderTemplate(id: string, vars: Record<string, string>, f
   const override = await getTemplateOverride(id)
   const subjectTpl = override?.subject || fallback.subject
   const bodyTpl = override?.html || fallback.body
-  return { subject: fillVars(subjectTpl, vars), html: shell(fillVars(bodyTpl, vars)) }
+  const tagline = await getTagline()
+  return { subject: fillVars(subjectTpl, vars), html: shell(fillVars(bodyTpl, vars), tagline) }
 }
 
 /** Renders a draft (unsaved) subject/body against sample data, for the admin preview pane. Never touches the database. */
