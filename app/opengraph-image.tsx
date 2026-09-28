@@ -2,6 +2,11 @@ import { ImageResponse } from 'next/og'
 import sql from '@/lib/db'
 
 export const runtime = 'edge'
+// Belt-and-braces alongside the explicit Cache-Control override below
+// (which is what actually fixes the staleness -- see that comment): forces
+// this function to re-run on every request rather than risk Next silently
+// deciding a route with no dynamic API calls can be statically optimized.
+export const dynamic = 'force-dynamic'
 export const alt = 'Wissen-Haus Empowerment Foundation'
 export const size = { width: 1200, height: 630 }
 export const contentType = 'image/png'
@@ -277,6 +282,16 @@ export default async function Image() {
         </div>
       </div>
     ),
-    { ...size }
+    {
+      ...size,
+      // ImageResponse hard-defaults to `public, immutable, no-transform,
+      // max-age=31536000` (1 year) regardless of the route's dynamic/static
+      // config -- Vercel's edge CDN and every social-media crawler take that
+      // literally and never refetch, so a Settings/Content edit never shows
+      // up in a shared link's preview. A short max-age lets crawlers still
+      // cache between scrapes (they don't re-scrape a URL on every share)
+      // while ensuring a change is visible within minutes, not a year.
+      headers: { 'Cache-Control': 'public, max-age=300, s-maxage=300, must-revalidate' },
+    }
   )
 }
