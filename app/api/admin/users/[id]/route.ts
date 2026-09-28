@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
-import { userAdminGuard, isDirector } from '@/lib/admin-guard'
+import { userAdminGuard, isDirector, isMasterAdmin } from '@/lib/admin-guard'
 import sql from '@/lib/db'
 import { hashPassword } from '@/lib/auth'
 import { sendPasswordResetEmail, sendTempPasswordEmail } from '@/lib/email'
@@ -153,6 +153,13 @@ export async function DELETE(_: NextRequest, { params }: { params: Promise<{ id:
   const { id } = await params
   const target = await findUser(id)
   if (!target) return NextResponse.json({ error: 'Not found' }, { status: 404 })
+
+  // Wissen-Haus Ltd (UK)'s own master admin account is never deletable, by
+  // anyone, including the other director -- there must be no path to lock the
+  // organisation out of its own admin panel.
+  if (isMasterAdmin(target.email)) {
+    return NextResponse.json({ error: 'This account cannot be deleted.' }, { status: 400 })
+  }
 
   const callerIsDirector = isDirector(session.email)
 

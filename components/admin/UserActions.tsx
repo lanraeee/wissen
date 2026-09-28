@@ -28,6 +28,11 @@ const ROLE_COLORS: Record<string, string> = {
   user: '',
 }
 
+// Wissen-Haus Ltd (UK)'s own master admin account -- protected from deletion
+// even in the API, but hide the button entirely rather than let anyone click
+// it just to see the refusal.
+const MASTER_ADMIN_EMAIL = 'wissenhaus@outlook.com'
+
 export default function UserActions({ user, onRefresh, isDirector }: { user: User; onRefresh: () => void; isDirector: boolean }) {
   const [busy, setBusy] = useState(false)
   const [editing, setEditing] = useState(false)
@@ -135,7 +140,9 @@ export default function UserActions({ user, onRefresh, isDirector }: { user: Use
         ) : (
           <button style={btn('#1a3c2e')} onClick={() => act('grant_premium')} disabled={busy}>Grant Premium</button>
         )}
-        <button style={btn('#dc2626')} onClick={del} disabled={busy}>Delete</button>
+        {user.email !== MASTER_ADMIN_EMAIL && (
+          <button style={btn('#dc2626')} onClick={del} disabled={busy}>Delete</button>
+        )}
       </div>
       {viewingActivity && <UserActivityModal userId={user.id} onClose={() => setViewingActivity(false)} />}
     </>
