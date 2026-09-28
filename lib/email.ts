@@ -194,7 +194,7 @@ export async function sendBankTransferNotification(data: {
     emailField: field('Email', mailtoLink(data.email)),
     amountField: field('Amount', `<strong>${formatted}</strong>`),
     refField: fieldMono('Reference', data.reference),
-    bankTransfersUrl: esc(siteUrl) + '/admin/submissions?type=bank_transfer',
+    bankTransfersUrl: esc(siteUrl) + '/admin/bank-transfers',
   }
   const { subject, html } = await renderTemplate('bank-transfer-notification', vars, defaultsFor('bank-transfer-notification'))
   return sendEmail({ from: FROM, to: ADMIN_EMAILS, replyTo: data.email, subject, html })
@@ -327,6 +327,31 @@ export async function sendFairCheckinReminder(opts: {
   }
   const { subject, html } = await renderTemplate('fair-checkin-reminder', vars, defaultsFor('fair-checkin-reminder'))
   return sendEmail({ from: FROM, to: opts.to, subject, html })
+}
+
+// ─── DataCamp scholarship application confirmation (to applicant) ──────────
+export async function sendScholarshipConfirmation(to: string, name: string) {
+  const vars = { firstNameRaw: name.split(' ')[0], firstName: firstNameOf(name) }
+  const { subject, html } = await renderTemplate('scholarship-confirmation', vars, defaultsFor('scholarship-confirmation'))
+  return sendEmail({ from: FROM, to, subject, html })
+}
+
+// ─── DataCamp scholarship application notification (to admin) ──────────────
+export async function sendScholarshipNotification(data: {
+  name: string; email: string; score: number; redFlags: string[]; goalsEssay: string; whyApplyingEssay: string
+}) {
+  const vars = {
+    nameRaw: data.name, scoreRaw: String(data.score),
+    nameField: fieldText('Name', data.name),
+    emailField: field('Email', mailtoLink(data.email)),
+    scoreField: fieldText('Score', `${data.score} / 100`),
+    redFlagsField: fieldText('Red flags', data.redFlags.length > 0 ? data.redFlags.join(', ') : 'None'),
+    goalsField: fieldPre('What they hope to achieve', data.goalsEssay),
+    whyApplyingField: fieldPre('Why they are applying', data.whyApplyingEssay),
+    replyBtn: replyButton(data.email, data.name),
+  }
+  const { subject, html } = await renderTemplate('scholarship-notification', vars, defaultsFor('scholarship-notification'))
+  return sendEmail({ from: FROM, to: ADMIN_EMAILS, replyTo: data.email, subject, html })
 }
 
 // ─── Newsletter campaigns (admin-composed, sent to the subscriber list) ────

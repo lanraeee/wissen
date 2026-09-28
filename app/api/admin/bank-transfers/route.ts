@@ -3,7 +3,7 @@ import { z } from 'zod'
 import sql from '@/lib/db'
 import { adminGuard } from '@/lib/admin-guard'
 import { getPledge, updatePledge } from '@/lib/bank-transfer'
-import { certIdForReference, recordDonation, type VerifiedDonation } from '@/lib/donations'
+import { recordDonation, type VerifiedDonation } from '@/lib/donations'
 import { parseBody } from '@/lib/validation'
 import { log } from '@/lib/logger'
 import { logActivity } from '@/lib/audit-log'
@@ -13,10 +13,10 @@ const ReferenceSchema = z.object({ reference: z.string().trim().min(1).max(100) 
 export async function GET() {
   if (!await adminGuard()) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   const rows = await sql`
-    SELECT id, name, email, data, status, created_at
-    FROM submissions
-    WHERE type = 'bank_transfer'
-    ORDER BY created_at DESC
+    SELECT bt.*, d.cert_id AS cert_id
+    FROM bank_transfers bt
+    LEFT JOIN donations d ON d.id = bt.donation_id
+    ORDER BY bt.created_at DESC
   `
   return NextResponse.json({ pledges: rows })
 }
@@ -38,10 +38,8 @@ export async function POST(req: NextRequest) {
   const pledge = await getPledge(reference)
   if (!pledge) return NextResponse.json({ error: 'No bank transfer found for that reference' }, { status: 404 })
 
-  const certId = pledge.cert_id ?? certIdForReference(pledge.reference)
-
   if (pledge.status === 'confirmed') {
-    return NextResponse.json({ success: true, alreadyConfirmed: true, certId, certUrl: `/donate/receipt/${certId}` })
+    return NextResponse.json({ success: true, alreadyConfirmed: true, certId: pledge.cert_id, certUrl: `/donate/receipt/${pledge.cert_id}` })
   }
 
   const donation: VerifiedDonation = {
@@ -53,20 +51,23 @@ export async function POST(req: NextRequest) {
     provider: 'Bank Transfer',
   }
 
+  let result
   try {
-    await recordDonation(donation)
+    result = await recordDonation(donation)
   } catch (err) {
     log.error('bank transfer confirm', err)
     return NextResponse.json({ error: 'Could not record the donation' }, { status: 502 })
   }
+  if (!result.donation) return NextResponse.json({ error: 'Could not record the donation' }, { status: 502 })
 
   await updatePledge(reference, {
     status: 'confirmed',
     confirmed_at: new Date().toISOString(),
-    cert_id: certId,
+    donation_id: result.donation.id,
   })
 
-  logActivity(session, 'bank_transfer.confirm', { targetType: 'submission', targetId: reference, details: { certId, amount: pledge.amount, currency: pledge.currency } })
+  const certId = result.donation.cert_id
+  logActivity(session, 'bank_transfer.confirm', { targetType: 'bank_transfer', targetId: reference, details: { certId, amount: pledge.amount, currency: pledge.currency } })
   return NextResponse.json({ success: true, certId, certUrl: `/donate/receipt/${certId}` })
 }
 
@@ -82,6 +83,6 @@ export async function DELETE(req: NextRequest) {
 
   const updated = await updatePledge(reference, { status: 'cancelled' })
   if (!updated) return NextResponse.json({ error: 'Not found' }, { status: 404 })
-  logActivity(session, 'bank_transfer.cancel', { targetType: 'submission', targetId: reference })
+  logActivity(session, 'bank_transfer.cancel', { targetType: 'bank_transfer', targetId: reference })
   return NextResponse.json({ success: true })
 }

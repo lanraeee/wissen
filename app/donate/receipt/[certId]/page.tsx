@@ -81,12 +81,21 @@ function formatAmount(amount: number, currency: string) {
 interface Props { params: Promise<{ certId: string }> }
 
 async function getData(certId: string) {
-  const [certsRow, foundationRow] = await Promise.all([
-    sql`SELECT value FROM site_content WHERE key = 'donation_certificates'`,
+  const [donationRows, foundationRow] = await Promise.all([
+    sql`SELECT name, email, amount, currency, cert_id, created_at FROM donations WHERE cert_id = ${certId} LIMIT 1`,
     sql`SELECT value FROM site_content WHERE key = 'foundation_details'`,
   ])
-  const certs: DonationCert[] = (certsRow[0]?.value as DonationCert[]) ?? []
-  const cert = certs.find(c => c.cert_id === certId) ?? null
+  const d = donationRows[0]
+  const cert: DonationCert | null = d ? {
+    cert_id: d.cert_id as string,
+    donor_name: d.name as string,
+    donor_email: d.email as string,
+    amount: Number(d.amount),
+    currency: d.currency as DonationCert['currency'],
+    date: d.created_at as string,
+    purpose: 'General Donation',
+    issued_at: d.created_at as string,
+  } : null
   const savedFoundation: FoundationDetails = foundationRow[0]?.value
     ? { ...DEFAULT_FOUNDATION, ...(foundationRow[0].value as Partial<FoundationDetails>) }
     : DEFAULT_FOUNDATION

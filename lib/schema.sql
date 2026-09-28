@@ -235,3 +235,118 @@ CREATE TABLE IF NOT EXISTS email_templates (
   html        TEXT NOT NULL,
   updated_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
+
+-- ─── Dedicated per-form tables ──────────────────────────────────────────────
+-- Replaces the generic `submissions` (type-tagged, JSONB `data`) table for
+-- contact/volunteer/partner/donation/bank_transfer -- each form gets real
+-- columns and its own admin page instead of sharing one key-value dump.
+-- `submissions` itself is left in place (nothing writes to it after this),
+-- since it's still a documented generic capture endpoint (see docs/API.md).
+
+CREATE TABLE IF NOT EXISTS contact_messages (
+  id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  name        TEXT NOT NULL,
+  email       TEXT NOT NULL,
+  subject     TEXT NOT NULL,
+  message     TEXT NOT NULL,
+  status      TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending','reviewed','actioned')),
+  created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+CREATE INDEX IF NOT EXISTS idx_contact_messages_status_created ON contact_messages(status, created_at DESC);
+
+CREATE TABLE IF NOT EXISTS volunteer_applications (
+  id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  name        TEXT NOT NULL,
+  email       TEXT NOT NULL,
+  role        TEXT NOT NULL,
+  message     TEXT,
+  status      TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending','reviewed','actioned')),
+  created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+CREATE INDEX IF NOT EXISTS idx_volunteer_apps_status_created ON volunteer_applications(status, created_at DESC);
+
+-- `partnership_type` is new: components/PartnerForm.tsx already collects it
+-- (School/Corporate/Individual Mentor/NGO/Media/Other) but the old generic
+-- route discarded it before it ever reached the DB.
+CREATE TABLE IF NOT EXISTS partner_inquiries (
+  id                UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  name              TEXT NOT NULL,
+  email             TEXT NOT NULL,
+  organisation      TEXT NOT NULL,
+  partnership_type  TEXT,
+  message           TEXT,
+  status            TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending','reviewed','actioned')),
+  created_at        TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+CREATE INDEX IF NOT EXISTS idx_partner_inquiries_status_created ON partner_inquiries(status, created_at DESC);
+
+-- Ledger of completed gifts (Stripe or a confirmed bank transfer). UNIQUE on
+-- reference makes recording idempotent -- INSERT ... ON CONFLICT (reference)
+-- DO NOTHING RETURNING * -- so a retried Stripe webhook (or the donor
+-- reloading /donate/success) can never double-record the same payment.
+-- cert_id is unique too: it's a deterministic function of the reference
+-- (see lib/donations.ts), so this also guards against the (extremely
+-- unlikely but previously unguarded) collision case.
+CREATE TABLE IF NOT EXISTS donations (
+  id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  name        TEXT NOT NULL,
+  email       TEXT NOT NULL,
+  amount      NUMERIC(12,2) NOT NULL,
+  currency    TEXT NOT NULL,
+  reference   TEXT NOT NULL,
+  provider    TEXT NOT NULL CHECK (provider IN ('Stripe','Bank Transfer')),
+  cert_id     TEXT,
+  created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_donations_reference ON donations(reference);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_donations_cert_id   ON donations(cert_id) WHERE cert_id IS NOT NULL;
+CREATE INDEX IF NOT EXISTS idx_donations_created_at ON donations(created_at DESC);
+
+-- A pledge's own lifecycle, one plain `status` column (replacing the old
+-- outer-column/nested-JSONB dual-status mapping). `donation_id` links to the
+-- `donations` row created once the pledge is confirmed (one direction only,
+-- to avoid a circular FK) -- replaces the old implicit "same reference
+-- string" join between a confirmed pledge and its donation record.
+CREATE TABLE IF NOT EXISTS bank_transfers (
+  id             UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  reference      TEXT NOT NULL,
+  name           TEXT NOT NULL,
+  email          TEXT NOT NULL,
+  amount         NUMERIC(12,2) NOT NULL,
+  currency       TEXT NOT NULL,
+  message        TEXT,
+  status         TEXT NOT NULL DEFAULT 'awaiting_transfer'
+                   CHECK (status IN ('awaiting_transfer','declared_sent','confirmed','cancelled')),
+  declared_at    TIMESTAMPTZ,
+  confirmed_at   TIMESTAMPTZ,
+  donation_id    UUID REFERENCES donations(id) ON DELETE SET NULL,
+  created_at     TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_bank_transfers_reference ON bank_transfers(reference);
+CREATE INDEX IF NOT EXISTS idx_bank_transfers_status_created ON bank_transfers(status, created_at DESC);
+
+-- DataCamp Donates scholarship applications. First-class columns for what
+-- the admin sorts/filters by (score, status, email) -- the full 27-question
+-- answer set lives in one `answers` JSONB blob, same convention as
+-- fair_registrations.assessment_snapshot -- always read/written as a whole,
+-- never queried field-by-field.
+CREATE TABLE IF NOT EXISTS scholarship_applications (
+  id               UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  name             TEXT NOT NULL,
+  email            TEXT NOT NULL,
+  phone            TEXT,
+  age_range        TEXT,
+  country          TEXT,
+  state_region      TEXT,
+  city             TEXT,
+  answers          JSONB NOT NULL,
+  score            INTEGER NOT NULL,
+  score_breakdown  JSONB NOT NULL,
+  red_flags        TEXT[] NOT NULL DEFAULT '{}',
+  status           TEXT NOT NULL DEFAULT 'pending'
+                     CHECK (status IN ('pending','shortlisted','awarded','declined','waitlisted')),
+  created_at       TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+CREATE INDEX IF NOT EXISTS idx_scholarship_apps_score      ON scholarship_applications(score DESC);
+CREATE INDEX IF NOT EXISTS idx_scholarship_apps_status     ON scholarship_applications(status, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_scholarship_apps_email      ON scholarship_applications(email);

@@ -6,7 +6,7 @@ vi.mock('@/lib/admin-guard', () => ({ adminGuard: () => adminGuardMock() }))
 
 import { GET } from './route'
 
-describe('GET /api/admin/submissions/counts', () => {
+describe('GET /api/admin/inbox-counts', () => {
   beforeEach(() => vi.resetAllMocks())
 
   it('returns 403 when not staff', async () => {
@@ -16,12 +16,17 @@ describe('GET /api/admin/submissions/counts', () => {
     expect(sqlMock).not.toHaveBeenCalled()
   })
 
-  it('returns pending counts keyed by type', async () => {
+  it('returns pending counts per resource', async () => {
     adminGuardMock.mockResolvedValue({ id: 'a', email: 'a@x.com', role: 'admin' })
-    sqlMock.mockResolvedValueOnce([{ type: 'contact', count: 2 }, { type: 'volunteer', count: 1 }])
+    sqlMock
+      .mockResolvedValueOnce([{ c: 2 }])
+      .mockResolvedValueOnce([{ c: 1 }])
+      .mockResolvedValueOnce([{ c: 0 }])
+      .mockResolvedValueOnce([{ c: 3 }])
+      .mockResolvedValueOnce([{ c: 5 }])
     const res = await GET()
     expect(res.status).toBe(200)
     const body = await res.json()
-    expect(body).toEqual({ contact: 2, volunteer: 1 })
+    expect(body).toEqual({ contact: 2, volunteer: 1, partner: 0, bank_transfer: 3, scholarship: 5 })
   })
 })

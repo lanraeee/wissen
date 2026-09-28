@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 
 import { useState } from 'react'
 
@@ -7,26 +7,35 @@ const btn = (bg: string, color = '#fff') => ({
   background: bg, color, border: 'none', cursor: 'pointer',
 })
 
-export default function SubmissionActions({
-  id, status, onRefresh,
-}: { id: string; status: string; onRefresh: () => void }) {
+/**
+ * Status + delete buttons for a single-file admin resource route (PATCH/DELETE
+ * with body `{id, ...}`, the same convention as app/api/admin/testimonials).
+ * `endpoint` is the resource's base API path, e.g. '/api/admin/contact'.
+ */
+export default function InboxActions({
+  id, status, endpoint, onRefresh,
+}: { id: string; status: string; endpoint: string; onRefresh: () => void }) {
   const [busy, setBusy] = useState(false)
 
   async function setStatus(s: string) {
     setBusy(true)
-    await fetch(`/api/admin/submissions/${id}`, {
+    await fetch(endpoint, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ status: s }),
+      body: JSON.stringify({ id, status: s }),
     })
     setBusy(false)
     onRefresh()
   }
 
   async function del() {
-    if (!confirm('Delete this submission?')) return
+    if (!confirm('Delete this entry?')) return
     setBusy(true)
-    await fetch(`/api/admin/submissions/${id}`, { method: 'DELETE' })
+    await fetch(endpoint, {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id }),
+    })
     setBusy(false)
     onRefresh()
   }

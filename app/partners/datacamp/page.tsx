@@ -21,7 +21,7 @@ export default function DataCampPartnerPage() {
               Wissen-Haus students and team members now have free access to DataCamp&apos;s world-class data science and AI courses.
             </p>
             <div className="cta-actions mt-l">
-              <a href="mailto:info@wissenhaus.org?subject=DataCamp Access Request" className="btn btn--light btn--lg">Request Access</a>
+              <Link href="/partners/datacamp/apply" className="btn btn--light btn--lg">Apply for a Scholarship</Link>
               <a href="https://www.datacamp.com" className="btn btn--outline-light btn--lg" target="_blank" rel="noopener noreferrer">Learn More</a>
             </div>
           </div>
@@ -102,13 +102,13 @@ export default function DataCampPartnerPage() {
             </div>
             <div className="step reveal" data-d="1">
               <div className="step__n">02</div>
-              <h4>Request Access</h4>
-              <p>Email info@wissenhaus.org with your full name and email. We&#39;ll review and send your DataCamp invite.</p>
+              <h4>Apply</h4>
+              <p>Complete our short scholarship application telling us about your goals and the barriers you&#39;re facing. It takes about 7–10 minutes.</p>
             </div>
             <div className="step reveal" data-d="2">
               <div className="step__n">03</div>
               <h4>Start Learning</h4>
-              <p>Accept the invite, create your DataCamp account, and choose from 500+ courses to advance your skills.</p>
+              <p>Shortlisted applicants are contacted with their DataCamp invite. Accept it, create your account, and choose from 500+ courses to advance your skills.</p>
             </div>
           </div>
         </div>
@@ -170,7 +170,7 @@ export default function DataCampPartnerPage() {
               Get free access to DataCamp and start learning data science, AI, and analytics from industry experts.
             </p>
             <div className="cta-actions">
-              <a href="mailto:info@wissenhaus.org?subject=DataCamp Access Request" className="btn btn--light btn--lg">Request Access Now</a>
+              <Link href="/partners/datacamp/apply" className="btn btn--light btn--lg">Apply Now</Link>
               <Link href="/partner" className="btn btn--outline-light btn--lg">Explore Other Partnerships</Link>
             </div>
           </div>

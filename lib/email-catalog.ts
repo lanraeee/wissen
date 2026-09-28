@@ -323,7 +323,7 @@ export const EMAIL_TEMPLATES: EmailTemplateInfo[] = [
       message: "No action needed yet. You'll get another email when the donor marks the transfer as sent.",
       donorField: fieldText('Donor', 'Ada Lovelace'), emailField: field('Email', mailtoLink('ada@example.com')),
       amountField: field('Amount', '<strong>₦50,000.00</strong>'), refField: fieldMono('Reference', 'WH-REF-SAMPLE'),
-      bankTransfersUrl: `${SITE_URL}/admin/submissions?type=bank_transfer`,
+      bankTransfersUrl: `${SITE_URL}/admin/bank-transfers`,
     },
   },
   {
@@ -381,6 +381,42 @@ export const EMAIL_TEMPLATES: EmailTemplateInfo[] = [
       nameField: fieldText('Name', 'Ada Lovelace'), emailField: field('Email', mailtoLink('ada@example.com')),
       phoneField: fieldText('Phone', '+234 800 000 0000'), schoolField: fieldText('School', 'Sample University'),
       eventField: fieldText('Event', 'Career Clarity Fair — Lagos'),
+    },
+  },
+  {
+    id: 'scholarship-confirmation', name: 'DataCamp Scholarship Application Confirmation', category: 'User Confirmations', recipient: 'User',
+    variables: ['firstName'],
+    defaultSubject: 'We received your DataCamp scholarship application — Wissen-Haus',
+    defaultBody: `<span class="badge">Application Received</span>
+<h2>Thank you, {{firstName}}!</h2>
+<p>We've received your application for the Wissen-Haus × DataCamp Scholarship Programme.</p>
+<p>Our team reviews applications based on need, motivation, commitment, relevance of goals and potential impact. Only shortlisted applicants will be contacted, so please bear with us as we work through every application carefully.</p>
+<p>Your next opportunity could start here.</p>`,
+    trigger: 'Sent to whoever submits the DataCamp scholarship application form.',
+    source: 'sendScholarshipConfirmation',
+    sampleVars: { firstNameRaw: 'Ada', firstName: 'Ada' },
+  },
+  {
+    id: 'scholarship-notification', name: 'DataCamp Scholarship Application Notification', category: 'Admin Notifications', recipient: 'Admin',
+    variables: ['nameField', 'emailField', 'scoreField', 'redFlagsField', 'goalsField', 'whyApplyingField', 'replyBtn'],
+    defaultSubject: '[Scholarship] New DataCamp application — {{nameRaw}} (score {{scoreRaw}})',
+    defaultBody: `<span class="badge">New Scholarship Application</span>
+<h2>New DataCamp scholarship application</h2>
+{{nameField}}
+{{emailField}}
+{{scoreField}}
+{{redFlagsField}}
+{{goalsField}}
+{{whyApplyingField}}
+{{replyBtn}}`,
+    trigger: 'Sent to admins on a new DataCamp scholarship application.',
+    source: 'sendScholarshipNotification',
+    sampleVars: {
+      nameRaw: 'Ada Lovelace', scoreRaw: '78',
+      nameField: fieldText('Name', 'Ada Lovelace'), emailField: field('Email', mailtoLink('ada@example.com')),
+      scoreField: fieldText('Score', '78 / 100'), redFlagsField: fieldText('Red flags', 'None'),
+      goalsField: fieldPre('What they hope to achieve', 'I want to learn data analysis to start a career in tech...'),
+      whyApplyingField: fieldPre('Why they are applying', "I can't currently afford premium learning platforms..."),
     },
   },
 ]

@@ -1,9 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
-import sql from '@/lib/db'
 import {
-  generateReference, getBankDetails, accountFor, getPledge, updatePledge,
-  type BankCurrency, type BankPledge,
+  generateReference, getBankDetails, accountFor, getPledge, updatePledge, createPledge,
+  type BankCurrency,
 } from '@/lib/bank-transfer'
 import { sendBankTransferInstructions, sendBankTransferNotification } from '@/lib/email'
 import { parseBody, zEmail } from '@/lib/validation'
@@ -39,22 +38,17 @@ export async function POST(req: NextRequest) {
       { status: 503 },
     )
 
-  const pledge: BankPledge = {
+  const pledge = {
     reference: generateReference(),
     name: name.trim(),
     email: email.trim().toLowerCase(),
     amount: value,
     currency,
     message: typeof message === 'string' && message.trim() ? message.trim() : undefined,
-    status: 'awaiting_transfer',
-    created_at: new Date().toISOString(),
   }
 
   try {
-    await sql`
-      INSERT INTO submissions (type, name, email, data, status)
-      VALUES ('bank_transfer', ${pledge.name}, ${pledge.email}, ${JSON.stringify(pledge)}, 'pending')
-    `
+    await createPledge(pledge)
   } catch (err) {
     log.error('bank transfer pledge insert', err)
     return NextResponse.json({ error: 'Could not start your donation. Please try again.' }, { status: 502 })

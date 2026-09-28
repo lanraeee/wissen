@@ -3,14 +3,19 @@
 import { usePathname } from 'next/navigation'
 import { NAV_ICONS } from './AdminIcons'
 import NavBadge from './NavBadge'
-import { useSubmissionsBadge, totalCount } from './useSubmissionsBadge'
+import { useSubmissionsBadge } from './useSubmissionsBadge'
 
 export const NAV = [
   ['Dashboard', '/admin'],
   ['Analytics', '/admin/analytics'],
   ['Activity Log', '/admin/activity'],
   ['Users', '/admin/users'],
-  ['Submissions', '/admin/submissions'],
+  ['Contact', '/admin/contact'],
+  ['Volunteers', '/admin/volunteer'],
+  ['Partners', '/admin/partner'],
+  ['Donations', '/admin/donations'],
+  ['Bank Transfers', '/admin/bank-transfers'],
+  ['Scholarships', '/admin/scholarships'],
   ['Opportunities', '/admin/opportunities'],
   ['Courses & Certs', '/admin/courses'],
   ['Donation Projects', '/admin/projects'],
@@ -22,20 +27,31 @@ export const NAV = [
   ['Settings', '/admin/settings'],
 ] as const
 
+// Maps a nav href to its key in useSubmissionsBadge()'s pending-counts
+// object (app/api/admin/inbox-counts). Donations/Opportunities/etc. have no
+// pending-triage concept, so they're simply absent here -- no badge shown.
+export const BADGE_KEYS: Record<string, string> = {
+  '/admin/contact': 'contact',
+  '/admin/volunteer': 'volunteer',
+  '/admin/partner': 'partner',
+  '/admin/bank-transfers': 'bank_transfer',
+  '/admin/scholarships': 'scholarship',
+}
+
 export function isNavActive(pathname: string, href: string) {
   return href === '/admin' ? pathname === '/admin' : pathname.startsWith(href)
 }
 
 export default function AdminNav() {
   const pathname = usePathname()
-  const submissionCounts = useSubmissionsBadge()
-  const pendingSubmissions = totalCount(submissionCounts)
+  const counts = useSubmissionsBadge()
 
   return (
     <nav style={{ padding: '16px 12px', flex: 1, overflowY: 'auto' }}>
       {NAV.map(([label, href]) => {
         const active = isNavActive(pathname, href)
         const Icon = NAV_ICONS[href]
+        const badgeKey = BADGE_KEYS[href]
         return (
           <a
             key={href}
@@ -48,7 +64,7 @@ export default function AdminNav() {
           >
             <Icon size={17} />
             {label}
-            {href === '/admin/submissions' && <NavBadge count={pendingSubmissions} style={{ marginLeft: 'auto' }} />}
+            {badgeKey && <NavBadge count={counts[badgeKey] ?? 0} style={{ marginLeft: 'auto' }} />}
           </a>
         )
       })}

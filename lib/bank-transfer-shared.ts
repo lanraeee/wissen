@@ -162,6 +162,7 @@ export function normalizeBankDetails(stored: unknown): BankDetails {
 export type PledgeStatus = 'awaiting_transfer' | 'declared_sent' | 'confirmed' | 'cancelled'
 
 export interface BankPledge {
+  id: string
   reference: string
   name: string
   email: string
@@ -172,6 +173,9 @@ export interface BankPledge {
   created_at: string
   declared_at?: string
   confirmed_at?: string
+  donation_id?: string
+  // Not a bank_transfers column -- joined in from the linked donations row
+  // (once confirmed) so callers keep the same "pledge.cert_id" shape as before.
   cert_id?: string
 }
 

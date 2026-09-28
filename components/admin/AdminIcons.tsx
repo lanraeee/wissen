@@ -25,6 +25,24 @@ export function UsersIcon({ size = 20 }: IconProps) {
 export function SubmissionsIcon({ size = 20 }: IconProps) {
   return <svg {...base(size)}><path d="M4 12h4l2 3h4l2-3h4" /><path d="M5.5 5h13l2 7v7a1 1 0 0 1-1 1H4.5a1 1 0 0 1-1-1v-7z" /></svg>
 }
+export function ContactIcon({ size = 20 }: IconProps) {
+  return <svg {...base(size)}><rect x="3" y="5" width="18" height="14" rx="2" /><path d="M3 7l9 6 9-6" /></svg>
+}
+export function VolunteersIcon({ size = 20 }: IconProps) {
+  return <svg {...base(size)}><path d="M12 20.5S4 16 4 9.8A4.3 4.3 0 0 1 12 7a4.3 4.3 0 0 1 8 2.8c0 6.2-8 10.7-8 10.7z" /></svg>
+}
+export function PartnersIcon({ size = 20 }: IconProps) {
+  return <svg {...base(size)}><circle cx="8.5" cy="12" r="5.5" /><circle cx="15.5" cy="12" r="5.5" /></svg>
+}
+export function DonationsIcon({ size = 20 }: IconProps) {
+  return <svg {...base(size)}><rect x="3" y="10" width="18" height="10" rx="1.5" /><path d="M3 10l9-6 9 6" /><path d="M12 13v4" /></svg>
+}
+export function BankTransfersIcon({ size = 20 }: IconProps) {
+  return <svg {...base(size)}><path d="M3 21h18M4 21V10M20 21V10M2 10l10-6 10 6M7 10v11M12 10v11M17 10v11" /></svg>
+}
+export function ScholarshipsIcon({ size = 20 }: IconProps) {
+  return <svg {...base(size)}><path d="M2 9l10-4.5L22 9l-10 4.5L2 9z" /><path d="M6 11.5V16c0 1.4 2.7 3 6 3s6-1.6 6-3v-4.5" /><path d="M22 9v6" /></svg>
+}
 export function OpportunitiesIcon({ size = 20 }: IconProps) {
   return <svg {...base(size)}><rect x="3" y="7" width="18" height="13" rx="2" /><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" /></svg>
 }
@@ -67,7 +85,12 @@ export const NAV_ICONS: Record<string, (props: IconProps) => React.ReactElement>
   '/admin/analytics': AnalyticsIcon,
   '/admin/activity': ActivityIcon,
   '/admin/users': UsersIcon,
-  '/admin/submissions': SubmissionsIcon,
+  '/admin/contact': ContactIcon,
+  '/admin/volunteer': VolunteersIcon,
+  '/admin/partner': PartnersIcon,
+  '/admin/donations': DonationsIcon,
+  '/admin/bank-transfers': BankTransfersIcon,
+  '/admin/scholarships': ScholarshipsIcon,
   '/admin/opportunities': OpportunitiesIcon,
   '/admin/courses': CoursesIcon,
   '/admin/projects': ProjectsIcon,

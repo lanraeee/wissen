@@ -1,7 +1,7 @@
 import sql from '@/lib/db'
 import {
   DEFAULT_BANK_DETAILS, normalizeBankDetails,
-  type BankDetails, type BankPledge, type PledgeStatus,
+  type BankDetails, type BankPledge, type PledgeStatus, type BankCurrency,
 } from '@/lib/bank-transfer-shared'
 
 // Server-side helpers for the bank-transfer flow. Types and constants live in
@@ -59,37 +59,69 @@ export async function getBankDetails(): Promise<BankDetails> {
   }
 }
 
+function mapRow(row: Record<string, unknown>): BankPledge {
+  return {
+    id: row.id as string,
+    reference: row.reference as string,
+    name: row.name as string,
+    email: row.email as string,
+    amount: Number(row.amount),
+    currency: row.currency as BankCurrency,
+    message: (row.message as string | null) ?? undefined,
+    status: row.status as PledgeStatus,
+    created_at: row.created_at as string,
+    declared_at: (row.declared_at as string | null) ?? undefined,
+    confirmed_at: (row.confirmed_at as string | null) ?? undefined,
+    donation_id: (row.donation_id as string | null) ?? undefined,
+    cert_id: (row.donation_cert_id as string | null) ?? undefined,
+  }
+}
+
+// Records a new pledge (donor filled in the donation form, hasn't sent the
+// money yet). Centralizes what app/api/payments/bank-transfer/route.ts used
+// to insert directly, matching getPledge/updatePledge's centralization.
+export async function createPledge(input: {
+  reference: string; name: string; email: string; amount: number; currency: BankCurrency; message?: string
+}): Promise<void> {
+  await sql`
+    INSERT INTO bank_transfers (reference, name, email, amount, currency, message)
+    VALUES (${input.reference}, ${input.name}, ${input.email}, ${input.amount}, ${input.currency}, ${input.message ?? null})
+  `
+}
+
 export async function getPledge(reference: string): Promise<BankPledge | null> {
   try {
     const [row] = await sql`
-      SELECT data FROM submissions
-      WHERE type = 'bank_transfer' AND data->>'reference' = ${reference}
+      SELECT bt.*, d.cert_id AS donation_cert_id
+      FROM bank_transfers bt
+      LEFT JOIN donations d ON d.id = bt.donation_id
+      WHERE bt.reference = ${reference}
       LIMIT 1
     `
-    return (row?.data as BankPledge) ?? null
+    return row ? mapRow(row) : null
   } catch (err) {
     console.error('[bank pledge load]', err)
     return null
   }
 }
 
-// Mirrors the pledge's own lifecycle onto the submissions.status column the
-// admin list filters and colour-codes on.
-function rowStatusFor(status?: PledgeStatus): string {
-  if (status === 'confirmed') return 'actioned'
-  if (status === 'declared_sent') return 'reviewed'
-  return 'pending'
-}
+// Read-then-full-UPDATE (same convention as app/api/admin/testimonials).
+// Returns the updated pledge, or null if no pledge with that reference exists.
+export async function updatePledge(
+  reference: string,
+  patch: Partial<Pick<BankPledge, 'status' | 'declared_at' | 'confirmed_at' | 'donation_id'>>,
+): Promise<BankPledge | null> {
+  const [existing] = await sql`SELECT * FROM bank_transfers WHERE reference = ${reference}`
+  if (!existing) return null
 
-// Merges fields into the stored pledge JSON. Returns the updated pledge, or
-// null if no pledge with that reference exists.
-export async function updatePledge(reference: string, patch: Partial<BankPledge>): Promise<BankPledge | null> {
   const [row] = await sql`
-    UPDATE submissions
-    SET data   = data || ${JSON.stringify(patch)}::jsonb,
-        status = ${rowStatusFor(patch.status)}
-    WHERE type = 'bank_transfer' AND data->>'reference' = ${reference}
-    RETURNING data
+    UPDATE bank_transfers SET
+      status       = ${patch.status ?? existing.status},
+      declared_at  = ${patch.declared_at ?? existing.declared_at},
+      confirmed_at = ${patch.confirmed_at ?? existing.confirmed_at},
+      donation_id  = ${patch.donation_id ?? existing.donation_id}
+    WHERE reference = ${reference}
+    RETURNING *
   `
-  return (row?.data as BankPledge) ?? null
+  return mapRow(row)
 }

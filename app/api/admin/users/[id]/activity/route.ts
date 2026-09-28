@@ -65,7 +65,20 @@ export async function GET(_: NextRequest, { params }: { params: Promise<{ id: st
     sql`SELECT action, target_type, target_id, details, created_at FROM admin_activity_log WHERE actor_id = ${id} ORDER BY created_at DESC LIMIT ${LIMIT}`,
     sql`SELECT course_id, module_id, completed_at FROM course_progress WHERE user_id = ${id} ORDER BY completed_at DESC LIMIT ${LIMIT}`,
     sql`SELECT course_id, certificate_id, issued_at FROM certificates WHERE user_id = ${id} ORDER BY issued_at DESC LIMIT ${LIMIT}`,
-    sql`SELECT type, status, data, created_at FROM submissions WHERE email = ${target.email} ORDER BY created_at DESC LIMIT ${LIMIT}`,
+    sql`
+      (SELECT 'contact' AS type, status, created_at FROM contact_messages WHERE email = ${target.email})
+      UNION ALL
+      (SELECT 'volunteer' AS type, status, created_at FROM volunteer_applications WHERE email = ${target.email})
+      UNION ALL
+      (SELECT 'partner' AS type, status, created_at FROM partner_inquiries WHERE email = ${target.email})
+      UNION ALL
+      (SELECT 'donation' AS type, NULL, created_at FROM donations WHERE email = ${target.email})
+      UNION ALL
+      (SELECT 'bank_transfer' AS type, status, created_at FROM bank_transfers WHERE email = ${target.email})
+      UNION ALL
+      (SELECT 'scholarship' AS type, status, created_at FROM scholarship_applications WHERE email = ${target.email})
+      ORDER BY created_at DESC LIMIT ${LIMIT}
+    `,
     sql`SELECT id, title, tag, reply_count, created_at FROM forum_threads WHERE user_id = ${id} ORDER BY created_at DESC LIMIT ${LIMIT}`,
     sql`SELECT id, thread_id, body, created_at FROM forum_replies WHERE user_id = ${id} ORDER BY created_at DESC LIMIT ${LIMIT}`,
     sql`SELECT ip, user_agent, created_at FROM login_events WHERE user_id = ${id} ORDER BY created_at DESC LIMIT ${LIMIT}`,

@@ -18,7 +18,7 @@ export async function POST(req: NextRequest) {
   const { name, email, subject, message } = data
 
   try {
-    await sql`INSERT INTO submissions (type, name, email, data) VALUES ('contact', ${name}, ${email}, ${JSON.stringify({ subject, message })})`
+    await sql`INSERT INTO contact_messages (name, email, subject, message) VALUES (${name}, ${email}, ${subject}, ${message})`
   } catch { /* non-fatal if DB unavailable */ }
 
   try {

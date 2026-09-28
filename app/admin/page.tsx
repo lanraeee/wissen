@@ -5,34 +5,33 @@ import { getSession } from '@/lib/auth'
 export const metadata: Metadata = { title: 'Admin · Wissen-Haus' }
 
 async function getStats() {
-  const [users, certs, progress, opps, subs, streak] = await Promise.all([
+  const [users, certs, progress, opps, contact, volunteer, partner, donation, scholarship, streak] = await Promise.all([
     sql`SELECT COUNT(*) AS c FROM users`,
     sql`SELECT COUNT(*) AS c FROM certificates`,
     sql`SELECT COUNT(DISTINCT user_id) AS c FROM course_progress`,
     sql`SELECT COUNT(*) AS c FROM opportunities`,
-    sql`SELECT type, status, COUNT(*) AS c FROM submissions GROUP BY type, status`,
+    sql`SELECT COUNT(*) AS c, COUNT(*) FILTER (WHERE status = 'pending') AS pending FROM contact_messages`,
+    sql`SELECT COUNT(*) AS c, COUNT(*) FILTER (WHERE status = 'pending') AS pending FROM volunteer_applications`,
+    sql`SELECT COUNT(*) AS c, COUNT(*) FILTER (WHERE status = 'pending') AS pending FROM partner_inquiries`,
+    sql`SELECT COUNT(*) AS c FROM donations`,
+    sql`SELECT COUNT(*) AS c, COUNT(*) FILTER (WHERE status = 'pending') AS pending FROM scholarship_applications`,
     sql`SELECT COUNT(*) AS c FROM visit_streaks WHERE last_visit = CURRENT_DATE`,
   ])
-  const subMap: Record<string, number> = {}
-  const pendingMap: Record<string, number> = {}
-  for (const r of subs) {
-    const key = r.type as string
-    subMap[key] = (subMap[key] ?? 0) + Number(r.c)
-    if (!r.status || r.status === 'pending') pendingMap[key] = (pendingMap[key] ?? 0) + Number(r.c)
-  }
   return {
     users: Number(users[0].c),
     certificates: Number(certs[0].c),
     learners: Number(progress[0].c),
     opportunities: Number(opps[0].c),
     todayActive: Number(streak[0].c),
-    contact: subMap.contact ?? 0,
-    volunteer: subMap.volunteer ?? 0,
-    partner: subMap.partner ?? 0,
-    donation: subMap.donation ?? 0,
-    pendingContact: pendingMap.contact ?? 0,
-    pendingVolunteer: pendingMap.volunteer ?? 0,
-    pendingPartner: pendingMap.partner ?? 0,
+    contact: Number(contact[0].c),
+    volunteer: Number(volunteer[0].c),
+    partner: Number(partner[0].c),
+    donation: Number(donation[0].c),
+    scholarship: Number(scholarship[0].c),
+    pendingContact: Number(contact[0].pending),
+    pendingVolunteer: Number(volunteer[0].pending),
+    pendingPartner: Number(partner[0].pending),
+    pendingScholarship: Number(scholarship[0].pending),
   }
 }
 
@@ -41,7 +40,18 @@ async function getRecentUsers() {
 }
 
 async function getRecentSubmissions() {
-  return sql`SELECT type, name, email, status, created_at FROM submissions ORDER BY created_at DESC LIMIT 6`
+  return sql`
+    (SELECT 'contact' AS type, name, email, status, created_at FROM contact_messages)
+    UNION ALL
+    (SELECT 'volunteer' AS type, name, email, status, created_at FROM volunteer_applications)
+    UNION ALL
+    (SELECT 'partner' AS type, name, email, status, created_at FROM partner_inquiries)
+    UNION ALL
+    (SELECT 'donation' AS type, name, email, NULL, created_at FROM donations)
+    UNION ALL
+    (SELECT 'scholarship' AS type, name, email, status, created_at FROM scholarship_applications)
+    ORDER BY created_at DESC LIMIT 6
+  `
 }
 
 export default async function AdminDashboard() {
@@ -79,10 +89,11 @@ export default async function AdminDashboard() {
 
       <h3 className="admin-section-title">Submissions</h3>
       <div className="admin-section-grid">
-        {card('Contact Forms', stats.contact, undefined, '/admin/submissions?type=contact', stats.pendingContact > 0 ? String(stats.pendingContact) : undefined)}
-        {card('Volunteer Apps', stats.volunteer, undefined, '/admin/submissions?type=volunteer', stats.pendingVolunteer > 0 ? String(stats.pendingVolunteer) : undefined)}
-        {card('Partner Inquiries', stats.partner, undefined, '/admin/submissions?type=partner', stats.pendingPartner > 0 ? String(stats.pendingPartner) : undefined)}
-        {card('Donations', stats.donation, undefined, '/admin/submissions?type=donation')}
+        {card('Contact Forms', stats.contact, undefined, '/admin/contact', stats.pendingContact > 0 ? String(stats.pendingContact) : undefined)}
+        {card('Volunteer Apps', stats.volunteer, undefined, '/admin/volunteer', stats.pendingVolunteer > 0 ? String(stats.pendingVolunteer) : undefined)}
+        {card('Partner Inquiries', stats.partner, undefined, '/admin/partner', stats.pendingPartner > 0 ? String(stats.pendingPartner) : undefined)}
+        {card('Donations', stats.donation, undefined, '/admin/donations')}
+        {card('Scholarship Applications', stats.scholarship, undefined, '/admin/scholarships', stats.pendingScholarship > 0 ? String(stats.pendingScholarship) : undefined)}
       </div>
 
       <div className="rgrid-2" style={{ gap: 20 }}>
@@ -110,12 +121,12 @@ export default async function AdminDashboard() {
           <h3 className="admin-section-title">Recent Submissions</h3>
           <div style={{ background: '#fff', borderRadius: 10, boxShadow: '0 1px 4px rgba(0,0,0,.06)', overflow: 'hidden' }}>
             {recentSubs.map((s, i) => {
-              const status = (s.status as string) || 'pending'
+              const status = s.status as string | null
               return (
                 <div key={i} style={{ padding: '12px 16px', borderBottom: i < recentSubs.length - 1 ? '1px solid #f0ece4' : 'none', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                      <span style={{ width: 7, height: 7, borderRadius: '50%', background: STATUS_DOT[status] ?? STATUS_DOT.pending, display: 'inline-block', flexShrink: 0 }} />
+                      {status && <span style={{ width: 7, height: 7, borderRadius: '50%', background: STATUS_DOT[status] ?? STATUS_DOT.pending, display: 'inline-block', flexShrink: 0 }} />}
                       <span style={{ fontWeight: 600, fontSize: '.88rem' }}>{s.name as string}</span>
                       <span style={{ fontSize: '.72rem', background: '#f0ece4', borderRadius: 4, padding: '1px 6px', textTransform: 'capitalize' }}>{s.type as string}</span>
                     </div>
@@ -125,9 +136,6 @@ export default async function AdminDashboard() {
                 </div>
               )
             })}
-            <div style={{ padding: '10px 16px', borderTop: '1px solid #f0ece4' }}>
-              <a href="/admin/submissions" style={{ fontSize: '.82rem', color: '#1a3c2e', fontWeight: 600 }}>View all submissions →</a>
-            </div>
           </div>
         </div>
       </div>

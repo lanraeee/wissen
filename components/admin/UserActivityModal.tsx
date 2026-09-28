@@ -13,7 +13,7 @@ interface StaffEntry {
 interface UsageData {
   courseProgress: { course_id: string; module_id: number; completed_at: string }[]
   certificates: { course_id: string; certificate_id: string; issued_at: string }[]
-  submissions: { type: string; status: string | null; data: Record<string, unknown> | null; created_at: string }[]
+  submissions: { type: string; status: string | null; created_at: string }[]
   forumThreads: { id: string; title: string; tag: string; reply_count: number; created_at: string }[]
   forumReplies: { id: string; thread_id: string; body: string; created_at: string }[]
   logins: { ip: string | null; user_agent: string | null; created_at: string }[]

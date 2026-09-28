@@ -138,7 +138,15 @@ async function getBusinessMetrics() {
     safe(() => sql`SELECT COUNT(*) AS c FROM fair_registrations`),
     safe(() => sql`SELECT COUNT(*) AS c FROM fair_registrations WHERE checked_in`),
     safe(() => sql`SELECT COALESCE(SUM(raised_ngn),0) AS raised, COALESCE(SUM(goal_ngn),0) AS goal FROM donation_projects WHERE status = 'published'`),
-    safe(() => sql`SELECT COUNT(*) AS c FROM submissions WHERE status = 'pending' OR status IS NULL`),
+    safe(() => sql`
+      SELECT
+        (SELECT COUNT(*) FROM contact_messages WHERE status = 'pending')
+        + (SELECT COUNT(*) FROM volunteer_applications WHERE status = 'pending')
+        + (SELECT COUNT(*) FROM partner_inquiries WHERE status = 'pending')
+        + (SELECT COUNT(*) FROM bank_transfers WHERE status IN ('awaiting_transfer', 'declared_sent'))
+        + (SELECT COUNT(*) FROM scholarship_applications WHERE status = 'pending')
+        AS c
+    `),
   ])
   const n = (rows: unknown[], key: string) => Number((rows[0] as Record<string, unknown> | undefined)?.[key] ?? 0)
   return {

@@ -12,78 +12,39 @@ export interface VerifiedDonation {
   provider: 'Stripe' | 'Bank Transfer'
 }
 
-async function alreadyRecorded(reference: string): Promise<boolean> {
-  try {
-    const rows = await sql`
-      SELECT 1 FROM submissions
-      WHERE type = 'donation' AND data->>'reference' = ${reference}
-      LIMIT 1
-    `
-    return rows.length > 0
-  } catch {
-    return false
-  }
-}
-
-export function certIdForReference(reference: string): string {
+function certIdForReference(reference: string): string {
   return `WH-DON-${reference.replace(/[^a-zA-Z0-9]/g, '').slice(-10).toUpperCase()}`
 }
 
-// Appends a certificate to the donation_certificates JSONB array (a single
-// atomic UPDATE, safe under concurrent donations) and returns its cert_id
-// so the receipt email can link straight to /donate/receipt/[certId].
-// Idempotent: reuses the existing certificate if this reference already has one.
-export async function issueOrGetCertificate(d: VerifiedDonation): Promise<string | null> {
+// Records a verified donation exactly once -- INSERT ... ON CONFLICT (reference)
+// DO NOTHING makes this atomic, so a retried Stripe webhook racing the
+// success-page verification (or the donor simply reloading it) can never
+// double-insert or double-email. `donation` is null only on a genuine insert
+// failure; on an idempotent no-op retry it's still populated (fetched by
+// reference) so callers like the bank-transfer confirm flow can link to it.
+export async function recordDonation(d: VerifiedDonation): Promise<{ recorded: boolean; donation: { id: string; cert_id: string } | null }> {
   const certId = certIdForReference(d.reference)
 
+  let row
   try {
-    const [row] = await sql`SELECT value FROM site_content WHERE key = 'donation_certificates'`
-    const existing = (row?.value as Array<{ cert_id: string }>) ?? []
-    if (existing.some(c => c.cert_id === certId)) return certId
-
-    const cert = {
-      cert_id: certId,
-      donor_name: d.name,
-      donor_email: d.email,
-      amount: d.amount,
-      currency: d.currency,
-      date: new Date().toISOString(),
-      purpose: 'General Donation',
-      issued_at: new Date().toISOString(),
-    }
-
-    await sql`
-      INSERT INTO site_content (key, value)
-      VALUES ('donation_certificates', jsonb_build_array(${JSON.stringify(cert)}::jsonb))
-      ON CONFLICT (key) DO UPDATE
-      SET value = site_content.value || jsonb_build_array(${JSON.stringify(cert)}::jsonb),
-          updated_at = NOW()
-    `
-    return certId
-  } catch (err) {
-    console.error(`[${d.provider} certificate issue]`, err)
-    return null
-  }
-}
-
-// Records a verified donation exactly once (safe to call again if the donor
-// reloads the success page — later calls are a no-op) and fires off the
-// receipt/notification emails and analytics event.
-export async function recordDonation(d: VerifiedDonation): Promise<{ recorded: boolean }> {
-  if (await alreadyRecorded(d.reference)) return { recorded: false }
-
-  try {
-    await sql`
-      INSERT INTO submissions (type, name, email, data)
-      VALUES ('donation', ${d.name}, ${d.email}, ${JSON.stringify(d)})
+    ;[row] = await sql`
+      INSERT INTO donations (name, email, amount, currency, reference, provider, cert_id)
+      VALUES (${d.name}, ${d.email}, ${d.amount}, ${d.currency}, ${d.reference}, ${d.provider}, ${certId})
+      ON CONFLICT (reference) DO NOTHING
+      RETURNING id, cert_id
     `
   } catch (err) {
-    console.error(`[${d.provider} submission insert]`, err)
+    console.error(`[${d.provider} donation insert]`, err)
+    return { recorded: false, donation: null }
   }
 
-  const certId = await issueOrGetCertificate(d)
+  if (!row) {
+    const [existing] = await sql`SELECT id, cert_id FROM donations WHERE reference = ${d.reference}`
+    return { recorded: false, donation: existing ? { id: existing.id as string, cert_id: existing.cert_id as string } : null }
+  }
+
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://wissenhaus.org'
-  const certUrl = certId ? `${siteUrl}/donate/receipt/${certId}` : undefined
+  const certUrl = `${siteUrl}/donate/receipt/${certId}`
 
   try {
     await Promise.all([
@@ -106,7 +67,7 @@ export async function recordDonation(d: VerifiedDonation): Promise<{ recorded: b
     console.error('[donation posthog]', err)
   }
 
-  return { recorded: true }
+  return { recorded: true, donation: { id: row.id as string, cert_id: row.cert_id as string } }
 }
 
 export async function verifyStripeSession(sessionId: string): Promise<VerifiedDonation | null> {

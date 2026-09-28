@@ -9,16 +9,20 @@ const PartnerSchema = z.object({
   name: zName,
   email: zEmail,
   organisation: zShortText,
+  partnershipType: z.string().trim().max(50).optional(),
   message: zMessage,
 })
 
 export async function POST(req: NextRequest) {
   const { data, error } = await parseBody(req, PartnerSchema)
   if (error) return error
-  const { name, email, organisation, message } = data
+  const { name, email, organisation, partnershipType, message } = data
 
   try {
-    await sql`INSERT INTO submissions (type, name, email, data) VALUES ('partner', ${name}, ${email}, ${JSON.stringify({ organisation, message })})`
+    await sql`
+      INSERT INTO partner_inquiries (name, email, organisation, partnership_type, message)
+      VALUES (${name}, ${email}, ${organisation}, ${partnershipType ?? null}, ${message ?? null})
+    `
   } catch { /* non-fatal */ }
 
   try {

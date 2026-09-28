@@ -2,17 +2,17 @@
 
 import { useState } from 'react'
 import { usePathname } from 'next/navigation'
-import { NAV, isNavActive } from './AdminNav'
+import { NAV, BADGE_KEYS, isNavActive } from './AdminNav'
 import { NAV_ICONS, MoreIcon, CloseIcon, MenuIcon } from './AdminIcons'
 import AdminLogoutButton from './AdminLogoutButton'
 import NavBadge from './NavBadge'
-import { useSubmissionsBadge, totalCount } from './useSubmissionsBadge'
+import { useSubmissionsBadge } from './useSubmissionsBadge'
 
 // The four most-reached-for sections get a permanent bottom-tab slot (mobile
-// app pattern -- Dashboard/Users/Submissions/Content are what a small-team
-// admin checks daily); everything else lives behind "More", opened as a
-// bottom sheet rather than a fifth+ tab that would cramp the bar.
-const PRIMARY_HREFS = ['/admin', '/admin/submissions', '/admin/users', '/admin/content']
+// app pattern -- Dashboard/Contact/Users/Content are what a small-team admin
+// checks daily); everything else lives behind "More", opened as a bottom
+// sheet rather than a fifth+ tab that would cramp the bar.
+const PRIMARY_HREFS = ['/admin', '/admin/contact', '/admin/users', '/admin/content']
 const PRIMARY = NAV.filter(([, href]) => PRIMARY_HREFS.includes(href))
 const OVERFLOW = NAV.filter(([, href]) => !PRIMARY_HREFS.includes(href))
 
@@ -26,8 +26,7 @@ export default function AdminMobileNav({ email }: { email: string }) {
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [moreOpen, setMoreOpen] = useState(false)
   const overflowActive = OVERFLOW.some(([, href]) => isNavActive(pathname, href))
-  const submissionCounts = useSubmissionsBadge()
-  const pendingSubmissions = totalCount(submissionCounts)
+  const counts = useSubmissionsBadge()
 
   return (
     <>
@@ -45,7 +44,7 @@ export default function AdminMobileNav({ email }: { email: string }) {
         {PRIMARY.map(([label, href]) => {
           const Icon = NAV_ICONS[href]
           const active = isNavActive(pathname, href)
-          const badgeCount = href === '/admin/submissions' ? pendingSubmissions : 0
+          const badgeCount = BADGE_KEYS[href] ? (counts[BADGE_KEYS[href]] ?? 0) : 0
           return (
             <a key={href} href={href} className={`admin-bottom-nav__item${active ? ' active' : ''}`}>
               <span style={{ position: 'relative', display: 'inline-flex' }}>
@@ -89,7 +88,7 @@ export default function AdminMobileNav({ email }: { email: string }) {
                   >
                     <Icon size={18} />
                     {label}
-                    {href === '/admin/submissions' && <NavBadge count={pendingSubmissions} style={{ marginLeft: 'auto' }} />}
+                    {BADGE_KEYS[href] && <NavBadge count={counts[BADGE_KEYS[href]] ?? 0} style={{ marginLeft: 'auto' }} />}
                   </a>
                 )
               })}

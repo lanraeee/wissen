@@ -11,6 +11,7 @@ export default function PartnerForm() {
       name: fd.get('name'),
       email: fd.get('email'),
       organisation: fd.get('org') || '',
+      partnershipType: fd.get('type') || undefined,
       message: fd.get('message'),
     }),
     event: 'partner_inquiry_submitted',

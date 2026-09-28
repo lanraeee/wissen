@@ -38,19 +38,22 @@ Body: `{ token, password }` (password min 8 chars). `400` if the token is invali
 
 ---
 
-## Public forms — `/api/contact`, `/api/partner`, `/api/volunteer`, `/api/submissions`, `/api/testimonials`
+## Public forms — `/api/contact`, `/api/partner`, `/api/volunteer`, `/api/scholarships/datacamp`, `/api/submissions`, `/api/testimonials`
 
 ### `POST /api/contact` — Public, Zod
-Body: `{ name, email, subject, message }`. Inserts a `submissions` row (`type: 'contact'`), emails the admin + a confirmation to the sender (best-effort — failure doesn't fail the request). Response: `{ success: true }`.
+Body: `{ name, email, subject, message }`. Inserts a `contact_messages` row, emails the admin + a confirmation to the sender (best-effort — failure doesn't fail the request). Response: `{ success: true }`.
 
 ### `POST /api/partner` — Public, Zod
-Body: `{ name, email, organisation, message? }`. Same pattern as contact (`type: 'partner'`).
+Body: `{ name, email, organisation, partnershipType?, message? }`. Inserts a `partner_inquiries` row. Same email pattern as contact.
 
 ### `POST /api/volunteer` — Public, Zod
-Body: `{ name, email, role, message? }`. Same pattern (`type: 'volunteer'`).
+Body: `{ name, email, role, message? }`. Inserts a `volunteer_applications` row. Same email pattern as contact.
+
+### `POST /api/scholarships/datacamp` — Public, Zod
+Body: the full DataCamp scholarship application (see `lib/scholarship-shared.ts`'s `ScholarshipAnswers` plus `name`/`email`/`phone`/`ageRange`/`country`/`stateRegion`/`city`). Scores the application against a fixed rubric (`lib/scholarship-scoring.ts`), auto-detects red flags (duplicate email, inconsistent answers, thin essays, no device+no internet), inserts into `scholarship_applications`, emails a confirmation to the applicant and a notification (with score/red flags) to admins. `201` response: `{ success: true, id }`.
 
 ### `POST /api/submissions` — Public, Zod
-Generic fallback submission endpoint. Body: `{ type, name, email, phone?, ...arbitrary }` — `type` is a free-text string (not an enum), extra fields are stored as-is in `data` JSONB (size-capped at 20KB). Response: `{ success: true }`.
+Generic fallback submission endpoint, not currently used by any form on the site (kept for a future one-off form that doesn't warrant its own table). Body: `{ type, name, email, phone?, ...arbitrary }` — `type` is a free-text string (not an enum), extra fields are stored as-is in `data` JSONB (size-capped at 20KB). Response: `{ success: true }`.
 
 ### `GET /api/testimonials` — Public
 Response: `{ testimonials: Testimonial[] }` — up to 24 approved testimonials, featured first.
@@ -148,11 +151,19 @@ Manually triggers the above via an internal fetch with `CRON_SECRET` attached. R
 - `PATCH /api/admin/users/[id]` — body `{ action: 'grant_premium'|'revoke_premium'|'update'|'set_role', ... }`. Director-only when the target is the director's own record; `set_role` and similar sensitive actions are further gated (see the route's own comments).
 - `DELETE /api/admin/users/[id]`.
 
-### Submissions
-- `GET /api/admin/submissions` — query `?type=`, response `{ submissions: [] }`.
-- `PATCH /api/admin/submissions/[id]` — body `{ status }`.
-- `DELETE /api/admin/submissions/[id]`.
-- `DELETE /api/admin/submissions` (bulk, see route for body shape).
+### Contact / Volunteer / Partner — `/api/admin/contact`, `/api/admin/volunteer`, `/api/admin/partner`
+Each is its own dedicated table + single-file route (mirrors the Testimonials shape below), not a shared generic list:
+- `GET` — response: array of rows (`contact_messages` / `volunteer_applications` / `partner_inquiries`), newest first.
+- `PATCH` — Zod `{ id, status: 'pending'|'reviewed'|'actioned' }`.
+- `DELETE` — Zod `{ id }`.
+
+### Scholarships — `/api/admin/scholarships`
+- `GET` — response: array of `scholarship_applications` rows (`answers`, `score`, `score_breakdown`, `red_flags` included), sorted by score descending.
+- `PATCH` — Zod `{ id, status: 'pending'|'shortlisted'|'awarded'|'declined'|'waitlisted' }`.
+- `DELETE` — Zod `{ id }`.
+
+### Inbox counts — `/api/admin/inbox-counts`
+- `GET` — response: `{ contact, volunteer, partner, bank_transfer, scholarship }`, each a pending count, used to badge the admin nav.
 
 ### Donation projects — `/api/admin/donation-projects`
 - `GET` — `{ projects: [] }`.
@@ -179,7 +190,8 @@ Manually triggers the above via an internal fetch with `CRON_SECRET` attached. R
 - `POST` — Zod `{ reference }`. Confirms a pledge landed: issues the real receipt + certificate (idempotent). `{ success: true, certId, certUrl }`.
 - `DELETE` — Zod `{ reference }`. Cancels a pledge.
 
-### Donations
+### Donations — `/api/admin/donations`
+- `GET` — response: array of `donations` rows, newest first (a completed ledger, no status/triage workflow).
 - `POST /api/admin/donations/resend-receipt` — Zod `{ reference }`. Re-sends the receipt email for an already-recorded donation.
 
 ### Misc reads
