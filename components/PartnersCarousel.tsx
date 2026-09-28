@@ -15,7 +15,7 @@ const FALLBACK_PARTNERS: Partner[] = [
     name: 'DataCamp Donates',
     logo: '/img/partners/datacamp-logo.jpg',
     logoInverted: '/img/partners/datacamp-logo-inverted.png',
-    description: '500+ premium data science and AI courses',
+    description: 'Premium data science and AI courses',
     url: '/partners/datacamp',
   },
 ]

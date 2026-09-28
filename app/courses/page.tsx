@@ -49,7 +49,7 @@ export default async function CoursesPage() {
             <div style={{ flex: 1, minWidth: '280px' }}>
               <h3 style={{ color: '#fff', fontSize: '1.25rem', marginBottom: '.5rem' }}>Complement Your Learning</h3>
               <p style={{ color: 'rgba(244,240,231,.78)', marginBottom: '1rem' }}>
-                Through our partnership with DataCamp, get free access to 500+ premium data science and AI courses. Perfect for advancing your technical skills.
+                Through our partnership with DataCamp, get free access to premium data science and AI courses. Perfect for advancing your technical skills.
               </p>
               <Link href="/partners/datacamp" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, color: '#fff', fontWeight: 600, textDecoration: 'none', fontSize: '.95rem' }}>
                 Learn about DataCamp <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" style={{ width: 16, height: 16 }}><path d="M5 12h14M13 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" /></svg>
