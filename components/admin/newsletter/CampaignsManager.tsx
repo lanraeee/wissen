@@ -31,10 +31,6 @@ const STATUS_COLORS: Record<string, string> = { draft: '#6b7280', sending: '#f59
 
 const EMPTY = { subject: '', body: '' }
 
-function preview(body: string) {
-  return body.split(/\n{2,}/).map((p, i) => <p key={i} style={{ margin: '0 0 10px' }}>{p}</p>)
-}
-
 export default function CampaignsManager() {
   const [campaigns, setCampaigns] = useState<Campaign[] | null>(null)
   const [templates, setTemplates] = useState<NewsletterTemplate[]>([])
@@ -42,6 +38,8 @@ export default function CampaignsManager() {
   const [busy, setBusy] = useState(false)
   const [err, setErr] = useState('')
   const [activeSubscriberCount, setActiveSubscriberCount] = useState<number | null>(null)
+  const [preview, setPreview] = useState<{ subject: string; html: string } | null>(null)
+  const [previewing, setPreviewing] = useState(false)
 
   const load = useCallback(async () => {
     const res = await fetch('/api/admin/newsletter/campaigns')
@@ -60,11 +58,31 @@ export default function CampaignsManager() {
   function startNew() {
     setEditing(EMPTY)
     setErr('')
+    setPreview(null)
   }
 
   function applyTemplate(id: string) {
     const t = templates.find(t => t.id === id)
     if (t) setEditing(e => ({ ...e, subject: t.subject, body: t.body }))
+  }
+
+  async function runPreview() {
+    if (!editing) return
+    setPreviewing(true); setErr('')
+    try {
+      const res = await fetch('/api/admin/newsletter/preview', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ subject: editing.subject ?? '', body: editing.body ?? '' }),
+      })
+      const d = await res.json()
+      if (!res.ok) throw new Error(d?.error || 'Could not render preview.')
+      setPreview(d)
+    } catch (err) {
+      setErr(err instanceof Error ? err.message : 'Could not render preview.')
+    } finally {
+      setPreviewing(false)
+    }
   }
 
   async function save() {
@@ -112,34 +130,55 @@ export default function CampaignsManager() {
   }
 
   if (editing) return (
-    <div style={{ maxWidth: 640 }}>
-      {templates.length > 0 && (
-        <div style={{ marginBottom: 14 }}>
-          {label('Start from a template')}
-          <select style={inp()} defaultValue="" onChange={e => e.target.value && applyTemplate(e.target.value)}>
-            <option value="">— None —</option>
-            {templates.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
-          </select>
-        </div>
-      )}
-      <div style={{ marginBottom: 14 }}>
-        {label('Subject')}
-        <input style={inp()} value={editing.subject ?? ''} onChange={e => setEditing(c => ({ ...c, subject: e.target.value }))} />
-      </div>
-      <div style={{ marginBottom: 14 }}>
-        {label('Body (plain text — separate paragraphs with a blank line)')}
-        <textarea rows={10} style={inp({ fontFamily: 'inherit', resize: 'vertical' })} value={editing.body ?? ''} onChange={e => setEditing(c => ({ ...c, body: e.target.value }))} />
-      </div>
-      {editing.body && (
-        <div style={{ marginBottom: 14 }}>
-          {label('Preview')}
-          <div style={{ background: '#f4f0e7', borderRadius: 8, padding: 16, fontSize: '.88rem', color: '#1a2e24' }}>{preview(editing.body)}</div>
-        </div>
-      )}
+    <div>
       {err && <p style={{ color: '#dc2626', fontSize: '.82rem', marginBottom: 12 }}>{err}</p>}
-      <div style={{ display: 'flex', gap: 8 }}>
-        <button onClick={save} disabled={busy || !editing.subject || !editing.body} style={btn('#1a3c2e')}>Save Draft</button>
-        <button onClick={() => setEditing(null)} disabled={busy} style={btn('#e8e4dc', '#3a4a3f')}>Cancel</button>
+      <div className="rgrid-2" style={{ gap: 24, alignItems: 'start' }}>
+        <div>
+          {templates.length > 0 && (
+            <div style={{ marginBottom: 14 }}>
+              {label('Start from a template')}
+              <select style={inp()} defaultValue="" onChange={e => e.target.value && applyTemplate(e.target.value)}>
+                <option value="">— None —</option>
+                {templates.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
+              </select>
+            </div>
+          )}
+          <div style={{ marginBottom: 14 }}>
+            {label('Subject')}
+            <input style={inp()} value={editing.subject ?? ''} onChange={e => setEditing(c => ({ ...c, subject: e.target.value }))} />
+          </div>
+          <div style={{ marginBottom: 14 }}>
+            {label('HTML + CSS body (rendered inside the Wissen-Haus email shell)')}
+            <textarea
+              rows={18}
+              style={inp({ fontFamily: 'monospace', fontSize: '.8rem', resize: 'vertical' })}
+              value={editing.body ?? ''}
+              onChange={e => setEditing(c => ({ ...c, body: e.target.value }))}
+              spellCheck={false}
+            />
+          </div>
+          <div style={{ display: 'flex', gap: 8 }}>
+            <button onClick={runPreview} disabled={previewing} style={btn('#1d4ed8')}>{previewing ? 'Rendering…' : 'Preview'}</button>
+            <button onClick={save} disabled={busy || !editing.subject || !editing.body} style={btn('#1a3c2e')}>Save Draft</button>
+            <button onClick={() => setEditing(null)} disabled={busy} style={btn('#e8e4dc', '#3a4a3f')}>Cancel</button>
+          </div>
+        </div>
+
+        <div>
+          {label('Preview')}
+          {preview ? (
+            <div style={{ background: '#fff', borderRadius: 10, boxShadow: '0 1px 4px rgba(0,0,0,.06)', overflow: 'hidden' }}>
+              <div style={{ padding: '10px 14px', borderBottom: '1px solid #f0ece4', fontSize: '.82rem', color: '#3a4a3f' }}>
+                <strong>Subject:</strong> {preview.subject}
+              </div>
+              <iframe title="Campaign preview" srcDoc={preview.html} sandbox="" style={{ width: '100%', height: 560, border: 'none' }} />
+            </div>
+          ) : (
+            <div style={{ background: '#f9f7f3', borderRadius: 10, padding: 40, textAlign: 'center', color: '#8a9a8f', fontSize: '.85rem' }}>
+              Click Preview to see this campaign rendered in the email shell.
+            </div>
+          )}
+        </div>
       </div>
     </div>
   )
@@ -184,12 +223,12 @@ export default function CampaignsManager() {
                   <td style={{ padding: '10px 16px', display: 'flex', gap: 6, flexWrap: 'wrap' }}>
                     {c.status === 'draft' && (
                       <>
-                        <button onClick={() => setEditing(c)} disabled={busy} style={btn('#e8e4dc', '#3a4a3f')}>Edit</button>
+                        <button onClick={() => { setEditing(c); setPreview(null) }} disabled={busy} style={btn('#e8e4dc', '#3a4a3f')}>Edit</button>
                         <button onClick={() => send(c)} disabled={busy} style={btn('#1a3c2e')}>Send</button>
                         <button onClick={() => remove(c)} disabled={busy} style={btn('#dc2626')}>Delete</button>
                       </>
                     )}
-                    {c.status !== 'draft' && <button onClick={() => setEditing({ ...c, id: undefined })} disabled={busy} style={btn('#e8e4dc', '#3a4a3f')}>Duplicate</button>}
+                    {c.status !== 'draft' && <button onClick={() => { setEditing({ ...c, id: undefined }); setPreview(null) }} disabled={busy} style={btn('#e8e4dc', '#3a4a3f')}>Duplicate</button>}
                   </td>
                 </tr>
               ))}

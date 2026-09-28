@@ -197,11 +197,9 @@ CREATE TABLE IF NOT EXISTS newsletter_subscribers (
 );
 CREATE INDEX IF NOT EXISTS idx_newsletter_subscribers_status ON newsletter_subscribers(status);
 
--- `body` is plain text (paragraphs separated by a blank line) rather than raw
--- HTML -- this codebase never renders admin-authored markup as HTML anywhere
--- else, and a newsletter compose box is not the place to start. lib/email.ts's
--- textToEmailHtml() escapes it and turns paragraph breaks into <p> tags at
--- send/preview time.
+-- `body` is full HTML+CSS the admin authors directly (components/admin/
+-- newsletter/*), wrapped in lib/email.ts's shell() at send/preview time --
+-- same trust model as email_templates.html below (admin-only, see its note).
 CREATE TABLE IF NOT EXISTS newsletter_templates (
   id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   name        TEXT NOT NULL,
@@ -223,3 +221,17 @@ CREATE TABLE IF NOT EXISTS newsletter_campaigns (
   sent_at           TIMESTAMPTZ
 );
 CREATE INDEX IF NOT EXISTS idx_newsletter_campaigns_status ON newsletter_campaigns(status, created_at DESC);
+
+-- Per-template admin override for the transactional emails in
+-- lib/email.ts (see lib/email-catalog.ts for the full set of ids and their
+-- built-in defaults). A row here means "this template has been customized";
+-- no row means the send functions use their built-in default. `html` is raw
+-- HTML+CSS the admin authors directly -- an intentional exception to this
+-- codebase's usual escape-everything rule, scoped to admin-only content that
+-- was already going to become an email's raw HTML one way or another.
+CREATE TABLE IF NOT EXISTS email_templates (
+  id          TEXT PRIMARY KEY,
+  subject     TEXT NOT NULL,
+  html        TEXT NOT NULL,
+  updated_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
