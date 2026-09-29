@@ -12,6 +12,22 @@ export const metadata: Metadata = { title: 'Analytics · Wissen-Haus Admin' }
 // if the layout changes.
 export const dynamic = 'force-dynamic'
 
+/** A bare "/" reads as nothing in a list of pages -- name the homepage. */
+function pageLabel(pathname: string | null): string {
+  if (!pathname) return '—'
+  return pathname === '/' ? 'Home' : pathname
+}
+
+/**
+ * A visit with no referrer is someone arriving directly (typed the URL,
+ * a bookmark, an app). "Direct" says that; "—" just looks like missing
+ * data. Matches the wording the Referrers table already uses via
+ * COALESCE(NULLIF(referrer, ''), 'Direct').
+ */
+function referrerLabel(referrer: string | null): string {
+  return referrer && referrer.trim() ? referrer : 'Direct'
+}
+
 // Same shape SettingsEditor/Footer read from site_content's 'site_settings'
 // key -- only the fields this page cares about.
 interface BusinessListings {
@@ -294,7 +310,7 @@ export default async function AnalyticsPage() {
       <div className="rgrid-2" style={{ gap: 24, marginBottom: 32 }}>
         <Section title="Top Pages (30 days)">
           <RowList
-            rows={topPages.map(r => ({ label: r.pathname as string, value: Number(r.views) }))}
+            rows={topPages.map(r => ({ label: pageLabel(r.pathname as string | null), value: Number(r.views) }))}
             maxVal={pageMax}
           />
         </Section>
@@ -361,8 +377,8 @@ export default async function AnalyticsPage() {
               <tbody>
                 {recent.map((r, i) => (
                   <tr key={i} style={{ borderBottom: i < recent.length - 1 ? '1px solid #f0ece4' : 'none' }}>
-                    <td style={{ padding: '9px 14px', color: '#1a2e24', maxWidth: 200, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={r.pathname as string}>{r.pathname as string}</td>
-                    <td style={{ padding: '9px 14px', color: '#8a9a8f', maxWidth: 160, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={(r.referrer as string) ?? ''}>{(r.referrer as string) || '—'}</td>
+                    <td style={{ padding: '9px 14px', color: '#1a2e24', maxWidth: 200, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={r.pathname as string}>{pageLabel(r.pathname as string | null)}</td>
+                    <td style={{ padding: '9px 14px', color: '#8a9a8f', maxWidth: 160, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={(r.referrer as string) ?? 'Direct'}>{referrerLabel(r.referrer as string | null)}</td>
                     <td style={{ padding: '9px 14px', color: '#8a9a8f' }}>{(r.country as string) || '—'}</td>
                     <td style={{ padding: '9px 14px', color: '#8a9a8f' }}>{(r.city as string) || '—'}</td>
                     <td style={{ padding: '9px 14px', color: '#8a9a8f', textTransform: 'capitalize' }}>{(r.device_type as string) || '—'}</td>
