@@ -4,6 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "schema:snapshot": "node scripts/generate-schema-snapshot.mjs",
+    "prebuild": "npm run schema:snapshot",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",

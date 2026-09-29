@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import sql from '@/lib/db'
 import { getSession } from '@/lib/auth'
+import { checkSchemaDrift, hasDrift, describeDrift } from '@/lib/schema-check'
 
 export const metadata: Metadata = { title: 'Admin · Wissen-Haus' }
 
@@ -55,8 +56,8 @@ async function getRecentSubmissions() {
 }
 
 export default async function AdminDashboard() {
-  const [stats, recentUsers, recentSubs, session] = await Promise.all([
-    getStats(), getRecentUsers(), getRecentSubmissions(), getSession(),
+  const [stats, recentUsers, recentSubs, session, drift] = await Promise.all([
+    getStats(), getRecentUsers(), getRecentSubmissions(), getSession(), checkSchemaDrift(),
   ])
 
   const card = (label: string, value: number | string, sub?: string, href?: string, badge?: string) => (
@@ -78,6 +79,24 @@ export default async function AdminDashboard() {
         <h1 className="admin-page-title">Dashboard</h1>
         <p className="admin-page-desc">Welcome back, {session?.name?.split(' ')[0]}. {stats.todayActive > 0 && `${stats.todayActive} members active today.`}</p>
       </div>
+
+      {/* Schema drift is otherwise invisible until something breaks -- and the
+          thing it breaks may well be a write nobody is watching. */}
+      {drift && hasDrift(drift) && (
+        <div style={{ background: '#fef3c7', border: '1px solid #f59e0b', borderRadius: 10, padding: '14px 18px', marginBottom: 24 }}>
+          <div style={{ fontWeight: 700, fontSize: '.9rem', color: '#92400e', marginBottom: 4 }}>
+            ⚠ Database is behind the code
+          </div>
+          <p style={{ margin: '0 0 6px', fontSize: '.85rem', color: '#92400e' }}>
+            {describeDrift(drift)}
+          </p>
+          <p style={{ margin: 0, fontSize: '.82rem', color: '#92400e' }}>
+            Anything reading or writing these will fail. Run{' '}
+            <code style={{ background: 'rgba(146,64,14,.12)', padding: '1px 6px', borderRadius: 4 }}>node scripts/migrate.mjs</code>{' '}
+            to apply <code style={{ background: 'rgba(146,64,14,.12)', padding: '1px 6px', borderRadius: 4 }}>lib/schema.sql</code>.
+          </p>
+        </div>
+      )}
 
       <h3 className="admin-section-title">Community</h3>
       <div className="admin-section-grid">
