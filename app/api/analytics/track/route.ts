@@ -5,13 +5,18 @@ import { parseBody } from '@/lib/validation'
 import { getSession } from '@/lib/auth'
 import { log } from '@/lib/logger'
 
+// nullish(), not optional(): AnalyticsTracker sends `null` for anything
+// absent (`document.referrer || null`, `params.get('utm_source') || null`),
+// and z.string().optional() accepts undefined but rejects null -- so every
+// page view failed validation and 400'd. Do not narrow these back to
+// optional() without changing the client to omit the keys entirely.
 const TrackSchema = z.object({
   pathname: z.string().min(1).max(500),
-  referrer: z.string().max(1000).optional(),
-  session_id: z.string().max(200).optional(),
-  utm_source: z.string().max(200).optional(),
-  utm_medium: z.string().max(200).optional(),
-  utm_campaign: z.string().max(200).optional(),
+  referrer: z.string().max(1000).nullish(),
+  session_id: z.string().max(200).nullish(),
+  utm_source: z.string().max(200).nullish(),
+  utm_medium: z.string().max(200).nullish(),
+  utm_campaign: z.string().max(200).nullish(),
 })
 
 function parseDevice(ua: string): string {
@@ -32,7 +37,15 @@ function parseBrowser(ua: string): string {
 export async function POST(req: NextRequest) {
   try {
     const { data, error } = await parseBody(req, TrackSchema)
-    if (error) return NextResponse.json({ ok: false }, { status: 400 })
+    if (error) {
+      // Rejections were previously silent, which is how a schema that refused
+      // the tracker's own payload went unnoticed for four days: the caller
+      // discards the response, and a 400 never reaches the catch below.
+      log.warn('analytics track', 'rejected a page view as invalid', {
+        contentType: req.headers.get('content-type'),
+      })
+      return NextResponse.json({ ok: false }, { status: 400 })
+    }
     const { pathname, referrer, session_id, utm_source, utm_medium, utm_campaign } = data
 
     if (pathname.startsWith('/admin')) {

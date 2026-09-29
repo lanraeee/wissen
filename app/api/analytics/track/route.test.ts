@@ -30,6 +30,24 @@ describe('POST /api/analytics/track', () => {
     expect(sqlMock).toHaveBeenCalled()
   })
 
+  // The payload AnalyticsTracker actually sends: it uses `x || null` for
+  // everything optional, so these arrive as null rather than absent. A schema
+  // of z.string().optional() accepts undefined but rejects null, which 400'd
+  // every single page view for four days in Sep 2026 while looking healthy
+  // from the outside. Assert the real shape, not a convenient one.
+  it('accepts the null-filled payload the browser tracker actually sends', async () => {
+    const res = await POST(trackRequest({
+      pathname: '/scholarships',
+      referrer: null,
+      session_id: 'abc',
+      utm_source: null,
+      utm_medium: null,
+      utm_campaign: null,
+    }))
+    expect(res.status).toBe(200)
+    expect(sqlMock).toHaveBeenCalled()
+  })
+
   it('ignores admin paths so staff activity does not pollute the numbers', async () => {
     const res = await POST(trackRequest({ pathname: '/admin/analytics' }))
     expect(res.status).toBe(400)
