@@ -112,6 +112,30 @@ Escalate (set "escalate": true) when: the visitor asks for a human, the context 
 Respond ONLY with a JSON object of this exact shape:
 {"reply": "<what to say to the visitor>", "escalate": <true or false>}`
 
+// Coerces a support thread into the shape the Messages API accepts:
+// non-empty content, alternating roles, first message from the user.
+// Consecutive same-role turns are merged rather than dropped, so nothing the
+// visitor said is lost from the context.
+export function normaliseTurns(
+  history: { author_type: string; body: string }[],
+): { role: 'user' | 'assistant'; content: string }[] {
+  const out: { role: 'user' | 'assistant'; content: string }[] = []
+
+  for (const m of history) {
+    const content = (m.body ?? '').trim()
+    if (!content) continue // an empty content block is itself a 400
+    const role = m.author_type === 'visitor' ? 'user' as const : 'assistant' as const
+    const last = out[out.length - 1]
+    if (last && last.role === role) last.content += '\n\n' + content
+    else out.push({ role, content })
+  }
+
+  // Must open with the user. An assistant-first thread (the agent greeted
+  // first, or a staff note landed before any visitor message) is rejected.
+  while (out.length && out[0].role === 'assistant') out.shift()
+  return out
+}
+
 export type AgentResult =
   | { status: 'ok'; reply: string; escalate: boolean }
   | { status: 'unavailable'; reason: 'not_configured' | 'cap_reached' | 'error' }
@@ -141,10 +165,21 @@ export async function answerSupportQuestion(
 
   // Only the last few turns: a support chat rarely needs more, and an
   // unbounded history is an unbounded per-call cost.
-  const turns = history.slice(-8).map(m => ({
-    role: m.author_type === 'visitor' ? 'user' as const : 'assistant' as const,
-    content: m.body,
-  }))
+  //
+  // normaliseTurns is not cosmetic. The Messages API requires roles to
+  // alternate and the first message to be from the user, and a real support
+  // thread breaks both: a visitor often sends two messages before anyone
+  // replies, and a thread can open with an assistant line. Either shape is a
+  // 400, which is what took the agent down in production -- it failed soft,
+  // so every chat silently handed off to a human instead.
+  // The question is normalised WITH the history, not appended after it: if
+  // the last stored turn is also from the visitor, appending would produce
+  // two consecutive user messages -- the same 400 by another route.
+  const turns = normaliseTurns([
+    ...history.slice(-8),
+    { author_type: 'visitor', body: question },
+  ])
+  if (!turns.length) return { status: 'unavailable', reason: 'error' }
 
   try {
     const res = await fetch(API_URL, {
@@ -165,7 +200,6 @@ export async function answerSupportQuestion(
           + (settings.supportExtraContext ? `\n\n# NOTES FROM THE TEAM\n${settings.supportExtraContext}` : ''),
         messages: [
           ...turns,
-          { role: 'user', content: question },
           // Prefilling the opening brace forces the JSON shape instead of a
           // prose preamble we would then have to parse around.
           { role: 'assistant', content: '{' },
@@ -174,7 +208,11 @@ export async function answerSupportQuestion(
     })
 
     if (!res.ok) {
-      log.error('support agent', new Error(`Anthropic ${res.status}`))
+      // The body carries the reason; the status alone does not. Logging only
+      // the status is why a 400 here cost a deploy and a production test to
+      // diagnose.
+      const detail = await res.text().catch(() => '')
+      log.error('support agent', new Error(`Anthropic ${res.status}: ${detail.slice(0, 500)}`))
       return { status: 'unavailable', reason: 'error' }
     }
 
