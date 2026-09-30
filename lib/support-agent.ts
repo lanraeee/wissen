@@ -1,13 +1,14 @@
 import sql from '@/lib/db'
 import { log } from '@/lib/logger'
+import { getAiSettings } from '@/lib/ai-settings'
 
-const MODEL = 'claude-sonnet-5'
 const API_URL = 'https://api.anthropic.com/v1/messages'
 
-// Hard ceiling on Anthropic calls per calendar month, counted server-side
-// before every request. A foundation pays this bill, so the failure mode of a
-// loop or an abusive session must be "the agent stops answering", never "the
-// card keeps being charged". Raise it deliberately, not reflexively.
+// Fallback ceiling on Anthropic calls per calendar month. The live value is
+// admin-editable (Settings -> AI); this is what applies if those settings
+// cannot be read. A foundation pays this bill, so the failure mode of a loop
+// or an abusive session must be "the agent stops answering", never "the card
+// keeps being charged".
 export const MONTHLY_CALL_CAP = 1500
 
 // Cap on the grounding context. site_content holds some very large values --
@@ -122,9 +123,12 @@ export async function answerSupportQuestion(
   const apiKey = process.env.ANTHROPIC_API_KEY
   if (!apiKey) return { status: 'unavailable', reason: 'not_configured' }
 
+  const settings = await getAiSettings()
+  if (!settings.supportEnabled) return { status: 'unavailable', reason: 'not_configured' }
+
   try {
-    if (await callsThisMonth() >= MONTHLY_CALL_CAP) {
-      log.warn('support agent', 'monthly call cap reached', { cap: MONTHLY_CALL_CAP })
+    if (await callsThisMonth() >= settings.monthlyCallCap) {
+      log.warn('support agent', 'monthly call cap reached', { cap: settings.monthlyCallCap })
       return { status: 'unavailable', reason: 'cap_reached' }
     }
   } catch {
@@ -151,9 +155,14 @@ export async function answerSupportQuestion(
         'anthropic-version': '2023-06-01',
       },
       body: JSON.stringify({
-        model: MODEL,
+        model: settings.supportModel,
         max_tokens: 600,
-        system: `${SYSTEM_PROMPT}\n\n# CONTEXT\n${context}`,
+        // Admin-supplied notes are APPENDED to the guardrails, never
+        // substituted for them: SYSTEM_PROMPT's hard rules (no payment
+        // details, no promised scholarships, no invented deadlines) stay in
+        // code precisely so nobody can edit them away from the admin panel.
+        system: `${SYSTEM_PROMPT}\n\n# CONTEXT\n${context}`
+          + (settings.supportExtraContext ? `\n\n# NOTES FROM THE TEAM\n${settings.supportExtraContext}` : ''),
         messages: [
           ...turns,
           { role: 'user', content: question },

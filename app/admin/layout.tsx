@@ -1,6 +1,7 @@
 ﻿import { redirect } from 'next/navigation'
 import { getSession } from '@/lib/auth'
 import { adminRole } from '@/lib/admin-guard'
+import { canUseAdminAgent } from '@/lib/ai-settings'
 import AdminNav from '@/components/admin/AdminNav'
 import AdminMobileNav from '@/components/admin/AdminMobileNav'
 import AdminLogoutButton from '@/components/admin/AdminLogoutButton'
@@ -12,6 +13,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   // silently demoted wissenhaus@outlook.com to whatever its stored role said.
   const role = await adminRole()
   if (!session || !role) redirect('/login?mode=login')
+  const canUseAgent = await canUseAdminAgent(session.email)
 
   return (
     <div className="admin-shell">
@@ -20,7 +22,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           <div style={{ fontWeight: 700, fontSize: '.9rem', letterSpacing: '.06em', textTransform: 'uppercase' }}>Wissen-Haus</div>
           <div style={{ fontSize: '.72rem', color: 'rgba(244,240,231,.5)', marginTop: 2 }}>Admin Panel</div>
         </div>
-        <AdminNav role={role} />
+        <AdminNav role={role} canUseAgent={canUseAgent} />
         <div style={{ padding: '16px 24px', borderTop: '1px solid rgba(244,240,231,.12)' }}>
           <div style={{ fontSize: '.78rem', color: 'rgba(244,240,231,.45)', marginBottom: 10, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
             {session.email}
@@ -29,7 +31,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         </div>
       </aside>
 
-      <AdminMobileNav email={session.email} role={role} />
+      <AdminMobileNav email={session.email} role={role} canUseAgent={canUseAgent} />
 
       <main className="admin-main">
         {children}

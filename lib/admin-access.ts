@@ -23,7 +23,13 @@ function matches(path: string, prefix: string) {
   return path === prefix || path.startsWith(prefix + '/')
 }
 
-export function canAccessAdminPath(role: AdminRole, path: string): boolean {
+// The AI agent reads every table, so unlike everything else its visibility is
+// not a function of role at all -- it is granted per account by the master
+// admin. The nav is told the answer rather than deriving it.
+export const AI_AGENT_PATH = '/admin/ai'
+
+export function canAccessAdminPath(role: AdminRole, path: string, canUseAgent = false): boolean {
+  if (matches(path, AI_AGENT_PATH)) return canUseAgent
   if (role !== 'editor') return true
   return !ADMIN_ONLY_PATHS.some(p => matches(path, p))
 }

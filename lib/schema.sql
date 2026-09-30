@@ -480,3 +480,22 @@ ALTER TABLE support_tickets ADD COLUMN IF NOT EXISTS geo_lat            DOUBLE P
 ALTER TABLE support_tickets ADD COLUMN IF NOT EXISTS geo_lng            DOUBLE PRECISION;
 ALTER TABLE support_tickets ADD COLUMN IF NOT EXISTS geo_accuracy_m     INTEGER;
 ALTER TABLE support_tickets ADD COLUMN IF NOT EXISTS geo_shared_at      TIMESTAMPTZ;
+
+-- Every run of the staff-facing database agent, recorded before the answer is
+-- returned. The agent can read any table, so "what did it look at, for whom,
+-- and why" has to be answerable after the fact -- by the master admin, by an
+-- auditor, or by whoever is working out how something leaked. queries holds
+-- the SQL it actually executed, which is the part that matters.
+CREATE TABLE IF NOT EXISTS ai_agent_runs (
+  id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  actor_email   TEXT NOT NULL,
+  prompt        TEXT NOT NULL,
+  queries       JSONB NOT NULL DEFAULT '[]'::jsonb,
+  answer        TEXT,
+  refused       BOOLEAN NOT NULL DEFAULT FALSE,
+  input_tokens  INTEGER NOT NULL DEFAULT 0,
+  output_tokens INTEGER NOT NULL DEFAULT 0,
+  created_at    TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+CREATE INDEX IF NOT EXISTS idx_ai_agent_runs_actor ON ai_agent_runs(actor_email, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_ai_agent_runs_time  ON ai_agent_runs(created_at DESC);

@@ -23,7 +23,7 @@ const ContentSchema = z.object({
 // could silently redirect every bank-transfer donation, with the foundation's
 // own name and branding still attached to the instructions email. Require the
 // director for them, matching how role assignment is already restricted.
-const DIRECTOR_ONLY_KEYS = new Set(['bank_transfer_details'])
+const DIRECTOR_ONLY_KEYS = new Set(['bank_transfer_details', 'ai_settings'])
 
 function guardFor(key: string) {
   return DIRECTOR_ONLY_KEYS.has(key) ? directorGuard() : adminGuard()

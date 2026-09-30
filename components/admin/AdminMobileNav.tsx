@@ -22,14 +22,14 @@ function pageTitle(pathname: string): string {
   return match?.[0] ?? 'Admin'
 }
 
-export default function AdminMobileNav({ email, role }: { email: string; role: AdminRole }) {
+export default function AdminMobileNav({ email, role, canUseAgent }: { email: string; role: AdminRole; canUseAgent: boolean }) {
   const pathname = usePathname()
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [moreOpen, setMoreOpen] = useState(false)
   const counts = useSubmissionsBadge()
 
-  const nav = NAV.filter(([, href]) => canAccessAdminPath(role, href))
-  const primaryHrefs = PRIMARY_PREFERENCE.filter(href => canAccessAdminPath(role, href)).slice(0, 4)
+  const nav = NAV.filter(([, href]) => canAccessAdminPath(role, href, canUseAgent))
+  const primaryHrefs = PRIMARY_PREFERENCE.filter(href => canAccessAdminPath(role, href, canUseAgent)).slice(0, 4)
   const PRIMARY = nav.filter(([, href]) => primaryHrefs.includes(href))
   const OVERFLOW = nav.filter(([, href]) => !primaryHrefs.includes(href))
   const overflowActive = OVERFLOW.some(([, href]) => isNavActive(pathname, href))

@@ -9,6 +9,7 @@ import { useSubmissionsBadge } from './useSubmissionsBadge'
 export const NAV = [
   ['Dashboard', '/admin'],
   ['Analytics', '/admin/analytics'],
+  ['AI Agent', '/admin/ai'],
   ['Activity Log', '/admin/activity'],
   ['Users', '/admin/users'],
   ['Support', '/admin/support'],
@@ -47,13 +48,13 @@ export function isNavActive(pathname: string, href: string) {
   return href === '/admin' ? pathname === '/admin' : pathname.startsWith(href)
 }
 
-export default function AdminNav({ role }: { role: AdminRole }) {
+export default function AdminNav({ role, canUseAgent }: { role: AdminRole; canUseAgent: boolean }) {
   const pathname = usePathname()
   const counts = useSubmissionsBadge()
 
   return (
     <nav style={{ padding: '16px 12px', flex: 1, overflowY: 'auto' }}>
-      {NAV.filter(([, href]) => canAccessAdminPath(role, href)).map(([label, href]) => {
+      {NAV.filter(([, href]) => canAccessAdminPath(role, href, canUseAgent)).map(([label, href]) => {
         const active = isNavActive(pathname, href)
         const Icon = NAV_ICONS[href]
         const badgeKey = BADGE_KEYS[href]

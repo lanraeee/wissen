@@ -28,7 +28,9 @@ describe('support agent', () => {
   // recoverable, an unbounded Anthropic bill on a foundation's card is not.
   it('refuses to call once the monthly cap is reached', async () => {
     process.env.ANTHROPIC_API_KEY = 'test-key'
-    sqlMock.mockResolvedValueOnce([{ calls: MONTHLY_CALL_CAP }])
+    sqlMock
+      .mockResolvedValueOnce([])                               // ai_settings -> defaults
+      .mockResolvedValueOnce([{ calls: MONTHLY_CALL_CAP }])    // ai_usage
     const fetchMock = vi.fn()
     vi.stubGlobal('fetch', fetchMock)
 
@@ -42,7 +44,9 @@ describe('support agent', () => {
   // must not spend. Failing closed on a billing guard is the safe default.
   it('fails closed when the usage ledger cannot be read', async () => {
     process.env.ANTHROPIC_API_KEY = 'test-key'
-    sqlMock.mockRejectedValueOnce(new Error('db down'))
+    sqlMock
+      .mockResolvedValueOnce([])                        // ai_settings -> defaults
+      .mockRejectedValue(new Error('db down'))          // everything after
     const fetchMock = vi.fn()
     vi.stubGlobal('fetch', fetchMock)
 
@@ -55,6 +59,7 @@ describe('support agent', () => {
   it('parses a reply and its escalation flag', async () => {
     process.env.ANTHROPIC_API_KEY = 'test-key'
     sqlMock
+      .mockResolvedValueOnce([])
       .mockResolvedValueOnce([{ calls: 1 }])
       .mockResolvedValueOnce([{ key: 'foundation_details', value: { name: 'Wissen-Haus' } }])
       .mockResolvedValue([])
@@ -74,6 +79,7 @@ describe('support agent', () => {
   it('treats an Anthropic error as unavailable rather than throwing', async () => {
     process.env.ANTHROPIC_API_KEY = 'test-key'
     sqlMock
+      .mockResolvedValueOnce([])
       .mockResolvedValueOnce([{ calls: 1 }])
       .mockResolvedValueOnce([])
       .mockResolvedValue([])
@@ -87,6 +93,7 @@ describe('support agent', () => {
   it('sends only the last few turns, so history cannot grow the bill', async () => {
     process.env.ANTHROPIC_API_KEY = 'test-key'
     sqlMock
+      .mockResolvedValueOnce([])
       .mockResolvedValueOnce([{ calls: 1 }])
       .mockResolvedValueOnce([])
       .mockResolvedValue([])
