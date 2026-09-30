@@ -120,6 +120,7 @@ export default async function Footer() {
               <Link href="/partner">Partner With Us</Link>
               <Link href="/donate">Donate</Link>
               <Link href="/contact">Contact</Link>
+              <Link href="/support">Support</Link>
             </div>
 
             <div className="footer-col">

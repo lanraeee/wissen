@@ -376,3 +376,78 @@ CREATE TABLE IF NOT EXISTS content_change_requests (
 );
 CREATE INDEX IF NOT EXISTS idx_content_requests_pending ON content_change_requests(status, requested_at DESC);
 CREATE INDEX IF NOT EXISTS idx_content_requests_key     ON content_change_requests(content_key, requested_at DESC);
+
+-- Support tickets. contact_messages stays as-is (a one-shot form, no reply
+-- thread); this is the two-way conversation store behind the support page,
+-- the live chat widget and the AI agent -- all three write here, so a chat
+-- that escalates becomes the same ticket a staff member already sees rather
+-- than a second record of the same conversation.
+--
+-- `reference` is what a visitor quotes to find their ticket again without an
+-- account. It is a capability token, not a serial: anyone holding it can read
+-- the thread, so it is generated from crypto random bytes and never shortened.
+CREATE TABLE IF NOT EXISTS support_tickets (
+  id             UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  reference      TEXT NOT NULL UNIQUE,
+  subject        TEXT NOT NULL,
+  requester_name  TEXT NOT NULL,
+  requester_email TEXT,
+  user_id        UUID REFERENCES users(id) ON DELETE SET NULL,
+  channel        TEXT NOT NULL DEFAULT 'form' CHECK (channel IN ('form','chat')),
+  status         TEXT NOT NULL DEFAULT 'open'
+                   CHECK (status IN ('open','pending','resolved','closed')),
+  priority       TEXT NOT NULL DEFAULT 'normal'
+                   CHECK (priority IN ('low','normal','high')),
+  assigned_email TEXT,
+  ai_handled     BOOLEAN NOT NULL DEFAULT FALSE,
+  escalated      BOOLEAN NOT NULL DEFAULT FALSE,
+  created_at     TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  last_activity  TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+CREATE INDEX IF NOT EXISTS idx_tickets_status   ON support_tickets(status, last_activity DESC);
+CREATE INDEX IF NOT EXISTS idx_tickets_user     ON support_tickets(user_id, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_tickets_assigned ON support_tickets(assigned_email, status);
+
+-- One turn of a ticket conversation. author_type distinguishes the three
+-- writers so the UI can style them and so "did a human ever answer this?"
+-- stays answerable. audio_id points at a voice note the visitor recorded;
+-- body then holds its transcript, which is produced in the browser -- the
+-- audio is kept so staff can listen when the transcript is poor or absent.
+CREATE TABLE IF NOT EXISTS ticket_messages (
+  id           UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  ticket_id    UUID NOT NULL REFERENCES support_tickets(id) ON DELETE CASCADE,
+  author_type  TEXT NOT NULL CHECK (author_type IN ('visitor','staff','ai')),
+  author_name  TEXT NOT NULL,
+  body         TEXT NOT NULL,
+  audio_id     UUID,
+  internal     BOOLEAN NOT NULL DEFAULT FALSE,
+  created_at   TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+CREATE INDEX IF NOT EXISTS idx_ticket_messages_thread ON ticket_messages(ticket_id, created_at);
+
+-- Voice notes, stored as bytes in Postgres rather than an object store.
+-- No blob storage is provisioned, and a capped 60-second opus recording is
+-- ~180 KB -- small enough that adding a vendor (and its cost, its token, its
+-- outage surface) is not yet worth it. Revisit if volume makes this heavy;
+-- the served route is the only thing that would change.
+CREATE TABLE IF NOT EXISTS voice_notes (
+  id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  ticket_id   UUID REFERENCES support_tickets(id) ON DELETE CASCADE,
+  mime_type   TEXT NOT NULL,
+  bytes       BYTEA NOT NULL,
+  duration_ms INTEGER,
+  created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+CREATE INDEX IF NOT EXISTS idx_voice_notes_ticket ON voice_notes(ticket_id);
+
+-- Monthly spend ledger for the AI agent. One row per calendar month, counted
+-- server-side before each call, so a runaway loop or an abusive session cannot
+-- quietly run up an Anthropic bill on a foundation's card. The cap itself is
+-- configured in lib/support-agent.ts.
+CREATE TABLE IF NOT EXISTS ai_usage (
+  month         TEXT PRIMARY KEY,
+  calls         INTEGER NOT NULL DEFAULT 0,
+  input_tokens  BIGINT NOT NULL DEFAULT 0,
+  output_tokens BIGINT NOT NULL DEFAULT 0,
+  updated_at    TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);

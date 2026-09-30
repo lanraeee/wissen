@@ -26,6 +26,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${BASE}/team`, lastModified: now, changeFrequency: 'monthly', priority: 0.8 },
     { url: `${BASE}/impact`, lastModified: now, changeFrequency: 'monthly', priority: 0.7 },
     { url: `${BASE}/contact`, lastModified: now, changeFrequency: 'monthly', priority: 0.6 },
+    // /support only. Individual ticket threads are private to whoever holds
+    // the reference and carry robots: noindex.
+    { url: `${BASE}/support`, lastModified: now, changeFrequency: 'monthly', priority: 0.6 },
     { url: `${BASE}/programmes`, lastModified: now, changeFrequency: 'weekly', priority: 0.9 },
     { url: `${BASE}/career-clarity-fair`, lastModified: now, changeFrequency: 'weekly', priority: 0.8 },
     { url: `${BASE}/opportunity-blueprint`, lastModified: now, changeFrequency: 'weekly', priority: 0.8 },

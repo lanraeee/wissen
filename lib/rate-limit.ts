@@ -74,6 +74,17 @@ export const RATE_LIMITS: Array<{ prefix: string; limit: number; windowMs: numbe
   // Logged-in community actions — abuse-resistant but not restrictive.
   { prefix: '/api/forum', limit: 30, windowMs: 10 * 60_000 },
   { prefix: '/api/testimonials', limit: 10, windowMs: 10 * 60_000 },
+  // Support chat spends real money per turn (an Anthropic call), so this is
+  // the per-IP brake in front of lib/support-agent.ts's monthly cap: the cap
+  // stops the month running away, this stops one visitor eating it in an
+  // afternoon. Listed BEFORE /api/support so it wins the prefix match.
+  { prefix: '/api/support/chat', limit: 20, windowMs: 10 * 60_000 },
+  // Voice notes are unauthenticated writes of binary data into Postgres.
+  { prefix: '/api/support/voice', limit: 20, windowMs: 10 * 60_000 },
+  // Opening a ticket and replying to one. Only non-GET requests reach this
+  // table (see middleware), so the widget's polling is unaffected; this
+  // bounds writes, which is what can be abused.
+  { prefix: '/api/support', limit: 15, windowMs: 10 * 60_000 },
 ]
 
 export function findRateLimit(pathname: string) {

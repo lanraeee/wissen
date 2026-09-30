@@ -11,6 +11,7 @@ export const NAV = [
   ['Analytics', '/admin/analytics'],
   ['Activity Log', '/admin/activity'],
   ['Users', '/admin/users'],
+  ['Support', '/admin/support'],
   ['Contact', '/admin/contact'],
   ['Volunteers', '/admin/volunteer'],
   ['Partners', '/admin/partner'],
@@ -33,6 +34,7 @@ export const NAV = [
 // object (app/api/admin/inbox-counts). Donations/Opportunities/etc. have no
 // pending-triage concept, so they're simply absent here -- no badge shown.
 export const BADGE_KEYS: Record<string, string> = {
+  '/admin/support': 'support',
   '/admin/contact': 'contact',
   '/admin/volunteer': 'volunteer',
   '/admin/partner': 'partner',
