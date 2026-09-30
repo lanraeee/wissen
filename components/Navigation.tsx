@@ -32,8 +32,8 @@ const NAV = [
   {
     key: 'community', label: 'Community', menu: [
       ['/community', 'Community Hub', 'Where youth grow together'],
-      ['/community#opportunities', 'Opportunity Hub', 'Scholarships, jobs & grants'],
-      ['/scholarships?tab=wissenhaus-partners', 'Wissen-Haus Partners', 'Free access through partners like DataCamp'],
+      ['/community?tab=all#opportunities', 'Opportunity Hub', 'Scholarships, jobs & grants'],
+      ['/community?tab=wissenhaus-partners#opportunities', 'Wissen-Haus Partners', 'Free access through partners like DataCamp'],
       ['/community#learning', 'Learning Library', 'Free courses & toolkits'],
     ]
   },
@@ -67,10 +67,6 @@ const ACTIVE_MAP: Record<string, string> = {
   '/opportunity-blueprint': 'programmes',
   '/impact-content': 'programmes',
   '/community': 'community',
-  '/jobs': 'community',
-  '/internships': 'community',
-  '/scholarships': 'community',
-  '/competitions': 'community',
   '/careers': 'careers',
   '/career-pathways': 'careers',
   '/career-assessment': 'careers',

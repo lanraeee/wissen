@@ -1638,7 +1638,7 @@ export default function CareerAssessmentPage() {
 
                     </Link>
 
-                    <Link href="/jobs" className="btn btn--ghost">Browse related jobs</Link>
+                    <Link href="/community?tab=jobs#opportunities" className="btn btn--ghost">Browse related jobs</Link>
 
                   </div>
 
@@ -1676,7 +1676,7 @@ export default function CareerAssessmentPage() {
 
               { icon: '📚', title: 'Browse Courses', body: 'Start learning the skills your matched careers need.', href: '/courses', label: 'View courses' },
 
-              { icon: '💼', title: 'Explore Opportunities', body: 'Jobs, internships, scholarships and competitions.', href: '/jobs', label: 'Find opportunities' },
+              { icon: '💼', title: 'Explore Opportunities', body: 'Jobs, internships, scholarships and competitions.', href: '/community?tab=all#opportunities', label: 'Find opportunities' },
 
               { icon: '👥', title: 'Join the Community', body: 'Connect with peers on similar career paths.', href: '/community', label: 'Join now' },
 

@@ -1,4 +1,6 @@
 import type { Metadata } from 'next'
+import { adminRole } from '@/lib/admin-guard'
+import ApprovalNotice from '@/components/admin/ApprovalNotice'
 import SettingsEditor from '@/components/admin/SettingsEditor'
 import OpenGraphEditor from '@/components/admin/OpenGraphEditor'
 
@@ -11,6 +13,7 @@ const TABS = [
 
 export default async function AdminSettings({ searchParams }: { searchParams: Promise<{ tab?: string }> }) {
   const { tab = 'general' } = await searchParams
+  const needsApproval = await adminRole() === 'editor'
 
   return (
     <>
@@ -18,6 +21,8 @@ export default async function AdminSettings({ searchParams }: { searchParams: Pr
         <h1 className="admin-page-title">Settings</h1>
         <p className="admin-page-desc">Global site configuration — contact details, social links, display settings, and how pages look when shared.</p>
       </div>
+
+      {needsApproval && <ApprovalNotice />}
 
       <div style={{ display: 'flex', gap: 8, marginBottom: 24, flexWrap: 'wrap' }}>
         {TABS.map(t => (

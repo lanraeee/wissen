@@ -3,11 +3,13 @@ import { pageMetadata } from '@/lib/seo'
 import Link from 'next/link'
 import Image from 'next/image'
 import OpportunityGrid from '@/components/OpportunityGrid'
+import PartnerScholarshipsGrid from '@/components/PartnerScholarshipsGrid'
 import StreakBadge from '@/components/StreakBadge'
 import TestimonialForm from '@/components/TestimonialForm'
 import { getSiteContent } from '@/lib/site-content'
 import { getOgCopy } from '@/lib/og'
 import { ogSchemaFor } from '@/lib/og-schema'
+import type { PartnerScholarship } from '@/lib/partner-scholarships'
 
 interface Thread { title: string; author: string; replies: number; tag: string }
 
@@ -21,8 +23,22 @@ async function getThreads(): Promise<Thread[]> {
   return (await getSiteContent<Thread[]>('community_threads')) ?? []
 }
 
-export async function generateMetadata(): Promise<Metadata> {
-  return pageMetadata(await getOgCopy(ogSchemaFor('community')!))
+// Each tab gets its own title, description and canonical. Without this all six
+// URLs shared the hub's card, which reads to a crawler as one page duplicated
+// six times -- exactly the duplicate-content problem that made the four
+// standalone pages worth keeping before the merge. The canonical points at the
+// tab's own URL so each is indexed on its own terms, with /community?tab=all
+// collapsing onto the bare /community.
+export async function generateMetadata(
+  { searchParams }: { searchParams: Promise<{ tab?: string }> }
+): Promise<Metadata> {
+  const { tab: rawTab } = await searchParams
+  const tab = resolveTab(rawTab)
+  const canonical = tab === 'all' ? '/community' : `/community?tab=${tab}`
+  return pageMetadata({
+    ...await getOgCopy(ogSchemaFor(TAB_OG_SLUG[tab])!),
+    alternates: { canonical },
+  })
 }
 
 const ARROW = (
@@ -31,8 +47,48 @@ const ARROW = (
   </svg>
 )
 
-export default async function CommunityPage() {
+// The Opportunity Hub used to be four standalone pages (/jobs, /internships,
+// /scholarships, /competitions) plus a section here that linked out to them --
+// the same grid, the same brand, split across five URLs. They are now tabs on
+// this page, and those four paths 301 here (see next.config.mjs). `partners`
+// carries the Wissen-Haus partner scholarships that lived on /scholarships.
+const OPPORTUNITY_TABS = [
+  { key: 'all', label: 'All', type: undefined },
+  { key: 'scholarships', label: 'Scholarships', type: 'scholarship' },
+  { key: 'jobs', label: 'Jobs', type: 'job' },
+  { key: 'internships', label: 'Internships', type: 'internship' },
+  { key: 'competitions', label: 'Competitions', type: 'competition' },
+  { key: 'wissenhaus-partners', label: 'Wissen-Haus Partners', type: undefined },
+] as const
+
+type TabKey = typeof OPPORTUNITY_TABS[number]['key']
+
+// Slug of the admin-editable OG entry backing each tab (lib/og-schema.ts).
+// The first four kept the slugs they used as standalone pages so copy already
+// saved in the admin survived the merge.
+const TAB_OG_SLUG: Record<TabKey, string> = {
+  all: 'community',
+  scholarships: 'scholarships',
+  jobs: 'jobs',
+  internships: 'internships',
+  competitions: 'competitions',
+  'wissenhaus-partners': 'community-partners',
+}
+
+function resolveTab(raw: string | undefined): TabKey {
+  return OPPORTUNITY_TABS.some(t => t.key === raw) ? raw as TabKey : 'all'
+}
+
+export default async function CommunityPage({ searchParams }: { searchParams: Promise<{ tab?: string }> }) {
+  const { tab: rawTab } = await searchParams
+  const tab = resolveTab(rawTab)
+  const active = OPPORTUNITY_TABS.find(t => t.key === tab)!
+
   const threads = await getThreads()
+  const partners = tab === 'wissenhaus-partners'
+    ? (await getSiteContent<PartnerScholarship[]>('partner_scholarships')) ?? []
+    : []
+
   return (
     <>
       <StreakBadge />
@@ -74,13 +130,20 @@ export default async function CommunityPage() {
             <span className="eyebrow">Opportunity Hub</span>
             <h2>Scholarships, internships, jobs &amp; grants, curated for Nigerian youth.</h2>
           </div>
-          <div className="pillrow mb-l reveal" data-d="1">
-            <Link className="p" href="/scholarships">Scholarships</Link>
-            <Link className="p" href="/jobs">Jobs</Link>
-            <Link className="p" href="/internships">Internships</Link>
-            <Link className="p" href="/competitions">Competitions</Link>
+          {/* No `reveal` on these: they are navigation, and reveal's opacity:0
+              is only cleared by an observer keyed on pathname -- switching tab
+              changes only the query string, so the new pills would stay
+              invisible until a full reload. */}
+          <div className="pillrow mb-l">
+            {OPPORTUNITY_TABS.map(t => (
+              <Link key={t.key} href={`/community?tab=${t.key}#opportunities`} className={`p${tab === t.key ? ' active' : ''}`}>
+                {t.label}
+              </Link>
+            ))}
           </div>
-          <OpportunityGrid showFilter={true} />
+          {tab === 'wissenhaus-partners'
+            ? <PartnerScholarshipsGrid partners={partners} />
+            : <OpportunityGrid type={active.type} showFilter={true} />}
         </div>
       </section>
 

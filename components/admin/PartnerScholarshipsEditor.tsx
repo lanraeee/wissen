@@ -130,7 +130,7 @@ export default function PartnerScholarshipsEditor() {
 
       <p style={{ margin: '0 0 16px', fontSize: '.85rem', color: '#8a9a8f' }}>
         Scholarships offered through our own partnerships — shown on the &quot;Wissen-Haus Partners&quot; tab at
-        {' '}<a href="/scholarships?tab=wissenhaus-partners" target="_blank" rel="noopener noreferrer" style={{ color: '#1a3c2e', fontWeight: 600 }}>/scholarships</a>.
+        {' '}<a href="/community?tab=wissenhaus-partners#opportunities" target="_blank" rel="noopener noreferrer" style={{ color: '#1a3c2e', fontWeight: 600 }}>the Community Hub</a>.
         Info pages stay public so anyone can read about the partnership; application forms under
         {' '}<code style={{ background: '#f0ece4', padding: '1px 5px', borderRadius: 4 }}>/partners/…/apply</code> require a Wissen-Haus account.
         Links can also point to an external site if a partner runs their own form.

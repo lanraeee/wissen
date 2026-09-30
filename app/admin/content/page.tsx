@@ -1,4 +1,6 @@
 ﻿import type { Metadata } from 'next'
+import { adminRole } from '@/lib/admin-guard'
+import ApprovalNotice from '@/components/admin/ApprovalNotice'
 import CareersEditor from '@/components/admin/CareersEditor'
 import CoursesEditor from '@/components/admin/CoursesEditor'
 import HomeContentEditor from '@/components/admin/HomeContentEditor'
@@ -31,12 +33,22 @@ const TABS = [
   { key: 'whatsapp', label: 'WhatsApp Channel' },
   { key: 'impact-stories', label: 'Impact Stories' },
   { key: 'donation-certs', label: '🧾 Donation Receipts' },
-  { key: 'bank-details', label: '🏦 Bank Transfer Details' },
+  { key: 'bank-details', label: '🏦 Bank Transfer Details', directorOnly: true },
   { key: 'foundation', label: 'Foundation Details' },
 ]
 
 export default async function AdminContent({ searchParams }: { searchParams: Promise<{ tab?: string }> }) {
   const { tab = 'careers' } = await searchParams
+  // bank_transfer_details is director-only at the API (DIRECTOR_ONLY_KEYS in
+  // app/api/admin/content/[key]/route.ts). Without this the tab rendered for
+  // editors too: the form loaded empty on a 403, they could type a full bank
+  // account into it, and the save was rejected -- silent failure on the one
+  // field that decides where donations land.
+  const role = await adminRole()
+  const isDirector = role === 'director'
+  const needsApproval = role === 'editor'
+  const tabs = TABS.filter(t => !t.directorOnly || isDirector)
+  const activeTab = tabs.some(t => t.key === tab) ? tab : 'careers'
 
   return (
     <>
@@ -45,33 +57,35 @@ export default async function AdminContent({ searchParams }: { searchParams: Pro
         <p className="admin-page-desc">Edit page content displayed publicly on the site. Changes take effect on the next page load.</p>
       </div>
 
+      {needsApproval && <ApprovalNotice />}
+
       <div style={{ display: 'flex', gap: 8, marginBottom: 28, flexWrap: 'wrap' }}>
-        {TABS.map(t => (
+        {tabs.map(t => (
           <a key={t.key} href={`/admin/content?tab=${t.key}`} style={{
             padding: '6px 16px', borderRadius: 99, fontSize: '.82rem', fontWeight: 600,
-            background: tab === t.key ? '#1a3c2e' : '#fff',
-            color: tab === t.key ? '#f4f0e7' : '#3a4a3f',
+            background: activeTab === t.key ? '#1a3c2e' : '#fff',
+            color: activeTab === t.key ? '#f4f0e7' : '#3a4a3f',
             textDecoration: 'none', border: '1px solid #e8e4dc',
           }}>{t.label}</a>
         ))}
       </div>
 
       <div style={{ background: '#fff', borderRadius: 10, padding: 24, boxShadow: '0 1px 4px rgba(0,0,0,.06)' }}>
-        {tab === 'page-copy' && <PageCopyEditor />}
-        {tab === 'homepage' && <HomeContentEditor />}
-        {tab === 'careers' && <CareersEditor />}
-        {tab === 'courses' && <CoursesEditor />}
-        {tab === 'policy' && <PolicyEditor />}
-        {tab === 'team' && <TeamEditor />}
-        {tab === 'partners' && <PartnersEditor />}
-        {tab === 'partner-scholarships' && <PartnerScholarshipsEditor />}
-        {tab === 'founder' && <FounderEditor />}
-        {tab === 'threads' && <ThreadsEditor />}
-        {tab === 'whatsapp' && <WhatsAppEditor />}
-        {tab === 'impact-stories' && <ImpactStoriesEditor />}
-        {tab === 'donation-certs' && <DonationCertEditor />}
-        {tab === 'bank-details' && <BankDetailsEditor />}
-        {tab === 'foundation' && <FoundationDetailsEditor />}
+        {activeTab === 'page-copy' && <PageCopyEditor />}
+        {activeTab === 'homepage' && <HomeContentEditor />}
+        {activeTab === 'careers' && <CareersEditor />}
+        {activeTab === 'courses' && <CoursesEditor />}
+        {activeTab === 'policy' && <PolicyEditor />}
+        {activeTab === 'team' && <TeamEditor />}
+        {activeTab === 'partners' && <PartnersEditor />}
+        {activeTab === 'partner-scholarships' && <PartnerScholarshipsEditor />}
+        {activeTab === 'founder' && <FounderEditor />}
+        {activeTab === 'threads' && <ThreadsEditor />}
+        {activeTab === 'whatsapp' && <WhatsAppEditor />}
+        {activeTab === 'impact-stories' && <ImpactStoriesEditor />}
+        {activeTab === 'donation-certs' && <DonationCertEditor />}
+        {activeTab === 'bank-details' && isDirector && <BankDetailsEditor />}
+        {activeTab === 'foundation' && <FoundationDetailsEditor />}
       </div>
     </>
   )

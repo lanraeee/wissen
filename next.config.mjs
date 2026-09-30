@@ -37,6 +37,39 @@ const nextConfig = {
         destination: '/opportunity-blueprint',
         permanent: true,
       },
+      // The Opportunity Hub's four type pages are now tabs on /community.
+      // These 301s keep every indexed URL, inbound link and shared card
+      // working, and land each one on the tab it used to be.
+      //
+      // The partner-scholarship rule MUST stay above the bare /scholarships
+      // rule: Next matches redirects in order, and the general one would
+      // otherwise swallow the query and drop people on the wrong tab.
+      {
+        source: '/scholarships',
+        has: [{ type: 'query', key: 'tab', value: 'wissenhaus-partners' }],
+        destination: '/community?tab=wissenhaus-partners',
+        permanent: true,
+      },
+      {
+        source: '/scholarships',
+        destination: '/community?tab=scholarships',
+        permanent: true,
+      },
+      {
+        source: '/jobs',
+        destination: '/community?tab=jobs',
+        permanent: true,
+      },
+      {
+        source: '/internships',
+        destination: '/community?tab=internships',
+        permanent: true,
+      },
+      {
+        source: '/competitions',
+        destination: '/community?tab=competitions',
+        permanent: true,
+      },
     ]
   },
 }

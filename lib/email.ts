@@ -371,3 +371,93 @@ export async function sendNewsletterEmail(to: string, subject: string, bodyHtml:
     `),
   })
 }
+
+// ─── Support tickets ────────────────────────────────────────────────────────
+// These deliberately reuse sendEmail/FROM/ADMIN_EMAILS above rather than
+// building their own sender: ADMIN_EMAILS carries a `||` fallback that exists
+// because FOUNDER_EMAIL is an empty string in some environments, and a second
+// copy of that list would be a second chance to reintroduce the bug.
+//
+// Unlike the other transactional mail here these are not yet in
+// EMAIL_TEMPLATES_BY_ID, so they are not admin-editable. Worth adding when
+// the wording settles.
+
+const SITE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.wissenhaus.org'
+
+type TicketLike = {
+  reference: string
+  subject: string
+  requester_name: string
+  requester_email: string | null
+}
+
+export async function sendTicketOpened(ticket: TicketLike) {
+  if (!ticket.requester_email) return
+  const url = `${SITE_URL}/support/${encodeURIComponent(ticket.reference)}`
+  return sendEmail({
+    from: FROM,
+    to: ticket.requester_email,
+    replyTo: 'info@wissenhaus.org',
+    subject: `We've got your message — ${ticket.reference}`,
+    html: shell(`
+      <h2>Thanks, ${esc(firstNameOf(ticket.requester_name))} — we've got it.</h2>
+      <p>Someone from the Wissen-Haus team will reply as soon as they can. You can follow the conversation any time using the link below.</p>
+      ${fieldMono('Your reference', esc(ticket.reference))}
+      ${field('Subject', esc(ticket.subject))}
+      <p style="margin-top:20px"><a href="${esc(url)}" style="background:#1a3c2e;color:#f4f0e7;padding:11px 20px;border-radius:8px;text-decoration:none;font-weight:700;display:inline-block">View your ticket</a></p>
+      <p style="font-size:.8rem;color:#8a9a8f;margin-top:18px">Keep this link private — anyone who has it can read this conversation.</p>
+    `),
+  })
+}
+
+export async function notifyStaffNewTicket(ticket: TicketLike, body: string) {
+  const url = `${SITE_URL}/admin/support/${encodeURIComponent(ticket.reference)}`
+  return sendEmail({
+    from: FROM,
+    to: ADMIN_EMAILS,
+    replyTo: ticket.requester_email ?? 'info@wissenhaus.org',
+    subject: `New support ticket: ${ticket.subject} (${ticket.reference})`,
+    html: shell(`
+      <h2>New support ticket</h2>
+      ${fields([
+        ['Reference', esc(ticket.reference)],
+        ['From', esc(ticket.requester_name)],
+        ticket.requester_email ? ['Email', esc(ticket.requester_email)] : null,
+        ['Subject', esc(ticket.subject)],
+      ])}
+      ${fieldPre('Message', esc(body))}
+      <p style="margin-top:20px"><a href="${esc(url)}" style="background:#1a3c2e;color:#f4f0e7;padding:11px 20px;border-radius:8px;text-decoration:none;font-weight:700;display:inline-block">Open in admin</a></p>
+    `),
+  })
+}
+
+export async function notifyStaffReply(ticket: TicketLike, body: string) {
+  const url = `${SITE_URL}/admin/support/${encodeURIComponent(ticket.reference)}`
+  return sendEmail({
+    from: FROM,
+    to: ADMIN_EMAILS,
+    replyTo: ticket.requester_email ?? 'info@wissenhaus.org',
+    subject: `Reply on ${ticket.reference}: ${ticket.subject}`,
+    html: shell(`
+      <h2>${esc(ticket.requester_name)} replied</h2>
+      ${fieldPre('Message', esc(body))}
+      <p style="margin-top:20px"><a href="${esc(url)}" style="background:#1a3c2e;color:#f4f0e7;padding:11px 20px;border-radius:8px;text-decoration:none;font-weight:700;display:inline-block">Open in admin</a></p>
+    `),
+  })
+}
+
+export async function sendStaffReplyToRequester(ticket: TicketLike, body: string) {
+  if (!ticket.requester_email) return
+  const url = `${SITE_URL}/support/${encodeURIComponent(ticket.reference)}`
+  return sendEmail({
+    from: FROM,
+    to: ticket.requester_email,
+    replyTo: 'info@wissenhaus.org',
+    subject: `Re: ${ticket.subject} (${ticket.reference})`,
+    html: shell(`
+      <h2>Hi ${esc(firstNameOf(ticket.requester_name))},</h2>
+      ${fieldPre('', esc(body))}
+      <p style="margin-top:20px"><a href="${esc(url)}" style="background:#1a3c2e;color:#f4f0e7;padding:11px 20px;border-radius:8px;text-decoration:none;font-weight:700;display:inline-block">Reply to this</a></p>
+    `),
+  })
+}

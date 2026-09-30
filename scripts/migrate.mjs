@@ -2,6 +2,7 @@ import { neon } from '@neondatabase/serverless'
 import { readFileSync } from 'fs'
 import { fileURLToPath } from 'url'
 import { dirname, join } from 'path'
+import { splitSqlStatements } from './split-sql.mjs'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 
@@ -19,20 +20,9 @@ async function main() {
 
   console.log('Running Wissen-Haus database migration...')
 
-  // Split into individual statements and run each via neon's query method.
-  // Strip full-line comments from each statement before the emptiness/
-  // comment check -- a statement preceded by a multi-line `-- comment`
-  // block otherwise starts with '--' as a whole and gets silently dropped
-  // by the old check below, even though it has real SQL after the comment.
-  const statements = schema
-    .split(';')
-    .map(s => s
-      .split('\n')
-      .filter(line => !line.trim().startsWith('--'))
-      .join('\n')
-      .trim()
-    )
-    .filter(s => s.length > 0)
+  // Comment- and string-aware; see scripts/split-sql.mjs for why a plain
+  // split(';') is not good enough.
+  const statements = splitSqlStatements(schema)
 
   for (const statement of statements) {
     try {

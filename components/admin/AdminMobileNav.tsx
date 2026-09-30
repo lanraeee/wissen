@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { usePathname } from 'next/navigation'
+import { canAccessAdminPath, type AdminRole } from '@/lib/admin-access'
 import { NAV, BADGE_KEYS, isNavActive } from './AdminNav'
 import { NAV_ICONS, MoreIcon, CloseIcon, MenuIcon } from './AdminIcons'
 import AdminLogoutButton from './AdminLogoutButton'
@@ -9,24 +10,29 @@ import NavBadge from './NavBadge'
 import { useSubmissionsBadge } from './useSubmissionsBadge'
 
 // The four most-reached-for sections get a permanent bottom-tab slot (mobile
-// app pattern -- Dashboard/Contact/Users/Content are what a small-team admin
-// checks daily); everything else lives behind "More", opened as a bottom
-// sheet rather than a fifth+ tab that would cramp the bar.
-const PRIMARY_HREFS = ['/admin', '/admin/contact', '/admin/users', '/admin/content']
-const PRIMARY = NAV.filter(([, href]) => PRIMARY_HREFS.includes(href))
-const OVERFLOW = NAV.filter(([, href]) => !PRIMARY_HREFS.includes(href))
+// app pattern -- what a small-team admin checks daily); everything else lives
+// behind "More", opened as a bottom sheet rather than a fifth+ tab that would
+// cramp the bar. Listed in preference order and cut to four AFTER the role
+// filter, so an editor -- who cannot reach Users -- still gets four tabs
+// rather than a bar with a gap in it.
+const PRIMARY_PREFERENCE = ['/admin', '/admin/contact', '/admin/users', '/admin/content', '/admin/scholarships']
 
 function pageTitle(pathname: string): string {
   const match = NAV.find(([, href]) => isNavActive(pathname, href))
   return match?.[0] ?? 'Admin'
 }
 
-export default function AdminMobileNav({ email }: { email: string }) {
+export default function AdminMobileNav({ email, role }: { email: string; role: AdminRole }) {
   const pathname = usePathname()
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [moreOpen, setMoreOpen] = useState(false)
-  const overflowActive = OVERFLOW.some(([, href]) => isNavActive(pathname, href))
   const counts = useSubmissionsBadge()
+
+  const nav = NAV.filter(([, href]) => canAccessAdminPath(role, href))
+  const primaryHrefs = PRIMARY_PREFERENCE.filter(href => canAccessAdminPath(role, href)).slice(0, 4)
+  const PRIMARY = nav.filter(([, href]) => primaryHrefs.includes(href))
+  const OVERFLOW = nav.filter(([, href]) => !primaryHrefs.includes(href))
+  const overflowActive = OVERFLOW.some(([, href]) => isNavActive(pathname, href))
 
   return (
     <>
@@ -78,7 +84,7 @@ export default function AdminMobileNav({ email }: { email: string }) {
               </button>
             </div>
             <nav style={{ padding: '8px 12px', flex: 1, overflowY: 'auto' }}>
-              {NAV.map(([label, href]) => {
+              {nav.map(([label, href]) => {
                 const Icon = NAV_ICONS[href]
                 const active = isNavActive(pathname, href)
                 return (

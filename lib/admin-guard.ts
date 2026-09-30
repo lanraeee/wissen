@@ -1,4 +1,5 @@
 ﻿import { getSession, type UserPayload } from '@/lib/auth'
+import type { AdminRole } from '@/lib/admin-access'
 
 const PRIMARY_DIRECTOR_EMAIL = process.env.FOUNDER_EMAIL || 'director@wissenhaus.org'
 
@@ -42,4 +43,18 @@ export async function directorGuard(): Promise<UserPayload | null> {
   const session = await getSession()
   if (!session) return null
   return isDirector(session.email) ? session : null
+}
+
+// The single place a session becomes a role name. Everything that renders
+// differently per role -- the nav, the route layouts, the director-only tabs --
+// resolves through this rather than re-deriving "is this a director" from an
+// email comparison of its own, which is how app/admin/layout.tsx and the cron
+// route ended up disagreeing with isDirector() about wissenhaus@outlook.com.
+export async function adminRole(): Promise<AdminRole | null> {
+  const session = await getSession()
+  if (!session) return null
+  if (isDirector(session.email)) return 'director'
+  if (session.role === 'admin') return 'admin'
+  if (session.role === 'editor') return 'editor'
+  return null
 }
