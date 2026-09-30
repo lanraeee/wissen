@@ -1,13 +1,14 @@
 ﻿import { NextResponse } from 'next/server'
-import { getSession } from '@/lib/auth'
+import { directorGuard } from '@/lib/admin-guard'
 import { logActivity } from '@/lib/audit-log'
 
-const ADMIN_EMAIL = process.env.FOUNDER_EMAIL || 'director@wissenhaus.org'
-
 export async function POST() {
-  const session = await getSession()
-  if (!session || session.email !== ADMIN_EMAIL)
-    return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+  // directorGuard() admits both director addresses. Comparing against
+  // FOUNDER_EMAIL alone, as this route used to, locked the master admin
+  // (wissenhaus@outlook.com) out of a control every other director check
+  // grants them.
+  const session = await directorGuard()
+  if (!session) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 
   const cronSecret = process.env.CRON_SECRET
   const base = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'

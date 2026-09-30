@@ -1,10 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
-import { revalidateTag } from 'next/cache'
-import { adminGuard, directorGuard } from '@/lib/admin-guard'
+import { adminGuard, directorGuard, adminRole } from '@/lib/admin-guard'
 import sql from '@/lib/db'
 import { parseBody } from '@/lib/validation'
-import { siteContentTag } from '@/lib/site-content'
+import { writeContent } from '@/lib/content-approvals'
 import { logActivity } from '@/lib/audit-log'
 
 // site_content.value shape varies per key by design (each admin editor owns
@@ -44,12 +43,24 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ key:
   const { data, error } = await parseBody(req, ContentSchema)
   if (error) return error
   const { value } = data
-  await sql`
-    INSERT INTO site_content (key, value, updated_at)
-    VALUES (${key}, ${JSON.stringify(value)}, NOW())
-    ON CONFLICT (key) DO UPDATE SET value = ${JSON.stringify(value)}, updated_at = NOW()
-  `
-  revalidateTag(siteContentTag(key))
+
+  // Editors propose, directors publish. This is the one chokepoint every
+  // content editor in the admin writes through, so gating it here covers all
+  // of them -- page copy, OG metadata, partner scholarships, the tagline --
+  // without each component needing to know about approvals.
+  if (await adminRole() === 'editor') {
+    const prev = await sql`SELECT value FROM site_content WHERE key = ${key}`
+    await sql`
+      INSERT INTO content_change_requests
+        (content_key, proposed_value, previous_value, requested_by_id, requested_by_email)
+      VALUES (${key}, ${JSON.stringify(value)}, ${JSON.stringify(prev[0]?.value ?? null)},
+              ${session.id}, ${session.email})
+    `
+    logActivity(session, 'content.request', { targetType: 'site_content', targetId: key })
+    return NextResponse.json({ success: true, pending: true })
+  }
+
+  await writeContent(key, value)
   logActivity(session, 'content.update', { targetType: 'site_content', targetId: key })
   return NextResponse.json({ success: true })
 }

@@ -80,6 +80,10 @@ export function MenuIcon({ size = 20 }: IconProps) {
   return <svg {...base(size)}><path d="M4 7h16M4 12h16M4 17h16" /></svg>
 }
 
+export function ApprovalsIcon({ size = 20 }: IconProps) {
+  return <svg {...base(size)}><path d="M20 6L9 17l-5-5" /><path d="M20 12v7a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h9" /></svg>
+}
+
 export const NAV_ICONS: Record<string, (props: IconProps) => React.ReactElement> = {
   '/admin': DashboardIcon,
   '/admin/analytics': AnalyticsIcon,
@@ -97,6 +101,7 @@ export const NAV_ICONS: Record<string, (props: IconProps) => React.ReactElement>
   '/admin/career-fair': CareerFairIcon,
   '/admin/testimonials': TestimonialsIcon,
   '/admin/content': ContentIcon,
+  '/admin/content-approvals': ApprovalsIcon,
   '/admin/newsletter': NewsletterIcon,
   '/admin/email-templates': EmailTemplatesIcon,
   '/admin/settings': SettingsIcon,

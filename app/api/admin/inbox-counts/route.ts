@@ -8,12 +8,13 @@ import sql from '@/lib/db'
 // they're not counted here.
 export async function GET() {
   if (!await adminGuard()) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
-  const [contact, volunteer, partner, bankTransfer, scholarship] = await Promise.all([
+  const [contact, volunteer, partner, bankTransfer, scholarship, contentApproval] = await Promise.all([
     sql`SELECT COUNT(*)::int AS c FROM contact_messages WHERE status = 'pending'`,
     sql`SELECT COUNT(*)::int AS c FROM volunteer_applications WHERE status = 'pending'`,
     sql`SELECT COUNT(*)::int AS c FROM partner_inquiries WHERE status = 'pending'`,
     sql`SELECT COUNT(*)::int AS c FROM bank_transfers WHERE status IN ('awaiting_transfer', 'declared_sent')`,
     sql`SELECT COUNT(*)::int AS c FROM scholarship_applications WHERE status = 'pending'`,
+    sql`SELECT COUNT(*)::int AS c FROM content_change_requests WHERE status = 'pending'`,
   ])
   return NextResponse.json({
     contact: contact[0].c as number,
@@ -21,5 +22,6 @@ export async function GET() {
     partner: partner[0].c as number,
     bank_transfer: bankTransfer[0].c as number,
     scholarship: scholarship[0].c as number,
+    content_approval: contentApproval[0].c as number,
   })
 }

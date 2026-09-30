@@ -350,3 +350,29 @@ CREATE TABLE IF NOT EXISTS scholarship_applications (
 CREATE INDEX IF NOT EXISTS idx_scholarship_apps_score      ON scholarship_applications(score DESC);
 CREATE INDEX IF NOT EXISTS idx_scholarship_apps_status     ON scholarship_applications(status, created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_scholarship_apps_email      ON scholarship_applications(email);
+
+-- Editor content changes awaiting a director's approval. Editors may edit all
+-- site copy, but their writes land here instead of site_content: nothing they
+-- submit is public until a director approves it. Admins and directors still
+-- write straight through, so this queue only ever holds editor proposals.
+--
+-- proposed_value carries the WHOLE value for that key, not a patch, matching
+-- how site_content is written (the editors PUT a complete object). previous_value
+-- is the snapshot taken at submission time, so a reviewer can see what changes
+-- and an approval that lost a race is recognisable rather than silent.
+CREATE TABLE IF NOT EXISTS content_change_requests (
+  id                UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  content_key       TEXT NOT NULL,
+  proposed_value    JSONB NOT NULL,
+  previous_value    JSONB,
+  status            TEXT NOT NULL DEFAULT 'pending'
+                      CHECK (status IN ('pending','approved','rejected')),
+  requested_by_id   UUID REFERENCES users(id) ON DELETE SET NULL,
+  requested_by_email TEXT NOT NULL,
+  requested_at      TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  reviewed_by_email TEXT,
+  reviewed_at       TIMESTAMPTZ,
+  review_note       TEXT
+);
+CREATE INDEX IF NOT EXISTS idx_content_requests_pending ON content_change_requests(status, requested_at DESC);
+CREATE INDEX IF NOT EXISTS idx_content_requests_key     ON content_change_requests(content_key, requested_at DESC);
