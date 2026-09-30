@@ -1,18 +1,44 @@
 import { ImageResponse } from 'next/og'
+import sql from '@/lib/db'
 
 export const runtime = 'edge'
+// Matches app/opengraph-image.tsx: stops Next statically optimizing a route
+// that now reads the database, alongside the Cache-Control override below.
+export const dynamic = 'force-dynamic'
 export const alt = 'Wissen-Haus Empowerment Foundation — Encyclopedia Overview'
 export const size = { width: 1200, height: 630 }
 export const contentType = 'image/png'
 
+const FALLBACK_TAGLINE = 'Empowering Youth, Shaping Futures'
+
+// The sidebar used to read "Youth Empowerment Foundation", hardcoded, which is
+// how it survived the change that made the tagline admin-editable everywhere
+// else. It now reads the same site_settings key the root card does, so editing
+// the tagline in Settings moves both. Best-effort: the card must still render
+// on-brand if the edge cannot reach the database.
+async function getTagline(): Promise<string> {
+  try {
+    const rows = await sql`SELECT value FROM site_content WHERE key = 'site_settings'`
+    const tagline = (rows[0]?.value as { tagline?: string } | undefined)?.tagline
+    return tagline || FALLBACK_TAGLINE
+  } catch {
+    return FALLBACK_TAGLINE
+  }
+}
+
 export default async function Image() {
-  const logoSrc = await fetch('https://www.wissenhaus.org/img/logo.png')
-    .then((r) => r.arrayBuffer())
-    .catch(() => null)
+  const [logoSrc, tagline] = await Promise.all([
+    fetch('https://www.wissenhaus.org/img/logo.png').then((r) => r.arrayBuffer()).catch(() => null),
+    getTagline(),
+  ])
 
   const logoDataUrl = logoSrc
     ? `data:image/png;base64,${Buffer.from(logoSrc).toString('base64')}`
     : null
+
+  // The sidebar is a narrow column, so the tagline is split on its comma the
+  // same way the root card splits it into two lines.
+  const [taglineLine1, taglineLine2] = tagline.split(',').map(s => s.trim())
 
   return new ImageResponse(
     (
@@ -51,8 +77,9 @@ export default async function Image() {
             <span style={{ color: '#B8952A', fontSize: 40, fontWeight: 900, display: 'flex', marginBottom: 20 }}>WH</span>
           )}
           <span style={{ color: '#fff', fontSize: 24, fontWeight: 800, textAlign: 'center', display: 'flex', marginBottom: 6 }}>Wissen-Haus</span>
-          <span style={{ color: '#B8952A', fontSize: 10, fontWeight: 600, letterSpacing: 3, textTransform: 'uppercase', textAlign: 'center', display: 'flex', lineHeight: 1.5 }}>
-            Youth Empowerment{'\n'}Foundation
+          <span style={{ color: '#B8952A', fontSize: 10, fontWeight: 600, letterSpacing: 3, textTransform: 'uppercase', textAlign: 'center', display: 'flex', flexDirection: 'column', lineHeight: 1.5 }}>
+            <span style={{ display: 'flex' }}>{taglineLine1 || 'Empowering Youth'}</span>
+            {taglineLine2 ? <span style={{ display: 'flex' }}>{taglineLine2}</span> : null}
           </span>
           <div style={{ width: 40, height: 2, background: '#B8952A', borderRadius: 2, margin: '20px auto 0', opacity: 0.6, display: 'flex' }} />
         </div>

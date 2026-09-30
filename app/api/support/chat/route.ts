@@ -5,6 +5,7 @@ import sql from '@/lib/db'
 import { parseBody, zLongText } from '@/lib/validation'
 import { createTicket, getTicketByReference, getMessages, addMessage } from '@/lib/tickets'
 import { answerSupportQuestion, isAgentConfigured } from '@/lib/support-agent'
+import { visitorContextFrom } from '@/lib/visitor-context'
 import { notifyStaffNewTicket, notifyStaffReply } from '@/lib/email'
 import { log } from '@/lib/logger'
 
@@ -16,6 +17,10 @@ const ChatSchema = z.object({
   name: z.string().max(120).nullish(),
   email: z.string().email().max(200).nullish(),
   audioId: z.string().uuid().nullish(),
+  // Where the visitor opened the chat from, so staff can see what they were
+  // reading. Everything else in the context comes from request headers.
+  page: z.string().max(500).nullish(),
+  referrer: z.string().max(1000).nullish(),
 })
 
 // One turn of the live chat. The chat is not a separate store: every turn is a
@@ -42,6 +47,7 @@ export async function POST(req: NextRequest) {
         channel: 'chat',
         body: data.message,
         audioId: data.audioId ?? null,
+        context: visitorContextFrom(req, { page: data.page, referrer: data.referrer }),
       })
       opened = true
     } else {

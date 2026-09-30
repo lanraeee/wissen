@@ -3,6 +3,7 @@ import { z } from 'zod'
 import { getSession } from '@/lib/auth'
 import { parseBody, zEmail, zName, zShortText, zLongText } from '@/lib/validation'
 import { createTicket } from '@/lib/tickets'
+import { visitorContextFrom } from '@/lib/visitor-context'
 import { sendTicketOpened, notifyStaffNewTicket } from '@/lib/email'
 import { log } from '@/lib/logger'
 
@@ -13,6 +14,8 @@ const CreateSchema = z.object({
   message: zLongText,
   channel: z.enum(['form', 'chat']).nullish(),
   audioId: z.string().uuid().nullish(),
+  page: z.string().max(500).nullish(),
+  referrer: z.string().max(1000).nullish(),
 })
 
 export async function POST(req: NextRequest) {
@@ -32,6 +35,7 @@ export async function POST(req: NextRequest) {
       channel: data.channel ?? 'form',
       body: data.message,
       audioId: data.audioId ?? null,
+      context: visitorContextFrom(req, { page: data.page, referrer: data.referrer }),
     })
 
     // Email is best-effort. A ticket that exists but whose notification failed

@@ -77,6 +77,8 @@ export default function AdminTicketDetail({
           : <span style={{ fontSize: '.78rem', color: '#1a6b3c' }}>The assistant is still handling this</span>}
       </div>
 
+      <VisitorPanel ticket={ticket} />
+
       <div style={{ display: 'grid', gap: 12, marginBottom: 24 }}>
         {messages.map(m => (
           <div key={m.id} style={{ maxWidth: '85%', marginLeft: m.author_type === 'staff' ? 'auto' : 0 }}>
@@ -128,5 +130,81 @@ export default function AdminTicketDetail({
         {error && <p style={{ color: '#a33', fontSize: '.84rem', marginTop: 10 }}>{error}</p>}
       </div>
     </>
+  )
+}
+
+function Row({ label, value }: { label: string; value: React.ReactNode }) {
+  if (!value) return null
+  return (
+    <div style={{ display: 'flex', gap: 10, fontSize: '.82rem', lineHeight: 1.6 }}>
+      <span style={{ color: '#6b7a70', minWidth: 96, flexShrink: 0 }}>{label}</span>
+      <span style={{ wordBreak: 'break-word' }}>{value}</span>
+    </div>
+  )
+}
+
+// Who you are actually talking to. Everything except the last block is taken
+// from the request the visitor's browser already sent -- no fingerprinting,
+// no extra round trip.
+function VisitorPanel({ ticket }: { ticket: Ticket }) {
+  const device = [ticket.device_type, ticket.os, ticket.browser].filter(Boolean).join(' · ')
+  // Vercel's edge resolves an IP to the ISP's egress point. Honest at country
+  // level, roughly right at city level, meaningless below it -- so it is
+  // labelled "approximate" rather than presented as where someone is.
+  const coarse = [ticket.geo_city, ticket.geo_region, ticket.geo_country].filter(Boolean).join(', ')
+
+  return (
+    <details open style={{ background: '#fff', borderRadius: 10, padding: 16, boxShadow: '0 1px 4px rgba(0,0,0,.06)', marginBottom: 20 }}>
+      <summary style={{ cursor: 'pointer', fontWeight: 700, fontSize: '.88rem' }}>
+        Who you&apos;re talking to
+      </summary>
+      <div style={{ marginTop: 12, display: 'grid', gap: 2 }}>
+        <Row label="Name" value={ticket.requester_name} />
+        <Row
+          label="Email"
+          value={ticket.requester_email
+            ? <a href={`mailto:${ticket.requester_email}`}>{ticket.requester_email}</a>
+            : <em style={{ color: '#a33' }}>none given — you can only reply in-thread</em>}
+        />
+        <Row label="Account" value={ticket.user_id ? 'Signed in' : 'Not signed in'} />
+        <Row label="Device" value={device} />
+        <Row label="Area" value={coarse ? `${coarse} (approximate, from network)` : null} />
+        <Row label="Opened from" value={ticket.entry_page} />
+        <Row label="Came via" value={ticket.referrer} />
+        <Row label="Channel" value={ticket.channel === 'chat' ? 'Live chat' : 'Support form'} />
+
+        {ticket.geo_lat != null && ticket.geo_lng != null ? (
+          <div style={{ marginTop: 10, paddingTop: 10, borderTop: '1px solid #f0ece4' }}>
+            <Row
+              label="Location"
+              value={
+                <>
+                  <a
+                    href={`https://www.openstreetmap.org/?mlat=${ticket.geo_lat}&mlon=${ticket.geo_lng}#map=17/${ticket.geo_lat}/${ticket.geo_lng}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {ticket.geo_lat.toFixed(5)}, {ticket.geo_lng.toFixed(5)}
+                  </a>
+                  {ticket.geo_accuracy_m ? ` · ±${ticket.geo_accuracy_m}m` : ''}
+                </>
+              }
+            />
+            <Row
+              label="Shared"
+              value={ticket.geo_shared_at
+                ? `by the visitor on ${new Date(ticket.geo_shared_at).toLocaleString()}`
+                : null}
+            />
+          </div>
+        ) : (
+          <div style={{ marginTop: 10, paddingTop: 10, borderTop: '1px solid #f0ece4', fontSize: '.78rem', color: '#6b7a70' }}>
+            No precise location. It can only be shared by the visitor tapping
+            &ldquo;Share my location&rdquo; in the chat and accepting their browser&apos;s prompt —
+            there is no way to obtain it otherwise, and an IP address cannot give it.
+          </div>
+        )}
+      </div>
+    </details>
   )
 }

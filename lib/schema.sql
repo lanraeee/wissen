@@ -451,3 +451,32 @@ CREATE TABLE IF NOT EXISTS ai_usage (
   output_tokens BIGINT NOT NULL DEFAULT 0,
   updated_at    TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
+
+-- Who a support conversation is with. Captured once when the ticket opens, so
+-- a staff member answering is not guessing at context: device and browser tell
+-- them whether "the button does nothing" is a mobile Safari problem, and the
+-- entry page tells them what the person was reading when they gave up.
+--
+-- Coarse geo only. These come from Vercel's edge headers, which resolve to the
+-- ISP's egress point -- useful for "which country am I supporting", useless
+-- and misleading as a location. Street-level is NOT derivable from an IP and
+-- is deliberately not attempted here.
+ALTER TABLE support_tickets ADD COLUMN IF NOT EXISTS device_type   TEXT;
+ALTER TABLE support_tickets ADD COLUMN IF NOT EXISTS browser       TEXT;
+ALTER TABLE support_tickets ADD COLUMN IF NOT EXISTS os            TEXT;
+ALTER TABLE support_tickets ADD COLUMN IF NOT EXISTS user_agent    TEXT;
+ALTER TABLE support_tickets ADD COLUMN IF NOT EXISTS geo_country   TEXT;
+ALTER TABLE support_tickets ADD COLUMN IF NOT EXISTS geo_region    TEXT;
+ALTER TABLE support_tickets ADD COLUMN IF NOT EXISTS geo_city      TEXT;
+ALTER TABLE support_tickets ADD COLUMN IF NOT EXISTS entry_page    TEXT;
+ALTER TABLE support_tickets ADD COLUMN IF NOT EXISTS referrer      TEXT;
+
+-- Precise location, only ever written when the visitor taps "share my
+-- location" and accepts the browser's own permission prompt. There is no
+-- covert path to this data and this schema does not pretend otherwise:
+-- shared_at records WHEN consent was given, which is what makes the record
+-- defensible under NDPA/UK GDPR and what a retention job would sweep on.
+ALTER TABLE support_tickets ADD COLUMN IF NOT EXISTS geo_lat            DOUBLE PRECISION;
+ALTER TABLE support_tickets ADD COLUMN IF NOT EXISTS geo_lng            DOUBLE PRECISION;
+ALTER TABLE support_tickets ADD COLUMN IF NOT EXISTS geo_accuracy_m     INTEGER;
+ALTER TABLE support_tickets ADD COLUMN IF NOT EXISTS geo_shared_at      TIMESTAMPTZ;
