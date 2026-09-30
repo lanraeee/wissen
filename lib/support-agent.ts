@@ -87,7 +87,10 @@ async function buildContext(): Promise<string> {
     const body = stripBinary(row.value)
     if (!body) continue
     const chunk = `\n## ${row.key}\n${body}`
-    if (out.length + chunk.length > CONTEXT_CHAR_BUDGET) break
+    // `continue`, not `break`: site_content rows come back in no particular
+    // order, so one oversized value used to drop every key after it from the
+    // agent's context -- silently, and differently on each deploy.
+    if (out.length + chunk.length > CONTEXT_CHAR_BUDGET) continue
     out += chunk
   }
   return out

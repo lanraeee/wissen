@@ -70,6 +70,37 @@ export async function rebuildKnowledgeBase(): Promise<{ written: number; skipped
     }
   } catch (err) { log.warn('kb rebuild', 'opportunities unavailable', { error: String(err) }) }
 
+  // Career fair dates. This is the single most-asked support question, and the
+  // answer lives in fair_events -- not in the page copy, which is why the
+  // agent could not answer "what date is the fair" even though the date was
+  // sitting in the database. Published and upcoming only: a draft is not a
+  // commitment and a past date is not an answer.
+  try {
+    const rows = await sql`
+      SELECT title, school, location, event_date, event_time, description
+      FROM fair_events
+      WHERE status = 'published' AND (event_date IS NULL OR event_date >= CURRENT_DATE)
+      ORDER BY event_date NULLS LAST
+      LIMIT 10
+    ` as { title: string; school: string | null; location: string | null; event_date: string | null; event_time: string | null; description: string | null }[]
+
+    if (rows.length) {
+      const lines = rows.map(r => {
+        const when = r.event_date
+          ? new Date(r.event_date).toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })
+          : 'date to be confirmed'
+        return `${r.title}: ${when}${r.event_time ? `, ${r.event_time}` : ''}`
+          + `${r.location ? `, at ${r.location}` : ''}${r.school ? ` (${r.school})` : ''}`
+          + `${r.description ? `. ${r.description}` : ''}`
+      })
+      entries.push({
+        key: 'fair:upcoming',
+        title: 'Career Clarity Fair — upcoming dates',
+        body: clean(`Upcoming Career Clarity Fair events, free for students to attend. ${lines.join(' ')}`),
+      })
+    }
+  } catch (err) { log.warn('kb rebuild', 'fair_events unavailable', { error: String(err) }) }
+
   // Courses, from the CMS rather than a hardcoded list.
   try {
     const rows = await sql`SELECT value FROM site_content WHERE key = 'courses'` as { value: unknown }[]
