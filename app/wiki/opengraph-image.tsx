@@ -85,6 +85,16 @@ export default async function Image() {
         </div>
       </div>
     ),
-    { ...size }
+    {
+      ...size,
+      // Same reason as app/opengraph-image.tsx: ImageResponse hard-defaults to
+      // `public, immutable, no-transform, max-age=31536000` (1 year) whatever
+      // the route config says, so Vercel's edge CDN and every social crawler
+      // pin the card for a year and a redeploy never reaches a shared link's
+      // preview. This card is hardcoded rather than CMS-driven, but it still
+      // changes whenever this file does -- which is exactly when the stale
+      // copy bites. 5 minutes still lets crawlers cache between scrapes.
+      headers: { 'Cache-Control': 'public, max-age=300, s-maxage=300, must-revalidate' },
+    }
   )
 }
