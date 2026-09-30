@@ -6,10 +6,13 @@ import { parseBody } from '@/lib/validation'
 import { getTicketByReference, getMessages, addMessage } from '@/lib/tickets'
 import { sendStaffReplyToRequester } from '@/lib/email'
 import { proposeAnswerEntry } from '@/lib/knowledge-base'
+import { answerSupportQuestion } from '@/lib/support-agent'
 import { logActivity } from '@/lib/audit-log'
 import { log } from '@/lib/logger'
 
 export const dynamic = 'force-dynamic'
+// Handing back can trigger a model call, which the default budget does not cover.
+export const maxDuration = 60
 
 export async function GET(_: NextRequest, { params }: { params: Promise<{ reference: string }> }) {
   if (!await adminGuard()) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
@@ -88,6 +91,55 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ ref
       body: 'Handed this conversation back to the assistant.',
       internal: true,
     })
+
+    // Handing back used to do nothing visible: the flag flipped and the
+    // visitor sat looking at silence until they happened to send another
+    // message. The agent now picks the conversation up straight away.
+    const thread = await getMessages(ticket.id, { includeInternal: false })
+    const last = thread[thread.length - 1]
+
+    if (last?.author_type === 'visitor') {
+      // There is an unanswered question sitting there -- answer that, rather
+      // than greeting someone who already asked.
+      const result = await answerSupportQuestion(
+        thread.slice(0, -1).map(m => ({ author_type: m.author_type, body: m.body })),
+        last.body,
+        { visitorEmail: ticket.requester_email, ticketId: ticket.id },
+      )
+
+      if (result.status === 'ok') {
+        await addMessage(ticket.id, {
+          authorType: 'ai', authorName: 'Wissen-Haus Assistant', body: result.reply,
+        })
+        if (result.escalate) {
+          // It answered but wants a human anyway. Put it straight back rather
+          // than leaving the ticket looking handled.
+          await sql`UPDATE support_tickets SET escalated = TRUE WHERE id = ${ticket.id}`
+          await addMessage(ticket.id, {
+            authorType: 'staff', authorName: 'System', internal: true,
+            body: 'The assistant answered but flagged this for a human again.',
+          })
+        } else {
+          await sql`UPDATE support_tickets SET ai_handled = TRUE WHERE id = ${ticket.id}`
+        }
+      } else {
+        // Could not answer at all -- do not strand the visitor in a handoff
+        // that silently went nowhere.
+        await sql`UPDATE support_tickets SET escalated = TRUE WHERE id = ${ticket.id}`
+        await addMessage(ticket.id, {
+          authorType: 'staff', authorName: 'System', internal: true,
+          body: 'Hand-back failed: the assistant could not answer, so this is still with you.',
+        })
+      }
+    } else {
+      // The last word was ours, so there is nothing to answer. Invite the
+      // visitor to carry on instead of replying to our own message.
+      await addMessage(ticket.id, {
+        authorType: 'ai',
+        authorName: 'Wissen-Haus Assistant',
+        body: 'I can help from here. Is there anything else you would like to know?',
+      })
+    }
   }
 
   if (data.status) await sql`UPDATE support_tickets SET status = ${data.status} WHERE id = ${ticket.id}`

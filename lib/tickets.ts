@@ -118,10 +118,17 @@ export async function addMessage(ticketId: string, input: {
 
   // A visitor writing on a resolved ticket reopens it: otherwise a reply to
   // "is this sorted?" lands in a closed thread nobody is watching.
+  //
+  // An INTERNAL note moves nothing. It is staff talking to staff, not a reply
+  // the visitor is now waiting on -- and treating it as one meant that
+  // recording a note, or handing a ticket back to the assistant, silently
+  // pushed an open ticket to 'pending' as a side effect of the note itself.
+  const internal = input.internal ?? false
   await sql`
     UPDATE support_tickets
     SET last_activity = NOW(),
         status = CASE
+          WHEN ${internal} THEN status
           WHEN ${input.authorType} = 'visitor' AND status IN ('resolved','closed') THEN 'open'
           WHEN ${input.authorType} = 'staff' AND status = 'open' THEN 'pending'
           ELSE status
