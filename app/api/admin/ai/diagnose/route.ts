@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { directorGuard } from '@/lib/admin-guard'
 import { getAiSettings } from '@/lib/ai-settings'
+import { resolveProvider, normaliseModel, callMessages } from '@/lib/ai-provider'
 
 export const dynamic = 'force-dynamic'
 
@@ -17,59 +18,56 @@ export async function GET() {
   const session = await directorGuard()
   if (!session) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 
-  const key = process.env.ANTHROPIC_API_KEY
   const settings = await getAiSettings()
+  const provider = resolveProvider(settings.provider)
 
-  if (!key) {
+  if (!provider) {
     return NextResponse.json({
       keyPresent: false,
       ok: false,
-      detail: 'ANTHROPIC_API_KEY is not set in this environment. Note that a Vercel variable scoped to Production only is absent from Preview and local development.',
+      chose: settings.provider,
+      detail: settings.provider === 'vercel'
+        ? 'Neither AI_GATEWAY_API_KEY nor ANTHROPIC_API_KEY is set in this environment. A Vercel variable scoped to Production only is absent from Preview and local development.'
+        : 'Neither ANTHROPIC_API_KEY nor AI_GATEWAY_API_KEY is set in this environment. A Vercel variable scoped to Production only is absent from Preview and local development.',
     })
   }
 
-  // Shape problems that produce a confusing 401: a value pasted with quotes
-  // or trailing whitespace is a common one and worth naming explicitly.
-  const malformed = key !== key.trim() || /^["']|["']$/.test(key)
+  // Naming which route was actually taken matters: resolveProvider falls back
+  // when the preferred one has no credential, so "it works" can be true of a
+  // provider the admin did not choose.
+  const usedFallback = provider.provider !== settings.provider
+  const model = normaliseModel(settings.supportModel, provider.provider)
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'content-type': 'application/json',
-        'x-api-key': key,
-        'anthropic-version': '2023-06-01',
-      },
-      body: JSON.stringify({
-        model: settings.supportModel,
-        max_tokens: 1,
-        messages: [{ role: 'user', content: 'hi' }],
-      }),
+    const res = await callMessages(provider, {
+      model: settings.supportModel,
+      max_tokens: 1,
+      messages: [{ role: 'user', content: 'hi' }],
     })
 
     if (res.ok) {
       return NextResponse.json({
-        keyPresent: true, keyLooksMalformed: malformed, model: settings.supportModel,
-        ok: true, detail: 'Anthropic responded successfully.',
+        keyPresent: true, ok: true, chose: settings.provider,
+        used: provider.provider, usedFallback, model,
+        detail: `${provider.provider === 'vercel' ? 'Vercel AI Gateway' : 'Anthropic'} responded successfully.`,
       })
     }
 
     const body = await res.json().catch(() => ({}))
     return NextResponse.json({
-      keyPresent: true,
-      keyLooksMalformed: malformed,
-      model: settings.supportModel,
-      ok: false,
+      keyPresent: true, ok: false, chose: settings.provider,
+      used: provider.provider, usedFallback, model,
       status: res.status,
-      // Anthropic's own error type/message, which is what actually says
-      // whether the key is rejected or the model name is wrong.
+      // The provider's own error type/message, which is what actually says
+      // whether the credential is rejected or the model name is wrong.
       errorType: body?.error?.type ?? null,
-      detail: body?.error?.message ?? `Anthropic returned ${res.status}.`,
+      detail: body?.error?.message ?? `${provider.provider} returned ${res.status}.`,
     })
   } catch (err) {
     return NextResponse.json({
-      keyPresent: true, keyLooksMalformed: malformed, ok: false,
-      detail: `Could not reach Anthropic: ${err instanceof Error ? err.message : String(err)}`,
+      keyPresent: true, ok: false, chose: settings.provider,
+      used: provider.provider, usedFallback, model,
+      detail: `Could not reach ${provider.provider}: ${err instanceof Error ? err.message : String(err)}`,
     })
   }
 }

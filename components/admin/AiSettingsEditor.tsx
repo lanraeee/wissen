@@ -48,9 +48,10 @@ export default function AiSettingsEditor() {
     try {
       const r = await fetch('/api/admin/ai/diagnose')
       const d = await r.json()
+      const via = d.usedFallback ? ` (fell back to ${d.used} — ${d.chose} has no key here)` : ''
       setDiag(d.ok
-        ? `✓ Working — ${d.model} responded.`
-        : `✗ ${d.detail}${d.errorType ? ` (${d.errorType})` : ''}${d.keyLooksMalformed ? ' — the stored key has quotes or whitespace around it.' : ''}`)
+        ? `✓ Working — ${d.model} via ${d.used}${via}.`
+        : `✗ ${d.detail}${d.errorType ? ` (${d.errorType})` : ''}${via}`)
     } catch {
       setDiag('✗ Could not run the check.')
     } finally {
@@ -62,7 +63,29 @@ export default function AiSettingsEditor() {
 
   return (
     <div>
-      <h2 style={{ marginTop: 0, fontSize: '1.05rem' }}>Support assistant</h2>
+      <h2 style={{ marginTop: 0, fontSize: '1.05rem' }}>Provider</h2>
+
+      <Field
+        label="Where model calls go"
+        hint="Both routes speak the same API, so switching needs no other change — the model name is adjusted automatically. If the chosen route has no key set, the other is used instead and Test connection says so."
+      >
+        <select
+          value={s.provider}
+          onChange={e => setS({ ...s, provider: e.target.value === 'vercel' ? 'vercel' : 'anthropic' })}
+          style={input}
+        >
+          <option value="anthropic">Anthropic direct (ANTHROPIC_API_KEY)</option>
+          <option value="vercel">Vercel AI Gateway (AI_GATEWAY_API_KEY)</option>
+        </select>
+      </Field>
+
+      <p style={{ fontSize: '.78rem', color: '#6b7a70', marginTop: -6, marginBottom: 22 }}>
+        The gateway adds request logging and provider fallback, and authenticates
+        automatically on deployed functions even without a key. Anthropic direct is
+        one less hop.
+      </p>
+
+      <h2 style={{ fontSize: '1.05rem', borderTop: '1px solid #e8e4dc', paddingTop: 20 }}>Support assistant</h2>
 
       <Field label="Enabled" hint="Off, every chat goes straight to a human instead.">
         <input type="checkbox" checked={s.supportEnabled}

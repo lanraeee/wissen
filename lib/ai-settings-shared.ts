@@ -1,7 +1,20 @@
 // Client-safe half of the AI settings: shape and defaults, no server imports,
 // so the admin editor can render the same defaults the server falls back to.
 
+/**
+ * Where model calls are sent. Both routes speak the same Anthropic Messages
+ * API; see lib/ai-provider.ts for the three differences between them.
+ */
+export type AiProvider = 'anthropic' | 'vercel'
+
 export type AiSettings = {
+  /**
+   * 'anthropic' calls api.anthropic.com directly with ANTHROPIC_API_KEY.
+   * 'vercel' routes through the AI Gateway with AI_GATEWAY_API_KEY, which
+   * adds observability and provider fallback, and works on deployed
+   * functions via OIDC even without a key set.
+   */
+  provider: AiProvider
   /** Model used by the visitor-facing support agent. */
   supportModel: string
   /** Hard ceiling on Anthropic calls per calendar month, across both agents. */
@@ -37,6 +50,7 @@ export type AiSettings = {
 }
 
 export const AI_SETTINGS_DEFAULTS: AiSettings = {
+  provider: 'anthropic',
   supportModel: 'claude-sonnet-5',
   monthlyCallCap: 1500,
   supportExtraContext: '',
@@ -57,6 +71,7 @@ export function coerceAiSettings(raw: unknown): AiSettings {
     return Number.isFinite(x) ? Math.min(Math.max(Math.floor(x), min), max) : fallback
   }
   return {
+    provider: v.provider === 'vercel' ? 'vercel' : 'anthropic',
     supportModel: typeof v.supportModel === 'string' && v.supportModel.trim()
       ? v.supportModel.trim() : AI_SETTINGS_DEFAULTS.supportModel,
     monthlyCallCap: num(v.monthlyCallCap, AI_SETTINGS_DEFAULTS.monthlyCallCap, 0, 100_000),

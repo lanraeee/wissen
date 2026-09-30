@@ -26,12 +26,13 @@ describe('GET /api/admin/inbox-counts', () => {
       .mockResolvedValueOnce([{ c: 5 }])
       .mockResolvedValueOnce([{ c: 4 }])
       .mockResolvedValueOnce([{ c: 6 }])
+      .mockResolvedValueOnce([{ c: 2 }])
     const res = await GET()
     expect(res.status).toBe(200)
     const body = await res.json()
     expect(body).toEqual({
       contact: 2, volunteer: 1, partner: 0, bank_transfer: 3, scholarship: 5,
-      content_approval: 4, support: 6,
+      content_approval: 4, support: 6, kb_pending: 2,
     })
   })
 })

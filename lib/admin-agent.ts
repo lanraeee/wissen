@@ -3,8 +3,7 @@ import { log } from '@/lib/logger'
 import { getAiSettings } from '@/lib/ai-settings'
 import { checkReadOnlySql, redactRows, MAX_ROWS, STATEMENT_TIMEOUT_MS } from '@/lib/ai-sql-guard'
 import { MONTHLY_CALL_CAP } from '@/lib/support-agent'
-
-const API_URL = 'https://api.anthropic.com/v1/messages'
+import { resolveProvider, callMessages } from '@/lib/ai-provider'
 
 export type AgentRun = {
   answer: string
@@ -92,10 +91,11 @@ const SQL_TOOL = {
 }
 
 export async function askAdminAgent(actorEmail: string, question: string): Promise<AgentRun> {
-  const apiKey = process.env.ANTHROPIC_API_KEY
-  if (!apiKey) return { answer: '', queries: [], refused: 'No ANTHROPIC_API_KEY is configured.' }
-
   const settings = await getAiSettings()
+  const provider = resolveProvider(settings.provider)
+  if (!provider) {
+    return { answer: '', queries: [], refused: 'No AI credential is configured for either provider.' }
+  }
 
   // Shares the support agent's monthly ledger and cap, so the two cannot
   // between them spend more than the organisation agreed to.
@@ -118,24 +118,17 @@ export async function askAdminAgent(actorEmail: string, question: string): Promi
 
   try {
     for (let turn = 0; turn < settings.adminAgentMaxTurns; turn++) {
-      const res = await fetch(API_URL, {
-        method: 'POST',
-        headers: {
-          'content-type': 'application/json',
-          'x-api-key': apiKey,
-          'anthropic-version': '2023-06-01',
-        },
-        body: JSON.stringify({
+      const res = await callMessages(provider, {
           model: settings.adminAgentModel,
           max_tokens: 2000,
           system: systemPrompt(schema, settings.supportExtraContext),
           tools: [SQL_TOOL],
           messages,
-        }),
       })
 
       if (!res.ok) {
-        log.error('admin agent', new Error(`Anthropic ${res.status}`))
+        const detail = await res.text().catch(() => '')
+        log.error('admin agent', new Error(`${provider.provider} ${res.status}: ${detail.slice(0, 500)}`))
         return { answer, queries, refused: 'The AI service did not respond.' }
       }
 

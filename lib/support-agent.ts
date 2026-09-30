@@ -2,8 +2,8 @@ import sql from '@/lib/db'
 import { log } from '@/lib/logger'
 import { getAiSettings } from '@/lib/ai-settings'
 import { searchKnowledgeBase } from '@/lib/knowledge-base'
+import { resolveProvider, callMessages } from '@/lib/ai-provider'
 
-const API_URL = 'https://api.anthropic.com/v1/messages'
 
 // Fallback ceiling on Anthropic calls per calendar month. The live value is
 // admin-editable (Settings -> AI); this is what applies if those settings
@@ -35,8 +35,11 @@ const CONTEXT_KEYS = [
   'policy_papers',
 ]
 
+// True when EITHER route has a usable credential -- the agent does not care
+// which, and a caller checking only ANTHROPIC_API_KEY would report the agent
+// as unconfigured on a deployment running entirely through the gateway.
 export function isAgentConfigured(): boolean {
-  return Boolean(process.env.ANTHROPIC_API_KEY)
+  return resolveProvider('anthropic') !== null
 }
 
 function currentMonth(): string {
@@ -195,10 +198,9 @@ export async function answerSupportQuestion(
   question: string,
   opts: { visitorEmail?: string | null; ticketId?: string | null } = {},
 ): Promise<AgentResult> {
-  const apiKey = process.env.ANTHROPIC_API_KEY
-  if (!apiKey) return { status: 'unavailable', reason: 'not_configured' }
-
   const settings = await getAiSettings()
+  const provider = resolveProvider(settings.provider)
+  if (!provider) return { status: 'unavailable', reason: 'not_configured' }
   if (!settings.supportEnabled) return { status: 'unavailable', reason: 'not_configured' }
 
   try {
@@ -248,14 +250,7 @@ export async function answerSupportQuestion(
   if (!turns.length) return { status: 'unavailable', reason: 'error' }
 
   try {
-    const res = await fetch(API_URL, {
-      method: 'POST',
-      headers: {
-        'content-type': 'application/json',
-        'x-api-key': apiKey,
-        'anthropic-version': '2023-06-01',
-      },
-      body: JSON.stringify({
+    const res = await callMessages(provider, {
         model: settings.supportModel,
         max_tokens: 600,
         // Admin-supplied notes are APPENDED to the guardrails, never
@@ -270,15 +265,15 @@ export async function answerSupportQuestion(
           // prose preamble we would then have to parse around.
           { role: 'assistant', content: '{' },
         ],
-      }),
     })
 
     if (!res.ok) {
       // The body carries the reason; the status alone does not. Logging only
       // the status is why a 400 here cost a deploy and a production test to
-      // diagnose.
+      // diagnose. The provider is named too -- otherwise a gateway failure
+      // and a direct failure read identically in the logs.
       const detail = await res.text().catch(() => '')
-      log.error('support agent', new Error(`Anthropic ${res.status}: ${detail.slice(0, 500)}`))
+      log.error('support agent', new Error(`${provider.provider} ${res.status}: ${detail.slice(0, 500)}`))
       return { status: 'unavailable', reason: 'error' }
     }
 

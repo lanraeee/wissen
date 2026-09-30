@@ -106,8 +106,16 @@ describe('support agent', () => {
     const history = Array.from({ length: 40 }, (_, i) => ({ author_type: 'visitor', body: `m${i}` }))
     await answerSupportQuestion(history, 'latest')
 
+    // normaliseTurns merges consecutive same-role turns, so a run of visitor
+    // messages collapses into one -- counting messages no longer measures
+    // anything. What must hold is that only the tail of the history is sent:
+    // the window is applied BEFORE the merge, so the oldest turns are gone
+    // rather than merged into the one that remains.
     const body = JSON.parse(fetchMock.mock.calls[0][1].body)
-    // 8 history turns + the question + the assistant prefill
-    expect(body.messages).toHaveLength(10)
+    const sent = JSON.stringify(body.messages)
+    expect(sent).not.toContain('\"m0\"')
+    expect(sent).not.toContain('m19')
+    expect(sent).toContain('m39')
+    expect(sent).toContain('latest')
   })
 })
