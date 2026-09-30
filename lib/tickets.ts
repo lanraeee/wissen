@@ -1,5 +1,6 @@
 import { randomBytes } from 'crypto'
 import sql from '@/lib/db'
+import type { VisitorContext } from '@/lib/visitor-context'
 
 export type TicketStatus = 'open' | 'pending' | 'resolved' | 'closed'
 export type AuthorType = 'visitor' | 'staff' | 'ai'
@@ -19,6 +20,22 @@ export type Ticket = {
   escalated: boolean
   created_at: string
   last_activity: string
+  // Captured once at ticket creation from the request itself.
+  device_type: string | null
+  browser: string | null
+  os: string | null
+  user_agent: string | null
+  geo_country: string | null
+  geo_region: string | null
+  geo_city: string | null
+  entry_page: string | null
+  referrer: string | null
+  // Only ever set when the visitor taps "share my location" and accepts the
+  // browser's permission prompt. Null is the normal state.
+  geo_lat: number | null
+  geo_lng: number | null
+  geo_accuracy_m: number | null
+  geo_shared_at: string | null
 }
 
 export type TicketMessage = {
@@ -57,14 +74,21 @@ export async function createTicket(input: {
   channel?: 'form' | 'chat'
   body: string
   audioId?: string | null
+  context?: VisitorContext | null
 }): Promise<Ticket> {
   const reference = generateReference()
+  const c = input.context
   const [ticket] = await sql`
     INSERT INTO support_tickets
-      (reference, subject, requester_name, requester_email, user_id, channel)
+      (reference, subject, requester_name, requester_email, user_id, channel,
+       device_type, browser, os, user_agent, geo_country, geo_region, geo_city,
+       entry_page, referrer)
     VALUES
       (${reference}, ${input.subject}, ${input.requesterName},
-       ${input.requesterEmail ?? null}, ${input.userId ?? null}, ${input.channel ?? 'form'})
+       ${input.requesterEmail ?? null}, ${input.userId ?? null}, ${input.channel ?? 'form'},
+       ${c?.deviceType ?? null}, ${c?.browser ?? null}, ${c?.os ?? null}, ${c?.userAgent ?? null},
+       ${c?.geoCountry ?? null}, ${c?.geoRegion ?? null}, ${c?.geoCity ?? null},
+       ${c?.entryPage ?? null}, ${c?.referrer ?? null})
     RETURNING *
   ` as Ticket[]
 

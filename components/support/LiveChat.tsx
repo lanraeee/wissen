@@ -8,6 +8,7 @@ import SpeakButton from './SpeakButton'
 type Msg = { id: string; author_type: 'visitor' | 'staff' | 'ai'; author_name: string; body: string; audio_id: string | null; created_at: string }
 
 const STORAGE_KEY = 'wh_support_reference'
+const IDENTITY_KEY = 'wh_support_identity'
 const POLL_MS = 4000
 
 // Polling, not SSE or a websocket vendor. An open chat costs one cheap GET
@@ -23,12 +24,26 @@ export default function LiveChat() {
   const [sending, setSending] = useState(false)
   const [handedOff, setHandedOff] = useState(false)
   const [error, setError] = useState('')
+  // Identity gate: we ask who we are talking to BEFORE the first message, so
+  // no conversation is anonymous and a reply can reach them by email if they
+  // close the tab. Remembered locally so a returning visitor is not asked
+  // twice.
+  const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
+  const [identified, setIdentified] = useState(false)
+  const [sharingLocation, setSharingLocation] = useState(false)
+  const [locationShared, setLocationShared] = useState(false)
   const endRef = useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY)
       if (saved) setReference(saved)
+      const who = localStorage.getItem(IDENTITY_KEY)
+      if (who) {
+        const parsed = JSON.parse(who) as { name?: string; email?: string }
+        if (parsed.name) { setName(parsed.name); setEmail(parsed.email ?? ''); setIdentified(true) }
+      }
     } catch { /* private mode, blocked storage -- chat still works, just not resumed */ }
   }, [])
 
@@ -73,7 +88,12 @@ export default function LiveChat() {
       const res = await fetch('/api/support/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ reference, message: text, audioId: audioId ?? null }),
+        body: JSON.stringify({
+          reference, message: text, audioId: audioId ?? null,
+          name: name || null, email: email || null,
+          page: window.location.pathname,
+          referrer: document.referrer || null,
+        }),
       })
       const data = await res.json()
       if (!res.ok) { setError(data.error ?? 'Could not send that.'); return }
@@ -89,6 +109,42 @@ export default function LiveChat() {
     } finally {
       setSending(false)
     }
+  }
+
+  // The browser's own permission prompt is the consent step -- there is no way
+  // to read this without it, and we do not ask until the visitor taps.
+  function shareLocation() {
+    if (!reference || !navigator.geolocation) return
+    setSharingLocation(true)
+    setError('')
+    navigator.geolocation.getCurrentPosition(
+      async pos => {
+        try {
+          await fetch('/api/support/location', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              reference,
+              lat: pos.coords.latitude,
+              lng: pos.coords.longitude,
+              accuracy: pos.coords.accuracy,
+            }),
+          })
+          setLocationShared(true)
+          await poll()
+        } catch {
+          setError('Could not send your location.')
+        } finally {
+          setSharingLocation(false)
+        }
+      },
+      () => {
+        // Declining is a normal outcome, not an error worth alarming about.
+        setSharingLocation(false)
+        setError('No problem — we can help without your location.')
+      },
+      { enableHighAccuracy: true, timeout: 15000 },
+    )
   }
 
   if (!open) {
@@ -131,10 +187,10 @@ export default function LiveChat() {
       </header>
 
       <div style={{ flex: 1, overflowY: 'auto', padding: 14, display: 'flex', flexDirection: 'column', gap: 10, background: '#faf8f4' }}>
-        {messages.length === 0 && (
+        {messages.length === 0 && identified && (
           <p style={{ fontSize: '.85rem', color: '#6b7a70', margin: 0 }}>
-            Ask us about courses, scholarships, the Career Clarity Fair, or anything else.
-            You can type or record a voice note.
+            Hi {name.split(' ')[0]} — ask us about courses, scholarships, the Career Clarity
+            Fair, or anything else. You can type or record a voice note.
           </p>
         )}
         {messages.map(m => {
@@ -163,6 +219,47 @@ export default function LiveChat() {
 
       {error && <div style={{ background: '#fdecea', color: '#a33', padding: '8px 14px', fontSize: '.8rem' }}>{error}</div>}
 
+      {!identified ? (
+        <form
+          onSubmit={e => {
+            e.preventDefault()
+            if (!name.trim() || !email.trim()) return
+            setIdentified(true)
+            try { localStorage.setItem(IDENTITY_KEY, JSON.stringify({ name, email })) } catch { /* non-fatal */ }
+          }}
+          style={{ borderTop: '1px solid #e8e4dc', padding: 14, background: '#fff', display: 'grid', gap: 9 }}
+        >
+          <p style={{ margin: 0, fontSize: '.82rem', color: '#3a4a3f' }}>
+            Before we start — who are we speaking with?
+          </p>
+          <input
+            value={name} onChange={e => setName(e.target.value)} required maxLength={120}
+            placeholder="Your name"
+            style={{ border: '1px solid #e8e4dc', borderRadius: 8, padding: '8px 10px', fontSize: '.86rem', fontFamily: 'inherit', outline: 'none' }}
+          />
+          <input
+            type="email" value={email} onChange={e => setEmail(e.target.value)} required maxLength={200}
+            placeholder="Email address"
+            style={{ border: '1px solid #e8e4dc', borderRadius: 8, padding: '8px 10px', fontSize: '.86rem', fontFamily: 'inherit', outline: 'none' }}
+          />
+          <button
+            type="submit" disabled={!name.trim() || !email.trim()}
+            style={{
+              background: 'var(--green-800, #1a3c2e)', color: '#f4f0e7', border: 'none',
+              borderRadius: 8, padding: '9px 14px', fontWeight: 700, fontSize: '.84rem',
+              cursor: name.trim() && email.trim() ? 'pointer' : 'not-allowed',
+              opacity: name.trim() && email.trim() ? 1 : .5,
+            }}
+          >
+            Start chat
+          </button>
+          <p style={{ margin: 0, fontSize: '.7rem', color: '#8a9a8f' }}>
+            Your conversation is locked to this address — only you can reopen it.
+            We record your device and browser to help us answer. See our{' '}
+            <Link href="/privacy" style={{ color: '#8a9a8f' }}>privacy notice</Link>.
+          </p>
+        </form>
+      ) : (
       <div style={{ borderTop: '1px solid #e8e4dc', padding: 10, background: '#fff' }}>
         <div style={{ display: 'flex', gap: 8, alignItems: 'flex-end' }}>
           <textarea
@@ -197,12 +294,28 @@ export default function LiveChat() {
             }
           />
         </div>
+        {reference && !locationShared && typeof navigator !== 'undefined' && 'geolocation' in navigator && (
+          <button
+            type="button" onClick={shareLocation} disabled={sharingLocation}
+            style={{
+              marginTop: 8, border: '1px solid #e8e4dc', background: '#fff', borderRadius: 99,
+              padding: '6px 12px', fontSize: '.78rem', fontWeight: 600,
+              cursor: sharingLocation ? 'wait' : 'pointer',
+            }}
+          >
+            📍 {sharingLocation ? 'Sharing…' : 'Share my location'}
+          </button>
+        )}
+        {locationShared && (
+          <p style={{ fontSize: '.72rem', color: '#1a6b3c', margin: '8px 0 0' }}>Location shared ✓</p>
+        )}
         {reference && (
           <p style={{ fontSize: '.7rem', color: '#8a9a8f', margin: '8px 0 0' }}>
             Reference <strong>{reference}</strong> — <Link href={`/support/${encodeURIComponent(reference)}`} style={{ color: '#8a9a8f' }}>open full thread</Link>
           </p>
         )}
       </div>
+      )}
     </div>
   )
 }

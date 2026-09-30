@@ -1,23 +1,27 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { parseBody, zLongText } from '@/lib/validation'
-import { getTicketByReference, getMessages, addMessage } from '@/lib/tickets'
+import { getMessages, addMessage } from '@/lib/tickets'
+import { ticketAccess } from '@/lib/ticket-guard'
 import { notifyStaffReply } from '@/lib/email'
 import { log } from '@/lib/logger'
 
 export const dynamic = 'force-dynamic'
 
-// The reference IS the credential here -- a visitor with no account reads and
-// replies to their own thread by holding it. That is why generateReference()
-// mints ~50 bits of randomness, and why this route is rate limited: it is an
-// unauthenticated read of conversation content.
+// The reference identifies a conversation; it no longer opens one. Access
+// comes from ticketAccess(): the owning account, or an access token held by
+// the browser that opened it, or one redeemed from a magic link sent to the
+// ticket's own email address.
 //
-// Internal staff notes are excluded by getMessages()' default.
+// A denied request answers 404, identically to a reference that does not
+// exist. Distinguishing them would confirm to someone guessing references
+// that a given code is real, which is the one thing a guesser is after.
 export async function GET(req: NextRequest, { params }: { params: Promise<{ reference: string }> }) {
   const { reference } = await params
-  const ticket = await getTicketByReference(reference)
-  if (!ticket) return NextResponse.json({ error: 'Not found' }, { status: 404 })
+  const access = await ticketAccess(reference, req.nextUrl.searchParams.get('t') ?? undefined)
+  if (!access.ok) return NextResponse.json({ error: 'Not found' }, { status: 404 })
 
+  const { ticket } = access
   const since = req.nextUrl.searchParams.get('since') ?? undefined
   const messages = await getMessages(ticket.id, { since })
 
@@ -40,11 +44,13 @@ const ReplySchema = z.object({
 
 export async function POST(req: NextRequest, { params }: { params: Promise<{ reference: string }> }) {
   const { reference } = await params
+  const access = await ticketAccess(reference, req.nextUrl.searchParams.get('t') ?? undefined)
+  if (!access.ok) return NextResponse.json({ error: 'Not found' }, { status: 404 })
+
   const { data, error } = await parseBody(req, ReplySchema)
   if (error) return error
 
-  const ticket = await getTicketByReference(reference)
-  if (!ticket) return NextResponse.json({ error: 'Not found' }, { status: 404 })
+  const { ticket } = access
   if (ticket.status === 'closed') {
     return NextResponse.json({ error: 'This ticket is closed. Please open a new one.' }, { status: 409 })
   }

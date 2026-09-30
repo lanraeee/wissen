@@ -27,7 +27,11 @@ export default function SupportTicketForm() {
       const res = await fetch('/api/support/tickets', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email: email || null, subject, message, audioId }),
+        body: JSON.stringify({
+          name, email, subject, message, audioId,
+          page: window.location.pathname,
+          referrer: document.referrer || null,
+        }),
       })
       const data = await res.json()
       if (!res.ok) { setError(data.error ?? 'Could not send that. Please try again.'); return }
@@ -46,8 +50,8 @@ export default function SupportTicketForm() {
         <p>Your reference is:</p>
         <p style={{ fontFamily: 'monospace', fontSize: '1.3rem', fontWeight: 700, letterSpacing: '.04em' }}>{reference}</p>
         <p style={{ fontSize: '.9rem' }}>
-          Keep it somewhere safe — anyone who has it can read this conversation.
-          {email ? ' We’ve also emailed it to you.' : ''}
+          We&apos;ve emailed it to <strong>{email}</strong>. This conversation is locked to that
+          address — if you come back on another device we&apos;ll email you a link to open it.
         </p>
         <Link href={`/support/${encodeURIComponent(reference)}`} className="btn">View your ticket</Link>
       </div>
@@ -63,9 +67,9 @@ export default function SupportTicketForm() {
             <input value={name} onChange={e => setName(e.target.value)} required maxLength={120} style={inputStyle} />
           </label>
           <label>
-            <span style={{ display: 'block', fontWeight: 600, fontSize: '.84rem', marginBottom: 5 }}>Email</span>
-            <input type="email" value={email} onChange={e => setEmail(e.target.value)} maxLength={200} style={inputStyle} />
-            <span style={{ fontSize: '.74rem', color: '#6b7a70' }}>Optional — but it&apos;s how we reply fastest.</span>
+            <span style={{ display: 'block', fontWeight: 600, fontSize: '.84rem', marginBottom: 5 }}>Email *</span>
+            <input type="email" value={email} onChange={e => setEmail(e.target.value)} required maxLength={200} style={inputStyle} />
+            <span style={{ fontSize: '.74rem', color: '#6b7a70' }}>Your ticket is locked to this address — only you can reopen it.</span>
           </label>
         </div>
 

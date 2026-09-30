@@ -405,7 +405,7 @@ export async function sendTicketOpened(ticket: TicketLike) {
       ${fieldMono('Your reference', esc(ticket.reference))}
       ${field('Subject', esc(ticket.subject))}
       <p style="margin-top:20px"><a href="${esc(url)}" style="background:#1a3c2e;color:#f4f0e7;padding:11px 20px;border-radius:8px;text-decoration:none;font-weight:700;display:inline-block">View your ticket</a></p>
-      <p style="font-size:.8rem;color:#8a9a8f;margin-top:18px">Keep this link private — anyone who has it can read this conversation.</p>
+      <p style="font-size:.8rem;color:#8a9a8f;margin-top:18px">This conversation is locked to your email address. If you open the link on another device we&rsquo;ll email you a code to confirm it&rsquo;s you.</p>
     `),
   })
 }
@@ -458,6 +458,25 @@ export async function sendStaffReplyToRequester(ticket: TicketLike, body: string
       <h2>Hi ${esc(firstNameOf(ticket.requester_name))},</h2>
       ${fieldPre('', esc(body))}
       <p style="margin-top:20px"><a href="${esc(url)}" style="background:#1a3c2e;color:#f4f0e7;padding:11px 20px;border-radius:8px;text-decoration:none;font-weight:700;display:inline-block">Reply to this</a></p>
+    `),
+  })
+}
+
+export async function sendTicketAccessLink(ticket: TicketLike, token: string) {
+  if (!ticket.requester_email) return
+  const url = `${SITE_URL}/api/support/tickets/${encodeURIComponent(ticket.reference)}/access?t=${encodeURIComponent(token)}`
+  return sendEmail({
+    from: FROM,
+    to: ticket.requester_email,
+    replyTo: 'info@wissenhaus.org',
+    subject: `Open your conversation — ${ticket.reference}`,
+    html: shell(`
+      <h2>Hi ${esc(firstNameOf(ticket.requester_name))},</h2>
+      <p>Someone asked to open this conversation. If that was you, use the button below.</p>
+      ${field('Subject', esc(ticket.subject))}
+      ${fieldMono('Reference', esc(ticket.reference))}
+      <p style="margin-top:20px"><a href="${esc(url)}" style="background:#1a3c2e;color:#f4f0e7;padding:11px 20px;border-radius:8px;text-decoration:none;font-weight:700;display:inline-block">Open my conversation</a></p>
+      <p style="font-size:.8rem;color:#8a9a8f;margin-top:18px">This link works for 30 minutes and only from this email address. If you didn&rsquo;t ask for it, you can ignore this — nobody can read your conversation without it.</p>
     `),
   })
 }

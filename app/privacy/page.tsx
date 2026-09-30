@@ -8,7 +8,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return pageMetadata(await getOgCopy(ogSchemaFor('privacy')!))
 }
 
-const LAST_UPDATED = '13 September 2026'
+const LAST_UPDATED = '30 September 2026'
 
 const TOC = [
   { id: 'who-we-are', label: 'Who We Are' },
@@ -17,6 +17,7 @@ const TOC = [
   { id: 'cookies', label: 'Cookies & Tracking' },
   { id: 'payments', label: 'Payments' },
   { id: 'emails', label: 'Email Communications' },
+  { id: 'support', label: 'Support, Live Chat & Voice Notes' },
   { id: 'sharing', label: 'Sharing With Third Parties' },
   { id: 'retention', label: 'Data Retention' },
   { id: 'security', label: 'Data Security' },
@@ -85,6 +86,7 @@ export default function PrivacyPolicyPage() {
           <p><strong>Community content.</strong> Discussion threads, replies, and impact-story testimonials you choose to submit are stored and, where approved for publication, displayed publicly on the Site alongside your name and any role/title you provide.</p>
           <p><strong>Donations.</strong> When you donate, we collect your name, email address, and the amount and currency donated. We do <strong>not</strong> collect or store your card number, expiry date, or CVV — those are entered directly into Stripe&apos;s secure, hosted payment page and never pass through our servers. See <Link href="#payments" style={{ color: '#1a3c2e' }}>Payments</Link> below.</p>
           <p><strong>Automatically collected information.</strong> Like most websites, we automatically log some technical information when you visit: page views, the page you came from (referrer), an approximate country derived from your IP address, device/browser type, and a session identifier. We use PostHog, a product analytics tool, for this purpose.</p>
+          <p><strong>Support conversations.</strong> If you open a support ticket or use the live chat, we collect your name, optionally your email address, the messages and voice notes you send, and technical details about your visit. Precise location is collected only if you explicitly choose to share it. This is set out in full in <Link href="#support" style={{ color: '#1a3c2e' }}>Support, Live Chat &amp; Voice Notes</Link>.</p>
           <p><strong>Cookies.</strong> We use a small number of cookies and browser storage entries — see <Link href="#cookies" style={{ color: '#1a3c2e' }}>Cookies &amp; Tracking</Link>.</p>
 
           <H id="how-we-use-it" n="3">How We Use Your Information</H>
@@ -92,6 +94,7 @@ export default function PrivacyPolicyPage() {
             <li>To create and maintain your account, and keep you signed in</li>
             <li>To track course progress and issue certificates</li>
             <li>To respond to contact, volunteer, and partnership enquiries</li>
+            <li>To answer your support tickets and live chat messages, and to reply to you by email where you gave us an address</li>
             <li>To process donations, issue receipts, and maintain financial records</li>
             <li>To send transactional emails (welcome messages, confirmations, receipts) — see <Link href="#emails" style={{ color: '#1a3c2e' }}>Email Communications</Link></li>
             <li>To display community content you have chosen to publish (testimonials, forum posts)</li>
@@ -122,32 +125,62 @@ export default function PrivacyPolicyPage() {
           </ul>
           <p>These are transactional/operational messages tied to an action you took, not marketing newsletters. We do not currently send promotional email campaigns. If that changes, we will offer a clear opt-out on any marketing message.</p>
 
-          <H id="sharing" n="7">Sharing With Third Parties</H>
+          <H id="support" n="7">Support, Live Chat &amp; Voice Notes</H>
+          <p>
+            When you open a support ticket or start a live chat, we create a support conversation. This section explains exactly what that involves, because it collects more than a normal page visit does.
+          </p>
+
+          <p><strong>Who you are.</strong> Before your first chat message we ask for your name and email address. Both are required: your conversation is locked to that email address, and without it there would be no way to keep the conversation private to you or to reach you with an answer if you close the tab. If you are signed in, we use your account details instead and link the conversation to your account.</p>
+
+          <p><strong>What you send us.</strong> The messages you write, and any voice note you record, are stored so that our team can read them and reply. Replies from our team appear in the same conversation and, if you gave an email address, are also emailed to you.</p>
+
+          <p><strong>Getting back to your conversation.</strong> Each conversation gets a reference (for example <code>WH-ABCDE-FGHIJ</code>). The reference on its own does <strong>not</strong> open the conversation — it only names it. To read the thread you must either be signed in to the account that started it, be using the same browser you started it in, or ask us to email a link to the address the conversation is locked to. That link expires after 30 minutes. If someone sees your reference, they still cannot read your conversation.</p>
+
+          <p><strong>Technical details about your visit.</strong> When a conversation starts we record your device type, operating system and browser, the page you opened the chat from, and the page that referred you. This is information your browser already sends with every request; we keep it so that whoever answers can understand your problem — for example, whether a button that &ldquo;does nothing&rdquo; is failing only on a particular mobile browser.</p>
+
+          <p><strong>Approximate location.</strong> We record an approximate country, region and city derived from your IP address. This is resolved to your internet provider&apos;s network, not to you — it is frequently inaccurate by tens of kilometres and is not a precise location. We use it only to understand which countries we are supporting.</p>
+
+          <p><strong>Precise location — only if you choose to share it.</strong> The chat has a &ldquo;Share my location&rdquo; button. If you tap it, your browser will ask for your permission. We only receive your precise location if you accept that prompt. You can decline, and we will help you without it. If you do share it, we store the coordinates together with the time you shared them, and a line saying you shared your location appears in your own conversation so you can always see what was sent. We never obtain precise location any other way — we cannot, and we do not try.</p>
+
+          <p><strong>Voice notes.</strong> If you record a voice note, the audio is uploaded and stored so our team can listen to it. Where your browser supports it, a written transcript is produced <em>on your own device</em> and sent as the message text; the audio itself is never sent to a transcription company. Recordings are limited to 60 seconds.</p>
+
+          <p><strong>Our AI assistant.</strong> Live chat is answered first by an automated assistant built on Claude, an AI service provided by Anthropic. Your chat messages are sent to Anthropic to generate a reply. The assistant is restricted to information published on this website, and it will hand the conversation to a person whenever it is unsure, whenever you ask for a human, and whenever the subject is money, a complaint, safeguarding, or the status of your own application. Once a member of our team replies, the assistant stops taking part in that conversation. It will never ask you for payment details, and Wissen-Haus never asks anyone to pay for access to a scholarship.</p>
+
+          <p><strong>If you are under 18.</strong> Please do not share your precise location, your home or school address, or other identifying details with us in chat unless a parent, guardian or teacher has agreed. We do not need them to help you. See <Link href="#children" style={{ color: '#1a3c2e' }}>Children&apos;s Privacy</Link>.</p>
+
+          <H id="sharing" n="8">Sharing With Third Parties</H>
           <p>We do not sell your personal information. We share information only with service providers who help us operate the Site, under obligations to protect it appropriately:</p>
           <ul style={{ paddingLeft: 20 }}>
             <li><strong>Stripe</strong> — payment processing (see <Link href="#payments" style={{ color: '#1a3c2e' }}>Payments</Link>)</li>
             <li><strong>Resend</strong> — transactional email delivery</li>
             <li><strong>PostHog</strong> — product analytics</li>
+            <li><strong>Anthropic</strong> — the AI assistant that answers live chat first (see <Link href="#support" style={{ color: '#1a3c2e' }}>Support, Live Chat &amp; Voice Notes</Link>). Your chat messages are sent to Anthropic to generate a reply.</li>
             <li><strong>Neon (PostgreSQL) and Vercel</strong> — database hosting and website hosting/infrastructure</li>
           </ul>
           <p>We may also disclose information where required by law, to protect the rights, property, or safety of Wissen-Haus, our users, or the public, or in connection with a merger, restructuring, or transfer of our operations (in which case we would notify affected users).</p>
 
-          <H id="retention" n="8">Data Retention</H>
+          <H id="retention" n="9">Data Retention</H>
           <p>
             We retain account and learning-activity data for as long as your account is active, and donation records for as long as required for financial and tax record-keeping purposes. You may request deletion of your account at any time (see <Link href="#rights" style={{ color: '#1a3c2e' }}>Your Rights</Link>); we will delete or anonymise personal information that we are not legally required to retain.
           </p>
+          <p>
+            Support conversations, including any voice notes and any location you chose to share, are kept while we deal with your enquiry and for a reasonable period afterwards so that we can pick up a follow-up. You can ask us to delete a support conversation at any time by emailing <a href="mailto:info@wissenhaus.org" style={{ color: '#1a3c2e' }}>info@wissenhaus.org</a> and quoting your conversation reference.
+          </p>
 
-          <H id="security" n="9">Data Security</H>
+          <H id="security" n="10">Data Security</H>
           <p>
             We use industry-standard measures to protect your information, including encrypted connections (HTTPS), hashed passwords, and access controls on our administrative systems. No method of transmission or storage is 100% secure, and we cannot guarantee absolute security.
           </p>
 
-          <H id="children" n="10">Children&#39;s Privacy</H>
+          <H id="children" n="11">Children&#39;s Privacy</H>
           <p>
             Many of our programmes — including the Career Clarity Fair and career-guidance content — are designed for secondary school students, some of whom are minors under the age of 18. Our Community Hub account creation is intended for users capable of consenting to these terms in their jurisdiction; where local law requires parental or guardian consent for a minor to create an account, that consent must be obtained before signing up. We do not knowingly collect more personal information from a child than is necessary to provide our services, and we do not use children&apos;s information for third-party advertising. A parent or guardian who believes their child has provided personal information without appropriate consent may contact us at <a href="mailto:info@wissenhaus.org" style={{ color: '#1a3c2e' }}>info@wissenhaus.org</a> to request its removal.
           </p>
+          <p>
+            This applies with particular force to our live chat. We never require a precise location to help anyone, and we ask young people not to share their location, home or school address, or other identifying details in chat without a parent, guardian or teacher agreeing first. See <Link href="#support" style={{ color: '#1a3c2e' }}>Support, Live Chat &amp; Voice Notes</Link>.
+          </p>
 
-          <H id="rights" n="11">Your Rights</H>
+          <H id="rights" n="12">Your Rights</H>
           <p>Depending on where you live, you may have rights to:</p>
           <ul style={{ paddingLeft: 20 }}>
             <li>Access the personal information we hold about you</li>
@@ -161,22 +194,22 @@ export default function PrivacyPolicyPage() {
             To exercise any of these rights, email <a href="mailto:info@wissenhaus.org" style={{ color: '#1a3c2e' }}>info@wissenhaus.org</a>. We will respond within a reasonable time and in accordance with applicable law, including Nigeria&apos;s Data Protection Act 2023 and, where applicable to visitors from those regions, the UK and EU General Data Protection Regulation.
           </p>
 
-          <H id="transfers" n="12">International Data Transfers</H>
+          <H id="transfers" n="13">International Data Transfers</H>
           <p>
             We are based in Nigeria and serve users across Africa, the diaspora, and internationally. Our service providers (including Stripe, Resend, PostHog, Neon, and Vercel) may process and store data in the United States, the European Union, the United Kingdom, or elsewhere. By using the Site, you understand that your information may be transferred to and processed in countries other than your own, which may have different data protection laws.
           </p>
 
-          <H id="third-party-links" n="13">Third-Party Links</H>
+          <H id="third-party-links" n="14">Third-Party Links</H>
           <p>
             The Site links to third-party content such as our Instagram and LinkedIn pages, external scholarship and job listings, and embedded Instagram reels. We are not responsible for the privacy practices of these third parties — please review their own privacy policies.
           </p>
 
-          <H id="changes" n="14">Changes to This Policy</H>
+          <H id="changes" n="15">Changes to This Policy</H>
           <p>
             We may update this Privacy Policy from time to time. Material changes will be reflected by updating the &ldquo;Last updated&rdquo; date above. Continued use of the Site after changes take effect constitutes acceptance of the revised policy.
           </p>
 
-          <H id="contact" n="15">Contact Us</H>
+          <H id="contact" n="16">Contact Us</H>
           <p>
             Questions about this Privacy Policy or your personal information can be sent to <a href="mailto:info@wissenhaus.org" style={{ color: '#1a3c2e' }}>info@wissenhaus.org</a>, or by post to Wissen-Haus Empowerment Foundation, Ibadan, Oyo State, Nigeria.
           </p>
