@@ -130,11 +130,11 @@ export default function PrivacyPolicyPage() {
             When you open a support ticket or start a live chat, we create a support conversation. This section explains exactly what that involves, because it collects more than a normal page visit does.
           </p>
 
-          <p><strong>Who you are.</strong> Before your first chat message we ask for your name, and optionally your email address. We ask because an anonymous conversation cannot be followed up — if you close the tab, an email address is the only way we can reach you with an answer. Your name and email are stored with the conversation. If you are signed in, we use your account details instead and link the conversation to your account.</p>
+          <p><strong>Who you are.</strong> Before your first chat message we ask for your name and email address. Both are required: your conversation is locked to that email address, and without it there would be no way to keep the conversation private to you or to reach you with an answer if you close the tab. If you are signed in, we use your account details instead and link the conversation to your account.</p>
 
           <p><strong>What you send us.</strong> The messages you write, and any voice note you record, are stored so that our team can read them and reply. Replies from our team appear in the same conversation and, if you gave an email address, are also emailed to you.</p>
 
-          <p><strong>Your conversation link.</strong> Each conversation gets a reference (for example <code>WH-ABCDE-FGHIJ</code>). Anyone who has that reference can read the conversation without signing in — that is how we let you come back to it without an account. <strong>Please keep it private</strong> and do not share it publicly.</p>
+          <p><strong>Getting back to your conversation.</strong> Each conversation gets a reference (for example <code>WH-ABCDE-FGHIJ</code>). The reference on its own does <strong>not</strong> open the conversation — it only names it. To read the thread you must either be signed in to the account that started it, be using the same browser you started it in, or ask us to email a link to the address the conversation is locked to. That link expires after 30 minutes. If someone sees your reference, they still cannot read your conversation.</p>
 
           <p><strong>Technical details about your visit.</strong> When a conversation starts we record your device type, operating system and browser, the page you opened the chat from, and the page that referred you. This is information your browser already sends with every request; we keep it so that whoever answers can understand your problem — for example, whether a button that &ldquo;does nothing&rdquo; is failing only on a particular mobile browser.</p>
 

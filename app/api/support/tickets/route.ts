@@ -4,12 +4,13 @@ import { getSession } from '@/lib/auth'
 import { parseBody, zEmail, zName, zShortText, zLongText } from '@/lib/validation'
 import { createTicket } from '@/lib/tickets'
 import { visitorContextFrom } from '@/lib/visitor-context'
+import { mintAccessToken, TICKET_TOKEN_COOKIE } from '@/lib/ticket-access'
 import { sendTicketOpened, notifyStaffNewTicket } from '@/lib/email'
 import { log } from '@/lib/logger'
 
 const CreateSchema = z.object({
   name: zName,
-  email: zEmail.nullish(),
+  email: zEmail,
   subject: zShortText,
   message: zLongText,
   channel: z.enum(['form', 'chat']).nullish(),
@@ -50,7 +51,15 @@ export async function POST(req: NextRequest) {
       log.error('support ticket email', err)
     }
 
-    return NextResponse.json({ success: true, reference: ticket.reference, id: ticket.id })
+    // Issue the access token to the browser that opened the ticket, so the
+    // person who just typed the message is not immediately asked to prove
+    // who they are. Everyone else needs a magic link.
+    const res = NextResponse.json({ success: true, reference: ticket.reference, id: ticket.id })
+    res.cookies.set(TICKET_TOKEN_COOKIE, await mintAccessToken(ticket.id, ticket.reference), {
+      httpOnly: true, sameSite: 'lax', secure: process.env.NODE_ENV === 'production',
+      path: '/', maxAge: 90 * 24 * 60 * 60,
+    })
+    return res
   } catch (err) {
     log.error('support ticket create', err)
     return NextResponse.json({ error: 'Could not open a ticket right now' }, { status: 500 })

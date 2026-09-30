@@ -223,7 +223,7 @@ export default function LiveChat() {
         <form
           onSubmit={e => {
             e.preventDefault()
-            if (!name.trim()) return
+            if (!name.trim() || !email.trim()) return
             setIdentified(true)
             try { localStorage.setItem(IDENTITY_KEY, JSON.stringify({ name, email })) } catch { /* non-fatal */ }
           }}
@@ -238,21 +238,23 @@ export default function LiveChat() {
             style={{ border: '1px solid #e8e4dc', borderRadius: 8, padding: '8px 10px', fontSize: '.86rem', fontFamily: 'inherit', outline: 'none' }}
           />
           <input
-            type="email" value={email} onChange={e => setEmail(e.target.value)} maxLength={200}
-            placeholder="Email (so we can reply if you close this)"
+            type="email" value={email} onChange={e => setEmail(e.target.value)} required maxLength={200}
+            placeholder="Email address"
             style={{ border: '1px solid #e8e4dc', borderRadius: 8, padding: '8px 10px', fontSize: '.86rem', fontFamily: 'inherit', outline: 'none' }}
           />
           <button
-            type="submit" disabled={!name.trim()}
+            type="submit" disabled={!name.trim() || !email.trim()}
             style={{
               background: 'var(--green-800, #1a3c2e)', color: '#f4f0e7', border: 'none',
               borderRadius: 8, padding: '9px 14px', fontWeight: 700, fontSize: '.84rem',
-              cursor: name.trim() ? 'pointer' : 'not-allowed', opacity: name.trim() ? 1 : .5,
+              cursor: name.trim() && email.trim() ? 'pointer' : 'not-allowed',
+              opacity: name.trim() && email.trim() ? 1 : .5,
             }}
           >
             Start chat
           </button>
           <p style={{ margin: 0, fontSize: '.7rem', color: '#8a9a8f' }}>
+            Your conversation is locked to this address — only you can reopen it.
             We record your device and browser to help us answer. See our{' '}
             <Link href="/privacy" style={{ color: '#8a9a8f' }}>privacy notice</Link>.
           </p>
