@@ -17,6 +17,10 @@ export const MONTHLY_CALL_CAP = 1500
 // data -- so context is assembled from an allowlist of small text keys and
 // then truncated anyway. Never widen this to "all of site_content".
 const CONTEXT_CHAR_BUDGET = 12_000
+// Separate ceiling for retrieved knowledge-base entries. Six hits at the
+// per-entry cap would be ~36k characters on their own -- several times the
+// curated context, and enough to crowd out the guardrails.
+const KB_CHAR_BUDGET = 9_000
 
 const CONTEXT_KEYS = [
   'foundation_details',
@@ -171,6 +175,17 @@ async function recallVisitor(email: string | null | undefined, ticketId: string 
   }
 }
 
+// Takes chunks in rank order until the budget runs out, so the best-matching
+// entries survive and the weakest are the ones dropped.
+function capChunks(chunks: string[], budget: number): string {
+  let out = ''
+  for (const c of chunks) {
+    if (out.length + c.length > budget) break
+    out += (out ? '\n\n' : '') + c
+  }
+  return out
+}
+
 export type AgentResult =
   | { status: 'ok'; reply: string; escalate: boolean }
   | { status: 'unavailable'; reason: 'not_configured' | 'cap_reached' | 'error' }
@@ -209,7 +224,7 @@ export async function answerSupportQuestion(
     baseContext,
     kbHits.length
       ? '\n\n# KNOWLEDGE BASE\n'
-        + kbHits.map(k => `## ${k.title}\n${k.body}`).join('\n\n')
+        + capChunks(kbHits.map(k => `## ${k.title}\n${k.body}`), KB_CHAR_BUDGET)
       : '',
     memory,
   ].filter(Boolean).join('')

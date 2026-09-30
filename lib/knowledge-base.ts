@@ -53,19 +53,36 @@ export async function rebuildKnowledgeBase(): Promise<{ written: number; skipped
   // Opportunities: summarised per type rather than one entry per listing.
   // 448 individual rows would swamp retrieval, and a visitor asking "do you
   // have jobs" wants the shape of what is on offer, not row 217.
+  const totals: Record<string, number> = {}
+  try {
+    const totalRows = await sql`
+      SELECT type, COUNT(*)::int AS n FROM opportunities
+      WHERE expires_at IS NULL OR expires_at > NOW() GROUP BY type
+    ` as { type: string; n: number }[]
+    for (const t of totalRows) totals[t.type] = t.n
+  } catch { /* falls back to the sampled count */ }
+
   try {
     const rows = await sql`
       SELECT type, COUNT(*)::int AS n,
              STRING_AGG(title, '; ' ORDER BY date_posted DESC NULLS LAST) AS titles
-      FROM opportunities
-      WHERE expires_at IS NULL OR expires_at > NOW()
+      FROM (
+        SELECT type, title, date_posted,
+               ROW_NUMBER() OVER (PARTITION BY type ORDER BY date_posted DESC NULLS LAST) AS rn
+        FROM opportunities
+        WHERE expires_at IS NULL OR expires_at > NOW()
+      ) ranked
+      WHERE rn <= 25
       GROUP BY type
     ` as { type: string; n: number; titles: string }[]
     for (const r of rows) {
       entries.push({
         key: `opportunities:${r.type}`,
         title: `${r.type} opportunities currently listed`,
-        body: clean(`There are ${r.n} ${r.type} opportunities live on the Community Hub right now, updated daily. Recent examples: ${r.titles}`),
+        // r.n counts only the sampled rows, so the real total is fetched
+        // separately below -- reporting 25 when 448 are live would be a
+        // number the agent then repeats to visitors.
+        body: clean(`${totals[r.type] ?? r.n} ${r.type} opportunities are live on the Community Hub right now, updated daily. A sample of the most recent: ${r.titles}`),
       })
     }
   } catch (err) { log.warn('kb rebuild', 'opportunities unavailable', { error: String(err) }) }
@@ -148,18 +165,37 @@ export async function rebuildKnowledgeBase(): Promise<{ written: number; skipped
   return { written, skipped }
 }
 
-// Full-text search over active entries only. `plainto_tsquery` is used rather
-// than `to_tsquery` because the input is a visitor's sentence, not a query
-// expression -- to_tsquery would throw on ordinary punctuation.
+// Full-text search over active entries only.
+//
+// The terms are OR-ed, not AND-ed, and that is the whole trick. plainto_tsquery
+// builds an AND of every lexeme, so a visitor's sentence only matches an entry
+// containing ALL of its words -- "how do I get a datacamp scholarship" and
+// "when is the next career clarity fair happening in Ibadan" both returned
+// nothing against a knowledge base that plainly answers them. Recall comes
+// from OR; precision comes from ts_rank ordering the hits.
+//
+// plainto_tsquery still does the parsing, so the visitor's text is never
+// interpolated into a tsquery expression -- it is sanitised into lexemes
+// first, and only the operators between them are rewritten. NULLIF guards the
+// empty case: a question of pure stopwords yields an empty query, and
+// to_tsquery('') raises a syntax error rather than returning nothing.
 export async function searchKnowledgeBase(question: string, limit = 6): Promise<KbEntry[]> {
   const q = question.trim().slice(0, 500)
   if (!q) return []
   try {
     return await sql`
-      SELECT id, source, source_key, title, body, status, approved_by, created_at, updated_at
-      FROM kb_entries
-      WHERE status = 'active' AND search @@ plainto_tsquery('english', ${q})
-      ORDER BY ts_rank(search, plainto_tsquery('english', ${q})) DESC
+      WITH parsed AS (
+        SELECT to_tsquery('english',
+          NULLIF(replace(plainto_tsquery('english', ${q})::text, '&', '|'), '')
+        ) AS tsq
+      )
+      SELECT k.id, k.source, k.source_key, k.title, k.body, k.status,
+             k.approved_by, k.created_at, k.updated_at
+      FROM kb_entries k, parsed
+      WHERE parsed.tsq IS NOT NULL
+        AND k.status = 'active'
+        AND k.search @@ parsed.tsq
+      ORDER BY ts_rank(k.search, parsed.tsq) DESC
       LIMIT ${limit}
     ` as KbEntry[]
   } catch (err) {
