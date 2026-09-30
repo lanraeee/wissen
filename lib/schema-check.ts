@@ -23,6 +23,20 @@ const CONSTRAINT_KEYWORDS = new Set([
 ])
 
 /**
+ * Net parenthesis change on a line, ignoring anything inside a string
+ * literal so a default like `'(none)'` cannot unbalance the count.
+ */
+function parenDelta(line: string): number {
+  const bare = line.replace(/'(?:[^']|'')*'/g, '')
+  let delta = 0
+  for (const ch of bare) {
+    if (ch === '(') delta++
+    else if (ch === ')') delta--
+  }
+  return delta
+}
+
+/**
  * Extracts table -> columns from the CREATE TABLE and ALTER TABLE ... ADD
  * COLUMN statements in schema.sql. Deliberately a small, forgiving parser
  * rather than a real SQL one: it only needs identifiers, and anything it
@@ -37,9 +51,22 @@ export function parseExpectedSchema(sqlText: string): Map<string, Set<string>> {
   for (const match of sqlText.matchAll(createRe)) {
     const [, table, body] = match
     const columns = new Set<string>()
+
+    // A column definition can span several lines, so "first token of a line"
+    // is only a column name when the line starts at the top level of the
+    // table body. kb_entries.search is the case that exposed this: its
+    // GENERATED ALWAYS AS (...) expression continues over three more lines,
+    // and the parser read `setweight(` from them as a column, then reported
+    // a missing `kb_entries.setweight` against a database that was correct.
+    let depth = 0
     for (const rawLine of body.split('\n')) {
       const line = rawLine.trim()
+      const atTopLevel = depth === 0
+      depth += parenDelta(rawLine)
+
       if (!line || line.startsWith('--')) continue
+      if (!atTopLevel) continue
+
       const first = line.split(/[\s(]/)[0].toLowerCase()
       if (CONSTRAINT_KEYWORDS.has(first)) continue
       if (/^\w+$/.test(first)) columns.add(first)

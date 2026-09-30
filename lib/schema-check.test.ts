@@ -97,3 +97,59 @@ describe('diffSchema', () => {
     expect(hasDrift(diffSchema(expected, actual))).toBe(false)
   })
 })
+
+// A column definition can span several lines. The parser used to take the
+// first token of every line as a column name, so a multi-line expression
+// contributed its function names -- kb_entries reported a missing
+// `setweight` column against a database that was entirely correct. A
+// false alarm here is not harmless: it trains people to ignore the banner
+// that exists to catch the real thing.
+describe('parseExpectedSchema with multi-line column definitions', () => {
+  it('does not mistake a generated column expression for columns', () => {
+    const sql = `
+CREATE TABLE IF NOT EXISTS kb_entries (
+  id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  title       TEXT NOT NULL,
+  body        TEXT NOT NULL,
+  search      TSVECTOR GENERATED ALWAYS AS (
+                setweight(to_tsvector('english', coalesce(title, '')), 'A') ||
+                setweight(to_tsvector('english', coalesce(body, '')), 'B')
+              ) STORED
+);`
+    const cols = parseExpectedSchema(sql).get('kb_entries')!
+    expect([...cols].sort()).toEqual(['body', 'id', 'search', 'title'])
+    expect(cols.has('setweight')).toBe(false)
+    expect(cols.has('to_tsvector')).toBe(false)
+  })
+
+  it('still reads the column after a multi-line expression closes', () => {
+    const sql = `
+CREATE TABLE IF NOT EXISTS t (
+  a TEXT,
+  b TSVECTOR GENERATED ALWAYS AS (
+      lower(a)
+    ) STORED,
+  c INTEGER
+);`
+    expect([...parseExpectedSchema(sql).get('t')!].sort()).toEqual(['a', 'b', 'c'])
+  })
+
+  it('is not unbalanced by a parenthesis inside a string default', () => {
+    const sql = `
+CREATE TABLE IF NOT EXISTS t (
+  a TEXT DEFAULT '(none)',
+  b INTEGER
+);`
+    expect([...parseExpectedSchema(sql).get('t')!].sort()).toEqual(['a', 'b'])
+  })
+
+  it('still skips a CHECK constraint continued onto its own line', () => {
+    const sql = `
+CREATE TABLE IF NOT EXISTS t (
+  status TEXT NOT NULL DEFAULT 'pending'
+           CHECK (status IN ('pending','approved')),
+  b INTEGER
+);`
+    expect([...parseExpectedSchema(sql).get('t')!].sort()).toEqual(['b', 'status'])
+  })
+})
