@@ -22,6 +22,8 @@ export default function AiSettingsEditor() {
   const [s, setS] = useState<AiSettings>(AI_SETTINGS_DEFAULTS)
   const [loading, setLoading] = useState(true)
   const [status, setStatus] = useState('')
+  const [diag, setDiag] = useState<string>('')
+  const [testing, setTesting] = useState(false)
 
   useEffect(() => {
     fetch('/api/admin/content/ai_settings')
@@ -39,6 +41,21 @@ export default function AiSettingsEditor() {
       body: JSON.stringify({ value: coerceAiSettings(s) }),
     })
     setStatus(res.ok ? 'Saved.' : 'Could not save — directors only.')
+  }
+
+  async function test() {
+    setTesting(true); setDiag('')
+    try {
+      const r = await fetch('/api/admin/ai/diagnose')
+      const d = await r.json()
+      setDiag(d.ok
+        ? `✓ Working — ${d.model} responded.`
+        : `✗ ${d.detail}${d.errorType ? ` (${d.errorType})` : ''}${d.keyLooksMalformed ? ' — the stored key has quotes or whitespace around it.' : ''}`)
+    } catch {
+      setDiag('✗ Could not run the check.')
+    } finally {
+      setTesting(false)
+    }
   }
 
   if (loading) return <p className="admin-page-desc">Loading…</p>
@@ -92,7 +109,14 @@ export default function AiSettingsEditor() {
           padding: '9px 18px', fontWeight: 700, fontSize: '.84rem', cursor: 'pointer',
         }}>Save</button>
         {status && <span style={{ fontSize: '.82rem', color: '#6b7a70' }}>{status}</span>}
+        <button onClick={test} disabled={testing} style={{
+          background: '#fff', color: '#1a3c2e', border: '1px solid #e8e4dc', borderRadius: 8,
+          padding: '9px 16px', fontWeight: 600, fontSize: '.84rem', cursor: testing ? 'wait' : 'pointer',
+        }}>{testing ? 'Testing…' : 'Test connection'}</button>
       </div>
+      {diag && (
+        <p style={{ marginTop: 12, fontSize: '.84rem', color: diag.startsWith('✓') ? '#1a6b3c' : '#a33' }}>{diag}</p>
+      )}
     </div>
   )
 }
