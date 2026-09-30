@@ -31,7 +31,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${BASE}/opportunity-blueprint`, lastModified: now, changeFrequency: 'weekly', priority: 0.8 },
     { url: `${BASE}/events`, lastModified: now, changeFrequency: 'weekly', priority: 0.8 },
     { url: `${BASE}/impact-content`, lastModified: now, changeFrequency: 'weekly', priority: 0.7 },
-    { url: `${BASE}/community`, lastModified: now, changeFrequency: 'weekly', priority: 0.9 },
+    // The Opportunity Hub's listings live here now, refreshed daily by the
+    // opportunities cron, so /community is crawled daily rather than weekly --
+    // it absorbed the four type pages that used to carry that frequency.
+    //
+    // Each tab is listed separately because each is a distinct set of listings
+    // with its own title, description and canonical (see the page's
+    // generateMetadata). Without these, the merge would have handed Google one
+    // page where it previously indexed four. `?tab=all` is omitted: it
+    // canonicalises to the bare /community above.
+    { url: `${BASE}/community`, lastModified: now, changeFrequency: 'daily', priority: 0.9 },
+    { url: `${BASE}/community?tab=scholarships`, lastModified: now, changeFrequency: 'daily', priority: 0.8 },
+    { url: `${BASE}/community?tab=jobs`, lastModified: now, changeFrequency: 'daily', priority: 0.8 },
+    { url: `${BASE}/community?tab=internships`, lastModified: now, changeFrequency: 'daily', priority: 0.8 },
+    { url: `${BASE}/community?tab=competitions`, lastModified: now, changeFrequency: 'weekly', priority: 0.7 },
+    { url: `${BASE}/community?tab=wissenhaus-partners`, lastModified: now, changeFrequency: 'weekly', priority: 0.8 },
     { url: `${BASE}/careers`, lastModified: now, changeFrequency: 'weekly', priority: 0.8 },
     { url: `${BASE}/career-pathways`, lastModified: now, changeFrequency: 'monthly', priority: 0.9 },
     { url: `${BASE}/career-assessment`, lastModified: now, changeFrequency: 'monthly', priority: 0.8 },
@@ -42,10 +56,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${BASE}/partners/datacamp/apply`, lastModified: now, changeFrequency: 'monthly', priority: 0.8 },
     { url: `${BASE}/donate`, lastModified: now, changeFrequency: 'monthly', priority: 0.7 },
     { url: `${BASE}/courses`, lastModified: now, changeFrequency: 'weekly', priority: 0.8 },
-    { url: `${BASE}/jobs`, lastModified: now, changeFrequency: 'daily', priority: 0.8 },
-    { url: `${BASE}/internships`, lastModified: now, changeFrequency: 'daily', priority: 0.8 },
-    { url: `${BASE}/scholarships`, lastModified: now, changeFrequency: 'daily', priority: 0.8 },
-    { url: `${BASE}/competitions`, lastModified: now, changeFrequency: 'weekly', priority: 0.7 },
     { url: `${BASE}/wiki`, lastModified: now, changeFrequency: 'monthly', priority: 0.8 },
   ]
 

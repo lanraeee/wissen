@@ -104,10 +104,10 @@ export default async function Footer() {
               <h5>Explore</h5>
               <Link href="/programmes">Programmes</Link>
               <Link href="/community">Community Hub</Link>
-              <Link href="/jobs">Remote Jobs</Link>
-              <Link href="/internships">Internships</Link>
-              <Link href="/scholarships">Scholarships</Link>
-              <Link href="/competitions">Competitions</Link>
+              <Link href="/community?tab=jobs#opportunities">Remote Jobs</Link>
+              <Link href="/community?tab=internships#opportunities">Internships</Link>
+              <Link href="/community?tab=scholarships#opportunities">Scholarships</Link>
+              <Link href="/community?tab=competitions#opportunities">Competitions</Link>
               <Link href="/impact-content">Impact Stories</Link>
               <Link href="/policy-research">Policy &amp; Research</Link>
               <Link href="/wiki">Foundation Overview</Link>

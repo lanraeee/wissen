@@ -6,7 +6,7 @@ describe('safeReturnPath', () => {
   })
 
   it('keeps the query string and hash', () => {
-    expect(safeReturnPath('/scholarships?tab=wissenhaus-partners')).toBe('/scholarships?tab=wissenhaus-partners')
+    expect(safeReturnPath('/community?tab=wissenhaus-partners')).toBe('/community?tab=wissenhaus-partners')
     expect(safeReturnPath('/community#learning')).toBe('/community#learning')
   })
 

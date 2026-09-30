@@ -3,8 +3,19 @@ import { COOKIE_NAME, verifyToken } from '@/lib/auth-edge'
 import { hit, clientIp, findRateLimit } from '@/lib/rate-limit'
 import { RETURN_PARAM } from '@/lib/return-url'
 
-const protectedRoutes = ['/community', '/jobs', '/internships', '/scholarships', '/competitions']
-const publicCommunityRoutes = ['/community/landing']
+// The Community Hub itself is PUBLIC: browsing opportunities is the front
+// door, and gating it hid every listing from search engines while the sitemap
+// still advertised the page. Everything you can *do* from there is gated at
+// the API instead -- posting a thread, replying, and submitting a story all
+// return 401 without a session (app/api/forum/*, app/api/testimonials) -- and
+// the discussion board below is gated here because it is a participation
+// surface, not a browse one.
+//
+// /jobs, /internships, /scholarships and /competitions are 301s to /community
+// (next.config.mjs) and must never appear here: middleware runs BEFORE config
+// redirects, so gating them would send a visitor to /login instead of letting
+// the redirect resolve, making a moved URL look broken.
+const protectedRoutes = ['/community/threads']
 
 // Partner scholarship application forms (/partners/<partner>/apply) are
 // members-only: applying should be tied to a real Wissen-Haus account, and
@@ -42,7 +53,9 @@ export async function middleware(req: NextRequest) {
     }
   }
 
-  if (publicCommunityRoutes.some(p => pathname === p || pathname.startsWith(p + '/'))) return NextResponse.next()
+  // /community/landing needed an explicit exception back when the whole
+  // /community tree was protected. Only /community/threads is now, so it
+  // falls through on its own.
   const isProtected = protectedRoutes.some(p => pathname === p || pathname.startsWith(p + '/'))
     || PARTNER_APPLY_ROUTE.test(pathname)
   const isProfileRoute = profileRoutes.some(p => pathname === p || pathname.startsWith(p + '/'))
@@ -78,7 +91,7 @@ export async function middleware(req: NextRequest) {
 
 export const config = {
   matcher: [
-    '/community/:path*', '/jobs', '/internships', '/scholarships', '/competitions', '/profile', '/admin/:path*',
+    '/community/threads/:path*', '/profile', '/admin/:path*',
     '/partners/:partner/apply',
     '/api/auth/:path*', '/api/contact', '/api/partner', '/api/volunteer', '/api/submissions',
     '/api/payments/:path*', '/api/forum/:path*', '/api/testimonials', '/api/career-fair/:path*',

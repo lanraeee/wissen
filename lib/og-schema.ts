@@ -136,6 +136,36 @@ export const OG_PAGE_SCHEMAS: OgPageSchema[] = [
     defaultTitle: 'Community Hub · Wissen-Haus', defaultOgTitle: 'Community Hub',
     defaultDescription: 'Scholarships, internships, mentorship, courses and a community feed—everything a young Nigerian changemaker needs in one place.',
   },
+  // The Opportunity Hub's tabs on /community?tab=<key>. The first four keep
+  // the slugs they had as standalone pages (/jobs, /scholarships, ...) so any
+  // copy already edited in the admin survived the merge -- the label says
+  // where they live now, the slug says where their stored copy is.
+  {
+    slug: 'scholarships', label: 'Community · Scholarships tab',
+    defaultTitle: 'Scholarships · Wissen-Haus Community', defaultOgTitle: 'Scholarships',
+    defaultDescription: 'Scholarship opportunities for Nigerian, African, and diaspora students — from undergrad funding to international grants, updated daily.',
+  },
+  {
+    slug: 'jobs', label: 'Community · Jobs tab',
+    defaultTitle: 'Remote Jobs · Wissen-Haus Community', defaultOgTitle: 'Remote Jobs',
+    defaultDescription: 'Remote job opportunities curated for Nigerian, African, and diaspora youth. Updated daily.',
+  },
+  {
+    slug: 'internships', label: 'Community · Internships tab',
+    defaultTitle: 'Internships · Wissen-Haus Community', defaultOgTitle: 'Internships',
+    defaultDescription: 'Internship opportunities open to Nigerian, African, and diaspora youth.',
+  },
+  {
+    slug: 'competitions', label: 'Community · Competitions tab',
+    defaultTitle: 'Competitions & Hackathons · Wissen-Haus Community', defaultOgTitle: 'Competitions & Hackathons',
+    defaultDescription: 'Online competitions, hackathons, and challenges open to African youth.',
+  },
+  {
+    slug: 'community-partners', label: 'Community · Wissen-Haus Partners tab',
+    defaultTitle: 'Wissen-Haus Partner Scholarships · Wissen-Haus Community',
+    defaultOgTitle: 'Wissen-Haus Partner Scholarships',
+    defaultDescription: 'Free access to premium learning through Wissen-Haus partnerships, including DataCamp Donates. Apply directly through us.',
+  },
   {
     slug: 'community-landing', label: 'Community · Landing',
     defaultTitle: 'Community Hub · Wissen-Haus', defaultOgTitle: 'Community Hub',
@@ -147,34 +177,14 @@ export const OG_PAGE_SCHEMAS: OgPageSchema[] = [
     defaultDescription: 'Discuss, share wins, ask questions — the Wissen-Haus community discussion board.',
   },
   {
-    slug: 'competitions', label: 'Competitions',
-    defaultTitle: 'Competitions & Hackathons · Wissen-Haus Community', defaultOgTitle: 'Competitions & Hackathons',
-    defaultDescription: 'Online competitions, hackathons, and challenges open to African youth.',
-  },
-  {
     slug: 'courses', label: 'Courses',
     defaultTitle: 'Courses · Wissen-Haus', defaultOgTitle: 'Courses',
     defaultDescription: 'Free and premium certificate courses for Nigerian youth. Build real career skills.',
   },
   {
-    slug: 'jobs', label: 'Jobs',
-    defaultTitle: 'Remote Jobs · Wissen-Haus Community', defaultOgTitle: 'Remote Jobs',
-    defaultDescription: 'Remote job opportunities curated for Nigerian, African, and diaspora youth. Updated daily.',
-  },
-  {
-    slug: 'internships', label: 'Internships',
-    defaultTitle: 'Internships · Wissen-Haus Community', defaultOgTitle: 'Internships',
-    defaultDescription: 'Internship opportunities open to Nigerian, African, and diaspora youth.',
-  },
-  {
     slug: 'impact', label: 'Impact',
     defaultTitle: 'Impact · Wissen-Haus', defaultOgTitle: 'Our Impact',
     defaultDescription: 'Real stories from the Wissen-Haus community — students and mentors who have changed their trajectory.',
-  },
-  {
-    slug: 'scholarships', label: 'Scholarships',
-    defaultTitle: 'Scholarships · Wissen-Haus Community', defaultOgTitle: 'Scholarships',
-    defaultDescription: 'Scholarships for Nigerian, African, and diaspora students.',
   },
   {
     slug: 'privacy', label: 'Privacy Policy',
