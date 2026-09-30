@@ -1,4 +1,5 @@
 ﻿import type { Metadata } from 'next'
+import Image from 'next/image'
 import { pageMetadata } from '@/lib/seo'
 import Link from 'next/link'
 import { getSiteContent } from '@/lib/site-content'
@@ -44,10 +45,15 @@ export default async function CareersPage() {
     <>
       <section className="section section--tight" style={{ paddingTop: 'clamp(48px,6vw,84px)' }}>
         <div className="wrap">
-          <div className="section-head reveal">
+          <div className="split">
+            <div className="reveal">
             <span className="eyebrow">Careers at Wissen-Haus</span>
             <h1 className="display-lg mt-s">Build what you wish existed.</h1>
             <p className="lead mt-m">We&#39;re a small, mission-driven team building the resources African youth and the diaspora deserve. If that resonates, we&#39;d love to work with you.</p>
+          </div>
+            <div className="split__media reveal" data-d="1">
+              <Image src="/img/careers-hero.jpg" alt="Three young Nigerian professionals working together around a laptop" fill sizes="(max-width: 900px) 100vw, 50vw" style={{ objectFit: 'cover' }} />
+            </div>
           </div>
         </div>
       </section>

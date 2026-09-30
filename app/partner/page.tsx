@@ -1,4 +1,5 @@
 ﻿import type { Metadata } from 'next'
+import Image from 'next/image'
 import { pageMetadata } from '@/lib/seo'
 import Link from 'next/link'
 import PartnerForm from '@/components/PartnerForm'
@@ -22,10 +23,15 @@ export default async function PartnerPage() {
     <>
       <section className="section section--tight" style={{ paddingTop: 'clamp(48px,6vw,84px)' }}>
         <div className="wrap">
-          <div className="section-head reveal">
+          <div className="split">
+            <div className="reveal">
             <span className="eyebrow">{c.heroEyebrow}</span>
             <h1 className="display-lg mt-s">{c.heroTitle}</h1>
             <p className="lead mt-m">{c.heroLead}</p>
+          </div>
+            <div className="split__media reveal" data-d="1">
+              <Image src="/img/partner-hero.jpg" alt="Two professionals in conversation across a meeting table in Lagos" fill sizes="(max-width: 900px) 100vw, 50vw" style={{ objectFit: 'cover' }} />
+            </div>
           </div>
         </div>
       </section>

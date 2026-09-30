@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Image from 'next/image'
 import { pageMetadata } from '@/lib/seo'
 import Link from 'next/link'
 import { getPageCopy } from '@/lib/page-copy'
@@ -59,6 +60,19 @@ export default async function EventsPage() {
           </div>
         </div>
       </section>
+
+      {/* A full-bleed band rather than the split layout the other pages use:
+          this hero is a centred dark panel, and dropping an image beside the
+          heading would break its composition. */}
+      <div style={{ position: 'relative', width: '100%', aspectRatio: '16 / 6', overflow: 'hidden' }}>
+        <Image
+          src="/img/events-hero.jpg"
+          alt="Young people at a Wissen-Haus community event, hands raised to ask questions"
+          fill
+          sizes="100vw"
+          style={{ objectFit: 'cover' }}
+        />
+      </div>
 
       <div className="pattern-edge" aria-hidden="true" />
 
