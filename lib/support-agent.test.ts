@@ -66,7 +66,7 @@ describe('support agent', () => {
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
       ok: true,
       json: async () => ({
-        content: [{ text: '"reply": "We run free courses.", "escalate": false}' }],
+        content: [{ type: 'text', text: '{"reply": "We run free courses.", "escalate": false}' }],
         usage: { input_tokens: 10, output_tokens: 5 },
       }),
     }))
@@ -99,7 +99,7 @@ describe('support agent', () => {
       .mockResolvedValue([])
     const fetchMock = vi.fn().mockResolvedValue({
       ok: true,
-      json: async () => ({ content: [{ text: '"reply": "ok", "escalate": false}' }], usage: {} }),
+      json: async () => ({ content: [{ type: 'text', text: '{"reply": "ok", "escalate": false}' }], usage: {} }),
     })
     vi.stubGlobal('fetch', fetchMock)
 

@@ -189,6 +189,22 @@ function capChunks(chunks: string[], budget: number): string {
   return out
 }
 
+// Pulls the JSON object out of a reply that may be wrapped in prose or a
+// ```json fence. The model is asked for bare JSON and usually obliges, but
+// "usually" is not a contract -- and the alternative, an assistant prefill,
+// turned out to be a capability a model can simply stop supporting.
+export function extractJson(text: string): { reply?: string; escalate?: boolean } | null {
+  const trimmed = text.trim().replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '')
+  const start = trimmed.indexOf('{')
+  const end = trimmed.lastIndexOf('}')
+  if (start === -1 || end <= start) return null
+  try {
+    return JSON.parse(trimmed.slice(start, end + 1))
+  } catch {
+    return null
+  }
+}
+
 export type AgentResult =
   | { status: 'ok'; reply: string; escalate: boolean }
   | { status: 'unavailable'; reason: 'not_configured' | 'cap_reached' | 'error' }
@@ -259,12 +275,13 @@ export async function answerSupportQuestion(
         // code precisely so nobody can edit them away from the admin panel.
         system: `${SYSTEM_PROMPT}\n\n# CONTEXT\n${context}`
           + (settings.supportExtraContext ? `\n\n# NOTES FROM THE TEAM\n${settings.supportExtraContext}` : ''),
-        messages: [
-          ...turns,
-          // Prefilling the opening brace forces the JSON shape instead of a
-          // prose preamble we would then have to parse around.
-          { role: 'assistant', content: '{' },
-        ],
+        // No assistant prefill. Seeding the reply with '{' used to force the
+        // JSON shape, but it depends on a model capability that is not
+        // guaranteed: claude-sonnet-5 began rejecting it outright with "this
+        // model does not support assistant message prefill", which took the
+        // agent down again. extractJson below tolerates a prose wrapper
+        // instead, which costs nothing and cannot be withdrawn from us.
+        messages: turns,
     })
 
     if (!res.ok) {
@@ -280,9 +297,18 @@ export async function answerSupportQuestion(
     const data = await res.json()
     await recordUsage(data.usage?.input_tokens ?? 0, data.usage?.output_tokens ?? 0)
 
-    const text = '{' + (data.content?.[0]?.text ?? '')
-    const parsed = JSON.parse(text) as { reply?: string; escalate?: boolean }
-    if (!parsed.reply) return { status: 'unavailable', reason: 'error' }
+    const raw = (data.content ?? [])
+      .filter((c: { type?: string }) => c?.type === 'text')
+      .map((c: { text?: string }) => c.text ?? '')
+      .join('')
+
+    const parsed = extractJson(raw)
+    if (!parsed?.reply) {
+      // Log the shape we actually got. A silent return here is how a parse
+      // failure looks identical to a network failure from the outside.
+      log.error('support agent', new Error(`unparseable reply: ${raw.slice(0, 300)}`))
+      return { status: 'unavailable', reason: 'error' }
+    }
 
     return { status: 'ok', reply: parsed.reply, escalate: parsed.escalate === true }
   } catch (err) {
