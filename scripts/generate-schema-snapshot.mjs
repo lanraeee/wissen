@@ -12,7 +12,15 @@ import { fileURLToPath } from 'url'
 // snapshot cannot drift from schema.sql; lib/schema-snapshot.test.ts fails
 // if it ever does.
 const root = join(dirname(fileURLToPath(import.meta.url)), '..')
-const sqlText = readFileSync(join(root, 'lib', 'schema.sql'), 'utf-8')
+
+// Normalise line endings before embedding. Git rewrites schema.sql's newlines
+// on checkout (CRLF on Windows, LF elsewhere), so without this the generated
+// snapshot's bytes depend on which machine last ran the build -- and
+// schema-snapshot.test.ts, which compares them byte for byte, fails on a
+// fresh clone or in CI for a reason that has nothing to do with the schema.
+// The drift check only ever parses this text, so the newline style is not
+// information worth preserving.
+const sqlText = readFileSync(join(root, 'lib', 'schema.sql'), 'utf-8').replace(/\r\n/g, '\n')
 
 const out = `// GENERATED FILE -- do not edit by hand.
 // Regenerate with: npm run schema:snapshot (runs automatically on build).
