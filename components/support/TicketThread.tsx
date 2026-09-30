@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
-import VoiceRecorder from './VoiceRecorder'
 import SpeakButton from './SpeakButton'
 
 type Msg = {
@@ -10,7 +9,6 @@ type Msg = {
   author_type: 'visitor' | 'staff' | 'ai'
   author_name: string
   body: string
-  audio_id: string | null
   created_at: string
 }
 
@@ -27,7 +25,6 @@ export default function TicketThread({
 }) {
   const [messages, setMessages] = useState<Msg[]>(initialMessages)
   const [body, setBody] = useState('')
-  const [audioId, setAudioId] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
 
@@ -55,11 +52,11 @@ export default function TicketThread({
       const res = await fetch(`/api/support/tickets/${encodeURIComponent(reference)}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: body, audioId }),
+        body: JSON.stringify({ message: body }),
       })
       const data = await res.json()
       if (!res.ok) { setError(data.error ?? 'Could not send that.'); return }
-      setBody(''); setAudioId(null)
+      setBody('')
       await poll()
     } catch {
       setError('Could not reach us just now.')
@@ -85,9 +82,6 @@ export default function TicketThread({
                   {mine ? 'You' : m.author_name} · {new Date(m.created_at).toLocaleString()}
                 </div>
                 {m.body}
-                {m.audio_id && (
-                  <audio controls preload="none" src={`/api/support/voice/${m.audio_id}`} style={{ display: 'block', marginTop: 10, width: '100%', maxWidth: 300 }} />
-                )}
               </div>
               {!mine && <SpeakButton text={m.body} />}
             </div>
@@ -109,14 +103,6 @@ export default function TicketThread({
             maxLength={5000}
             style={{ width: '100%', boxSizing: 'border-box', padding: '10px 12px', border: '1px solid var(--line, #e8e4dc)', borderRadius: 8, fontFamily: 'inherit', fontSize: '.92rem', resize: 'vertical', outline: 'none' }}
           />
-          <VoiceRecorder
-            disabled={busy}
-            onRecorded={({ audioId: id, transcript }) => {
-              setAudioId(id)
-              setBody(b => (b ? `${b}\n\n${transcript}` : transcript || '🎤 Voice note').trim())
-            }}
-          />
-          {audioId && <p style={{ fontSize: '.78rem', color: '#1a6b3c', margin: 0 }}>Voice note attached ✓</p>}
           {error && <p style={{ color: '#a33', fontSize: '.86rem', margin: 0 }}>{error}</p>}
           <div>
             <button type="submit" className="btn" disabled={busy || !body.trim()}>

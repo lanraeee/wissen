@@ -86,7 +86,7 @@ export default function PrivacyPolicyPage() {
           <p><strong>Community content.</strong> Discussion threads, replies, and impact-story testimonials you choose to submit are stored and, where approved for publication, displayed publicly on the Site alongside your name and any role/title you provide.</p>
           <p><strong>Donations.</strong> When you donate, we collect your name, email address, and the amount and currency donated. We do <strong>not</strong> collect or store your card number, expiry date, or CVV — those are entered directly into Stripe&apos;s secure, hosted payment page and never pass through our servers. See <Link href="#payments" style={{ color: '#1a3c2e' }}>Payments</Link> below.</p>
           <p><strong>Automatically collected information.</strong> Like most websites, we automatically log some technical information when you visit: page views, the page you came from (referrer), an approximate country derived from your IP address, device/browser type, and a session identifier. We use PostHog, a product analytics tool, for this purpose.</p>
-          <p><strong>Support conversations.</strong> If you open a support ticket or use the live chat, we collect your name, optionally your email address, the messages and voice notes you send, and technical details about your visit. Precise location is collected only if you explicitly choose to share it. This is set out in full in <Link href="#support" style={{ color: '#1a3c2e' }}>Support, Live Chat &amp; Voice Notes</Link>.</p>
+          <p><strong>Support conversations.</strong> If you open a support ticket or use the live chat, we collect your name and email address, the messages you send, and technical details about your visit. Precise location is collected only if you explicitly choose to share it. This is set out in full in <Link href="#support" style={{ color: '#1a3c2e' }}>Support, Live Chat &amp; Voice Notes</Link>.</p>
           <p><strong>Cookies.</strong> We use a small number of cookies and browser storage entries — see <Link href="#cookies" style={{ color: '#1a3c2e' }}>Cookies &amp; Tracking</Link>.</p>
 
           <H id="how-we-use-it" n="3">How We Use Your Information</H>
@@ -132,7 +132,7 @@ export default function PrivacyPolicyPage() {
 
           <p><strong>Who you are.</strong> Before your first chat message we ask for your name and email address. Both are required: your conversation is locked to that email address, and without it there would be no way to keep the conversation private to you or to reach you with an answer if you close the tab. If you are signed in, we use your account details instead and link the conversation to your account.</p>
 
-          <p><strong>What you send us.</strong> The messages you write, and any voice note you record, are stored so that our team can read them and reply. Replies from our team appear in the same conversation and, if you gave an email address, are also emailed to you.</p>
+          <p><strong>What you send us.</strong> The messages you write are stored so that our team can read them and reply. Replies from our team appear in the same conversation and, if you gave an email address, are also emailed to you.</p>
 
           <p><strong>Getting back to your conversation.</strong> Each conversation gets a reference (for example <code>WH-ABCDE-FGHIJ</code>). The reference on its own does <strong>not</strong> open the conversation — it only names it. To read the thread you must either be signed in to the account that started it, be using the same browser you started it in, or ask us to email a link to the address the conversation is locked to. That link expires after 30 minutes. If someone sees your reference, they still cannot read your conversation.</p>
 
@@ -142,7 +142,6 @@ export default function PrivacyPolicyPage() {
 
           <p><strong>Precise location — only if you choose to share it.</strong> The chat has a &ldquo;Share my location&rdquo; button. If you tap it, your browser will ask for your permission. We only receive your precise location if you accept that prompt. You can decline, and we will help you without it. If you do share it, we store the coordinates together with the time you shared them, and a line saying you shared your location appears in your own conversation so you can always see what was sent. We never obtain precise location any other way — we cannot, and we do not try.</p>
 
-          <p><strong>Voice notes.</strong> If you record a voice note, the audio is uploaded and stored so our team can listen to it. Where your browser supports it, a written transcript is produced <em>on your own device</em> and sent as the message text; the audio itself is never sent to a transcription company. Recordings are limited to 60 seconds.</p>
 
           <p><strong>Our AI assistant.</strong> Live chat is answered first by an automated assistant built on Claude, an AI service provided by Anthropic. Your chat messages are sent to Anthropic to generate a reply. The assistant is restricted to information published on this website, and it will hand the conversation to a person whenever it is unsure, whenever you ask for a human, and whenever the subject is money, a complaint, safeguarding, or the status of your own application. Once a member of our team replies, the assistant stops taking part in that conversation. It will never ask you for payment details, and Wissen-Haus never asks anyone to pay for access to a scholarship.</p>
 
@@ -164,7 +163,7 @@ export default function PrivacyPolicyPage() {
             We retain account and learning-activity data for as long as your account is active, and donation records for as long as required for financial and tax record-keeping purposes. You may request deletion of your account at any time (see <Link href="#rights" style={{ color: '#1a3c2e' }}>Your Rights</Link>); we will delete or anonymise personal information that we are not legally required to retain.
           </p>
           <p>
-            Support conversations, including any voice notes and any location you chose to share, are kept while we deal with your enquiry and for a reasonable period afterwards so that we can pick up a follow-up. You can ask us to delete a support conversation at any time by emailing <a href="mailto:info@wissenhaus.org" style={{ color: '#1a3c2e' }}>info@wissenhaus.org</a> and quoting your conversation reference.
+            Support conversations, including any location you chose to share, are kept while we deal with your enquiry and for a reasonable period afterwards so that we can pick up a follow-up. You can ask us to delete a support conversation at any time by emailing <a href="mailto:info@wissenhaus.org" style={{ color: '#1a3c2e' }}>info@wissenhaus.org</a> and quoting your conversation reference.
           </p>
 
           <H id="security" n="10">Data Security</H>

@@ -39,7 +39,6 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ refe
 
 const ReplySchema = z.object({
   message: zLongText,
-  audioId: z.string().uuid().nullish(),
 })
 
 export async function POST(req: NextRequest, { params }: { params: Promise<{ reference: string }> }) {
@@ -59,7 +58,6 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ ref
     authorType: 'visitor',
     authorName: ticket.requester_name,
     body: data.message,
-    audioId: data.audioId ?? null,
   })
 
   try {

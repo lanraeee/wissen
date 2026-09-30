@@ -79,8 +79,6 @@ export const RATE_LIMITS: Array<{ prefix: string; limit: number; windowMs: numbe
   // stops the month running away, this stops one visitor eating it in an
   // afternoon. Listed BEFORE /api/support so it wins the prefix match.
   { prefix: '/api/support/chat', limit: 20, windowMs: 10 * 60_000 },
-  // Voice notes are unauthenticated writes of binary data into Postgres.
-  { prefix: '/api/support/voice', limit: 20, windowMs: 10 * 60_000 },
   // Opening a ticket and replying to one. Only non-GET requests reach this
   // table (see middleware), so the widget's polling is unaffected; this
   // bounds writes, which is what can be abused.

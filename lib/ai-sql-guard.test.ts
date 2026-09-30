@@ -97,8 +97,8 @@ describe('redactRows', () => {
     expect(Object.values(row)).toEqual(['[redacted]', '[redacted]', '[redacted]'])
   })
 
-  it('redacts voice note bytes', () => {
-    const [row] = redactRows([{ id: '1', bytes: Buffer.from('audio') }])
+  it('redacts binary columns', () => {
+    const [row] = redactRows([{ id: '1', bytes: Buffer.from('binary') }])
     expect(row.bytes).toBe('[redacted]')
   })
 

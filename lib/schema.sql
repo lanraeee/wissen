@@ -410,35 +410,20 @@ CREATE INDEX IF NOT EXISTS idx_tickets_assigned ON support_tickets(assigned_emai
 
 -- One turn of a ticket conversation. author_type distinguishes the three
 -- writers so the UI can style them and so "did a human ever answer this?"
--- stays answerable. audio_id points at a voice note the visitor recorded;
--- body then holds its transcript, which is produced in the browser -- the
--- audio is kept so staff can listen when the transcript is poor or absent.
+-- stays answerable. `internal` keeps staff notes in the same thread as the
+-- conversation they are about, while excluding them from every
+-- visitor-facing read.
 CREATE TABLE IF NOT EXISTS ticket_messages (
   id           UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   ticket_id    UUID NOT NULL REFERENCES support_tickets(id) ON DELETE CASCADE,
   author_type  TEXT NOT NULL CHECK (author_type IN ('visitor','staff','ai')),
   author_name  TEXT NOT NULL,
   body         TEXT NOT NULL,
-  audio_id     UUID,
   internal     BOOLEAN NOT NULL DEFAULT FALSE,
   created_at   TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 CREATE INDEX IF NOT EXISTS idx_ticket_messages_thread ON ticket_messages(ticket_id, created_at);
 
--- Voice notes, stored as bytes in Postgres rather than an object store.
--- No blob storage is provisioned, and a capped 60-second opus recording is
--- ~180 KB -- small enough that adding a vendor (and its cost, its token, its
--- outage surface) is not yet worth it. Revisit if volume makes this heavy;
--- the served route is the only thing that would change.
-CREATE TABLE IF NOT EXISTS voice_notes (
-  id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  ticket_id   UUID REFERENCES support_tickets(id) ON DELETE CASCADE,
-  mime_type   TEXT NOT NULL,
-  bytes       BYTEA NOT NULL,
-  duration_ms INTEGER,
-  created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
-);
-CREATE INDEX IF NOT EXISTS idx_voice_notes_ticket ON voice_notes(ticket_id);
 
 -- Monthly spend ledger for the AI agent. One row per calendar month, counted
 -- server-side before each call, so a runaway loop or an abusive session cannot

@@ -105,9 +105,6 @@ export default function AdminTicketDetail({
                 {' · '}{new Date(m.created_at).toLocaleString()}
               </div>
               {m.body}
-              {m.audio_id && (
-                <audio controls preload="none" src={`/api/support/voice/${m.audio_id}`} style={{ display: 'block', marginTop: 10, width: '100%', maxWidth: 300 }} />
-              )}
             </div>
           </div>
         ))}

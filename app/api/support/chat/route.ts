@@ -18,7 +18,6 @@ const ChatSchema = z.object({
   message: zLongText,
   name: z.string().max(120).nullish(),
   email: z.string().email().max(200).nullish(),
-  audioId: z.string().uuid().nullish(),
   // Where the visitor opened the chat from, so staff can see what they were
   // reading. Everything else in the context comes from request headers.
   page: z.string().max(500).nullish(),
@@ -54,7 +53,6 @@ export async function POST(req: NextRequest) {
         userId: session?.id ?? null,
         channel: 'chat',
         body: data.message,
-        audioId: data.audioId ?? null,
         context: visitorContextFrom(req, { page: data.page, referrer: data.referrer }),
       })
       opened = true
@@ -72,7 +70,6 @@ export async function POST(req: NextRequest) {
         authorType: 'visitor',
         authorName: visitorName,
         body: data.message,
-        audioId: data.audioId ?? null,
       })
     }
 

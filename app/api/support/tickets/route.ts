@@ -14,7 +14,6 @@ const CreateSchema = z.object({
   subject: zShortText,
   message: zLongText,
   channel: z.enum(['form', 'chat']).nullish(),
-  audioId: z.string().uuid().nullish(),
   page: z.string().max(500).nullish(),
   referrer: z.string().max(1000).nullish(),
 })
@@ -35,7 +34,6 @@ export async function POST(req: NextRequest) {
       userId: session?.id ?? null,
       channel: data.channel ?? 'form',
       body: data.message,
-      audioId: data.audioId ?? null,
       context: visitorContextFrom(req, { page: data.page, referrer: data.referrer }),
     })
 

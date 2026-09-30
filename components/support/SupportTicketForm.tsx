@@ -2,7 +2,6 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import VoiceRecorder from './VoiceRecorder'
 
 const inputStyle: React.CSSProperties = {
   width: '100%', padding: '10px 12px', fontSize: '.92rem', boxSizing: 'border-box',
@@ -14,7 +13,6 @@ export default function SupportTicketForm() {
   const [email, setEmail] = useState('')
   const [subject, setSubject] = useState('')
   const [message, setMessage] = useState('')
-  const [audioId, setAudioId] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
   const [reference, setReference] = useState<string | null>(null)
@@ -28,7 +26,7 @@ export default function SupportTicketForm() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          name, email, subject, message, audioId,
+          name, email, subject, message,
           page: window.location.pathname,
           referrer: document.referrer || null,
         }),
@@ -83,20 +81,6 @@ export default function SupportTicketForm() {
           <textarea value={message} onChange={e => setMessage(e.target.value)} required rows={6} maxLength={5000} style={{ ...inputStyle, resize: 'vertical' }} />
         </label>
 
-        <div>
-          <VoiceRecorder
-            disabled={busy}
-            onRecorded={({ audioId: id, transcript }) => {
-              setAudioId(id)
-              // The transcript is a convenience, not a replacement: it drops
-              // into the box so the sender can correct it before sending, and
-              // the audio goes along regardless.
-              setMessage(m => (m ? `${m}\n\n${transcript}` : transcript).trim())
-              if (!subject) setSubject((transcript || 'Voice note').slice(0, 80))
-            }}
-          />
-          {audioId && <p style={{ fontSize: '.78rem', color: '#1a6b3c', marginTop: 6 }}>Voice note attached ✓</p>}
-        </div>
 
         {error && <p style={{ color: '#a33', fontSize: '.86rem' }}>{error}</p>}
 

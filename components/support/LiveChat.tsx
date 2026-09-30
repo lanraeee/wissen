@@ -2,10 +2,9 @@
 
 import { useState, useRef, useEffect, useCallback } from 'react'
 import Link from 'next/link'
-import VoiceRecorder from './VoiceRecorder'
 import SpeakButton from './SpeakButton'
 
-type Msg = { id: string; author_type: 'visitor' | 'staff' | 'ai'; author_name: string; body: string; audio_id: string | null; created_at: string }
+type Msg = { id: string; author_type: 'visitor' | 'staff' | 'ai'; author_name: string; body: string; created_at: string }
 
 const STORAGE_KEY = 'wh_support_reference'
 const IDENTITY_KEY = 'wh_support_identity'
@@ -69,7 +68,7 @@ export default function LiveChat() {
 
   useEffect(() => { endRef.current?.scrollIntoView({ behavior: 'smooth' }) }, [messages.length])
 
-  async function send(body: string, audioId?: string) {
+  async function send(body: string) {
     const text = body.trim()
     if (!text || sending) return
     setSending(true)
@@ -79,7 +78,7 @@ export default function LiveChat() {
     // stored copy a moment later.
     const optimistic: Msg = {
       id: `local-${Date.now()}`, author_type: 'visitor', author_name: 'You',
-      body: text, audio_id: audioId ?? null, created_at: new Date().toISOString(),
+      body: text, created_at: new Date().toISOString(),
     }
     setMessages(m => [...m, optimistic])
     setInput('')
@@ -89,7 +88,7 @@ export default function LiveChat() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          reference, message: text, audioId: audioId ?? null,
+          reference, message: text,
           name: name || null, email: email || null,
           page: window.location.pathname,
           referrer: document.referrer || null,
@@ -190,7 +189,7 @@ export default function LiveChat() {
         {messages.length === 0 && identified && (
           <p style={{ fontSize: '.85rem', color: '#6b7a70', margin: 0 }}>
             Hi {name.split(' ')[0]} — ask us about courses, scholarships, the Career Clarity
-            Fair, or anything else. You can type or record a voice note.
+            Fair, or anything else.
           </p>
         )}
         {messages.map(m => {
@@ -205,9 +204,6 @@ export default function LiveChat() {
               }}>
                 {!mine && <div style={{ fontSize: '.7rem', fontWeight: 700, color: '#6b7a70', marginBottom: 3 }}>{m.author_name}</div>}
                 {m.body}
-                {m.audio_id && (
-                  <audio controls preload="none" src={`/api/support/voice/${m.audio_id}`} style={{ display: 'block', marginTop: 8, width: '100%', maxWidth: 240 }} />
-                )}
               </div>
               {!mine && <SpeakButton text={m.body} />}
             </div>
@@ -282,17 +278,6 @@ export default function LiveChat() {
           >
             Send
           </button>
-        </div>
-        <div style={{ marginTop: 8 }}>
-          <VoiceRecorder
-            disabled={sending}
-            onRecorded={({ audioId, transcript }) =>
-              // With no transcript (Firefox, or speech recognition refused) the
-              // audio still sends -- staff can listen. The placeholder is what
-              // the thread shows in place of words.
-              send(transcript || '🎤 Voice note', audioId)
-            }
-          />
         </div>
         {reference && !locationShared && typeof navigator !== 'undefined' && 'geolocation' in navigator && (
           <button

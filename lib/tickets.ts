@@ -44,7 +44,6 @@ export type TicketMessage = {
   author_type: AuthorType
   author_name: string
   body: string
-  audio_id: string | null
   internal: boolean
   created_at: string
 }
@@ -73,7 +72,6 @@ export async function createTicket(input: {
   userId?: string | null
   channel?: 'form' | 'chat'
   body: string
-  audioId?: string | null
   context?: VisitorContext | null
 }): Promise<Ticket> {
   const reference = generateReference()
@@ -96,7 +94,6 @@ export async function createTicket(input: {
     authorType: 'visitor',
     authorName: input.requesterName,
     body: input.body,
-    audioId: input.audioId ?? null,
   })
 
   return ticket
@@ -106,13 +103,11 @@ export async function addMessage(ticketId: string, input: {
   authorType: AuthorType
   authorName: string
   body: string
-  audioId?: string | null
   internal?: boolean
 }): Promise<TicketMessage> {
   const [message] = await sql`
-    INSERT INTO ticket_messages (ticket_id, author_type, author_name, body, audio_id, internal)
-    VALUES (${ticketId}, ${input.authorType}, ${input.authorName}, ${input.body},
-            ${input.audioId ?? null}, ${input.internal ?? false})
+    INSERT INTO ticket_messages (ticket_id, author_type, author_name, body, internal)
+    VALUES (${ticketId}, ${input.authorType}, ${input.authorName}, ${input.body}, ${input.internal ?? false})
     RETURNING *
   ` as TicketMessage[]
 

@@ -32,7 +32,7 @@ export const STATEMENT_TIMEOUT_MS = 8_000
 const REDACTED_COLUMNS = [
   'password_hash', 'password', 'token', 'secret', 'api_key', 'apikey',
   'reset_token', 'session_id', 'cookie', 'authorization',
-  // Voice note audio: bytea, enormous, and of no analytical value as text.
+  // Any binary column: enormous, and of no analytical value as text.
   'bytes',
 ]
 
