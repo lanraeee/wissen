@@ -499,3 +499,39 @@ CREATE TABLE IF NOT EXISTS ai_agent_runs (
 );
 CREATE INDEX IF NOT EXISTS idx_ai_agent_runs_actor ON ai_agent_runs(actor_email, created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_ai_agent_runs_time  ON ai_agent_runs(created_at DESC);
+
+-- Knowledge base the support agent answers from.
+--
+-- Two sources feed it. 'server' entries are rebuilt from live site data
+-- (content, courses, opportunities, partner scholarships) and are disposable:
+-- a rebuild replaces them wholesale. 'answer' entries come from a staff reply
+-- to a question the agent could not handle, and are NOT disposable -- they are
+-- the only thing here a human wrote deliberately, so a rebuild must never
+-- delete them.
+--
+-- Retrieval is Postgres full-text search. At this data size it is accurate
+-- enough on the vocabulary visitors actually use, and it costs nothing per
+-- question -- which matters when the alternative is an embedding call on every
+-- message a visitor sends.
+CREATE TABLE IF NOT EXISTS kb_entries (
+  id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  source      TEXT NOT NULL CHECK (source IN ('server','answer')),
+  source_key  TEXT,
+  title       TEXT NOT NULL,
+  body        TEXT NOT NULL,
+  -- 'pending' entries are invisible to the agent. A staff answer lands here
+  -- and stays out of play until someone approves it, because an answer that
+  -- was right for one person ("yes, you qualify") becomes an answer the agent
+  -- would otherwise give everyone.
+  status      TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active','pending','archived')),
+  approved_by TEXT,
+  created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at  TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  search      TSVECTOR GENERATED ALWAYS AS (
+                setweight(to_tsvector('english', coalesce(title, '')), 'A') ||
+                setweight(to_tsvector('english', coalesce(body, '')), 'B')
+              ) STORED
+);
+CREATE INDEX IF NOT EXISTS idx_kb_search ON kb_entries USING GIN(search);
+CREATE INDEX IF NOT EXISTS idx_kb_status ON kb_entries(status, source);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_kb_server_key ON kb_entries(source_key) WHERE source = 'server';

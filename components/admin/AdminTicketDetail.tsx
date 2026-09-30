@@ -72,9 +72,24 @@ export default function AdminTicketDetail({
           style={{ padding: '6px 10px', borderRadius: 6, border: '1px solid #e8e4dc', fontSize: '.82rem' }}>
           {['low', 'normal', 'high'].map(p => <option key={p} value={p}>{p} priority</option>)}
         </select>
-        {ticket.escalated
-          ? <span style={{ fontSize: '.78rem', color: '#a33', fontWeight: 700 }}>Needs a human — the assistant has stepped back</span>
-          : <span style={{ fontSize: '.78rem', color: '#1a6b3c' }}>The assistant is still handling this</span>}
+        {ticket.escalated ? (
+          <>
+            <span style={{ fontSize: '.78rem', color: '#a33', fontWeight: 700 }}>Needs a human — the assistant has stepped back</span>
+            <button
+              onClick={() => act({ handBackToAi: true })}
+              disabled={busy}
+              title="The assistant will answer the visitor's next message again"
+              style={{
+                background: '#fff', color: '#1a3c2e', border: '1px solid #e8e4dc', borderRadius: 6,
+                padding: '6px 14px', fontSize: '.8rem', fontWeight: 600, cursor: busy ? 'wait' : 'pointer',
+              }}
+            >
+              Hand back to assistant
+            </button>
+          </>
+        ) : (
+          <span style={{ fontSize: '.78rem', color: '#1a6b3c' }}>The assistant is still handling this</span>
+        )}
       </div>
 
       <VisitorPanel ticket={ticket} />

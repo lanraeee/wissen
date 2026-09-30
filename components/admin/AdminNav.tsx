@@ -10,6 +10,7 @@ export const NAV = [
   ['Dashboard', '/admin'],
   ['Analytics', '/admin/analytics'],
   ['AI Agent', '/admin/ai'],
+  ['Knowledge Base', '/admin/knowledge'],
   ['Activity Log', '/admin/activity'],
   ['Users', '/admin/users'],
   ['Support', '/admin/support'],
@@ -42,6 +43,7 @@ export const BADGE_KEYS: Record<string, string> = {
   '/admin/bank-transfers': 'bank_transfer',
   '/admin/scholarships': 'scholarship',
   '/admin/content-approvals': 'content_approval',
+  '/admin/knowledge': 'kb_pending',
 }
 
 export function isNavActive(pathname: string, href: string) {

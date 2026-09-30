@@ -92,10 +92,15 @@ export function AiIcon({ size = 20 }: IconProps) {
   return <svg {...base(size)}><path d="M12 3l1.9 4.6L18.5 9.5l-4.6 1.9L12 16l-1.9-4.6L5.5 9.5l4.6-1.9z" /><path d="M18 15.5l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z" /></svg>
 }
 
+export function KnowledgeIcon({ size = 20 }: IconProps) {
+  return <svg {...base(size)}><path d="M4 5.5A1.5 1.5 0 0 1 5.5 4H11v16H5.5A1.5 1.5 0 0 1 4 18.5z" /><path d="M20 5.5A1.5 1.5 0 0 0 18.5 4H13v16h5.5a1.5 1.5 0 0 0 1.5-1.5z" /></svg>
+}
+
 export const NAV_ICONS: Record<string, (props: IconProps) => React.ReactElement> = {
   '/admin': DashboardIcon,
   '/admin/analytics': AnalyticsIcon,
   '/admin/ai': AiIcon,
+  '/admin/knowledge': KnowledgeIcon,
   '/admin/activity': ActivityIcon,
   '/admin/users': UsersIcon,
   '/admin/support': SupportIcon,

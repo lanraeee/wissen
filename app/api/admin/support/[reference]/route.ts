@@ -5,6 +5,7 @@ import sql from '@/lib/db'
 import { parseBody } from '@/lib/validation'
 import { getTicketByReference, getMessages, addMessage } from '@/lib/tickets'
 import { sendStaffReplyToRequester } from '@/lib/email'
+import { proposeAnswerEntry } from '@/lib/knowledge-base'
 import { logActivity } from '@/lib/audit-log'
 import { log } from '@/lib/logger'
 
@@ -26,6 +27,8 @@ const ActionSchema = z.object({
   reply: z.string().max(5000).nullish(),
   internal: z.boolean().nullish(),
   status: z.enum(['open', 'pending', 'resolved', 'closed']).nullish(),
+  /** Hand the conversation back to the assistant (undoes the escalation). */
+  handBackToAi: z.boolean().nullish(),
   priority: z.enum(['low', 'normal', 'high']).nullish(),
   assignedEmail: z.string().email().max(200).nullable().optional(),
 })
@@ -50,8 +53,9 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ ref
       internal,
     })
 
-    // A staff reply takes the conversation off the agent for good: two voices
-    // answering one person is worse than one slower voice.
+    // A staff reply takes the conversation off the agent: two voices answering
+    // one person is worse than one slower voice. It can be handed back
+    // deliberately below, but never silently.
     if (!internal) {
       await sql`UPDATE support_tickets SET escalated = TRUE WHERE id = ${ticket.id}`
       try {
@@ -59,7 +63,31 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ ref
       } catch (err) {
         log.error('support staff reply email', err)
       }
+
+      // Answering a question the agent could not is the moment worth learning
+      // from. The visitor's first message is the question; this reply is the
+      // answer. It is proposed as PENDING -- an answer that was right for this
+      // person is not automatically right for everyone, so a human approves it
+      // before the agent may reuse it.
+      if (ticket.ai_handled || ticket.escalated) {
+        const [first] = await getMessages(ticket.id, { includeInternal: false })
+        if (first?.author_type === 'visitor') {
+          await proposeAnswerEntry(first.body, data.reply.trim(), ticket.reference)
+        }
+      }
     }
+  }
+
+  // Handing back to the assistant. Explicit, and recorded in the thread so the
+  // visitor is not silently switched from a person to a bot mid-conversation.
+  if (data.handBackToAi) {
+    await sql`UPDATE support_tickets SET escalated = FALSE, status = 'open' WHERE id = ${ticket.id}`
+    await addMessage(ticket.id, {
+      authorType: 'staff',
+      authorName: session.name || 'Wissen-Haus team',
+      body: 'Handed this conversation back to the assistant.',
+      internal: true,
+    })
   }
 
   if (data.status) await sql`UPDATE support_tickets SET status = ${data.status} WHERE id = ${ticket.id}`

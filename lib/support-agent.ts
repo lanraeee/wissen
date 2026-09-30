@@ -1,6 +1,7 @@
 import sql from '@/lib/db'
 import { log } from '@/lib/logger'
 import { getAiSettings } from '@/lib/ai-settings'
+import { searchKnowledgeBase } from '@/lib/knowledge-base'
 
 const API_URL = 'https://api.anthropic.com/v1/messages'
 
@@ -136,6 +137,37 @@ export function normaliseTurns(
   return out
 }
 
+// What this visitor has asked before, by email. Context retention without a
+// second model call: the agent stops asking someone to re-explain themselves
+// across conversations, and can say "you asked about this last week".
+// Excludes the current ticket so the live thread is not duplicated.
+async function recallVisitor(email: string | null | undefined, ticketId: string | null | undefined): Promise<string> {
+  if (!email) return ''
+  try {
+    const rows = await sql`
+      SELECT t.reference, t.subject, t.created_at, t.status,
+             (SELECT m.body FROM ticket_messages m
+               WHERE m.ticket_id = t.id AND m.author_type IN ('staff','ai') AND m.internal = FALSE
+               ORDER BY m.created_at DESC LIMIT 1) AS last_reply
+      FROM support_tickets t
+      WHERE lower(t.requester_email) = lower(${email})
+        AND (${ticketId}::uuid IS NULL OR t.id <> ${ticketId}::uuid)
+      ORDER BY t.created_at DESC
+      LIMIT 3
+    ` as { reference: string; subject: string; created_at: string; status: string; last_reply: string | null }[]
+
+    if (!rows.length) return ''
+    const lines = rows.map(r =>
+      `- ${new Date(r.created_at).toISOString().slice(0, 10)} (${r.status}): "${r.subject}"`
+      + (r.last_reply ? ` — we replied: ${r.last_reply.slice(0, 200)}` : ' — no reply yet'))
+    return "\n\n# THIS VISITOR'S EARLIER CONVERSATIONS\n"
+      + 'Use these for continuity. Do not repeat questions they have already answered.\n'
+      + lines.join('\n')
+  } catch {
+    return ''
+  }
+}
+
 export type AgentResult =
   | { status: 'ok'; reply: string; escalate: boolean }
   | { status: 'unavailable'; reason: 'not_configured' | 'cap_reached' | 'error' }
@@ -143,6 +175,7 @@ export type AgentResult =
 export async function answerSupportQuestion(
   history: { author_type: string; body: string }[],
   question: string,
+  opts: { visitorEmail?: string | null; ticketId?: string | null } = {},
 ): Promise<AgentResult> {
   const apiKey = process.env.ANTHROPIC_API_KEY
   if (!apiKey) return { status: 'unavailable', reason: 'not_configured' }
@@ -161,7 +194,22 @@ export async function answerSupportQuestion(
     return { status: 'unavailable', reason: 'error' }
   }
 
-  const context = await buildContext()
+  const [baseContext, kbHits, memory] = await Promise.all([
+    buildContext(),
+    // Retrieved per question, so the agent sees the parts of the knowledge
+    // base that actually bear on what was asked rather than a fixed excerpt.
+    searchKnowledgeBase(question),
+    recallVisitor(opts.visitorEmail, opts.ticketId),
+  ])
+
+  const context = [
+    baseContext,
+    kbHits.length
+      ? '\n\n# KNOWLEDGE BASE\n'
+        + kbHits.map(k => `## ${k.title}\n${k.body}`).join('\n\n')
+      : '',
+    memory,
+  ].filter(Boolean).join('')
 
   // Only the last few turns: a support chat rarely needs more, and an
   // unbounded history is an unbounded per-call cost.
@@ -176,7 +224,7 @@ export async function answerSupportQuestion(
   // the last stored turn is also from the visitor, appending would produce
   // two consecutive user messages -- the same 400 by another route.
   const turns = normaliseTurns([
-    ...history.slice(-8),
+    ...history.slice(-20),
     { author_type: 'visitor', body: question },
   ])
   if (!turns.length) return { status: 'unavailable', reason: 'error' }

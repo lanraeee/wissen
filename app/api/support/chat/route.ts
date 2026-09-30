@@ -99,6 +99,7 @@ export async function POST(req: NextRequest) {
     const result = await answerSupportQuestion(
       history.slice(0, -1).map(m => ({ author_type: m.author_type, body: m.body })),
       data.message,
+      { visitorEmail: ticket.requester_email, ticketId: ticket.id },
     )
 
     if (result.status !== 'ok' || result.escalate) {
