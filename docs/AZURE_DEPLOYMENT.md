@@ -24,7 +24,7 @@ The app itself is portable — Next.js 15 with `next start` is a plain Node serv
 | Publish | **Code** | Not Static Web Apps — this app has middleware, ~40 API routes and server components. It needs a server. |
 | Runtime stack | **Node 22 LTS** | Nothing pins a version (no `engines`, no `.nvmrc`); Next 15.5 needs ≥18.18, so take the newest LTS. |
 | OS | **Linux** | Windows Node hosting on App Service is a worse-supported path for Next. |
-| Region | **West Europe / Sweden Central** | PostHog is pinned to `eu.i.posthog.com`. Match your Neon region too — every page render makes DB round-trips, so cross-continent latency compounds. |
+| Region | **Sweden Central** (West Europe rejected new resources on this subscription — `RequestDisallowedByAzure: locationineligible` — on 2026-10-01) | PostHog is pinned to `eu.i.posthog.com`. Match your Neon region too — every page render makes DB round-trips, so cross-continent latency compounds. |
 | Plan | **B1 minimum; S1 if you want slots** | Free F1's 60 CPU-min/day quota and lack of Always On will cold-start this into the ground. Deployment slots (staging + swap, which is also your rollback) need Standard. |
 
 Enable **Always On** once created. Without it App Service unloads the app when idle, and every first visitor pays a full Node + Next boot.
@@ -34,11 +34,13 @@ Enable **Always On** once created. Without it App Service unloads the app when i
 **An app named `WH-webApp` already exists** — it was created through the portal, which also generated `.github/workflows/main_wh-webapp.yml` and the three `AZUREAPPSERVICE_*` federated-credential secrets the workflow logs in with. If you are working against that app, skip to step 2 and just confirm its runtime stack is `NODE|22-lts`, its startup command is `npm run start`, and Always On is enabled:
 
 ```bash
-az webapp config show --name WH-webApp --resource-group <rg> \
+az webapp config show --name WH-webApp --resource-group Wissen-Haus-Live \
   --query "{stack:linuxFxVersion, startup:appCommandLine, alwaysOn:alwaysOn}"
 ```
 
 The commands below are for provisioning from scratch — substitute your own names.
+
+> **2026-10-01: the plan and web app were deleted and recreated.** Recreated in the existing `Wissen-Haus-Live` resource group as `WH-webApp-plan` (B1, Linux) and `WH-webApp`, in `swedencentral` (West Europe refused new resources on this subscription — see the Region row above). The GitHub Actions workflow identifies the app by name only (no resource group in `azure/webapps-deploy@v3`), so recreating under the same name in the same subscription was enough for CI to keep working — but **App Service settings are not part of the git-tracked app**: the runtime env vars (step 2), custom domain/TLS (step 6), and anything set by hand are gone and must be redone. The federated-credential app registration behind the `AZUREAPPSERVICE_*` secrets is a separate Azure AD resource and survived the deletion untouched.
 
 ```bash
 RG=wissen-haus-rg
