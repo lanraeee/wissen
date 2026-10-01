@@ -1,5 +1,9 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
+#
+# See docs/AZURE_DEPLOYMENT.md for the full runbook, including the App Service
+# settings this workflow does NOT manage (the runtime secrets, startup command
+# and the cron replacement).
 
 name: Build and deploy Node.js app to Azure Web App - WH-webApp
 
@@ -19,21 +23,87 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Set up Node.js version
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: '22.x'
+          cache: npm
 
-      - name: npm install, build, and test
+      # NEXT_PUBLIC_* values are inlined into the client bundle by `next build`
+      # -- they are build inputs, not runtime reads, so App Service settings
+      # cannot supply them. A missing GitHub secret resolves to an empty
+      # string rather than being absent, and the call sites use `??`, which
+      # only falls back on null/undefined. An empty secret would therefore be
+      # compiled in as a real value: NEXT_PUBLIC_SITE_URL='' makes every
+      # password-reset link and receipt URL in lib/email.ts root-relative and
+      # broken, with nothing failing at build or boot to say so.
+      #
+      # This is the third time an env var that was present-but-empty has
+      # caused a silent outage here (FOUNDER_EMAIL, then CRON_SECRET), so the
+      # build refuses to produce a bundle rather than shipping one that looks
+      # fine and is not.
+      - name: Verify build-time secrets are present and non-empty
+        env:
+          NEXT_PUBLIC_SITE_URL: ${{ secrets.NEXT_PUBLIC_SITE_URL }}
+          NEXT_PUBLIC_BASE_URL: ${{ secrets.NEXT_PUBLIC_BASE_URL }}
+          NEXT_PUBLIC_POSTHOG_HOST: ${{ secrets.NEXT_PUBLIC_POSTHOG_HOST }}
+          NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN: ${{ secrets.NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN }}
+          WISSENDB_DATABASE_URL: ${{ secrets.WISSENDB_DATABASE_URL }}
         run: |
-          npm install
-          npm run build --if-present
-          npm run test --if-present
+          missing=0
+          for name in NEXT_PUBLIC_SITE_URL NEXT_PUBLIC_BASE_URL \
+                      NEXT_PUBLIC_POSTHOG_HOST NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN \
+                      WISSENDB_DATABASE_URL; do
+            if [ -z "${!name}" ]; then
+              echo "::error::Repository secret $name is missing or empty. It is needed at BUILD time; see docs/AZURE_DEPLOYMENT.md step 2."
+              missing=1
+            fi
+          done
+          exit $missing
+
+      - name: Install dependencies
+        run: npm ci
+
+      # WISSENDB_DATABASE_URL is needed here, not just at runtime. Per
+      # docs/adr/005-revalidate-tag-caching.md the admin-editable pages
+      # (homepage, /partner, /team, /wiki, /courses) are statically
+      # prerendered, so their site_content rows are read during the build.
+      # lib/site-content.ts catches DB errors and returns null, so a build
+      # without the connection string does not fail -- it quietly bakes the
+      # hardcoded fallback copy into those pages instead of the real content,
+      # and they keep serving it until an admin edit triggers a revalidation.
+      # Vercel exposed this var to its builds, which is why it was never a
+      # visible problem there.
+      - name: Build
+        env:
+          NEXT_PUBLIC_SITE_URL: ${{ secrets.NEXT_PUBLIC_SITE_URL }}
+          NEXT_PUBLIC_BASE_URL: ${{ secrets.NEXT_PUBLIC_BASE_URL }}
+          NEXT_PUBLIC_POSTHOG_HOST: ${{ secrets.NEXT_PUBLIC_POSTHOG_HOST }}
+          NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN: ${{ secrets.NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN }}
+          WISSENDB_DATABASE_URL: ${{ secrets.WISSENDB_DATABASE_URL }}
+        run: npm run build
+
+      - name: Test
+        run: npm test
+
+      # Drop devDependencies before packaging: they are needed for the build
+      # and the test run above, and never at runtime.
+      - name: Prune dev dependencies
+        run: npm prune --omit=dev
+
+      # Zip before uploading. node_modules has to ship -- `next start` needs it
+      # at runtime and nothing rebuilds on the host -- but it is tens of
+      # thousands of small files, and the artifact store moves them one by one
+      # in both directions. A single archive turns two very slow transfers into
+      # two fast ones.
+      - name: Package for deployment
+        run: zip -r --symlinks release.zip . -x '.git/*' '.github/*'
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: node-app
-          path: .
+          path: release.zip
+          retention-days: 7
 
   deploy:
     runs-on: ubuntu-latest
@@ -47,7 +117,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: node-app
-      
+
       - name: Login to Azure
         uses: azure/login@v2
         with:
@@ -61,5 +131,4 @@ jobs:
         with:
           app-name: 'WH-webApp'
           slot-name: 'Production'
-          package: .
-          
+          package: release.zip
