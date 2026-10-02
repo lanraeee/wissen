@@ -40,7 +40,42 @@ az webapp config show --name WH-webApp --resource-group Wissen-Haus-Live \
 
 The commands below are for provisioning from scratch — substitute your own names.
 
-> **2026-10-01: the plan and web app were deleted and recreated.** Recreated in the existing `Wissen-Haus-Live` resource group as `WH-webApp-plan` (B1, Linux) and `WH-webApp`, in `swedencentral` (West Europe refused new resources on this subscription — see the Region row above). The GitHub Actions workflow identifies the app by name only (no resource group in `azure/webapps-deploy@v3`), so recreating under the same name in the same subscription was enough for CI to keep working — but **App Service settings are not part of the git-tracked app**: the runtime env vars (step 2), custom domain/TLS (step 6), and anything set by hand are gone and must be redone. The federated-credential app registration behind the `AZUREAPPSERVICE_*` secrets is a separate Azure AD resource and survived the deletion untouched.
+> **2026-10-01: the plan and web app were deleted and recreated.** Recreated in the existing `Wissen-Haus-Live` resource group as `WH-webApp-plan` (B1, Linux) and `WH-webApp`, in `swedencentral` (West Europe refused new resources on this subscription — see the Region row above). The GitHub Actions workflow identifies the app by name only (no resource group in `azure/webapps-deploy@v3`), so recreating under the same name in the same subscription was enough for CI to keep working — but **App Service settings are not part of the git-tracked app**: the runtime env vars (step 2), custom domain/TLS (step 6), and anything set by hand are gone and must be redone. The Azure AD app registration behind the `AZUREAPPSERVICE_*` secrets was **also** deleted in the same cleanup (it did not survive, despite being a separate resource type) — see below for how that was rebuilt.
+
+### Recovering GitHub's OIDC login if the app registration is gone
+
+If a workflow run fails at the `azure/login@v2` step with `AADSTS700016: Application ... was not found in the directory`, the Azure AD app registration behind `AZUREAPPSERVICE_CLIENTID_*` no longer exists (deleted directly, or swept up in a broader cleanup — it is not part of the App Service resource and does not come back with it). Rebuild it from scratch:
+
+```bash
+# Run from Git Bash on Windows: set this first, or the leading "/subscriptions/..."
+# paths below get mangled into Windows paths (e.g. "C:/Program Files/Git/subscriptions/...")
+# and every command fails with a confusing "MissingSubscription" error.
+export MSYS_NO_PATHCONV=1
+
+# 1. New app registration + service principal
+APP_ID=$(az ad app create --display-name "WH-webApp-github-actions-deploy" --query appId -o tsv)
+az ad sp create --id "$APP_ID"
+
+# 2. Least-privilege role: scope to just this site, not the subscription or resource group
+az role assignment create \
+  --assignee "$APP_ID" \
+  --role "Website Contributor" \
+  --scope "/subscriptions/<sub-id>/resourceGroups/Wissen-Haus-Live/providers/Microsoft.Web/sites/WH-webApp"
+
+# 3. Federated credential trusting GitHub's OIDC issuer for this repo/branch
+az ad app federated-credential create \
+  --id "$APP_ID" \
+  --parameters '{
+    "name": "github-actions-main",
+    "issuer": "https://token.actions.githubusercontent.com",
+    "subject": "repo:<owner>/<repo>:ref:refs/heads/main",
+    "audiences": ["api://AzureADTokenExchange"]
+  }'
+```
+
+**The federated credential's `subject` is the part that silently breaks.** The naive `repo:<owner>/<repo>:ref:refs/heads/main` format only works if the GitHub org and repo have never been renamed. The moment either has, GitHub's actual OIDC token carries the stable numeric IDs instead: `repo:<owner>@<ownerId>/<repo>@<repoId>:ref:refs/heads/main` (for this repo: `repo:lanraeee@156936462/wissen@1310273217:ref:refs/heads/main`). A mismatch here fails differently from the missing-app-registration case — the login step still runs `az login` but fails with `AADSTS700213: No matching federated identity record found for presented assertion subject '...'`, which tells you the exact subject GitHub actually sent. Create the credential with your best guess, and if that error fires, `az ad app federated-credential update` with the subject the error message printed.
+
+Finally, update the three GitHub secrets (`AZUREAPPSERVICE_CLIENTID_*`, `_TENANTID_*`, `_SUBSCRIPTIONID_*`, read as exact names from `.github/workflows/main_wh-webapp.yml` — tenant and subscription IDs are unchanged, only the client ID is new) and re-run the workflow.
 
 ```bash
 RG=wissen-haus-rg
