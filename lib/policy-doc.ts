@@ -8,6 +8,7 @@ export interface PolicySection { id: string; title: string; body: string }
 
 export type PolicyPage = { slug: string; label: string }
 export const POLICY_PAGES: PolicyPage[] = [
+  { slug: 'wiki', label: 'Wiki / Overview' },
   { slug: 'safeguarding', label: 'Safeguarding Policy' },
   { slug: 'privacy', label: 'Privacy Policy' },
   { slug: 'terms', label: 'Terms & Conditions' },
@@ -19,10 +20,13 @@ export const MAX_SECTIONS = 60
 export const MAX_TITLE = 120
 export const MAX_BODY = 20_000
 
-export type Run = { t: string; b?: boolean; i?: boolean; code?: boolean; href?: string }
+export type Run = { t: string; b?: boolean; i?: boolean; code?: boolean; href?: string; ref?: number }
 export type Block =
   | { kind: 'p'; runs: Run[] }
-  | { kind: 'ul' | 'ol'; items: Run[][] }
+  | { kind: 'ul'; items: Run[][] }
+  | { kind: 'ol'; items: Run[][] }
+  | { kind: 'h3'; text: string }
+  | { kind: 'slot'; name: string }
 
 /** Only same-site paths, anchors, mailto and http(s) links are rendered as links. */
 export function safeHref(h: string): string | null {
@@ -31,7 +35,7 @@ export function safeHref(h: string): string | null {
   return null
 }
 
-const INLINE = /\[([^\]]+)\]\(([^)\s]+)\)|\*\*(.+?)\*\*|`([^`]+)`|\*(.+?)\*/g
+const INLINE = /\[([^\]]+)\]\(([^)\s]+)\)|\*\*(.+?)\*\*|`([^`]+)`|\*(.+?)\*|\{ref:(\d{1,3})\}/g
 
 export function parseInline(text: string): Run[] {
   const runs: Run[] = []
@@ -43,6 +47,7 @@ export function parseInline(text: string): Run[] {
       runs.push(href ? { t: m[1], href } : { t: m[1] })
     } else if (m[3] !== undefined) runs.push({ t: m[3], b: true })
     else if (m[4] !== undefined) runs.push({ t: m[4], code: true })
+    else if (m[6] !== undefined) runs.push({ t: m[6], ref: Number(m[6]) })
     else runs.push({ t: m[5], i: true })
     last = m.index! + m[0].length
   }
@@ -52,17 +57,33 @@ export function parseInline(text: string): Run[] {
 
 export function parseBody(body: string): Block[] {
   const blocks: Block[] = []
-  for (const chunk of body.replace(/\r\n?/g, '\n').split(/\n\s*\n/)) {
-    const lines = chunk.split('\n').map(l => l.trim()).filter(Boolean)
-    if (!lines.length) continue
-    if (lines.every(l => /^[-*]\s+/.test(l))) {
-      blocks.push({ kind: 'ul', items: lines.map(l => parseInline(l.replace(/^[-*]\s+/, ''))) })
-    } else if (lines.every(l => /^\d+[.)]\s+/.test(l))) {
-      blocks.push({ kind: 'ol', items: lines.map(l => parseInline(l.replace(/^\d+[.)]\s+/, ''))) })
-    } else {
-      blocks.push({ kind: 'p', runs: parseInline(lines.join(' ')) })
-    }
+  let para: string[] = []
+  let list: { kind: 'ul' | 'ol'; items: string[] } | null = null
+  const flush = () => {
+    if (para.length) blocks.push({ kind: 'p', runs: parseInline(para.join(' ')) })
+    if (list) blocks.push(list.kind === 'ul' ? { kind: 'ul', items: list.items.map(parseInline) } : { kind: 'ol', items: list.items.map(parseInline) })
+    para = []; list = null
   }
+  for (const raw of body.replace(/\r\n?/g, '\n').split('\n')) {
+    const line = raw.trim()
+    if (!line) { flush(); continue }
+    const h3 = line.match(/^###\s+(.+)$/)
+    if (h3) { flush(); blocks.push({ kind: 'h3', text: h3[1] }); continue }
+    const slot = line.match(/^\{\{([a-z-]{1,30})\}\}$/)
+    if (slot) { flush(); blocks.push({ kind: 'slot', name: slot[1] }); continue }
+    const ul = line.match(/^[-*]\s+(.*)$/)
+    const ol = line.match(/^\d+[.)]\s+(.*)$/)
+    if (ul || ol) {
+      const kind = ul ? 'ul' : 'ol'
+      if (para.length || (list && list.kind !== kind)) flush()
+      if (!list) list = { kind, items: [] }
+      list.items.push((ul ?? ol)![1])
+      continue
+    }
+    if (list) flush()
+    para.push(line)
+  }
+  flush()
   return blocks
 }
 
@@ -94,4 +115,16 @@ export function coerceSections(v: unknown): PolicySection[] | null {
     out.push({ id: typeof id === 'string' ? id : '', title: title.slice(0, MAX_TITLE), body: body.slice(0, MAX_BODY) })
   }
   return withIds(out)
+}
+
+/** Parses "Label | value" lines (blank lines and lines without a separator are skipped). */
+export function parsePairs(text: string): [string, string][] {
+  const out: [string, string][] = []
+  for (const raw of text.replace(/\r\n?/g, '\n').split('\n')) {
+    const i = raw.indexOf('|')
+    if (i < 0) continue
+    const a = raw.slice(0, i).trim(), b = raw.slice(i + 1).trim()
+    if (a && b) out.push([a, b])
+  }
+  return out
 }

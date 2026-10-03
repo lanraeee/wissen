@@ -406,6 +406,24 @@ export const TERMS_SCHEMA: PageCopySchema = {
 }
 PAGE_COPY_SCHEMAS.push(TERMS_SCHEMA)
 
+export const WIKI_SCHEMA: PageCopySchema = {
+  slug: 'wiki', label: 'Wiki / Overview',
+  fields: [
+    t('eyebrow', 'Header eyebrow', 'Foundation Overview'),
+    t('title', 'Page title', 'Wissen-Haus Empowerment Foundation', 120),
+    t('subtitle', 'Header subtitle', 'Non-profit organisation · Founded in Ibadan, Oyo State, Nigeria · Est. 2025 · Serving Africa & the diaspora', 240),
+    ta('intro', 'Opening paragraph (supports [links](url) and {ref:1} footnotes)', '**Wissen-Haus Empowerment Foundation** is a non-profit organisation founded in [Ibadan](https://en.wikipedia.org/wiki/Ibadan), [Oyo State](https://en.wikipedia.org/wiki/Oyo_State), Nigeria, focused on bridging the skills gap among African youth and the diaspora through career guidance, mentorship, and access to global opportunities. The foundation was established with a mission to equip young people — in Nigeria, across the wider African continent, and in diaspora communities including the United Kingdom — with the practical knowledge and exposure needed for economic independence.{ref:1}', 1500),
+    t('referencesHeading', 'References heading', 'References', 60),
+    ta('references', 'References — one per line as: Label | URL (numbered in order, cited with {ref:N})', 'Wissen-Haus Empowerment Foundation | https://www.wissenhaus.org\nOur Story – Wissen-Haus | https://www.wissenhaus.org/about/story\nCareer Clarity Fair – Wissen-Haus | https://www.wissenhaus.org/career-clarity-fair\nOpportunity Blueprint – Wissen-Haus | https://www.wissenhaus.org/opportunity-blueprint\nImpact Content – Wissen-Haus | https://www.wissenhaus.org/impact-content\nCommunity Hub – Wissen-Haus | https://www.wissenhaus.org/community\nCareer Pathways Assessment – Wissen-Haus | https://www.wissenhaus.org/career-pathways\nPolicy Research – Wissen-Haus | https://www.wissenhaus.org/policy-research\nVolunteer – Wissen-Haus | https://www.wissenhaus.org/volunteer', 3000),
+    ta('wikipediaNote', 'Wikipedia note box (bottom of article)', 'This page is also being submitted as a draft article to [Wikipedia’s Articles for Creation](https://en.wikipedia.org/wiki/Wikipedia:Articles_for_creation). Once published, a link to the Wikipedia article will appear here.', 500),
+    t('infoboxTitle', 'Sidebar infobox title', 'Wissen-Haus', 80),
+    ta('infobox', 'Sidebar infobox rows — one per line as: Label | Value', 'Type | Non-profit foundation\nFounded | 2025\nFounder | Benz Olagbaye\nHeadquarters | Ibadan, Oyo State, Nigeria\nFocus | Youth empowerment, career guidance, skills development — for African youth and the diaspora\nReach | 500+ students, expanding across Africa and internationally\nWebsite | [wissenhaus.org](https://www.wissenhaus.org)', 1500),
+    t('seeAlsoHeading', '"See also" heading', 'See also', 60),
+    ta('seeAlso', '"See also" links — one per line as: Label | /path', 'All Programmes | /programmes\nMeet the Founder | /founder\nOur Team | /team\nPolicy Research | /policy-research\nCommunity Hub | /community\nOur Story | /about/story', 1000),
+  ],
+}
+PAGE_COPY_SCHEMAS.push(WIKI_SCHEMA)
+
 export function pageCopySchemaFor(slug: string): PageCopySchema | undefined {
   return PAGE_COPY_SCHEMAS.find(s => s.slug === slug)
 }

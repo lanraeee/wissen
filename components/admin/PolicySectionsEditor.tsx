@@ -84,6 +84,7 @@ export default function PolicySectionsEditor({ slug }: { slug: string }) {
       </div>
       <p style={{ margin: '0 0 16px', fontSize: '.8rem', color: '#8a9a8f', lineHeight: 1.6 }}>
         Sections are numbered and listed in the contents automatically. In the text: a blank line starts a new paragraph; start lines with <code>- </code> for bullets or <code>1. </code> for a numbered list; <code>**bold**</code>, <code>*italic*</code>, <code>[link text](/page)</code> or <code>[email](mailto:name@example.org)</code>. Layout and styling can&apos;t be changed.
+        {slug === 'wiki' && <> Wiki extras: <code>### Sub-heading</code> makes a sub-heading, <code>{'{ref:3}'}</code> adds footnote [3] (matching the References list above), and a line containing only <code>{'{{personnel}}'}</code> inserts the live team table from Content → Team Members.</>}
       </p>
       {error && <div role="alert" style={{ marginBottom: 16, color: '#dc2626', fontSize: '.85rem', background: '#fee2e2', padding: '8px 14px', borderRadius: 7 }}>{error}</div>}
 

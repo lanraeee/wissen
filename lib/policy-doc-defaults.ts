@@ -270,5 +270,32 @@ export const POLICY_DEFAULTS: Record<string, PolicySection[]> = {
       "title": "Contact Us",
       "body": "Questions about these Terms can be sent to [info@wissenhaus.org](mailto:info@wissenhaus.org), or by post to Wissen-Haus Empowerment Foundation, Ibadan, Oyo State, Nigeria."
     }
+  ],
+  "wiki": [
+    {
+      "id": "background",
+      "title": "Background",
+      "body": "The foundation operates under the belief that many African youths and diaspora communities lack access to structured career guidance and exposure to opportunities available to their global peers. Wissen-Haus was founded by [Benz Olagbaye](/founder), who serves as its director, with the aim of addressing this gap through structured programmes, a digital learning platform, and community-based engagements. The organisation has reported reaching over 500 students since launching in Ibadan, and is expanding its programmes across Africa and to diaspora communities internationally, including the United Kingdom.{ref:2}\n\nThe name *Wissen-Haus* draws from the German word *Wissen*, meaning “knowledge”, and *Haus*, meaning “house” — reflecting the organisation's vision of being a house of knowledge for African youth and the diaspora."
+    },
+    {
+      "id": "programmes",
+      "title": "Programmes",
+      "body": "### 2.1 Career Clarity Fair\nThe Career Clarity Fair is a flagship event designed for secondary school students across Nigeria. It brings together professionals from various industries to expose students to career options and pathways available after secondary education.{ref:3}\n\n### 2.2 Opportunity Blueprint\nThe Opportunity Blueprint is a podcast produced by the foundation. It provides guidance on scholarships, internships, grants, and other opportunities available to African youth and the diaspora, locally and internationally.{ref:4}\n\n### 2.3 Impact Content\nImpact Content is the foundation's social-impact storytelling initiative, documenting stories of youth transformation and community development to inspire broader engagement with its mission.{ref:5}\n\n### 2.4 Community Hub and Learning Library\nThe foundation operates an online Community Hub offering free courses, toolkits, and an Opportunity Hub that aggregates scholarships, jobs, and grants relevant to African youth and the diaspora. Members who complete courses are issued digital certificates.{ref:6}\n\n### 2.5 Career Assessment Tools\nWissen-Haus provides two self-assessment tools: the Career Pathways Assessment, which generates a personalised career roadmap, and the Career Assessment Accelerator, a ten-question quiz mapping users to one of twelve career profiles.{ref:7}"
+    },
+    {
+      "id": "personnel",
+      "title": "Key Personnel",
+      "body": "{{personnel}}"
+    },
+    {
+      "id": "policy",
+      "title": "Policy Research",
+      "body": "The foundation conducts and publishes policy research relevant to youth employment, skills development, and education across Nigeria and the wider African and diaspora context, contributing to public discourse on human capital development.{ref:8}"
+    },
+    {
+      "id": "involvement",
+      "title": "Volunteer & Partnership Initiatives",
+      "body": "Wissen-Haus actively recruits volunteers to serve as mentors and engages institutional partners including schools, businesses, and civil society organisations. It accepts donations to support its free-to-access programmes.{ref:9}"
+    }
   ]
 }
