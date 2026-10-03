@@ -77,11 +77,13 @@ export default function ConstitutionPreview({ source, versionLabel, status, adop
   const parsed = useMemo(() => parseConstitution(source), [source])
   const measureRef = useRef<HTMLDivElement>(null)
   const allRef = useRef<HTMLDivElement>(null)
-  const stageRef = useRef<HTMLDivElement>(null)
+  // State, not a ref: the frame only exists once there is text, so the observer must attach whenever it appears.
+  const [stageEl, setStageEl] = useState<HTMLDivElement | null>(null)
   const [pages, setPages] = useState<Piece[][]>([])
   const [lines, setLines] = useState<number[]>([])
   const lineCount = (i: number) => lines[i] ?? 0
   const [scale, setScale] = useState(1)
+  const [narrow, setNarrow] = useState(false)
   const [spread, setSpread] = useState(0)
 
   useEffect(() => {
@@ -110,14 +112,19 @@ export default function ConstitutionPreview({ source, versionLabel, status, adop
   }, [parsed])
 
   useEffect(() => {
-    const el = stageRef.current
+    const el = stageEl
     if (!el) return
-    const fit = () => setScale(Math.min(1, (el.clientWidth - 28) / (PAGE_W * 2)))
+    const fit = () => {
+      const w = el.clientWidth
+      const isNarrow = w < 800 // two pages would be unreadably small: show one at a time
+      setNarrow(isNarrow)
+      setScale(Math.max(0.2, Math.min(1, (w - 24) / (PAGE_W * (isNarrow ? 1 : 2)))))
+    }
     fit()
     const ro = new ResizeObserver(fit)
     ro.observe(el)
     return () => ro.disconnect()
-  }, [])
+  }, [stageEl])
 
   const org = parsed.orgName || 'Wissen-Haus Empowerment Foundation'
   const title = titleCase(parsed.title || 'Constitution')
@@ -209,14 +216,15 @@ export default function ConstitutionPreview({ source, versionLabel, status, adop
   }, [pages, lines, parsed, tocChunks, org, title, versionLabel, status, adopted, draftClass])
 
   const spreads = useMemo(() => {
+    if (narrow) return sheets.map(sh => [sh])
     const out: ReactNode[][] = [[sheets[0]]]
     for (let i = 1; i < sheets.length; i += 2) out.push(sheets.slice(i, i + 2))
     return out
-  }, [sheets])
+  }, [sheets, narrow])
 
   const current = Math.min(spread, spreads.length - 1)
   const first = current === 0
-  const label = first ? 'Cover' : `Pages ${current * 2}–${current * 2 + 1}`
+  const label = first ? 'Cover' : narrow ? `Page ${current + 1}` : `Pages ${current * 2}–${current * 2 + 1}`
 
   function print() {
     const html = allRef.current?.innerHTML
@@ -251,10 +259,10 @@ export default function ConstitutionPreview({ source, versionLabel, status, adop
         <button type="button" style={btn('#1a3c2e')} onClick={print}>Print / Save as PDF</button>
       </div>
 
-      <div className="bk-stage" ref={stageRef} tabIndex={0}
+      <div className="bk-stage" ref={setStageEl} tabIndex={0}
         onKeyDown={e => { if (e.key === 'ArrowRight') setSpread(Math.min(current + 1, spreads.length - 1)); if (e.key === 'ArrowLeft') setSpread(Math.max(current - 1, 0)) }}>
-        <div style={{ height: PAGE_H * scale, width: '100%', display: 'flex', justifyContent: 'center' }}>
-          <div className="bk-spread" style={{ width: first ? PAGE_W : PAGE_W * 2, transform: `scale(${scale})`, height: PAGE_H, flex: 'none', marginLeft: 0 }}>
+        <div style={{ position: 'relative', height: PAGE_H * scale + 44 }}>
+          <div className="bk-spread" style={{ position: 'absolute', top: 22, left: '50%', width: first || narrow ? PAGE_W : PAGE_W * 2, height: PAGE_H, transform: `translateX(-50%) scale(${scale})` }}>
             {spreads[current]}
           </div>
         </div>

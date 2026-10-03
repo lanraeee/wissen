@@ -81,7 +81,7 @@ export const BOOKLET_CSS = `
 .bk-toc .bk-tp{width:24px;text-align:right;font-variant-numeric:tabular-nums}
 .bk-measure{position:absolute;left:-99999px;top:0;width:${BODY_W}px;visibility:hidden;font-size:14px;line-height:1.5}
 
-.bk-stage{position:relative;overflow:hidden;background:linear-gradient(180deg,#e9e4d6,#d9d2bf);border-radius:10px;padding:22px 0 18px;outline:none}
+.bk-stage{position:relative;overflow:hidden;width:100%;min-width:0;background:linear-gradient(180deg,#e9e4d6,#d9d2bf);border-radius:10px;outline:none}
 .bk-spread{display:flex;justify-content:center;transform-origin:top center;filter:drop-shadow(0 12px 18px rgba(0,0,0,.28))}
 .bk-spread.bk-spine{position:relative}
 .bk-ctl{display:flex;justify-content:center;align-items:center;gap:16px;margin-top:12px;font-family:system-ui,sans-serif;font-size:.8rem;color:#3a4a3f}
