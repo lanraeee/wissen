@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import Image from 'next/image'
+import { DEFAULT_BRAND, brandify, type Brand } from '@/lib/brand'
 
 const CHEV = (
   <svg className="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4">
@@ -78,7 +79,8 @@ const ACTIVE_MAP: Record<string, string> = {
   '/donate': 'involved',
 }
 
-export default function Navigation() {
+export default function Navigation({ brand = DEFAULT_BRAND }: { brand?: Brand }) {
+  const b = (t: string) => brandify(t, brand)
   const pathname = usePathname()
   const activeKey = ACTIVE_MAP[pathname] || ''
   const [menuOpen, setMenuOpen] = useState(false)
@@ -123,8 +125,8 @@ export default function Navigation() {
         <div className="wrap wrap-wide">
           <nav className="nav" aria-label="Primary">
             <Link className="brand" href="/">
-              <Image src="/img/logo.png" alt="Wissen-Haus logo" width={52} height={52} />
-              <span>Wissen-Haus<small>Empowerment Foundation</small></span>
+              <Image src="/img/logo.png" alt={`${brand.name} logo`} width={52} height={52} />
+              <span>{brand.name}{brand.descriptor && <small>{brand.descriptor}</small>}</span>
             </Link>
 
             <ul className="nav-links">
@@ -145,8 +147,8 @@ export default function Navigation() {
                       <div className={`mega${open ? ' open' : ''}`}>
                         {item.menu.map(([href, title, desc]) => (
                           <Link key={href} href={href}>
-                            <span className="mega-t">{title}</span>
-                            <span className="mega-d">{desc}</span>
+                            <span className="mega-t">{b(title)}</span>
+                            <span className="mega-d">{b(desc)}</span>
                           </Link>
                         ))}
                       </div>
@@ -197,7 +199,7 @@ export default function Navigation() {
                   <div className="m-panel" style={{ maxHeight: open ? '500px' : '0px' }}>
                     <div className="m-panel-inner">
                       {item.menu.map(([href, title]) => (
-                        <Link key={href} href={href}>{title}</Link>
+                        <Link key={href} href={href}>{b(title)}</Link>
                       ))}
                     </div>
                   </div>

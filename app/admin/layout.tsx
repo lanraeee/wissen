@@ -4,6 +4,7 @@ import { adminRole } from '@/lib/admin-guard'
 import { canUseAdminAgent } from '@/lib/ai-settings'
 import AdminNav from '@/components/admin/AdminNav'
 import AdminMobileNav from '@/components/admin/AdminMobileNav'
+import { getBrand } from '@/lib/brand-server'
 import AdminLogoutButton from '@/components/admin/AdminLogoutButton'
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -14,12 +15,13 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   const role = await adminRole()
   if (!session || !role) redirect('/login?mode=login')
   const canUseAgent = await canUseAdminAgent(session.email)
+  const brand = await getBrand()
 
   return (
     <div className="admin-shell">
       <aside className="admin-sidebar">
         <div style={{ padding: '0 24px 28px', borderBottom: '1px solid rgba(244,240,231,.12)' }}>
-          <div style={{ fontWeight: 700, fontSize: '.9rem', letterSpacing: '.06em', textTransform: 'uppercase' }}>Wissen-Haus</div>
+          <div style={{ fontWeight: 700, fontSize: '.9rem', letterSpacing: '.06em', textTransform: 'uppercase' }}>{brand.name}</div>
           <div style={{ fontSize: '.72rem', color: 'rgba(244,240,231,.5)', marginTop: 2 }}>Admin Panel</div>
         </div>
         <AdminNav role={role} canUseAgent={canUseAgent} />

@@ -1,4 +1,5 @@
 import { Resend } from 'resend'
+import { brandify, getBrand } from './brand-server'
 import { esc, firstNameOf, formatMoney, field, fieldText, fieldPre, fields, fieldMono, mailtoLink, replyButton, shell } from './email-shell'
 import { renderTemplate } from './email-render'
 import { EMAIL_TEMPLATES_BY_ID } from './email-catalog'
@@ -20,7 +21,14 @@ async function sendEmail(payload: SendEmailPayload): Promise<ResendResult> {
   // FROM is an unmonitored sending address, so replies need somewhere real to
   // land by default. Call sites that set their own replyTo (e.g. replying to
   // whoever submitted a form) override this.
-  const result = await getResend().emails.send({ replyTo: 'info@wissenhaus.org', ...payload })
+  const brand = await getBrand()
+  const branded = {
+    ...payload,
+    ...(typeof payload.subject === 'string' ? { subject: brandify(payload.subject, brand) } : {}),
+    ...(typeof payload.from === 'string' ? { from: brandify(payload.from, brand) } : {}),
+    ...(typeof payload.html === 'string' ? { html: brandify(payload.html.replace(/(<h1>Wissen-Haus<\/h1>\s*)<p>Empowerment Foundation<\/p>/, (_, h) => `${h}<p>${brand.descriptor}</p>`), brand) } : {}),
+  } as SendEmailPayload
+  const result = await getResend().emails.send({ replyTo: 'info@wissenhaus.org', ...branded })
   if (result.error) throw new Error(`Resend: ${result.error.name} — ${result.error.message}`)
   return result
 }

@@ -1,5 +1,6 @@
 import { ImageResponse } from 'next/og'
 import sql from '@/lib/db'
+import { DEFAULT_BRAND, brandFromSettings } from '@/lib/brand'
 
 export const runtime = 'edge'
 // Belt-and-braces alongside the explicit Cache-Control override below
@@ -31,20 +32,22 @@ async function getContent() {
       sql`SELECT value FROM site_content WHERE key = 'homepage_hero_slides'`,
     ])
     const tagline = (settingsRow[0]?.value as { tagline?: string } | undefined)?.tagline
+    const brandName = brandFromSettings(settingsRow[0]?.value).name
     const stats = statsRow[0]?.value as StatItem[] | undefined
     const slides = heroRow[0]?.value as { eyebrow?: string }[] | undefined
     return {
+      brandName,
       tagline: tagline || 'Empowering Youth, Shaping Futures',
       eyebrow: slides?.[0]?.eyebrow || FALLBACK_EYEBROW,
       stats: Array.isArray(stats) && stats.length >= 3 ? stats.slice(0, 3) : FALLBACK_STATS,
     }
   } catch {
-    return { tagline: 'Empowering Youth, Shaping Futures', eyebrow: FALLBACK_EYEBROW, stats: FALLBACK_STATS }
+    return { brandName: DEFAULT_BRAND.name, tagline: 'Empowering Youth, Shaping Futures', eyebrow: FALLBACK_EYEBROW, stats: FALLBACK_STATS }
   }
 }
 
 export default async function Image() {
-  const [logoSrc, { tagline, eyebrow, stats }] = await Promise.all([
+  const [logoSrc, { tagline, eyebrow, stats, brandName }] = await Promise.all([
     fetch('https://www.wissenhaus.org/img/logo.png').then((r) => r.arrayBuffer()).catch(() => null),
     getContent(),
   ])
@@ -133,7 +136,7 @@ export default async function Image() {
               marginBottom: 8,
             }}
           >
-            Wissen-Haus
+            {brandName}
           </span>
           <span
             style={{

@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { OG_PAGE_SCHEMAS } from '@/lib/og-schema'
+import { DEFAULT_BRAND, brandFromSettings, brandify, type Brand } from '@/lib/brand'
 import { ogSiteContentKeyFor, OG_TITLE_MAX, OG_OG_TITLE_MAX, OG_DESCRIPTION_MAX, type OgCopy } from '@/lib/og-shared'
 
 const lbl = { fontSize: '.72rem', fontWeight: 700, letterSpacing: '.08em', textTransform: 'uppercase' as const, color: '#8a9a8f', display: 'block', marginBottom: 4 }
@@ -20,6 +21,21 @@ export default function OpenGraphEditor() {
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
   const [error, setError] = useState('')
+  // The brand name and the share image both come from Settings, so the preview
+  // reads them live (and re-fetches the image) rather than trusting stale defaults.
+  const [brand, setBrand] = useState<Brand>(DEFAULT_BRAND)
+  const [imgVersion, setImgVersion] = useState(() => Date.now())
+
+  const loadBrand = useCallback(async () => {
+    try {
+      const res = await fetch('/api/admin/content/site_settings')
+      const data = await res.json()
+      setBrand(brandFromSettings(data.value))
+    } catch { /* keep the default brand */ }
+    setImgVersion(Date.now())
+  }, [])
+
+  useEffect(() => { loadBrand() }, [loadBrand])
 
   const load = useCallback(async (s: typeof schema) => {
     if (!s) return
@@ -55,6 +71,7 @@ export default function OpenGraphEditor() {
         throw new Error(d?.error || 'Save failed — your changes have not been stored.')
       }
       setSaved(true); setTimeout(() => setSaved(false), 2500)
+      loadBrand()
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Save failed.')
     }
@@ -73,6 +90,7 @@ export default function OpenGraphEditor() {
       })
       if (!res.ok) throw new Error('Reset failed.')
       setValues({ title: schema.defaultTitle, ogTitle: schema.defaultOgTitle, description: schema.defaultDescription })
+      loadBrand()
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Reset failed.')
     }
@@ -137,15 +155,18 @@ export default function OpenGraphEditor() {
             </div>
           </div>
 
-          <div style={{ fontSize: '.7rem', fontWeight: 700, letterSpacing: '.08em', textTransform: 'uppercase', color: '#8a9a8f', marginBottom: 8 }}>Preview</div>
+          <div style={{ fontSize: '.7rem', fontWeight: 700, letterSpacing: '.08em', textTransform: 'uppercase', color: '#8a9a8f', marginBottom: 8 }}>Preview <span style={{ textTransform: 'none', fontWeight: 400, letterSpacing: 0 }}>— updates as you type; the image and brand name are read live from Settings</span></div>
+          <div data-testid="og-tab-preview" style={{ maxWidth: 420, marginBottom: 12, padding: '6px 12px', background: '#e8e4dc', borderRadius: '8px 8px 0 0', fontSize: '.78rem', color: '#1a2e24', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+            {brandify(values.title || schema.defaultTitle, brand)}
+          </div>
           <div style={{ border: '1px solid #e8e4dc', borderRadius: 10, overflow: 'hidden', maxWidth: 420 }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/opengraph-image" alt="" style={{ width: '100%', display: 'block', aspectRatio: '1200/630', objectFit: 'cover', background: '#f0ece4' }} />
+            <img key={imgVersion} src={`/opengraph-image?v=${imgVersion}`} alt="" style={{ width: '100%', display: 'block', aspectRatio: '1200/630', objectFit: 'cover', background: '#f0ece4' }} />
             <div style={{ padding: '10px 12px', background: '#f7f5f0' }}>
               <div style={{ fontSize: '.68rem', color: '#8a9a8f', textTransform: 'uppercase', letterSpacing: '.04em' }}>wissenhaus.org</div>
-              <div style={{ fontSize: '.86rem', fontWeight: 700, color: '#1a2e24', marginTop: 2 }}>{values.ogTitle || schema.defaultOgTitle}</div>
+              <div style={{ fontSize: '.86rem', fontWeight: 700, color: '#1a2e24', marginTop: 2 }}>{brandify(values.ogTitle || schema.defaultOgTitle, brand)}</div>
               <div style={{ fontSize: '.78rem', color: '#5a5a4a', marginTop: 2, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
-                {values.description || schema.defaultDescription}
+                {brandify(values.description || schema.defaultDescription, brand)}
               </div>
             </div>
           </div>

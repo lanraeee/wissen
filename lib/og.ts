@@ -1,4 +1,5 @@
 import { getSiteContent } from './site-content'
+import { brandify, brandFromSettings } from './brand'
 import { ogSiteContentKeyFor, type OgPageSchema, type OgCopy } from './og-shared'
 
 export * from './og-shared'
@@ -17,10 +18,15 @@ export async function getOgCopy(schema: OgPageSchema, overrideDefaults?: Partial
     ogTitle: overrideDefaults?.ogTitle ?? schema.defaultOgTitle,
     description: overrideDefaults?.description ?? schema.defaultDescription,
   }
-  const saved = await getSiteContent<Partial<OgCopy>>(ogSiteContentKeyFor(schema.slug))
-  return {
+  const [saved, settings] = await Promise.all([
+    getSiteContent<Partial<OgCopy>>(ogSiteContentKeyFor(schema.slug)),
+    getSiteContent<unknown>('site_settings'),
+  ])
+  const brand = brandFromSettings(settings)
+  const out: OgCopy = {
     title: (typeof saved?.title === 'string' && saved.title.trim()) || defaults.title,
     ogTitle: (typeof saved?.ogTitle === 'string' && saved.ogTitle.trim()) || defaults.ogTitle,
     description: (typeof saved?.description === 'string' && saved.description.trim()) || defaults.description,
   }
+  return { title: brandify(out.title, brand), ogTitle: brandify(out.ogTitle, brand), description: brandify(out.description, brand) }
 }

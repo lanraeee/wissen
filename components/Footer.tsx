@@ -1,6 +1,7 @@
 ﻿import Link from 'next/link'
 import Image from 'next/image'
 import sql from '@/lib/db'
+import { brandFromSettings, fullName } from '@/lib/brand'
 
 interface SiteSettings {
   contact_email: string
@@ -37,6 +38,7 @@ export default async function Footer() {
     // fall back to defaults if DB unavailable
   }
 
+  const brand = brandFromSettings(settings)
   const year = new Date().getFullYear()
 
   return (
@@ -46,8 +48,8 @@ export default async function Footer() {
           <div className="footer-top">
             <div className="footer-brand">
               <Link className="brand" href="/">
-                <Image src="/img/logo.png" alt="Wissen-Haus logo" width={40} height={40} />
-                <span>Wissen-Haus<small>Empowerment Foundation</small></span>
+                <Image src="/img/logo.png" alt={`${brand.name} logo`} width={40} height={40} />
+                <span>{brand.name}{brand.descriptor && <small>{brand.descriptor}</small>}</span>
               </Link>
               <p>Bridging the skills gap for African youth and the diaspora, equipping young people with practical guidance, mentorship and global exposure for economic independence.</p>
               <div className="footer-social">
@@ -136,7 +138,7 @@ export default async function Footer() {
 
         <div className="wrap wrap-wide">
           <div className="footer-bottom">
-            <span> © {year} Wissen-Haus Empowerment Foundation. All rights reserved.</span>
+            <span> © {year} {fullName(brand)}. All rights reserved.</span>
             <span style={{ display: 'flex', gap: 16, alignItems: 'center', flexWrap: 'wrap' }}>
               <Link href="/privacy">Privacy Policy</Link>
               <Link href="/terms">Terms &amp; Conditions</Link>

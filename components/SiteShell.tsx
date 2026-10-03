@@ -5,8 +5,9 @@ import Navigation from '@/components/Navigation'
 import ScrollEffects from '@/components/ScrollEffects'
 import PageLoader from '@/components/PageLoader'
 import LiveChat from '@/components/support/LiveChat'
+import type { Brand } from '@/lib/brand'
 
-export default function SiteShell({ children, footer }: { children: React.ReactNode; footer: React.ReactNode }) {
+export default function SiteShell({ children, footer, brand }: { children: React.ReactNode; footer: React.ReactNode; brand: Brand }) {
   const pathname = usePathname()
   const isAdmin = pathname.startsWith('/admin')
 
@@ -15,7 +16,7 @@ export default function SiteShell({ children, footer }: { children: React.ReactN
   return (
     <>
       <PageLoader />
-      <Navigation />
+      <Navigation brand={brand} />
       <main id="main">{children}</main>
       {footer}
       <ScrollEffects />

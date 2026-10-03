@@ -6,6 +6,8 @@ import SiteShell from '@/components/SiteShell'
 import Footer from '@/components/Footer'
 import AnalyticsTracker from '@/components/AnalyticsTracker'
 import { getSiteContent } from '@/lib/site-content'
+import { brandFromSettings, brandifyDeep } from '@/lib/brand'
+import { getBrand } from '@/lib/brand-server'
 
 const BASE_METADATA: Metadata = {
   metadataBase: new URL('https://www.wissenhaus.org'),
@@ -61,12 +63,14 @@ const BASE_METADATA: Metadata = {
 // this way pasting one in takes effect immediately, no redeploy needed.
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSiteContent<{ google_site_verification?: string; bing_site_verification?: string }>('site_settings')
+  const brand = brandFromSettings(settings)
+  const base = brandifyDeep(BASE_METADATA, brand)
   const google = settings?.google_site_verification || undefined
   const bing = settings?.bing_site_verification || undefined
-  if (!google && !bing) return BASE_METADATA
+  if (!google && !bing) return base
 
   return {
-    ...BASE_METADATA,
+    ...base,
     verification: {
       ...(google ? { google } : {}),
       ...(bing ? { other: { 'msvalidate.01': bing } } : {}),
@@ -74,12 +78,13 @@ export async function generateMetadata(): Promise<Metadata> {
   }
 }
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const brand = await getBrand()
   return (
     <html lang="en">
       <body>
         <AnalyticsTracker />
-        <SiteShell footer={<Footer />}>{children}</SiteShell>
+        <SiteShell brand={brand} footer={<Footer />}>{children}</SiteShell>
         <SpeedInsights />
         <Analytics />
       </body>

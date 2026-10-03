@@ -8,6 +8,8 @@ interface Settings {
   instagram_url: string
   linkedin_url: string
   twitter_url: string
+  brand_name: string
+  brand_descriptor: string
   tagline: string
   footer_note: string
   google_business_url: string
@@ -22,6 +24,8 @@ const DEFAULTS: Settings = {
   instagram_url: '',
   linkedin_url: '',
   twitter_url: '',
+  brand_name: 'Wissen-Haus',
+  brand_descriptor: 'Empowerment Foundation',
   tagline: 'Empowering Youth, Shaping Futures',
   footer_note: '',
   google_business_url: '',
@@ -52,7 +56,7 @@ export default function SettingsEditor() {
       const res = await fetch('/api/admin/content/site_settings', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ value: settings }),
+        body: JSON.stringify({ value: { ...settings, brand_name: settings.brand_name.trim() || DEFAULTS.brand_name } }),
       })
       if (!res.ok) {
         const d = await res.json().catch(() => ({}))
@@ -70,6 +74,8 @@ export default function SettingsEditor() {
   if (!loaded) return <div style={{ padding: 24, color: '#8a9a8f' }}>Loading…</div>
 
   const fields: [keyof Settings, string, string][] = [
+    ['brand_name', 'Brand Name', 'text'],
+    ['brand_descriptor', 'Brand Descriptor (shown beside the name — leave empty for none)', 'text'],
     ['contact_email', 'Contact Email', 'email'],
     ['whatsapp_url', 'WhatsApp Community URL', 'url'],
     ['instagram_url', 'Instagram URL', 'url'],
@@ -102,6 +108,9 @@ export default function SettingsEditor() {
       </div>
       {error && <div style={{ marginBottom: 16, color: '#dc2626', fontSize: '.85rem', background: '#fee2e2', padding: '8px 14px', borderRadius: 7 }}>{error}</div>}
 
+      <p style={{ margin: '0 0 16px', fontSize: '.78rem', color: '#8a9a8f', lineHeight: 1.6 }}>
+        Brand Name and Descriptor replace “Wissen-Haus Empowerment Foundation” in the header, footer, page titles, share previews, emails and page text as soon as you save. Legal names (Foundation Details, constitution) are separate and unchanged.
+      </p>
       <div className="rgrid-2" style={{ gap: 16, marginBottom: 28 }}>
         {fields.map(([key, label, type]) => (
           <div key={key} style={key === 'tagline' || key === 'footer_note' ? { gridColumn: '1/-1' } : {}}>
