@@ -1,5 +1,6 @@
 'use client'
 
+import DocumentsPanel from './DocumentsPanel'
 import RecordsManager, { type Field, type Column } from '../RecordsManager'
 import { fmtDate } from '../cio-ui'
 
@@ -39,6 +40,7 @@ export default function RegistrationsTab() {
       addLabel="+ Add registration"
       emptyText="No registrations recorded yet."
       fields={FIELDS}
+      renderExtra={row => <DocumentsPanel linkedType="registrations" linkedId={row.id} heading="Attached documents" />}
       columns={COLUMNS}
       defaults={{ authority: 'charity_commission' }}
     />

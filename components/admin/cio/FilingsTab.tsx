@@ -1,5 +1,6 @@
 'use client'
 
+import DocumentsPanel from './DocumentsPanel'
 import RecordsManager, { type Field, type Column } from '../RecordsManager'
 import { fmtDate, daysUntil, humanise, type Row } from '../cio-ui'
 import Badge from './Badge'
@@ -61,6 +62,7 @@ export default function FilingsTab() {
       addLabel="+ Add filing"
       emptyText="No filings recorded yet."
       fields={FIELDS}
+      renderExtra={row => <DocumentsPanel linkedType="filings" linkedId={row.id} heading="Attached documents" />}
       columns={COLUMNS}
       defaults={{ status: 'upcoming' }}
       summary={summary}

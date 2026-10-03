@@ -1,5 +1,6 @@
 'use client'
 
+import DocumentsPanel from './DocumentsPanel'
 import RecordsManager, { type Field, type Column } from '../RecordsManager'
 import { fmtDate, daysUntil, humanise, type Row } from '../cio-ui'
 import Badge from './Badge'
@@ -40,6 +41,7 @@ export default function PoliciesTab() {
       addLabel="+ Add policy"
       emptyText="No policies recorded yet."
       fields={FIELDS}
+      renderExtra={row => <DocumentsPanel linkedType="policies" linkedId={row.id} heading="Attached documents" />}
       columns={COLUMNS}
       defaults={{ status: 'draft' }}
     />

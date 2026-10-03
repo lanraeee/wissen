@@ -1,5 +1,6 @@
 'use client'
 
+import DocumentsPanel from './DocumentsPanel'
 import RecordsManager, { type Field, type Column } from '../RecordsManager'
 import { fmtDate, humanise } from '../cio-ui'
 import Badge from './Badge'
@@ -37,6 +38,7 @@ export default function MeetingsTab() {
       addLabel="+ Add meeting"
       emptyText="No meetings recorded yet."
       fields={FIELDS}
+      renderExtra={row => <DocumentsPanel linkedType="meetings" linkedId={row.id} heading="Attached documents" />}
       columns={COLUMNS}
       defaults={{ meeting_type: 'trustee', status: 'scheduled' }}
     />
