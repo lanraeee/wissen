@@ -3,6 +3,9 @@ import { redirect } from 'next/navigation'
 import { directorGuard } from '@/lib/admin-guard'
 import TrusteeRegisterEditor from '@/components/admin/TrusteeRegisterEditor'
 import RegistrationsTab from '@/components/admin/cio/RegistrationsTab'
+import MeetingsTab from '@/components/admin/cio/MeetingsTab'
+import PoliciesTab from '@/components/admin/cio/PoliciesTab'
+import FilingsTab from '@/components/admin/cio/FilingsTab'
 
 export const metadata: Metadata = { title: 'WHEF-CIO Records · Admin · Wissen-Haus' }
 
@@ -50,6 +53,12 @@ export default async function WhefCioPage({ searchParams }: { searchParams: Prom
           <TrusteeRegisterEditor />
         ) : active.key === 'registrations' ? (
           <RegistrationsTab />
+        ) : active.key === 'meetings' ? (
+          <MeetingsTab />
+        ) : active.key === 'policies' ? (
+          <PoliciesTab />
+        ) : active.key === 'filings' ? (
+          <FilingsTab />
         ) : (
           <p style={{ margin: 0, color: '#8a9a8f', fontSize: '.9rem' }}>
             {active.label} is not built yet.

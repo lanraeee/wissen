@@ -14,3 +14,12 @@ export function fmtDate(v: unknown) {
 }
 
 export type Row = Record<string, unknown> & { id: string }
+
+export function daysUntil(v: unknown, now = new Date()) {
+  if (!v) return null
+  const due = new Date(`${String(v).slice(0, 10)}T00:00:00Z`).getTime()
+  const today = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate())
+  return Number.isNaN(due) ? null : Math.round((due - today) / 86_400_000)
+}
+
+export const humanise = (v: unknown) => String(v ?? '').replace(/_/g, ' ').replace(/^./, c => c.toUpperCase())
