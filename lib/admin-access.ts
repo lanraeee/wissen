@@ -15,7 +15,7 @@ export type AdminRole = 'director' | 'admin' | 'editor'
 // rather than a refusal. The nav hides them and the route layouts refuse them.
 export const ADMIN_ONLY_PATHS = [
   '/admin/users',
-  '/admin/trustee-register',
+  '/admin/whef-cio',
   '/admin/newsletter',
   '/admin/email-templates',
 ]

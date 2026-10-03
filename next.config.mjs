@@ -23,6 +23,11 @@ const nextConfig = {
   async redirects() {
     return [
       {
+        source: '/admin/trustee-register',
+        destination: '/admin/whef-cio',
+        permanent: true,
+      },
+      {
         source: '/bootcamp',
         destination: '/career-clarity-fair',
         permanent: true,

@@ -27,7 +27,7 @@ export const NAV = [
   ['Testimonials', '/admin/testimonials'],
   ['Content', '/admin/content'],
   ['Content Approvals', '/admin/content-approvals'],
-  ['Trustee Register', '/admin/trustee-register'],
+  ['WHEF-CIO Records', '/admin/whef-cio'],
   ['Newsletter', '/admin/newsletter'],
   ['Email Templates', '/admin/email-templates'],
   ['Settings', '/admin/settings'],
