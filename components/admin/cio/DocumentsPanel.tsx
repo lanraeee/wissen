@@ -158,6 +158,10 @@ export default function DocumentsPanel({ linkedType, linkedId, heading, workingC
                     </Badge>
                   </td>
                   <td style={{ ...td, textAlign: 'right', whiteSpace: 'nowrap' }}>
+                    {d.drive_status !== 'synced' && (
+                      <button type="button" disabled={busy} onClick={() => request(`${API}/${d.id}/backup`, { method: 'POST' })}
+                        style={{ background: 'none', border: 'none', color: '#0F2D1D', cursor: 'pointer', textDecoration: 'underline', fontSize: '.78rem', marginRight: 10 }}>Back up</button>
+                    )}
                     {workingCopy && !d.is_working_copy && (
                       <button type="button" disabled={busy} onClick={() => request(`${API}/${d.id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ is_working_copy: true }) })}
                         style={{ background: 'none', border: 'none', color: '#0F2D1D', cursor: 'pointer', textDecoration: 'underline', fontSize: '.78rem', marginRight: 10 }}>Make working copy</button>
