@@ -8,6 +8,15 @@ export interface OgCopy {
   title: string
   ogTitle: string
   description: string
+  /** Per-page share card URL (/api/og?slug=…&v=hash). Set by getOgCopy; never stored. */
+  ogImage?: string
+}
+
+/** Short stable hash, so a changed title/description is a new image URL and crawlers refetch it. */
+export function ogImageUrl(slug: string, text: string): string {
+  let h = 5381
+  for (let i = 0; i < text.length; i++) h = ((h * 33) ^ text.charCodeAt(i)) >>> 0
+  return `/api/og?slug=${encodeURIComponent(slug)}&v=${h.toString(36)}`
 }
 
 export interface OgPageSchema {

@@ -37,6 +37,22 @@ export default function OpenGraphEditor() {
 
   useEffect(() => { loadBrand() }, [loadBrand])
 
+  // The card is rendered server-side from the text being typed (admin-only
+  // override params), debounced so it isn't re-rendered on every keystroke.
+  const shareTitle = brandify(values.ogTitle || schema?.defaultOgTitle || '', brand)
+  const shareDesc = brandify(values.description || schema?.defaultDescription || '', brand)
+  const [cardSrc, setCardSrc] = useState('')
+  useEffect(() => {
+    if (!schema) return
+    const t = setTimeout(() => {
+      // The homepage's real share card is the site-wide one (tagline + stats), not a per-page card.
+      if (schema.slug === 'home') { setCardSrc(`/opengraph-image?v=${imgVersion}`); return }
+      const q = new URLSearchParams({ slug: schema.slug, t: shareTitle, d: shareDesc, v: String(imgVersion) })
+      setCardSrc(`/api/og?${q}`)
+    }, 400)
+    return () => clearTimeout(t)
+  }, [schema, shareTitle, shareDesc, imgVersion])
+
   const load = useCallback(async (s: typeof schema) => {
     if (!s) return
     setLoading(true); setError('')
@@ -100,7 +116,7 @@ export default function OpenGraphEditor() {
   return (
     <div>
       <p style={{ margin: '0 0 16px', fontSize: '.85rem', color: '#8a9a8f' }}>
-        Control how each page&apos;s tab title and social-share card (Facebook, X, WhatsApp, LinkedIn, iMessage…) read. The share image itself stays the site&apos;s standard card — edit its content (tagline, stats) from Settings → General and Content → Homepage Hero.
+        Control how each page&apos;s tab title and social-share card (Facebook, X, WhatsApp, LinkedIn, iMessage…) read. The share image is generated from this page&apos;s share title and description, plus the site&apos;s brand, tagline and stats — edit those from Settings → General and Content → Homepage Hero.
       </p>
 
       <div style={{ marginBottom: 20, maxWidth: 420 }}>
@@ -161,12 +177,12 @@ export default function OpenGraphEditor() {
           </div>
           <div style={{ border: '1px solid #e8e4dc', borderRadius: 10, overflow: 'hidden', maxWidth: 420 }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img key={imgVersion} src={`/opengraph-image?v=${imgVersion}`} alt="" style={{ width: '100%', display: 'block', aspectRatio: '1200/630', objectFit: 'cover', background: '#f0ece4' }} />
+            <img data-testid="og-card" src={cardSrc || undefined} alt="Share card preview" style={{ width: '100%', display: 'block', aspectRatio: '1200/630', objectFit: 'cover', background: '#f0ece4' }} />
             <div style={{ padding: '10px 12px', background: '#f7f5f0' }}>
               <div style={{ fontSize: '.68rem', color: '#8a9a8f', textTransform: 'uppercase', letterSpacing: '.04em' }}>wissenhaus.org</div>
-              <div style={{ fontSize: '.86rem', fontWeight: 700, color: '#1a2e24', marginTop: 2 }}>{brandify(values.ogTitle || schema.defaultOgTitle, brand)}</div>
+              <div style={{ fontSize: '.86rem', fontWeight: 700, color: '#1a2e24', marginTop: 2 }}>{shareTitle}</div>
               <div style={{ fontSize: '.78rem', color: '#5a5a4a', marginTop: 2, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
-                {brandify(values.description || schema.defaultDescription, brand)}
+                {shareDesc}
               </div>
             </div>
           </div>

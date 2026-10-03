@@ -32,3 +32,20 @@ describe('brand applied at read time', () => {
     expect((await getPageCopy(ABOUT_SCHEMA)).heroEyebrow).toBe('Hello from Acme')
   })
 })
+
+describe('per-page share image URL', () => {
+  it('changes whenever the title, description or brand changes, and is stable otherwise', async () => {
+    const schema = ogSchemaFor('about')!
+    const a = (await getOgCopy(schema)).ogImage
+    expect(a).toMatch(/^\/api\/og\?slug=about&v=[a-z0-9]+$/)
+    expect((await getOgCopy(schema)).ogImage).toBe(a)
+    store.og_meta_about = { ogTitle: 'A new share title' }
+    const b = (await getOgCopy(schema)).ogImage
+    expect(b).not.toBe(a)
+    store.site_settings = { brand_name: 'Acme' }
+    expect((await getOgCopy(schema)).ogImage).not.toBe(b)
+  })
+  it('leaves the homepage on the site-wide card', async () => {
+    expect((await getOgCopy(ogSchemaFor('home')!)).ogImage).toBeUndefined()
+  })
+})

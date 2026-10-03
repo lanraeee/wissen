@@ -1,6 +1,6 @@
 import { getSiteContent } from './site-content'
 import { brandify, brandFromSettings } from './brand'
-import { ogSiteContentKeyFor, type OgPageSchema, type OgCopy } from './og-shared'
+import { ogSiteContentKeyFor, ogImageUrl, type OgPageSchema, type OgCopy } from './og-shared'
 
 export * from './og-shared'
 
@@ -28,5 +28,11 @@ export async function getOgCopy(schema: OgPageSchema, overrideDefaults?: Partial
     ogTitle: (typeof saved?.ogTitle === 'string' && saved.ogTitle.trim()) || defaults.ogTitle,
     description: (typeof saved?.description === 'string' && saved.description.trim()) || defaults.description,
   }
-  return { title: brandify(out.title, brand), ogTitle: brandify(out.ogTitle, brand), description: brandify(out.description, brand) }
+  const ogTitle = brandify(out.ogTitle, brand)
+  const description = brandify(out.description, brand)
+  return {
+    title: brandify(out.title, brand), ogTitle, description,
+    // Hashing the brand-applied text means any edit (or rename) changes the URL.
+    ogImage: schema.slug === 'home' ? undefined : ogImageUrl(schema.slug, `${ogTitle}|${description}|${brand.name}|${brand.descriptor}`),
+  }
 }
