@@ -1,9 +1,10 @@
 'use client'
 
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useDeferredValue, useEffect, useState } from 'react'
 import { inp, lbl, btn, th, td, fmtDate, humanise } from '../cio-ui'
 import Badge from './Badge'
 import DocumentsPanel from './DocumentsPanel'
+import ConstitutionPreview from './ConstitutionPreview'
 
 interface Version {
   id: string
@@ -32,6 +33,7 @@ export default function ConstitutionTab() {
   const [newLabel, setNewLabel] = useState<string | null>(null)
   const [confirm, setConfirm] = useState<'adopt' | 'delete' | null>(null)
   const [adoptDate, setAdoptDate] = useState('')
+  const previewText = useDeferredValue(draft.body_text)
 
   const load = useCallback(async () => {
     try {
@@ -222,6 +224,10 @@ export default function ConstitutionTab() {
               </div>
             </div>
           )}
+
+          <div style={{ margin: '4px 0 20px' }}>
+            <ConstitutionPreview source={previewText} versionLabel={draft.version_label} status={current.status} adoptedDate={current.adopted_date} />
+          </div>
 
           <DocumentsPanel linkedType="constitution" linkedId={current.id} heading="Signed copies" workingCopy onChange={load} />
         </div>
