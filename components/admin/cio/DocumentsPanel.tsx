@@ -25,12 +25,14 @@ interface Props {
   workingCopy?: boolean
   /** Show category entry, used by the general Documents tab. */
   categories?: boolean
+  /** Called after any successful upload, change or delete, so a parent showing derived state can refresh. */
+  onChange?: () => void
 }
 
 const API = '/api/admin/whef-cio/documents'
 const size = (n: number | null) => (n == null ? '' : n < 1024 * 1024 ? `${Math.max(1, Math.round(n / 1024))} KB` : `${(n / 1024 / 1024).toFixed(1)} MB`)
 
-export default function DocumentsPanel({ linkedType, linkedId, heading, workingCopy, categories }: Props) {
+export default function DocumentsPanel({ linkedType, linkedId, heading, workingCopy, categories, onChange }: Props) {
   const [docs, setDocs] = useState<Doc[]>([])
   const [loaded, setLoaded] = useState(false)
   const [busy, setBusy] = useState(false)
@@ -70,6 +72,7 @@ export default function DocumentsPanel({ linkedType, linkedId, heading, workingC
         throw new Error(d?.error || 'Request failed')
       }
       await load()
+      onChange?.()
       return true
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Request failed')

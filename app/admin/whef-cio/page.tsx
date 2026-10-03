@@ -6,6 +6,7 @@ import RegistrationsTab from '@/components/admin/cio/RegistrationsTab'
 import MeetingsTab from '@/components/admin/cio/MeetingsTab'
 import PoliciesTab from '@/components/admin/cio/PoliciesTab'
 import FilingsTab from '@/components/admin/cio/FilingsTab'
+import ConstitutionTab from '@/components/admin/cio/ConstitutionTab'
 import DocumentsTab from '@/components/admin/cio/DocumentsTab'
 
 export const metadata: Metadata = { title: 'WHEF-CIO Records · Admin · Wissen-Haus' }
@@ -52,6 +53,8 @@ export default async function WhefCioPage({ searchParams }: { searchParams: Prom
       <div style={{ background: '#fff', borderRadius: 10, padding: 24, boxShadow: '0 1px 4px rgba(0,0,0,.06)' }}>
         {active.key === 'trustees' ? (
           <TrusteeRegisterEditor />
+        ) : active.key === 'constitution' ? (
+          <ConstitutionTab />
         ) : active.key === 'registrations' ? (
           <RegistrationsTab />
         ) : active.key === 'meetings' ? (
