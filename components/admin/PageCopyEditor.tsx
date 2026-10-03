@@ -3,6 +3,8 @@
 import { useState, useEffect, useCallback } from 'react'
 import { PAGE_COPY_SCHEMAS } from '@/lib/page-copy-schema'
 import { siteContentKeyFor } from '@/lib/page-copy-shared'
+import { POLICY_PAGES } from '@/lib/policy-doc'
+import PolicySectionsEditor from './PolicySectionsEditor'
 
 const lbl = { fontSize: '.72rem', fontWeight: 700, letterSpacing: '.08em', textTransform: 'uppercase' as const, color: '#8a9a8f', display: 'block', marginBottom: 4 }
 
@@ -70,7 +72,7 @@ export default function PageCopyEditor() {
   return (
     <div>
       <p style={{ margin: '0 0 16px', fontSize: '.85rem', color: '#8a9a8f' }}>
-        Reword any of these pages&apos; headings and paragraphs. You can only edit text here — the page&apos;s layout, images and links stay exactly as built, so there&apos;s nothing to accidentally break.
+        Reword any of these pages&apos; headings and paragraphs. You can only edit text here — the page&apos;s layout and images stay exactly as built, so there&apos;s nothing to accidentally break. Policy pages also have editable numbered sections at the bottom.
       </p>
 
       <div style={{ display: 'flex', gap: 8, marginBottom: 20, flexWrap: 'wrap' }}>
@@ -121,6 +123,8 @@ export default function PageCopyEditor() {
               </div>
             ))}
           </div>
+
+          {POLICY_PAGES.some(p => p.slug === schema.slug) && <PolicySectionsEditor key={schema.slug} slug={schema.slug} />}
         </div>
       )}
     </div>
