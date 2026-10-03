@@ -497,6 +497,29 @@ CREATE INDEX IF NOT EXISTS idx_ai_agent_runs_time  ON ai_agent_runs(created_at D
 -- Retrieval is Postgres full-text search. At this data size it is accurate
 -- enough on the vocabulary visitors actually use, and it costs nothing per
 -- question -- which matters when the alternative is an embedding call on every
+
+-- Charity Trustee Register for Foundation CIO governance. Only directors can
+-- view and manage. Tracks trustee information required by Charity Commission.
+CREATE TABLE IF NOT EXISTS trustee_register (
+  id                UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  full_name         TEXT NOT NULL,
+  email             TEXT,
+  phone             TEXT,
+  date_of_birth     DATE,
+  appointment_date  DATE NOT NULL,
+  term_end_date     DATE,
+  position_title    TEXT,
+  appointment_type  TEXT NOT NULL CHECK (appointment_type IN ('appointed','ex_officio','nominated')),
+  nominating_org    TEXT,
+  status            TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active','retired','removed','deceased')),
+  conflict_of_interest_declaration JSONB,
+  notes             TEXT,
+  created_at        TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at        TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+CREATE INDEX IF NOT EXISTS idx_trustee_status ON trustee_register(status);
+CREATE INDEX IF NOT EXISTS idx_trustee_appointment ON trustee_register(appointment_date DESC);
+CREATE INDEX IF NOT EXISTS idx_trustee_term_end ON trustee_register(term_end_date);
 -- message a visitor sends.
 CREATE TABLE IF NOT EXISTS kb_entries (
   id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
