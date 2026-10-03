@@ -1,14 +1,14 @@
 import type { Metadata } from 'next'
-import { getSession } from '@/lib/auth'
 import { redirect } from 'next/navigation'
+import { directorGuard } from '@/lib/admin-guard'
 import TrusteeRegisterEditor from '@/components/admin/TrusteeRegisterEditor'
 
 export const metadata: Metadata = { title: 'Trustee Register · Admin · Wissen-Haus' }
 
 export default async function TrusteeRegisterPage() {
-  const session = await getSession()
+  const session = await directorGuard()
 
-  if (!session || !session.role || !['director', 'admin'].includes(session.role)) {
+  if (!session) {
     redirect('/admin')
   }
 
