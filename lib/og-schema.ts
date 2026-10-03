@@ -201,6 +201,11 @@ export const OG_PAGE_SCHEMAS: OgPageSchema[] = [
     defaultTitle: 'Terms & Conditions of Use · Wissen-Haus', defaultOgTitle: 'Terms & Conditions',
     defaultDescription: 'The terms and conditions governing your use of the Wissen-Haus Empowerment Foundation website and programmes.',
   },
+  {
+    slug: 'wiki', label: 'Wiki / Overview',
+    defaultTitle: 'About Wissen-Haus · Encyclopedia Entry', defaultOgTitle: 'Wissen-Haus Empowerment Foundation — Overview',
+    defaultDescription: 'An encyclopedic overview of the Wissen-Haus Empowerment Foundation — its history, programmes, and mission to bridge the skills gap for African youth and the diaspora.',
+  },
 ]
 
 export function ogSchemaFor(slug: string): OgPageSchema | undefined {

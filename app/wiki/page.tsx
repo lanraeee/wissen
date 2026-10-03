@@ -4,31 +4,15 @@ import { getSiteContent } from '@/lib/site-content'
 import { getPageCopy } from '@/lib/page-copy'
 import { WIKI_SCHEMA } from '@/lib/page-copy-schema'
 import { getPolicySections } from '@/lib/policy-doc-server'
-import { getBrand, brandifyDeep } from '@/lib/brand-server'
+import { pageMetadata } from '@/lib/seo'
+import { getOgCopy } from '@/lib/og'
+import { ogSchemaFor } from '@/lib/og-schema'
 import { parseInline, parsePairs, safeHref } from '@/lib/policy-doc'
 import PolicyDocument, { Markup, Runs } from '@/components/PolicyDocument'
 import type { TeamMember } from '@/app/team/page'
 
-const META_DESC = 'An encyclopedic overview of the Wissen-Haus Empowerment Foundation — its history, programmes, and mission to bridge the skills gap for African youth and the diaspora.'
-
 export async function generateMetadata(): Promise<Metadata> {
-  const brand = await getBrand()
-  return brandifyDeep<Metadata>({
-    title: 'About Wissen-Haus · Encyclopedia Entry',
-    description: META_DESC,
-    openGraph: {
-      title: 'Wissen-Haus Empowerment Foundation — Overview',
-      description: META_DESC,
-      url: 'https://www.wissenhaus.org/wiki',
-      images: [{ url: '/wiki/opengraph-image', width: 1200, height: 630 }],
-    },
-    twitter: {
-      card: 'summary_large_image',
-      title: 'Wissen-Haus Empowerment Foundation — Overview',
-      description: META_DESC,
-      images: ['/wiki/opengraph-image'],
-    },
-  }, brand)
+  return pageMetadata(await getOgCopy(ogSchemaFor('wiki')!))
 }
 
 // Fallback shown only if no one has entered team members via /admin/content yet.
