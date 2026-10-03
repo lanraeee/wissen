@@ -124,7 +124,12 @@ export default function TrusteeRegisterEditor() {
   }
 
   function startEdit(trustee: Trustee) {
-    setFormData(trustee)
+    setFormData({
+      ...trustee,
+      date_of_birth: trustee.date_of_birth?.slice(0, 10),
+      appointment_date: trustee.appointment_date?.slice(0, 10),
+      term_end_date: trustee.term_end_date?.slice(0, 10),
+    })
     setEditingId(trustee.id)
     setShowForm(true)
   }
