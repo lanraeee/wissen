@@ -19,7 +19,7 @@ interface Version {
 
 interface WorkingCopy { id: string; title: string; linked_id: string | null; file_name: string }
 
-const API = '/api/admin/whef-cio/constitution'
+const API = '/api/admin/whf-cio/constitution'
 const TONE = { draft: 'amber', adopted: 'green', superseded: 'grey' } as const
 
 export default function ConstitutionTab() {
@@ -37,7 +37,7 @@ export default function ConstitutionTab() {
 
   const load = useCallback(async () => {
     try {
-      const [v, d] = await Promise.all([fetch(API), fetch('/api/admin/whef-cio/documents?linked_type=constitution')])
+      const [v, d] = await Promise.all([fetch(API), fetch('/api/admin/whf-cio/documents?linked_type=constitution')])
       const vd = await v.json().catch(() => null)
       if (!v.ok) throw new Error(vd?.error || 'Failed to load constitution')
       setVersions(vd)
@@ -101,7 +101,7 @@ export default function ConstitutionTab() {
         {working ? (
           <>
             <strong>Working copy:</strong>{' '}
-            <a href={`/api/admin/whef-cio/documents/${working.id}/file`} target="_blank" rel="noopener noreferrer" style={{ color: '#0F2D1D' }}>{working.title}</a>
+            <a href={`/api/admin/whf-cio/documents/${working.id}/file`} target="_blank" rel="noopener noreferrer" style={{ color: '#0F2D1D' }}>{working.title}</a>
             {workingVersion ? ` (${workingVersion.version_label})` : ''}
             {adopted && workingVersion && adopted.id !== workingVersion.id && (
               <div style={{ marginTop: 4, color: '#b45309' }}>The adopted version is {adopted.version_label}, but the working copy is for {workingVersion.version_label}.</div>

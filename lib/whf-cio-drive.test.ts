@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
-import { buildMultipart, driveConfigured } from './whef-cio-drive'
+import { buildMultipart, driveConfigured } from './whf-cio-drive'
 
-describe('whef-cio drive backup', () => {
+describe('whf-cio drive backup', () => {
   it('builds a multipart/related body with metadata then raw bytes', async () => {
     const bytes = new TextEncoder().encode('%PDF-binary\u0000data').buffer
     const text = await buildMultipart({ name: 'a.pdf', parents: ['F'] }, bytes, 'application/pdf', 'B').text()

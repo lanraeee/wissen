@@ -3,7 +3,7 @@ import { directorGuard } from '@/lib/admin-guard'
 import { logActivity } from '@/lib/audit-log'
 import { log } from '@/lib/logger'
 import sql from '@/lib/db'
-import { dbErrorResponse, UUID_RE } from '@/lib/whef-cio'
+import { dbErrorResponse, UUID_RE } from '@/lib/whf-cio'
 
 type Ctx = { params: Promise<{ id: string }> }
 
@@ -39,10 +39,10 @@ export async function PUT(request: Request, { params }: Ctx) {
         ? NextResponse.json({ error: 'Only draft versions can be edited — create a new draft from this version instead' }, { status: 409 })
         : NextResponse.json({ error: 'Not found' }, { status: 404 })
     }
-    await logActivity(session, 'whef_cio.constitution.update', { targetType: 'cio_constitution_versions', targetId: id })
+    await logActivity(session, 'whf_cio.constitution.update', { targetType: 'cio_constitution_versions', targetId: id })
     return NextResponse.json(rows[0])
   } catch (err) {
-    log.error('whef-cio', err, { route: 'constitution PUT', id })
+    log.error('whf-cio', err, { route: 'constitution PUT', id })
     const e = dbErrorResponse(err)
     return NextResponse.json({ error: e.error }, { status: e.status })
   }
@@ -63,10 +63,10 @@ export async function DELETE(_: Request, { params }: Ctx) {
         ? NextResponse.json({ error: 'Only draft versions can be deleted' }, { status: 409 })
         : NextResponse.json({ error: 'Not found' }, { status: 404 })
     }
-    await logActivity(session, 'whef_cio.constitution.delete', { targetType: 'cio_constitution_versions', targetId: id })
+    await logActivity(session, 'whf_cio.constitution.delete', { targetType: 'cio_constitution_versions', targetId: id })
     return NextResponse.json({ success: true })
   } catch (err) {
-    log.error('whef-cio', err, { route: 'constitution DELETE', id })
+    log.error('whf-cio', err, { route: 'constitution DELETE', id })
     const e = dbErrorResponse(err)
     return NextResponse.json({ error: e.error }, { status: e.status })
   }

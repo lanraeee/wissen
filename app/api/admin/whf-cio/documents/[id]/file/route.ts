@@ -3,8 +3,8 @@ import { get } from '@vercel/blob'
 import { directorGuard } from '@/lib/admin-guard'
 import { log } from '@/lib/logger'
 import sql from '@/lib/db'
-import { UUID_RE } from '@/lib/whef-cio'
-import { blobAccess, contentDisposition } from '@/lib/whef-cio-files'
+import { UUID_RE } from '@/lib/whf-cio'
+import { blobAccess, contentDisposition } from '@/lib/whf-cio-files'
 
 type Ctx = { params: Promise<{ id: string }> }
 
@@ -33,7 +33,7 @@ export async function GET(_: Request, { params }: Ctx) {
       },
     })
   } catch (err) {
-    log.error('whef-cio', err, { route: 'documents file', id })
+    log.error('whf-cio', err, { route: 'documents file', id })
     return NextResponse.json({ error: 'Could not retrieve file' }, { status: 500 })
   }
 }

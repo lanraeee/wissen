@@ -195,6 +195,6 @@ export function dbErrorResponse(err: unknown): { status: number; error: string }
   if (code === '23505') return { status: 409, error: 'A record with those details already exists' }
   if (code === '23503') return { status: 400, error: 'Referenced record does not exist' }
   if (code === '22P02' || code === '22007' || code === '22008') return { status: 400, error: 'Invalid value' }
-  if (code === '42P01') return { status: 503, error: 'WHEF-CIO tables are missing — run scripts/whef-cio-migration.sql in the Neon SQL editor' }
+  if (code === '42P01') return { status: 503, error: 'WHF-CIO tables are missing — run scripts/whf-cio-migration.sql in the Neon SQL editor' }
   return { status: 500, error: 'Database error' }
 }

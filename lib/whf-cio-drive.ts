@@ -1,7 +1,7 @@
 import { get } from '@vercel/blob'
 import sql from './db'
 import { log } from './logger'
-import { blobAccess } from './whef-cio-files'
+import { blobAccess } from './whf-cio-files'
 
 // Asynchronous backup of uploaded CIO documents to Google Drive. Vercel Blob stays the source of truth;
 // a failed or unconfigured backup never affects an upload.
@@ -10,7 +10,7 @@ import { blobAccess } from './whef-cio-files'
 // their own, so uploads into an ordinary user folder fail. The refresh token acts as the Drive owner.
 //   GOOGLE_DRIVE_CLIENT_ID, GOOGLE_DRIVE_CLIENT_SECRET, GOOGLE_DRIVE_REFRESH_TOKEN  (scope: drive.file)
 //   GOOGLE_DRIVE_FOLDER_ID  optional override. With the narrow drive.file scope the app can only write to
-//                           folders it created itself, so by default it finds or creates "WHEF-CIO Backup".
+//                           folders it created itself, so by default it finds or creates "WHF-CIO Backup".
 
 export function driveConfigured(): boolean {
   return !!(process.env.GOOGLE_DRIVE_CLIENT_ID && process.env.GOOGLE_DRIVE_CLIENT_SECRET && process.env.GOOGLE_DRIVE_REFRESH_TOKEN)
@@ -41,7 +41,7 @@ async function accessToken(): Promise<string> {
   return data.access_token
 }
 
-const FOLDER_NAME = 'WHEF-CIO Backup'
+const FOLDER_NAME = 'WHF-CIO Backup'
 let folderId: string | undefined
 
 async function backupFolder(token: string): Promise<string> {
@@ -78,7 +78,7 @@ export async function backupDocument(id: string): Promise<BackupStatus> {
 
     const token = await accessToken()
     const parent = await backupFolder(token)
-    const boundary = `whef${Date.now().toString(36)}`
+    const boundary = `whf${Date.now().toString(36)}`
     const res = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&supportsAllDrives=true&fields=id', {
       method: 'POST',
       headers: { Authorization: `Bearer ${token}`, 'Content-Type': `multipart/related; boundary=${boundary}` },
@@ -90,7 +90,7 @@ export async function backupDocument(id: string): Promise<BackupStatus> {
     await sql`UPDATE cio_documents SET drive_status = 'synced', drive_file_id = ${data.id} WHERE id = ${id}`
     return 'synced'
   } catch (err) {
-    log.error('whef-cio-drive', err, { id })
+    log.error('whf-cio-drive', err, { id })
     await sql`UPDATE cio_documents SET drive_status = 'failed' WHERE id = ${id} AND drive_status <> 'synced'`.catch(() => {})
     return 'failed'
   }

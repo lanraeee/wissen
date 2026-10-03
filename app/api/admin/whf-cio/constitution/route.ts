@@ -3,7 +3,7 @@ import { directorGuard } from '@/lib/admin-guard'
 import { logActivity } from '@/lib/audit-log'
 import { log } from '@/lib/logger'
 import sql from '@/lib/db'
-import { dbErrorResponse, UUID_RE } from '@/lib/whef-cio'
+import { dbErrorResponse, UUID_RE } from '@/lib/whf-cio'
 
 export async function GET() {
   const session = await directorGuard()
@@ -16,7 +16,7 @@ export async function GET() {
     `
     return NextResponse.json(rows)
   } catch (err) {
-    log.error('whef-cio', err, { route: 'constitution GET' })
+    log.error('whf-cio', err, { route: 'constitution GET' })
     const e = dbErrorResponse(err)
     return NextResponse.json({ error: e.error }, { status: e.status })
   }
@@ -44,10 +44,10 @@ export async function POST(request: Request) {
       )
       RETURNING id, version_label, status, body_text, adopted_date, change_summary, created_by, created_at, updated_at
     `
-    await logActivity(session, 'whef_cio.constitution.create', { targetType: 'cio_constitution_versions', targetId: rows[0].id })
+    await logActivity(session, 'whf_cio.constitution.create', { targetType: 'cio_constitution_versions', targetId: rows[0].id })
     return NextResponse.json(rows[0], { status: 201 })
   } catch (err) {
-    log.error('whef-cio', err, { route: 'constitution POST' })
+    log.error('whf-cio', err, { route: 'constitution POST' })
     const e = dbErrorResponse(err)
     return NextResponse.json({ error: e.error }, { status: e.status })
   }

@@ -24,7 +24,12 @@ const nextConfig = {
     return [
       {
         source: '/admin/trustee-register',
-        destination: '/admin/whef-cio',
+        destination: '/admin/whf-cio',
+        permanent: true,
+      },
+      {
+        source: '/admin/whef-cio',
+        destination: '/admin/whf-cio',
         permanent: true,
       },
       {

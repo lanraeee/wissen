@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
-import { RESOURCES, getResource, parseBody, buildInsert, buildUpdate, dbErrorResponse } from './whef-cio'
+import { RESOURCES, getResource, parseBody, buildInsert, buildUpdate, dbErrorResponse } from './whf-cio'
 
-describe('whef-cio generic records', () => {
+describe('whf-cio generic records', () => {
   it('only resolves whitelisted resources', () => {
     expect(getResource('meetings')).toBe(RESOURCES.meetings)
     expect(getResource('users')).toBeNull()

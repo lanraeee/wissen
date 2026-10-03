@@ -7,7 +7,7 @@
 **Place:** [Venue / video-call platform] (clause 10.5 of the constitution allows electronic participation)
 **Application reference (Charity Commission):** 5300610
 
-> **How to use this template.** Fill in everything in [square brackets], delete the guidance notes in italics, and have the chair sign the finished minutes. Attach the signed minutes to the Charity Commission application where it asks for the meeting at which each employment or purchase was agreed, and upload them in the dashboard under WHEF-CIO Records → Meetings & Minutes. Do not record a decision as "resolved" unless it was actually agreed at the meeting.
+> **How to use this template.** Fill in everything in [square brackets], delete the guidance notes in italics, and have the chair sign the finished minutes. Attach the signed minutes to the Charity Commission application where it asks for the meeting at which each employment or purchase was agreed, and upload them in the dashboard under WHF-CIO Records → Meetings & Minutes. Do not record a decision as "resolved" unless it was actually agreed at the meeting.
 
 ---
 

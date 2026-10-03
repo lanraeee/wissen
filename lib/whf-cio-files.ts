@@ -12,7 +12,7 @@ export type LinkedType = (typeof LINKED_TYPES)[number]
 
 /** Store access mode. Must match how the Vercel Blob store was created (it cannot be changed afterwards). */
 export function blobAccess(): 'public' | 'private' {
-  return process.env.WHEF_BLOB_ACCESS === 'public' ? 'public' : 'private'
+  return process.env.WHF_BLOB_ACCESS === 'public' ? 'public' : 'private'
 }
 
 export function safeFileName(name: string): string {

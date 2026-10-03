@@ -35,7 +35,7 @@ interface Props {
 }
 
 export default function RecordsManager({ resource, heading, blurb, addLabel, emptyText, fields, columns, defaults = {}, summary, summaryWhenEmpty, renderExtra }: Props) {
-  const api = `/api/admin/whef-cio/${resource}`
+  const api = `/api/admin/whf-cio/${resource}`
   const [rows, setRows] = useState<Row[]>([])
   const [loaded, setLoaded] = useState(false)
   const [saving, setSaving] = useState(false)

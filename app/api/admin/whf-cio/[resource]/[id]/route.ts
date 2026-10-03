@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 import { directorGuard } from '@/lib/admin-guard'
 import { logActivity } from '@/lib/audit-log'
 import { log } from '@/lib/logger'
-import { getResource, parseBody, updateRow, deleteRow, dbErrorResponse, UUID_RE } from '@/lib/whef-cio'
+import { getResource, parseBody, updateRow, deleteRow, dbErrorResponse, UUID_RE } from '@/lib/whf-cio'
 
 type Ctx = { params: Promise<{ resource: string; id: string }> }
 
@@ -21,10 +21,10 @@ export async function PUT(request: Request, { params }: Ctx) {
   try {
     const row = await updateRow(res, id, parsed.values)
     if (!row) return NextResponse.json({ error: 'Not found' }, { status: 404 })
-    await logActivity(session, `whef_cio.${resource}.update`, { targetType: `cio_${resource}`, targetId: id })
+    await logActivity(session, `whf_cio.${resource}.update`, { targetType: `cio_${resource}`, targetId: id })
     return NextResponse.json(row)
   } catch (err) {
-    log.error('whef-cio', err, { resource, id })
+    log.error('whf-cio', err, { resource, id })
     const e = dbErrorResponse(err)
     return NextResponse.json({ error: e.error }, { status: e.status })
   }
@@ -40,10 +40,10 @@ export async function DELETE(_: Request, { params }: Ctx) {
 
   try {
     if (!(await deleteRow(res, id))) return NextResponse.json({ error: 'Not found' }, { status: 404 })
-    await logActivity(session, `whef_cio.${resource}.delete`, { targetType: `cio_${resource}`, targetId: id })
+    await logActivity(session, `whf_cio.${resource}.delete`, { targetType: `cio_${resource}`, targetId: id })
     return NextResponse.json({ success: true })
   } catch (err) {
-    log.error('whef-cio', err, { resource, id })
+    log.error('whf-cio', err, { resource, id })
     const e = dbErrorResponse(err)
     return NextResponse.json({ error: e.error }, { status: e.status })
   }

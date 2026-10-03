@@ -544,7 +544,7 @@ CREATE INDEX IF NOT EXISTS idx_trustee_status ON trustee_register(status);
 CREATE INDEX IF NOT EXISTS idx_trustee_appointment ON trustee_register(appointment_date DESC);
 CREATE INDEX IF NOT EXISTS idx_trustee_term_end ON trustee_register(term_end_date);
 
--- WHEF-CIO Records (/admin/whef-cio): the governance file for Wissen-Haus
+-- WHF-CIO Records (/admin/whf-cio): the governance file for Wissen-Haus
 -- Empowerment Foundation, a Foundation CIO. Directors only. One table per tab;
 -- trustee_register above is Tab 1. Files (signed PDFs, IDs, minutes) are not
 -- stored here -- cio_documents holds the Vercel Blob pathname for each one and

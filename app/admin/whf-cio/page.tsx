@@ -10,7 +10,7 @@ import ConstitutionTab from '@/components/admin/cio/ConstitutionTab'
 import ConflictsTab from '@/components/admin/cio/ConflictsTab'
 import DocumentsTab from '@/components/admin/cio/DocumentsTab'
 
-export const metadata: Metadata = { title: 'WHEF-CIO Records · Admin · Wissen-Haus' }
+export const metadata: Metadata = { title: 'WHF-CIO Records · Admin · Wissen-Haus' }
 
 const TABS = [
   { key: 'trustees', label: 'Trustees' },
@@ -34,7 +34,7 @@ const CONTENT: Record<(typeof TABS)[number]['key'], React.ReactNode> = {
   documents: <DocumentsTab />,
 }
 
-export default async function WhefCioPage({ searchParams }: { searchParams: Promise<{ tab?: string }> }) {
+export default async function WhfCioPage({ searchParams }: { searchParams: Promise<{ tab?: string }> }) {
   const session = await directorGuard()
   if (!session) redirect('/admin')
 
@@ -44,7 +44,7 @@ export default async function WhefCioPage({ searchParams }: { searchParams: Prom
   return (
     <>
       <div className="admin-page-header">
-        <h1 className="admin-page-title">WHEF-CIO Records</h1>
+        <h1 className="admin-page-title">WHF-CIO Records</h1>
         <p className="admin-page-desc">
           CIO Trustee governance record for Wissen-Haus Empowerment Foundation.
           Only directors can view and manage trustee information required by the Charity Commission.
@@ -53,7 +53,7 @@ export default async function WhefCioPage({ searchParams }: { searchParams: Prom
 
       <div style={{ display: 'flex', gap: 8, marginBottom: 28, flexWrap: 'wrap' }}>
         {TABS.map(t => (
-          <a key={t.key} href={`/admin/whef-cio?tab=${t.key}`} style={{
+          <a key={t.key} href={`/admin/whf-cio?tab=${t.key}`} style={{
             padding: '6px 16px', borderRadius: 99, fontSize: '.82rem', fontWeight: 600,
             background: active.key === t.key ? '#1a3c2e' : '#fff',
             color: active.key === t.key ? '#f4f0e7' : '#3a4a3f',

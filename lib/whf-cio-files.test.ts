@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
-import { safeFileName, validateUpload, contentDisposition, MAX_UPLOAD_BYTES } from './whef-cio-files'
+import { safeFileName, validateUpload, contentDisposition, MAX_UPLOAD_BYTES } from './whf-cio-files'
 
-describe('whef-cio file helpers', () => {
+describe('whf-cio file helpers', () => {
   it('strips paths and unsafe characters from names', () => {
     expect(safeFileName('../../etc/passwd')).toBe('passwd')
     expect(safeFileName('C:\\x\\Signed Constitution (v1).pdf')).toBe('Signed-Constitution-v1.pdf')

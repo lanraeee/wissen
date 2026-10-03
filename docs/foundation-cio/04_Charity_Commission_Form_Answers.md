@@ -15,7 +15,7 @@ Answers below follow the order of the form (18-page draft printout). Anything ma
 3. **Bank account.** The only account is Wissen Haus Ltd's. The CIO is a separate legal entity, and charity money must not pass through the company's account. Open an account in the CIO's own name (the Commission accepts "not yet" for a new application).
 4. **Trustee details.** The Commission asks each trustee for identity details, and the form asks for the contact person's date of birth. Gather these, but do not put them in this repo.
 5. **Signed constitution.** The signed PDF is attached on page 2 ("Please attach the governing document"). Upload it in the Constitution tab first and mark it as the working copy.
-6. **Safeguarding policy.** Written and published at `/safeguarding`. The trustees must formally adopt it (record it in WHEF-CIO Records → Policies) and appoint a Designated Safeguarding Lead before you rely on it.
+6. **Safeguarding policy.** Written and published at `/safeguarding`. The trustees must formally adopt it (record it in WHF-CIO Records → Policies) and appoint a Designated Safeguarding Lead before you rely on it.
 
 ---
 
@@ -267,7 +267,7 @@ Hold a first trustee meeting and minute at least:
 4. Approval of any goods or services bought from a trustee, the founder, or a connected organisation such as Wissen Haus Ltd (UK), with interests declared.
 5. Opening of a bank account in the charity's name, financial year end 31 March, and the donor due-diligence procedure.
 
-Record these in WHEF-CIO Records → Meetings & Minutes and attach the signed minutes there.
+Record these in WHF-CIO Records → Meetings & Minutes and attach the signed minutes there.
 
 ## Still needed from you
 

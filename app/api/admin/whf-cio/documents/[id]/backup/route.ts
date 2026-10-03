@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { directorGuard } from '@/lib/admin-guard'
-import { UUID_RE } from '@/lib/whef-cio'
-import { backupDocument, driveConfigured } from '@/lib/whef-cio-drive'
+import { UUID_RE } from '@/lib/whf-cio'
+import { backupDocument, driveConfigured } from '@/lib/whf-cio-drive'
 
 type Ctx = { params: Promise<{ id: string }> }
 

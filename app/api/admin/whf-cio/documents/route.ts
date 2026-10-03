@@ -4,9 +4,9 @@ import { directorGuard } from '@/lib/admin-guard'
 import { logActivity } from '@/lib/audit-log'
 import { log } from '@/lib/logger'
 import sql from '@/lib/db'
-import { dbErrorResponse, UUID_RE } from '@/lib/whef-cio'
-import { LINKED_TYPES, blobAccess, safeFileName, validateUpload } from '@/lib/whef-cio-files'
-import { backupDocument } from '@/lib/whef-cio-drive'
+import { dbErrorResponse, UUID_RE } from '@/lib/whf-cio'
+import { LINKED_TYPES, blobAccess, safeFileName, validateUpload } from '@/lib/whf-cio-files'
+import { backupDocument } from '@/lib/whf-cio-drive'
 
 export async function GET(request: Request) {
   const session = await directorGuard()
@@ -29,7 +29,7 @@ export async function GET(request: Request) {
     `
     return NextResponse.json(rows)
   } catch (err) {
-    log.error('whef-cio', err, { route: 'documents GET' })
+    log.error('whf-cio', err, { route: 'documents GET' })
     const e = dbErrorResponse(err)
     return NextResponse.json({ error: e.error }, { status: e.status })
   }
@@ -58,14 +58,14 @@ export async function POST(request: Request) {
 
   let blob
   try {
-    blob = await put(`whef-cio/${safeFileName(file.name)}`, file, {
+    blob = await put(`whf-cio/${safeFileName(file.name)}`, file, {
       access: blobAccess(),
       addRandomSuffix: true,
       contentType: file.type,
     })
   } catch (err) {
-    log.error('whef-cio', err, { route: 'documents upload' })
-    return NextResponse.json({ error: 'Upload failed — check that WHEF_BLOB_ACCESS matches how the Blob store was created' }, { status: 502 })
+    log.error('whf-cio', err, { route: 'documents upload' })
+    return NextResponse.json({ error: 'Upload failed — check that WHF_BLOB_ACCESS matches how the Blob store was created' }, { status: 502 })
   }
 
   try {
@@ -74,12 +74,12 @@ export async function POST(request: Request) {
       VALUES (${title}, ${str('category')}, ${linkedType}, ${linkedId}, ${blob.pathname}, ${file.name}, ${file.type}, ${file.size}, ${str('notes')}, ${session.email})
       RETURNING id, title, category, linked_type, linked_id, file_name, content_type, size_bytes, is_working_copy, notes, uploaded_by, drive_status, created_at
     `
-    await logActivity(session, 'whef_cio.documents.upload', { targetType: 'cio_documents', targetId: rows[0].id, details: { fileName: file.name } })
+    await logActivity(session, 'whf_cio.documents.upload', { targetType: 'cio_documents', targetId: rows[0].id, details: { fileName: file.name } })
     const docId = rows[0].id as string
     after(() => backupDocument(docId))
     return NextResponse.json(rows[0], { status: 201 })
   } catch (err) {
-    log.error('whef-cio', err, { route: 'documents insert' })
+    log.error('whf-cio', err, { route: 'documents insert' })
     const e = dbErrorResponse(err)
     return NextResponse.json({ error: e.error }, { status: e.status })
   }

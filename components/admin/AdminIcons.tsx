@@ -121,7 +121,7 @@ export const NAV_ICONS: Record<string, (props: IconProps) => React.ReactElement>
   '/admin/testimonials': TestimonialsIcon,
   '/admin/content': ContentIcon,
   '/admin/content-approvals': ApprovalsIcon,
-  '/admin/whef-cio': TrusteeRegisterIcon,
+  '/admin/whf-cio': TrusteeRegisterIcon,
   '/admin/newsletter': NewsletterIcon,
   '/admin/email-templates': EmailTemplatesIcon,
   '/admin/settings': SettingsIcon,

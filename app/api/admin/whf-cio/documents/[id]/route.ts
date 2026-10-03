@@ -4,7 +4,7 @@ import { directorGuard } from '@/lib/admin-guard'
 import { logActivity } from '@/lib/audit-log'
 import { log } from '@/lib/logger'
 import sql from '@/lib/db'
-import { dbErrorResponse, UUID_RE } from '@/lib/whef-cio'
+import { dbErrorResponse, UUID_RE } from '@/lib/whf-cio'
 
 type Ctx = { params: Promise<{ id: string }> }
 
@@ -48,10 +48,10 @@ export async function PUT(request: Request, { params }: Ctx) {
       RETURNING id, title, category, linked_type, linked_id, file_name, content_type, size_bytes, is_working_copy, notes, uploaded_by, drive_status, created_at
     `
     if (!rows.length) return NextResponse.json({ error: 'Not found' }, { status: 404 })
-    await logActivity(session, 'whef_cio.documents.update', { targetType: 'cio_documents', targetId: id })
+    await logActivity(session, 'whf_cio.documents.update', { targetType: 'cio_documents', targetId: id })
     return NextResponse.json(rows[0])
   } catch (err) {
-    log.error('whef-cio', err, { route: 'documents PUT', id })
+    log.error('whf-cio', err, { route: 'documents PUT', id })
     const e = dbErrorResponse(err)
     return NextResponse.json({ error: e.error }, { status: e.status })
   }
@@ -71,12 +71,12 @@ export async function DELETE(_: Request, { params }: Ctx) {
     try {
       await del(rows[0].blob_path as string)
     } catch (err) {
-      log.error('whef-cio', err, { route: 'documents DELETE blob', id })
+      log.error('whf-cio', err, { route: 'documents DELETE blob', id })
     }
-    await logActivity(session, 'whef_cio.documents.delete', { targetType: 'cio_documents', targetId: id })
+    await logActivity(session, 'whf_cio.documents.delete', { targetType: 'cio_documents', targetId: id })
     return NextResponse.json({ success: true })
   } catch (err) {
-    log.error('whef-cio', err, { route: 'documents DELETE', id })
+    log.error('whf-cio', err, { route: 'documents DELETE', id })
     const e = dbErrorResponse(err)
     return NextResponse.json({ error: e.error }, { status: e.status })
   }
