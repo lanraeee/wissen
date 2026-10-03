@@ -159,3 +159,116 @@ All questions: **Not applicable** (the organisation does not operate a village h
 - **Additional information for the Commission:** The organisation is Africa-focused with a UK base; the founder is also executive director; the organisation shares a connection with Wissen Haus Ltd (UK), managed by clear separation and annual conflict declarations.
 - **Data protection:** read-only; no input needed.
 - **Declaration / submission:** to be completed and submitted by the trustees' authorised contact once all blockers are resolved.
+
+---
+
+# Part 2: review of the 22-page form and answers for what is still blank
+
+Reviewed against the newer 22-page draft printout (application 5300610). Section order follows the form.
+
+## Fix first (these would cause problems or be wrong if submitted as is)
+
+1. **The name no longer matches.** Page 1 and the Charity name page now say **WISSEN HAUS FOUNDATION** (no "Empowerment"). The constitution says "Wissen Haus Empowerment Foundation". The name on the form and in the governing document must be identical. Decide which, then make both agree.
+2. **Safeguarding declaration (page 19) is already ticked.** It says the trustees "have read, understood and are following" the Charity Commission's safeguarding guidance. Only leave it ticked once the trustees have actually read the guidance and adopted the safeguarding policy at a trustee meeting.
+3. **Employment, goods or services, and personal benefits are all answered Yes, but their tables are empty.** The form wants names, payment and relationship in each table, **plus attached minutes of the trustee meeting that agreed each arrangement**. This means the trustees need to hold and minute a meeting before you submit (see the minutes checklist below). If an arrangement is not actually planned, answer No instead.
+4. **The 18 countries on page 6.** You listed Nigeria, Ghana, Kenya, South Africa, Rwanda, Gambia, Republic of Congo, Tanzania, Egypt, Zimbabwe, Zambia, Namibia, Lesotho, Mauritius, Mauritania, Ethiopia, Seychelles and Sierra Leone, and answered **Yes** to "carrying out its own operations in the locations you have named". The Commission may ask for evidence for every country. List only places where you work or will work in the next 12 months.
+5. **"Special circumstances" on page 1** contains the same text as "Additional information" on page 21. That field is meant for reasons the application needs special handling (such as urgency). Clear it, and keep the text on page 21.
+6. **Funding page: too many boxes ticked.** Each one opens follow-up questions. If you will not have them, untick: Investments, Funding from interest and return on endowments, Loans from any source, and Commercial sponsor. Keep Public donations and Grants, and Charging for services and Corporate donors if true.
+7. **Page 5: ethnic or racial origin is ticked** while page 8 says "regardless of background". Make these consistent, and be ready to explain why the benefit is directed at African and diaspora young people.
+8. **Trustees.** Page 19 says 3 trustees currently, but only two are named. Leave this until the third is confirmed. The "Trustee details" table on page 20 needs each trustee entered.
+
+## Answers for blank fields
+
+**Page 6: What does the organisation advance education in?**
+Career guidance and career planning; employability and workplace skills; digital and data skills; entrepreneurship; and financial and economic independence.
+
+**Page 6: How are the trustees satisfied that all those providing education are suitably qualified?**
+Trainers, speakers and mentors are chosen for relevant professional or teaching experience, with identity checks, two references and safeguarding vetting (see wissenhaus.org/safeguarding). The programmes lead reviews content and delivery, participant feedback is collected after each programme, and trustees receive an annual report on who delivered what and their credentials.
+
+**Page 8: What criteria do the trustees use to decide who the organisation benefits or what work it does or supports?**
+Eligibility is young people in the countries the organisation works in (age range **[CONFIRM]**). Programmes are open to everyone who meets this. Where places are limited, priority goes first to those facing economic disadvantage, then to the order of application. Trustees approve the annual programme plan against the charity's purposes and assess new activities for charitable benefit before they start.
+
+**Page 8: Grant-making criteria (tidy of your pasted text)**
+Applicants are assessed on financial need, academic or professional potential, location and fit with the charity's purposes. There is no membership requirement and no discrimination. Applications are scored by a panel of at least two trustees who declare any conflict of interest and take no part in decisions where they have one. *(You ticked "Makes grants to individuals" on page 4, so the Commission may ask for a short grant-making policy to attach. It can be one page, and I can write it.)*
+
+**Page 9: What sort of facility or service does it provide?**
+Online and in-person career guidance, mentoring, workshops and events; a free online community hub with opportunity listings; and certificate courses.
+
+**Page 9: When can the public access the facility or service?**
+The website and community hub are available at any time. Events and workshops run on a published calendar through the year and are advertised on the website and social channels.
+
+**Page 9: How much does it charge?**
+No membership fee. Some premium courses and events carry a fee. **[CONFIRM prices or the range]**
+
+**Page 9: How have you reached the view that charges are not more than the poor can afford?**
+Core programmes, mentoring, the community hub and opportunity listings are free. Only premium courses and some events carry a modest fee, and free or bursary-supported places are available to anyone who cannot pay. Trustees will review pricing and access annually.
+
+**Page 10: What arrangements and/or formal agreements will you have with partners or agents?**
+Written partnership agreements or memoranda of understanding setting out roles, safeguarding standards, data protection and reporting. No funds are sent to a partner without a written agreement and trustee approval.
+
+**Page 10: How will the organisation monitor, verify and account for the work and expenditure of partners?**
+Partners provide activity and financial reports, with receipts or invoices for any funds. Funds are paid in stages against evidence. The trustees receive regular updates, review a sample of work, and record all payments in the charity's accounts.
+
+**Page 11: How does the organisation decide which activities to carry out overseas and how it will fund them?**
+Trustees approve an annual programme plan and budget based on identified needs and confirmed funding. An overseas activity starts only once its funding is in place, and is paid for from the charity's own bank account (to be opened) from donations and grants.
+
+**Page 11: How does the organisation select volunteers or staff to carry out activities overseas and manage risks to them?**
+Volunteers and staff are selected for relevant experience, with references, identity checks and vetting under the safeguarding policy, plus induction and a code of conduct. Each activity has a risk assessment. Work is delivered digitally wherever possible, and incidents go to the Designated Safeguarding Lead. **[CONFIRM insurance]**
+
+**Page 11: Property**
+- *Who owns the land or property?* The operator of the co-working space at 190 Dantzic Street, Manchester. **[CONFIRM name]**
+- *Agreements in place?* A membership or licence agreement with the co-working operator for use of the office space (no lease). **[CONFIRM terms and notice period]**
+- *Business Rate relief?* No: the operator pays business rates and the charity pays a membership fee. **[CONFIRM]**
+
+**Page 13/14: Telephone numbers** (organisation contact and public). **[CONFIRM]** Use a UK number if you can: the Commission publishes the public one.
+
+**Page 15: Procedures to identify and verify donors and consider conditions**
+Trustees keep a record of significant donations, carry out due diligence (identity and source of funds) on larger gifts, and decline or return donations that are suspicious or carry conditions that conflict with the charity's purposes. Conditions are recorded and agreed by the trustees before a gift is accepted, following the Charity Commission's guidance on charity donations.
+
+**Page 15: Do you intend to claim Gift Aid?** Yes, after registration, once HMRC recognition has been applied for.
+
+**Page 16 (only if you keep these ticked)**
+- *Charging for services, more details:* Fees for premium courses and events, set by the trustees and reviewed annually. **[CONFIRM]**
+- *Corporate donors, who:* Businesses and partner organisations supporting programmes. **[CONFIRM names, or untick]**
+- *Commercial sponsor:* Businesses sponsoring events or programmes in return for acknowledgement, with no commercial participation arrangement. **[CONFIRM, or untick]**
+- *Loans:* None expected. Untick.
+
+**Page 17: Employment** (answer Yes only if true)
+| Name | Employment | Payment | Relationship |
+|---|---|---|---|
+| Benz Olagbaye | Executive Director | **[CONFIRM amount, or "unpaid at present"]** | Founder and trustee (ex officio) |
+
+Clause 8.3 of your constitution allows this. Attach the **trustee meeting minutes approving it**, with Benz declaring his interest and not voting.
+
+**Page 17: Goods or services** (answer Yes only if true)
+| Name | Goods/services provided | Payment | Relationship |
+|---|---|---|---|
+| **[CONFIRM: for example Wissen Haus Ltd (UK)]** | **[CONFIRM: for example ICT, design or programme support]** | At market rate, with invoices **[CONFIRM]** | Company connected to the founder |
+
+Attach the minutes of the meeting that approved it, with conflicts declared.
+
+**Page 18: Other personal benefits / close links** (answer Yes only if true)
+| Name | Personal benefit provided | Relationship |
+|---|---|---|
+| Benz Olagbaye | Director and shareholder of Wissen Haus Ltd **[CONFIRM]** | Founder and trustee |
+
+**Page 19: Connections with a non-charitable organisation (Wissen Haus Ltd (UK))**
+- *What connections will exist?* The founder is also involved in Wissen Haus Ltd (UK). The company and the charity share the Wissen Haus name and website, and may share premises and some skills. **[CONFIRM exact overlap]**
+- *How will their work be complementary?* The company carries out commercial activity; the charity carries out the charitable programmes. They share a common interest in youth skills and opportunity but have separate purposes. **[CONFIRM the Ltd's activity]**
+- *How will the two be separated and distinguished?* Separate legal entities with their own bank accounts, books and decisions. Any shared service is under a written agreement at market value, and no charity asset benefits the company.
+- *How will the charity's independence be maintained?* Trustees decide independently under the conflicts-of-interest rules (clause 9), anyone with an interest in the company declares it and does not vote on related decisions, declarations are renewed annually, and the charity can end any arrangement with the company.
+
+## Minutes you need before submitting
+
+Hold a first trustee meeting and minute at least:
+1. Adoption of the constitution and confirmation of the trustees.
+2. Adoption of the safeguarding policy and appointment of a Designated Safeguarding Lead and deputy.
+3. Approval of any employment of a trustee or the founder (Benz Olagbaye), with the interest declared.
+4. Approval of any goods or services bought from a trustee, the founder, or a connected organisation such as Wissen Haus Ltd (UK), with interests declared.
+5. Opening of a bank account in the charity's name, financial year end 31 March, and the donor due-diligence procedure.
+
+Record these in WHEF-CIO Records → Meetings & Minutes and attach the signed minutes there.
+
+## Still needed from you
+
+Date of birth for the application contact (and for each trustee); the third trustee; income estimates; telephone numbers; prices; partner names; co-working operator name and terms; and confirmation of what Wissen Haus Ltd (UK) does and who owns it.
