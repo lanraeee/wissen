@@ -372,6 +372,41 @@ export const DONATE_SCHEMA: PageCopySchema = {
 }
 PAGE_COPY_SCHEMAS.push(DONATE_SCHEMA)
 
+export const SAFEGUARDING_SCHEMA: PageCopySchema = {
+  slug: 'safeguarding', label: 'Safeguarding Policy',
+  fields: [
+    t('title', 'Page title', 'Safeguarding Policy'),
+    t('version', 'Version', '1.0', 20),
+    t('lastUpdated', 'Last updated', '3 October 2026', 40),
+    t('nextReview', 'Next review', 'October 2027', 40),
+    ta('intro', 'Opening paragraph', 'Wissen Haus Foundation (“Wissen-Haus”, “we”, “us”) works with young people in Nigeria, Ghana, Kenya, South Africa and diaspora communities, including students under 18. This policy explains how we keep the children, young people and adults we work with safe, and what everyone connected with Wissen-Haus must do if they have a concern.', 1000),
+    ta('emergencyNotice', 'Emergency notice box', 'If someone is in immediate danger, contact your local emergency services first (for example 999 in the UK or the emergency number in your country), then tell us as soon as it is safe to do so. In the UK you can also call the NSPCC helpline on 0808 800 5000 or Childline on 0800 1111.', 600),
+    t('contactEmail', 'Safeguarding contact email', 'wissenhaus@outlook.com', 120),
+  ],
+}
+PAGE_COPY_SCHEMAS.push(SAFEGUARDING_SCHEMA)
+
+export const PRIVACY_SCHEMA: PageCopySchema = {
+  slug: 'privacy', label: 'Privacy Policy',
+  fields: [
+    t('title', 'Page title', 'Privacy Policy'),
+    t('lastUpdated', 'Last updated', '30 September 2026', 40),
+    ta('intro1', 'Opening paragraph', 'Wissen-Haus Empowerment Foundation (“Wissen-Haus,” “we,” “us,” or “our”) is a non-profit organisation founded in Ibadan, Nigeria, serving African youth, the diaspora, and international supporters. This Privacy Policy explains what personal information we collect through wissenhaus.org (the “Site”), how we use it, who we share it with, and the choices and rights you have.', 1000),
+    ta('intro2', 'Second paragraph', 'By using the Site, creating an account, submitting a form, or making a donation, you agree to the collection and use of information as described in this policy. If you do not agree, please do not use the Site.', 600),
+  ],
+}
+PAGE_COPY_SCHEMAS.push(PRIVACY_SCHEMA)
+
+export const TERMS_SCHEMA: PageCopySchema = {
+  slug: 'terms', label: 'Terms & Conditions',
+  fields: [
+    t('title', 'Page title', 'Terms & Conditions of Use'),
+    t('lastUpdated', 'Last updated', '13 September 2026', 40),
+    ta('intro', 'Opening paragraph', 'These Terms & Conditions of Use (“Terms”) govern your access to and use of wissenhaus.org (the “Site”), operated by Wissen-Haus Empowerment Foundation (“Wissen-Haus,” “we,” “us,” or “our”), a non-profit organisation founded in Ibadan, Nigeria. By accessing or using the Site, creating an account, submitting a form, or making a donation, you agree to be bound by these Terms. If you do not agree, please do not use the Site.', 1200),
+  ],
+}
+PAGE_COPY_SCHEMAS.push(TERMS_SCHEMA)
+
 export function pageCopySchemaFor(slug: string): PageCopySchema | undefined {
   return PAGE_COPY_SCHEMAS.find(s => s.slug === slug)
 }

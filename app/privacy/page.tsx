@@ -3,12 +3,12 @@ import { pageMetadata } from '@/lib/seo'
 import Link from 'next/link'
 import { getOgCopy } from '@/lib/og'
 import { ogSchemaFor } from '@/lib/og-schema'
+import { getPageCopy } from '@/lib/page-copy'
+import { PRIVACY_SCHEMA } from '@/lib/page-copy-schema'
 
 export async function generateMetadata(): Promise<Metadata> {
   return pageMetadata(await getOgCopy(ogSchemaFor('privacy')!))
 }
-
-const LAST_UPDATED = '30 September 2026'
 
 const TOC = [
   { id: 'who-we-are', label: 'Who We Are' },
@@ -37,7 +37,8 @@ function H({ id, n, children }: { id: string; n: string; children: React.ReactNo
   )
 }
 
-export default function PrivacyPolicyPage() {
+export default async function PrivacyPolicyPage() {
+  const c = await getPageCopy(PRIVACY_SCHEMA)
   return (
     <div style={{ background: '#fefcf5', minHeight: '100vh' }}>
       <div style={{ maxWidth: 820, margin: '0 auto', padding: 'clamp(32px,5vw,64px) clamp(20px,4vw,40px)' }}>
@@ -47,21 +48,17 @@ export default function PrivacyPolicyPage() {
             Legal
           </div>
           <h1 style={{ margin: 0, fontSize: 'clamp(1.6rem,4vw,2.4rem)', fontWeight: 900, color: '#0f2d1d', lineHeight: 1.1 }}>
-            Privacy Policy
+            {c.title}
           </h1>
           <p style={{ margin: '10px 0 0', color: '#4a5a4f', fontSize: '.95rem' }}>
-            Last updated: {LAST_UPDATED}
+            Last updated: {c.lastUpdated}
           </p>
         </div>
 
         <article style={{ color: '#1a2e24', lineHeight: 1.75, fontSize: '.96rem' }}>
 
-          <p>
-            Wissen-Haus Empowerment Foundation (&ldquo;Wissen-Haus,&rdquo; &ldquo;we,&rdquo; &ldquo;us,&rdquo; or &ldquo;our&rdquo;) is a non-profit organisation founded in Ibadan, Nigeria, serving African youth, the diaspora, and international supporters. This Privacy Policy explains what personal information we collect through <strong>wissenhaus.org</strong> (the &ldquo;Site&rdquo;), how we use it, who we share it with, and the choices and rights you have.
-          </p>
-          <p>
-            By using the Site, creating an account, submitting a form, or making a donation, you agree to the collection and use of information as described in this policy. If you do not agree, please do not use the Site.
-          </p>
+          <p>{c.intro1}</p>
+          <p>{c.intro2}</p>
 
           <div style={{ background: '#f0ece4', border: '1px solid #ddd9d0', borderRadius: 8, padding: '16px 20px', margin: '24px 0' }}>
             <div style={{ fontWeight: 700, fontSize: '.82rem', marginBottom: 10 }}>Contents</div>

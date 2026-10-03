@@ -3,14 +3,12 @@ import { pageMetadata } from '@/lib/seo'
 import Link from 'next/link'
 import { getOgCopy } from '@/lib/og'
 import { ogSchemaFor } from '@/lib/og-schema'
+import { getPageCopy } from '@/lib/page-copy'
+import { SAFEGUARDING_SCHEMA } from '@/lib/page-copy-schema'
 
 export async function generateMetadata(): Promise<Metadata> {
   return pageMetadata(await getOgCopy(ogSchemaFor('safeguarding')!))
 }
-
-const LAST_UPDATED = '3 October 2026'
-const NEXT_REVIEW = 'October 2027'
-const CONTACT_EMAIL = 'wissenhaus@outlook.com'
 
 const TOC = [
   { id: 'statement', label: 'Our Commitment' },
@@ -44,7 +42,9 @@ function H({ id, n, children }: { id: string; n: string; children: React.ReactNo
 
 const link = { color: '#1a3c2e' }
 
-export default function SafeguardingPage() {
+export default async function SafeguardingPage() {
+  const c = await getPageCopy(SAFEGUARDING_SCHEMA)
+  const CONTACT_EMAIL = c.contactEmail
   return (
     <div style={{ background: '#fefcf5', minHeight: '100vh' }}>
       <div style={{ maxWidth: 820, margin: '0 auto', padding: 'clamp(32px,5vw,64px) clamp(20px,4vw,40px)' }}>
@@ -54,21 +54,19 @@ export default function SafeguardingPage() {
             Policy
           </div>
           <h1 style={{ margin: 0, fontSize: 'clamp(1.6rem,4vw,2.4rem)', fontWeight: 900, color: '#0f2d1d', lineHeight: 1.1 }}>
-            Safeguarding Policy
+            {c.title}
           </h1>
           <p style={{ margin: '10px 0 0', color: '#4a5a4f', fontSize: '.95rem' }}>
-            Version 1.0 &middot; Last updated: {LAST_UPDATED} &middot; Next review: {NEXT_REVIEW}
+            Version {c.version} &middot; Last updated: {c.lastUpdated} &middot; Next review: {c.nextReview}
           </p>
         </div>
 
         <article style={{ color: '#1a2e24', lineHeight: 1.75, fontSize: '.96rem' }}>
 
-          <p>
-            Wissen Haus Foundation (&ldquo;Wissen-Haus&rdquo;, &ldquo;we&rdquo;, &ldquo;us&rdquo;) works with young people in Nigeria, Ghana, Kenya, South Africa and diaspora communities, including students under 18. This policy explains how we keep the children, young people and adults we work with safe, and what everyone connected with Wissen-Haus must do if they have a concern.
-          </p>
+          <p>{c.intro}</p>
 
           <div style={{ background: '#fff4f2', border: '1px solid #f0c9c2', borderRadius: 8, padding: '14px 18px', margin: '24px 0', fontSize: '.92rem' }}>
-            <strong>If someone is in immediate danger, contact your local emergency services first</strong> (for example 999 in the UK or the emergency number in your country), then tell us as soon as it is safe to do so. In the UK you can also call the NSPCC helpline on 0808 800 5000 or Childline on 0800 1111.
+            {c.emergencyNotice}
           </div>
 
           <div style={{ background: '#f0ece4', border: '1px solid #ddd9d0', borderRadius: 8, padding: '16px 20px', margin: '24px 0' }}>
