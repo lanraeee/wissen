@@ -194,7 +194,7 @@ export const OG_PAGE_SCHEMAS: OgPageSchema[] = [
   {
     slug: 'safeguarding', label: 'Safeguarding Policy',
     defaultTitle: 'Safeguarding Policy · Wissen-Haus', defaultOgTitle: 'Safeguarding Policy',
-    defaultDescription: 'How Wissen Haus Empowerment Foundation keeps children, young people and adults safe, and how to raise a concern.',
+    defaultDescription: 'How Wissen Haus Foundation keeps children, young people and adults safe, and how to raise a concern.',
   },
   {
     slug: 'terms', label: 'Terms & Conditions',

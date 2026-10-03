@@ -1,7 +1,7 @@
 # Foundation CIO Model Constitution - Application Worksheet
-## COMPLETED: Wissen Haus Empowerment Foundation
+## COMPLETED: Wissen Haus Foundation
 
-**Organization Name:** Wissen Haus Empowerment Foundation  
+**Organization Name:** Wissen Haus Foundation  
 **Prepared By:** Fawaz Bello (ICT Operations Director)  
 **Date Prepared:** 3 October 2026  
 
@@ -17,7 +17,7 @@
 ### 1.2 CIO Name (REQUIRED)
 **Guidance:** Must be a unique name. Cannot be misleading, offensive, or too similar to existing charities.
 
-**Proposed Name:** Wissen Haus Empowerment Foundation
+**Proposed Name:** Wissen Haus Foundation
 
 **Alternative Names (if needed):**
 - Wissen-Haus Foundation
@@ -585,7 +585,7 @@ The above worksheet translates to the following constitutional model (simplified
 **CONSTITUTION OF WISSEN-HAUS EMPOWERMENT FOUNDATION**
 
 **1. Name and Registered Office**
-The CIO is called Wissen Haus Empowerment Foundation. Its registered principal office is [UK address to be confirmed].
+The CIO is called Wissen Haus Foundation. Its registered principal office is [UK address to be confirmed].
 
 **2. Charitable Objects**
 The CIO's objects are: (1) Advancement of education for young people across Nigeria, Africa, and diaspora through career guidance and mentorship; (2) Relief of poverty through skills training and economic empowerment for youth; (3) Advancement of community development and social mobility through mentorship networks; (4) Conduct of research on youth economic independence.

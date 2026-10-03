@@ -1,12 +1,12 @@
 # CONSTITUTION
-## WISSEN HAUS EMPOWERMENT FOUNDATION
+## WISSEN HAUS FOUNDATION
 ### A Charitable Incorporated Organisation (Foundation Model)
 
 ---
 
 ## 1. NAME AND PRINCIPAL OFFICE
 
-1.1 The name of the Charitable Incorporated Organisation is **Wissen Haus Empowerment Foundation**.
+1.1 The name of the Charitable Incorporated Organisation is **Wissen Haus Foundation**.
 
 1.2 The principal office of the CIO is to be located at **190 Dantzic Street, Manchester M4 4LF**, and the CIO is established in England.
 

@@ -126,7 +126,7 @@ export default function ConstitutionPreview({ source, versionLabel, status, adop
     return () => ro.disconnect()
   }, [stageEl])
 
-  const org = parsed.orgName || 'Wissen Haus Empowerment Foundation'
+  const org = parsed.orgName || 'Wissen Haus Foundation'
   const title = titleCase(parsed.title || 'Constitution')
   const adopted = longDate(adoptedDate)
   const draftClass = status === 'draft' ? 'bk-draft' : ''

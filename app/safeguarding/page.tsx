@@ -64,7 +64,7 @@ export default function SafeguardingPage() {
         <article style={{ color: '#1a2e24', lineHeight: 1.75, fontSize: '.96rem' }}>
 
           <p>
-            Wissen Haus Empowerment Foundation (&ldquo;Wissen-Haus&rdquo;, &ldquo;we&rdquo;, &ldquo;us&rdquo;) works with young people in Nigeria, Ghana, Kenya, South Africa and diaspora communities, including students under 18. This policy explains how we keep the children, young people and adults we work with safe, and what everyone connected with Wissen-Haus must do if they have a concern.
+            Wissen Haus Foundation (&ldquo;Wissen-Haus&rdquo;, &ldquo;we&rdquo;, &ldquo;us&rdquo;) works with young people in Nigeria, Ghana, Kenya, South Africa and diaspora communities, including students under 18. This policy explains how we keep the children, young people and adults we work with safe, and what everyone connected with Wissen-Haus must do if they have a concern.
           </p>
 
           <div style={{ background: '#fff4f2', border: '1px solid #f0c9c2', borderRadius: 8, padding: '14px 18px', margin: '24px 0', fontSize: '.92rem' }}>

@@ -1,7 +1,7 @@
 # Charity Commission "Apply to register a charity": draft answers
 
 **Application number:** 5300610
-**Legal name for the form:** Wissen Haus Empowerment Foundation (no hyphen). The constitution draft now uses the same name, and clause 1.2 now gives the Manchester address.
+**Legal name for the form:** Wissen Haus Foundation (no hyphen). The constitution draft now uses the same name, and clause 1.2 now gives the Manchester address.
 **Prepared:** 3 October 2026
 
 Answers below follow the order of the form (18-page draft printout). Anything marked **[CONFIRM]** is a fact I do not have and have not guessed. Everything else is drawn from the constitution (`03_Constitution_DRAFT.md`), the worksheet, and the details you gave.
@@ -11,7 +11,7 @@ Answers below follow the order of the form (18-page draft printout). Anything ma
 ## Before you submit: blockers
 
 1. **Third trustee.** The constitution (clauses 4.1, 5.1, 5.2.3) requires **at least 3** charity trustees. Fawaz Bello is the application contact and not a trustee, so the draft names two (Benz Olagbaye, Gbemisola Abatan) and carries a `[THIRD INITIAL TRUSTEE]` placeholder in clause 4.2, the Adoption section and the signature page. Name a third trustee before signing, and add them to the trustee register.
-2. **Re-check the constitution text.** The name ("Wissen Haus Empowerment Foundation") and the address (190 Dantzic Street, Manchester M4 4LF) were updated in the draft. If you have already loaded the constitution into the Constitution tab, update that version too so it matches what you sign and what the form says.
+2. **Re-check the constitution text.** The name ("Wissen Haus Foundation") and the address (190 Dantzic Street, Manchester M4 4LF) were updated in the draft. If you have already loaded the constitution into the Constitution tab, update that version too so it matches what you sign and what the form says.
 3. **Bank account.** The only account is Wissen Haus Ltd's. The CIO is a separate legal entity, and charity money must not pass through the company's account. Open an account in the CIO's own name (the Commission accepts "not yet" for a new application).
 4. **Trustee details.** The Commission asks each trustee for identity details, and the form asks for the contact person's date of birth. Gather these, but do not put them in this repo.
 5. **Signed constitution.** The signed PDF is attached on page 2 ("Please attach the governing document"). Upload it in the Constitution tab first and mark it as the working copy.
@@ -23,7 +23,7 @@ Answers below follow the order of the form (18-page draft printout). Anything ma
 
 | Field | Answer |
 |---|---|
-| Main name | WISSEN HAUS EMPOWERMENT FOUNDATION |
+| Main name | WISSEN HAUS FOUNDATION |
 | Other name or acronym | Wissen Haus; Wissen-Haus; Wissen-Haus Empowerment Foundation |
 | Your current contact is an | Individual |
 | Role | Application contact and operations lead (not a trustee) |
@@ -168,7 +168,7 @@ Reviewed against the newer 22-page draft printout (application 5300610). Section
 
 ## Fix first (these would cause problems or be wrong if submitted as is)
 
-1. **The name no longer matches.** Page 1 and the Charity name page now say **WISSEN HAUS FOUNDATION** (no "Empowerment"). The constitution says "Wissen Haus Empowerment Foundation". The name on the form and in the governing document must be identical. Decide which, then make both agree.
+1. **The name no longer matches.** Page 1 and the Charity name page now say **WISSEN HAUS FOUNDATION** (no "Empowerment"). The constitution says "Wissen Haus Foundation". The name on the form and in the governing document must be identical. Decide which, then make both agree.
 2. **Safeguarding declaration (page 19) is already ticked.** It says the trustees "have read, understood and are following" the Charity Commission's safeguarding guidance. Only leave it ticked once the trustees have actually read the guidance and adopted the safeguarding policy at a trustee meeting.
 3. **Employment, goods or services, and personal benefits are all answered Yes, but their tables are empty.** The form wants names, payment and relationship in each table, **plus attached minutes of the trustee meeting that agreed each arrangement**. This means the trustees need to hold and minute a meeting before you submit (see the minutes checklist below). If an arrangement is not actually planned, answer No instead.
 4. **The 18 countries on page 6.** You listed Nigeria, Ghana, Kenya, South Africa, Rwanda, Gambia, Republic of Congo, Tanzania, Egypt, Zimbabwe, Zambia, Namibia, Lesotho, Mauritius, Mauritania, Ethiopia, Seychelles and Sierra Leone, and answered **Yes** to "carrying out its own operations in the locations you have named". The Commission may ask for evidence for every country. List only places where you work or will work in the next 12 months.
@@ -272,3 +272,56 @@ Record these in WHEF-CIO Records → Meetings & Minutes and attach the signed mi
 ## Still needed from you
 
 Date of birth for the application contact (and for each trustee); the third trustee; income estimates; telephone numbers; prices; partner names; co-working operator name and terms; and confirmation of what Wissen Haus Ltd (UK) does and who owns it.
+
+---
+
+# Part 3: name decision and corrected property wording
+
+## Name: decided
+The charity's name is **Wissen Haus Foundation** (main name and charity name on the form). The constitution (clause 1.1 and the title), the completed worksheet and the safeguarding page now use the same name. "Wissen Haus Empowerment Foundation", "Wissen-Haus Empowerment Foundation", "Wissen Haus", "Wissen-Haus" and "Wissen-Haus Youth Empowerment Foundation" can stay in the "other names" list if they are names you genuinely use. **If you have already loaded the constitution into the dashboard, update that version so it matches what you sign.** Use full legal names for trustees (for example "Benz Ayomiposi Olagbaye") on the form, in the constitution and in the register.
+
+## Property section (pages 11, 13 and 14)
+
+The co-working space is a non-residential area separate from the residential building, with a concierge. The wording below keeps the two apart, so a trustee's or volunteer's home is not on the public register. Choose the option that matches the arrangement.
+
+**Does the organisation have use of land or property?** Yes
+**Does the organisation own the land or property?** No
+**Does the organisation use premises owned by a trustee or someone related to a trustee?** No
+
+**Who owns the land or property?**
+> The building at 190 Dantzic Street, Manchester M4 4LF is owned and operated by [NAME OF OWNER / OPERATOR]. The co-working space is a separate, non-residential part of the building.
+
+**Provide full details of the agreements in place regarding the organisation's use of the land or property:**
+
+*Option A: the charity (or the company on its behalf) has its own membership.*
+> The charity uses a desk in the co-working space at 190 Dantzic Street under a [monthly/annual] membership/licence agreement with [operator], which gives non-exclusive use of the space [and a business address for post]. It is not a lease. It is renewable and can be ended by either party on [notice period]. The charity [pays £[amount] per [period] / pays no rent]. No trustee, and no person related to a trustee, owns the premises or receives rent from the charity.
+
+*Option B: access comes through Mr Bello's resident arrangement.*
+> The co-working space at 190 Dantzic Street is made available to residents of the building. [Operator] has agreed in writing that a volunteer of the charity, Mr Fawaz Bello (who is not a trustee), may use it for the charity's administration and may use the address for the charity's correspondence, including its publication on the Register of Charities. The charity pays no rent and has no lease or exclusive right. The arrangement can end at any time on [notice]. No trustee, and no person related to a trustee, owns the premises or receives rent from the charity.
+
+*If you use Option B, get the written permission from the operator and from the tenancy's landlord if its terms restrict business use.* It would be more robust to move to Option A, with a membership in the charity's name, once the charity has its bank account.
+
+**What is the land or property used for?**
+> Administration and online meetings for the charity (desk work, calls and post). The charity does not deliver programmes to the public or to young people at these premises.
+
+*(This also supports the safeguarding policy: no under-18 will be at the premises.)*
+
+**Will any land or property used by the organisation benefit from Business Rate relief?**
+> No. The charity is not the ratepayer. The operator is responsible for business rates on the co-working space.
+
+## Address on the public register (pages 13 and 14)
+Use:
+- **Address line 1:** Co-working space, 190 Dantzic Street *(add the suite, desk or business-address number the operator gives you)*
+- **Address line 2:** Manchester
+- **Postcode:** M4 4LF
+
+Replace "(co-working space)" in the extra line with the operator's name or the suite number. Confirm with the operator that post addressed this way will reach you, since the Commission posts important letters there. Do **not** include any flat number or residential address.
+
+**Organisation contact (Commission use only) address:** the same, or the contact's own correspondence address if you would rather the Commission wrote there. This one is not published.
+
+## Quick clean-up of the other items from the last review
+- Page 1 "Special circumstances": clear the text (keep it only on page 21).
+- Page 8: change "(age range (age range TBC))" to a real range, for example "aged 16 to 25 **[CONFIRM]**".
+- Page 16: remove "[CONFIRM names, or untick]" and "[CONFIRM, or untick]", or untick Corporate donors and Commercial sponsor. Untick Endowments.
+- Page 19: leave the safeguarding declaration ticked only after the trustees adopt the policy (item 5 of the meeting minutes).
+- Pages 16 to 18: if the first meeting approves no employment, no purchase from a connected supplier and no personal benefit, answer **No** to those three questions and no tables or minutes are needed. If any are Yes, fill the tables and attach the signed minutes (`05_First_Trustee_Meeting_Minutes.md`, items 8 and 9).
