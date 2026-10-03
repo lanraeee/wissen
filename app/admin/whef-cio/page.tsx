@@ -7,6 +7,7 @@ import MeetingsTab from '@/components/admin/cio/MeetingsTab'
 import PoliciesTab from '@/components/admin/cio/PoliciesTab'
 import FilingsTab from '@/components/admin/cio/FilingsTab'
 import ConstitutionTab from '@/components/admin/cio/ConstitutionTab'
+import ConflictsTab from '@/components/admin/cio/ConflictsTab'
 import DocumentsTab from '@/components/admin/cio/DocumentsTab'
 
 export const metadata: Metadata = { title: 'WHEF-CIO Records · Admin · Wissen-Haus' }
@@ -21,6 +22,17 @@ const TABS = [
   { key: 'filings', label: 'Filings & Compliance' },
   { key: 'documents', label: 'Documents' },
 ] as const
+
+const CONTENT: Record<(typeof TABS)[number]['key'], React.ReactNode> = {
+  trustees: <TrusteeRegisterEditor />,
+  constitution: <ConstitutionTab />,
+  registrations: <RegistrationsTab />,
+  meetings: <MeetingsTab />,
+  conflicts: <ConflictsTab />,
+  policies: <PoliciesTab />,
+  filings: <FilingsTab />,
+  documents: <DocumentsTab />,
+}
 
 export default async function WhefCioPage({ searchParams }: { searchParams: Promise<{ tab?: string }> }) {
   const session = await directorGuard()
@@ -51,25 +63,7 @@ export default async function WhefCioPage({ searchParams }: { searchParams: Prom
       </div>
 
       <div style={{ background: '#fff', borderRadius: 10, padding: 24, boxShadow: '0 1px 4px rgba(0,0,0,.06)' }}>
-        {active.key === 'trustees' ? (
-          <TrusteeRegisterEditor />
-        ) : active.key === 'constitution' ? (
-          <ConstitutionTab />
-        ) : active.key === 'registrations' ? (
-          <RegistrationsTab />
-        ) : active.key === 'meetings' ? (
-          <MeetingsTab />
-        ) : active.key === 'policies' ? (
-          <PoliciesTab />
-        ) : active.key === 'filings' ? (
-          <FilingsTab />
-        ) : active.key === 'documents' ? (
-          <DocumentsTab />
-        ) : (
-          <p style={{ margin: 0, color: '#8a9a8f', fontSize: '.9rem' }}>
-            {active.label} is not built yet.
-          </p>
-        )}
+        {CONTENT[active.key]}
       </div>
     </>
   )

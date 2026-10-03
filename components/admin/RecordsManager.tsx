@@ -29,10 +29,12 @@ interface Props {
   columns: Column[]
   defaults?: Record<string, unknown>
   summary?: (rows: Row[]) => ReactNode
+  /** Render the summary even when there are no rows (e.g. a list of who is still outstanding). */
+  summaryWhenEmpty?: boolean
   renderExtra?: (row: Row) => ReactNode
 }
 
-export default function RecordsManager({ resource, heading, blurb, addLabel, emptyText, fields, columns, defaults = {}, summary, renderExtra }: Props) {
+export default function RecordsManager({ resource, heading, blurb, addLabel, emptyText, fields, columns, defaults = {}, summary, summaryWhenEmpty, renderExtra }: Props) {
   const api = `/api/admin/whef-cio/${resource}`
   const [rows, setRows] = useState<Row[]>([])
   const [loaded, setLoaded] = useState(false)
@@ -209,7 +211,7 @@ export default function RecordsManager({ resource, heading, blurb, addLabel, emp
         </div>
       )}
 
-      {summary && rows.length > 0 && <div style={{ marginTop: 24 }}>{summary(rows)}</div>}
+      {summary && (rows.length > 0 || summaryWhenEmpty) && <div style={{ marginTop: 24 }}>{summary(rows)}</div>}
     </div>
   )
 }
