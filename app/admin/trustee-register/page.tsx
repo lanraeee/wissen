@@ -8,7 +8,7 @@ export const metadata: Metadata = { title: 'Trustee Register · Admin · Wissen-
 export default async function TrusteeRegisterPage() {
   const session = await getSession()
 
-  if (!session || !['director', 'admin'].includes(session.role)) {
+  if (!session || !session.role || !['director', 'admin'].includes(session.role)) {
     redirect('/admin')
   }
 

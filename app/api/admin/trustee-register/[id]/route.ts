@@ -1,23 +1,22 @@
-import { neon } from '@neondatabase/serverless'
 import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
-import { verifyAuth } from '@/lib/auth'
-
-const sql = neon(process.env.DATABASE_URL!)
+import { directorGuard } from '@/lib/admin-guard'
+import sql from '@/lib/db'
 
 export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } }
+  _: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const auth = await verifyAuth(request)
+    const session = await directorGuard()
 
-    if (!auth || !['director', 'admin'].includes(auth.user.role)) {
+    if (!session) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
     }
 
+    const { id } = await params
     const result = await sql`
-      SELECT * FROM trustee_register WHERE id = ${params.id}
+      SELECT * FROM trustee_register WHERE id = ${id}
     `
 
     if (!result.length) {
@@ -32,16 +31,17 @@ export async function GET(
 }
 
 export async function PUT(
-  request: NextRequest,
-  { params }: { params: { id: string } }
+  request: Request,
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const auth = await verifyAuth(request)
+    const session = await directorGuard()
 
-    if (!auth || !['director', 'admin'].includes(auth.user.role)) {
+    if (!session) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
     }
 
+    const { id } = await params
     const body = await request.json()
     const {
       full_name,
@@ -74,7 +74,7 @@ export async function PUT(
         conflict_of_interest_declaration = ${conflict_of_interest_declaration || null},
         notes = ${notes === undefined ? 'notes' : notes || null},
         updated_at = NOW()
-      WHERE id = ${params.id}
+      WHERE id = ${id}
       RETURNING *
     `
 
@@ -90,18 +90,19 @@ export async function PUT(
 }
 
 export async function DELETE(
-  request: NextRequest,
-  { params }: { params: { id: string } }
+  _: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const auth = await verifyAuth(request)
+    const session = await directorGuard()
 
-    if (!auth || !['director', 'admin'].includes(auth.user.role)) {
+    if (!session) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
     }
 
+    const { id } = await params
     const result = await sql`
-      DELETE FROM trustee_register WHERE id = ${params.id}
+      DELETE FROM trustee_register WHERE id = ${id}
       RETURNING id
     `
 

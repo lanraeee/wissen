@@ -1,15 +1,13 @@
-import { neon } from '@neondatabase/serverless'
 import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
-import { verifyAuth } from '@/lib/auth'
+import { directorGuard } from '@/lib/admin-guard'
+import sql from '@/lib/db'
 
-const sql = neon(process.env.DATABASE_URL!)
-
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
-    const auth = await verifyAuth(request)
+    const session = await directorGuard()
 
-    if (!auth || !['director', 'admin'].includes(auth.user.role)) {
+    if (!session) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
     }
 
@@ -43,9 +41,9 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const auth = await verifyAuth(request)
+    const session = await directorGuard()
 
-    if (!auth || !['director', 'admin'].includes(auth.user.role)) {
+    if (!session) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
     }
 

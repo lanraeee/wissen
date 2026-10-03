@@ -14,7 +14,7 @@ interface Trustee {
   appointment_type: 'appointed' | 'ex_officio' | 'nominated'
   nominating_org?: string
   status: 'active' | 'retired' | 'removed' | 'deceased'
-  conflict_of_interest_declaration?: any
+  conflict_of_interest_declaration?: Record<string, unknown>
   notes?: string
   created_at?: string
   updated_at?: string
@@ -246,7 +246,7 @@ export default function TrusteeRegisterEditor() {
               <select
                 style={inp}
                 value={formData.appointment_type || 'appointed'}
-                onChange={(e) => setFormData({ ...formData, appointment_type: e.target.value as any })}
+                onChange={(e) => setFormData({ ...formData, appointment_type: e.target.value as 'appointed' | 'ex_officio' | 'nominated' })}
               >
                 <option value="appointed">Appointed</option>
                 <option value="ex_officio">Ex Officio</option>
@@ -275,7 +275,7 @@ export default function TrusteeRegisterEditor() {
               <select
                 style={inp}
                 value={formData.status || 'active'}
-                onChange={(e) => setFormData({ ...formData, status: e.target.value as any })}
+                onChange={(e) => setFormData({ ...formData, status: e.target.value as 'active' | 'retired' | 'removed' | 'deceased' })}
               >
                 <option value="active">Active</option>
                 <option value="retired">Retired</option>
@@ -374,7 +374,7 @@ export default function TrusteeRegisterEditor() {
 
       {trustees.length === 0 && (
         <div style={{ padding: 24, textAlign: 'center', color: '#8a9a8f', fontSize: '.9rem' }}>
-          No trustees registered yet. Click "Add Trustee" to create the first entry.
+          No trustees registered yet. Click &quot;Add Trustee&quot; to create the first entry.
         </div>
       )}
 
