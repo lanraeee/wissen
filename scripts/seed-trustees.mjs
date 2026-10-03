@@ -9,7 +9,6 @@ const sql = neon(url)
 
 const trustees = [
   ['Benz Olagbaye', 'Founder & Executive Director', 'ex_officio', '2030-10-03', 'Founding trustee, ex officio by virtue of Executive Director role'],
-  ['Fawaz Bello', 'Information & Communications Technology Operations Director', 'appointed', '2029-10-03', 'Appointed trustee'],
   ['Gbemisola Abatan', 'Programmes & Partnerships Director', 'appointed', '2029-10-03', 'Appointed trustee'],
 ]
 

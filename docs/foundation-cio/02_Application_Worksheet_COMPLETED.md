@@ -1,7 +1,7 @@
 # Foundation CIO Model Constitution - Application Worksheet
-## COMPLETED: Wissen-Haus Empowerment Foundation
+## COMPLETED: Wissen Haus Empowerment Foundation
 
-**Organization Name:** Wissen-Haus Empowerment Foundation  
+**Organization Name:** Wissen Haus Empowerment Foundation  
 **Prepared By:** Fawaz Bello (ICT Operations Director)  
 **Date Prepared:** 3 October 2026  
 
@@ -17,7 +17,7 @@
 ### 1.2 CIO Name (REQUIRED)
 **Guidance:** Must be a unique name. Cannot be misleading, offensive, or too similar to existing charities.
 
-**Proposed Name:** Wissen-Haus Empowerment Foundation
+**Proposed Name:** Wissen Haus Empowerment Foundation
 
 **Alternative Names (if needed):**
 - Wissen-Haus Foundation
@@ -27,7 +27,7 @@
 **Guidance:** The CIO must have its principal office in either England or Wales. Select one:
 
 - [x] **England**  
-  Full Address: To be confirmed (UK operations office address when established)
+  Full Address: 190 Dantzic Street, Manchester M4 4LF (co-working space)
   
 - [ ] **Wales**  
   Full Address: _________________________________________________
@@ -98,7 +98,7 @@ Select one option:
 | Name | Position/Role | Years | Term Ends |
 |------|---------------|-------|-----------|
 | Benz Olagbaye | Founder & Executive Director | 4 | 3 October 2030 |
-| Fawaz Bello | ICT Operations Director | 3 | 3 October 2029 |
+| [Third initial trustee: to be confirmed] | | 3 | 3 October 2029 |
 | Gbemisola Abatan | Programmes & Partnerships Director | 3 | 3 October 2029 |
 
 ### 4.3 Trustee Eligibility Requirements
@@ -528,7 +528,7 @@ The CIO must maintain:
 
 1. **Use this completed worksheet to draft full constitution** using Charity Commission's Foundation CIO model wording
 2. **Gather trustee details:**
-   - Full names, addresses, dates of birth for Benz Olagbaye, Fawaz Bello, Gbemisola Abatan
+   - Full names, addresses, dates of birth for Benz Olagbaye, Gbemisola Abatan and the third initial trustee (to be confirmed)
    - Confirmation of trustee acceptance
 3. **Register with Charity Commission** using online application
 4. **Establish UK entity** (Community Interest Company) if/when UK operations expand significantly
@@ -556,7 +556,7 @@ The CIO must maintain:
 **Outstanding questions/action items:**
 
 - Confirm dates of birth for all three initial trustees
-- Obtain written acceptance of trustee roles from Benz Olagbaye, Fawaz Bello, Gbemisola Abatan
+- Obtain written acceptance of trustee roles from Benz Olagbaye, Gbemisola Abatan and the third initial trustee (to be confirmed)
 - Identify 2 potential partner organizations for nominated trustee roles
 - Obtain CAC Registration Number and TIN from Nigerian registry (if registering in Nigeria)
 - Draft full constitution using this worksheet and Charity Commission template
@@ -585,7 +585,7 @@ The above worksheet translates to the following constitutional model (simplified
 **CONSTITUTION OF WISSEN-HAUS EMPOWERMENT FOUNDATION**
 
 **1. Name and Registered Office**
-The CIO is called Wissen-Haus Empowerment Foundation. Its registered principal office is [UK address to be confirmed].
+The CIO is called Wissen Haus Empowerment Foundation. Its registered principal office is [UK address to be confirmed].
 
 **2. Charitable Objects**
 The CIO's objects are: (1) Advancement of education for young people across Nigeria, Africa, and diaspora through career guidance and mentorship; (2) Relief of poverty through skills training and economic empowerment for youth; (3) Advancement of community development and social mobility through mentorship networks; (4) Conduct of research on youth economic independence.
@@ -594,7 +594,7 @@ The CIO's objects are: (1) Advancement of education for young people across Nige
 The CIO has power to do all things calculated to further its objects, including borrowing, acquiring property, employing staff, and investing funds.
 
 **4. Charity Trustees**
-Trustees are the members. Initial trustees: Benz Olagbaye, Fawaz Bello, Gbemisola Abatan. No maximum number. New trustees appointed by trustee resolution or from partner organization nominations. Ex officio: Executive Director is automatic trustee.
+Trustees are the members. Initial trustees: Benz Olagbaye, Gbemisola Abatan and the third initial trustee (to be confirmed). No maximum number. New trustees appointed by trustee resolution or from partner organization nominations. Ex officio: Executive Director is automatic trustee.
 
 **5. Meetings and Voting**
 Trustees meet quarterly minimum. Quorum: 1/3 of trustees (minimum 1). Decisions by majority vote or written resolution (28 days). Electronic meetings permitted. General meetings for major decisions (amendments, dissolution) require 75% majority.

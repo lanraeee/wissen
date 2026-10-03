@@ -40,7 +40,7 @@ describe('parseConstitution', () => {
     expect(real.blocks.some(b => b.kind === 'table')).toBe(true)
     expect(real.blocks.filter(b => b.kind === 'sig').length).toBe(3)
     expect(real.blocks.at(-1)).toEqual({ kind: 'end' })
-    expect(real.orgName).toMatch(/WISSEN-HAUS/)
+    expect(real.orgName).toMatch(/WISSEN.HAUS EMPOWERMENT/)
   })
 })
 

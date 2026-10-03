@@ -192,6 +192,11 @@ export const OG_PAGE_SCHEMAS: OgPageSchema[] = [
     defaultDescription: 'How Wissen-Haus Empowerment Foundation collects, uses, and protects your personal information.',
   },
   {
+    slug: 'safeguarding', label: 'Safeguarding Policy',
+    defaultTitle: 'Safeguarding Policy · Wissen-Haus', defaultOgTitle: 'Safeguarding Policy',
+    defaultDescription: 'How Wissen Haus Empowerment Foundation keeps children, young people and adults safe, and how to raise a concern.',
+  },
+  {
     slug: 'terms', label: 'Terms & Conditions',
     defaultTitle: 'Terms & Conditions of Use · Wissen-Haus', defaultOgTitle: 'Terms & Conditions',
     defaultDescription: 'The terms and conditions governing your use of the Wissen-Haus Empowerment Foundation website and programmes.',

@@ -1,14 +1,14 @@
 # CONSTITUTION
-## WISSEN-HAUS EMPOWERMENT FOUNDATION
+## WISSEN HAUS EMPOWERMENT FOUNDATION
 ### A Charitable Incorporated Organisation (Foundation Model)
 
 ---
 
 ## 1. NAME AND PRINCIPAL OFFICE
 
-1.1 The name of the Charitable Incorporated Organisation is **Wissen-Haus Empowerment Foundation**.
+1.1 The name of the Charitable Incorporated Organisation is **Wissen Haus Empowerment Foundation**.
 
-1.2 The principal office of the CIO is to be located at [**UK ADDRESS TO BE CONFIRMED**], and the CIO is established in England.
+1.2 The principal office of the CIO is to be located at **190 Dantzic Street, Manchester M4 4LF**, and the CIO is established in England.
 
 1.3 The CIO may establish and maintain such other places of work or operations as the charity trustees shall from time to time determine.
 
@@ -73,7 +73,7 @@ The initial charity trustees, who are also the first members of the CIO, are:
 | Name | Position/Role | Appointment Date | Term End Date |
 |------|---------------|------------------|---------------|
 | Benz Olagbaye | Founder & Executive Director | 3 October 2026 | 3 October 2030 |
-| Fawaz Bello | Information & Communications Technology Operations Director | 3 October 2026 | 3 October 2029 |
+| [**THIRD INITIAL TRUSTEE: NAME TO BE CONFIRMED**] | [**Position**] | 3 October 2026 | 3 October 2029 |
 | Gbemisola Abatan | Programmes & Partnerships Director | 3 October 2026 | 3 October 2029 |
 
 ### 4.3 Eligibility of Charity Trustees
@@ -894,7 +894,7 @@ This Constitution supersedes all previous governing documents of the CIO.
 This Constitution was adopted on **3 October 2026** by the initial members (charity trustees):
 
 - Benz Olagbaye (Founder & Executive Director)
-- Fawaz Bello (ICT Operations Director)
+- [**THIRD INITIAL TRUSTEE: NAME TO BE CONFIRMED**]
 - Gbemisola Abatan (Programmes & Partnerships Director)
 
 ---
@@ -905,8 +905,8 @@ Benz Olagbaye
 Founder & Executive Director  
 Signature: _________________________ Date: _____________
 
-Fawaz Bello  
-ICT Operations Director  
+[**THIRD INITIAL TRUSTEE**]  
+[**Position**]  
 Signature: _________________________ Date: _____________
 
 Gbemisola Abatan  

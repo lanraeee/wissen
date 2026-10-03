@@ -140,6 +140,7 @@ export default async function Footer() {
             <span style={{ display: 'flex', gap: 16, alignItems: 'center', flexWrap: 'wrap' }}>
               <Link href="/privacy">Privacy Policy</Link>
               <Link href="/terms">Terms &amp; Conditions</Link>
+              <Link href="/safeguarding">Safeguarding</Link>
             </span>
             <span>{settings.tagline || 'Empowering Youth, Shaping Futures'}</span>
           </div>

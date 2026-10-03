@@ -17,6 +17,7 @@ const NAV = [
       ['/about/story', 'Our Story', 'The Wissen-Haus journey'],
       ['/founder', 'Meet the Founder', 'Learn about Benz Olagbaye'],
       ['/team', 'Our Team', 'The people who hold it together'],
+      ['/safeguarding', 'Safeguarding', 'How we keep young people safe'],
       ['/contact', 'Contact', 'Get in touch with us'],
     ]
   },
@@ -61,6 +62,7 @@ const ACTIVE_MAP: Record<string, string> = {
   '/team': 'about',
   '/impact': 'about',
   '/contact': 'about',
+  '/safeguarding': 'about',
   '/programmes': 'programmes',
   '/career-clarity-fair': 'programmes',
   '/events': 'programmes',
