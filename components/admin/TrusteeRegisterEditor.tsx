@@ -30,6 +30,7 @@ export default function TrusteeRegisterEditor() {
   const [error, setError] = useState('')
   const [editingId, setEditingId] = useState<string | null>(null)
   const [showForm, setShowForm] = useState(false)
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
   const [formData, setFormData] = useState<Partial<Trustee>>({
     appointment_type: 'appointed',
     status: 'active',
@@ -88,9 +89,13 @@ export default function TrusteeRegisterEditor() {
     }
   }
 
-  async function deleteTrustee() {
+  async function confirmDelete() {
+    setShowDeleteConfirm(false)
+    await executeDeletion()
+  }
+
+  async function executeDeletion() {
     if (!editingId) return
-    if (!confirm('Are you sure you want to delete this trustee? This action cannot be undone.')) return
 
     setSaving(true)
     setError('')
@@ -110,6 +115,7 @@ export default function TrusteeRegisterEditor() {
       setFormData({ appointment_type: 'appointed', status: 'active' })
       setEditingId(null)
       setShowForm(false)
+      setShowDeleteConfirm(false)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Delete failed')
     } finally {
@@ -329,8 +335,8 @@ export default function TrusteeRegisterEditor() {
           <div style={{ display: 'flex', gap: 10, justifyContent: 'space-between' }}>
             <div>
               {editingId && (
-                <button style={s('#dc2626')} onClick={deleteTrustee} disabled={saving}>
-                  {saving ? 'Deleting...' : 'Delete'}
+                <button style={s('#dc2626')} onClick={() => setShowDeleteConfirm(true)} disabled={saving}>
+                  Delete
                 </button>
               )}
             </div>
@@ -343,6 +349,22 @@ export default function TrusteeRegisterEditor() {
               </button>
             </div>
           </div>
+
+          {showDeleteConfirm && (
+            <div style={{ marginTop: 16, padding: 12, background: '#fee2e2', border: '1px solid #dc2626', borderRadius: 6 }}>
+              <p style={{ margin: '0 0 12px', color: '#991b1b', fontSize: '.9rem', fontWeight: 500 }}>
+                Are you sure you want to delete this trustee? This action cannot be undone.
+              </p>
+              <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end' }}>
+                <button style={s('#8a9a8f')} onClick={() => setShowDeleteConfirm(false)} disabled={saving}>
+                  Cancel
+                </button>
+                <button style={s('#dc2626')} onClick={confirmDelete} disabled={saving}>
+                  {saving ? 'Deleting...' : 'Yes, Delete'}
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       )}
 
