@@ -1,89 +1,24 @@
-import sql from '../lib/db.js'
+import { neon } from '@neondatabase/serverless'
 
-async function seedTrustees() {
-  try {
-    console.log('Seeding initial trustees...')
-
-    const trustees = [
-      {
-        full_name: 'Benz Olagbaye',
-        position_title: 'Founder & Executive Director',
-        email: 'benz@wissenhaus.org',
-        phone: null,
-        date_of_birth: null,
-        appointment_date: '2026-10-03',
-        term_end_date: '2030-10-03',
-        appointment_type: 'ex_officio',
-        nominating_org: null,
-        status: 'active',
-        notes: 'Founding trustee, ex officio by virtue of Executive Director role',
-      },
-      {
-        full_name: 'Fawaz Bello',
-        position_title: 'ICT Operations Director',
-        email: 'fawaz@wissenhaus.org',
-        phone: null,
-        date_of_birth: null,
-        appointment_date: '2026-10-03',
-        term_end_date: '2029-10-03',
-        appointment_type: 'appointed',
-        nominating_org: null,
-        status: 'active',
-        notes: 'Appointed trustee',
-      },
-      {
-        full_name: 'Gbemisola Abatan',
-        position_title: 'Programmes & Partnerships Director',
-        email: 'gbemisola@wissenhaus.org',
-        phone: null,
-        date_of_birth: null,
-        appointment_date: '2026-10-03',
-        term_end_date: '2029-10-03',
-        appointment_type: 'appointed',
-        nominating_org: null,
-        status: 'active',
-        notes: 'Appointed trustee',
-      },
-    ]
-
-    for (const trustee of trustees) {
-      await sql`
-        INSERT INTO trustee_register (
-          full_name,
-          position_title,
-          email,
-          phone,
-          date_of_birth,
-          appointment_date,
-          term_end_date,
-          appointment_type,
-          nominating_org,
-          status,
-          notes
-        ) VALUES (
-          ${trustee.full_name},
-          ${trustee.position_title},
-          ${trustee.email},
-          ${trustee.phone},
-          ${trustee.date_of_birth},
-          ${trustee.appointment_date},
-          ${trustee.term_end_date},
-          ${trustee.appointment_type},
-          ${trustee.nominating_org},
-          ${trustee.status},
-          ${trustee.notes}
-        )
-        ON CONFLICT DO NOTHING
-      `
-      console.log(`✓ Added ${trustee.full_name}`)
-    }
-
-    const result = await sql`SELECT COUNT(*) as count FROM trustee_register`
-    console.log(`\n✅ Seed complete. Total trustees: ${result[0].count}`)
-  } catch (err) {
-    console.error('Error seeding trustees:', err)
-    process.exit(1)
-  }
+const url = process.env.WISSENDB_DATABASE_URL ?? process.env.DATABASE_URL
+if (!url) {
+  console.error('Error: WISSENDB_DATABASE_URL env var not found.')
+  process.exit(1)
 }
+const sql = neon(url)
 
-seedTrustees()
+const trustees = [
+  ['Benz Olagbaye', 'Founder & Executive Director', 'ex_officio', '2030-10-03', 'Founding trustee, ex officio by virtue of Executive Director role'],
+  ['Fawaz Bello', 'Information & Communications Technology Operations Director', 'appointed', '2029-10-03', 'Appointed trustee'],
+  ['Gbemisola Abatan', 'Programmes & Partnerships Director', 'appointed', '2029-10-03', 'Appointed trustee'],
+]
+
+for (const [name, title, type, end, notes] of trustees) {
+  const existing = await sql`SELECT 1 FROM trustee_register WHERE full_name = ${name}`
+  if (existing.length) { console.log(`- ${name} already present`); continue }
+  await sql`
+    INSERT INTO trustee_register (full_name, position_title, appointment_type, appointment_date, term_end_date, status, notes)
+    VALUES (${name}, ${title}, ${type}, '2026-10-03', ${end}, 'active', ${notes})
+  `
+  console.log(`✓ Added ${name}`)
+}

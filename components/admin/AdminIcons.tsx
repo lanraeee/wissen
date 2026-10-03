@@ -84,6 +84,10 @@ export function ApprovalsIcon({ size = 20 }: IconProps) {
   return <svg {...base(size)}><path d="M20 6L9 17l-5-5" /><path d="M20 12v7a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h9" /></svg>
 }
 
+export function TrusteeRegisterIcon({ size = 20 }: IconProps) {
+  return <svg {...base(size)}><path d="M12 3l8 3v6c0 4.5-3.2 8-8 9-4.8-1-8-4.5-8-9V6z" /><path d="M9 12l2 2 4-4" /></svg>
+}
+
 export function SupportIcon({ size = 20 }: IconProps) {
   return <svg {...base(size)}><path d="M21 15a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2z" /></svg>
 }
@@ -117,6 +121,7 @@ export const NAV_ICONS: Record<string, (props: IconProps) => React.ReactElement>
   '/admin/testimonials': TestimonialsIcon,
   '/admin/content': ContentIcon,
   '/admin/content-approvals': ApprovalsIcon,
+  '/admin/trustee-register': TrusteeRegisterIcon,
   '/admin/newsletter': NewsletterIcon,
   '/admin/email-templates': EmailTemplatesIcon,
   '/admin/settings': SettingsIcon,
