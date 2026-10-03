@@ -88,6 +88,35 @@ export default function TrusteeRegisterEditor() {
     }
   }
 
+  async function deleteTrustee() {
+    if (!editingId) return
+    if (!confirm('Are you sure you want to delete this trustee? This action cannot be undone.')) return
+
+    setSaving(true)
+    setError('')
+
+    try {
+      const res = await fetch(`/api/admin/trustee-register/${editingId}`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+      })
+
+      if (!res.ok) {
+        const d = await res.json().catch(() => ({}))
+        throw new Error(d?.error || 'Delete failed')
+      }
+
+      await loadTrustees()
+      setFormData({ appointment_type: 'appointed', status: 'active' })
+      setEditingId(null)
+      setShowForm(false)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Delete failed')
+    } finally {
+      setSaving(false)
+    }
+  }
+
   function startEdit(trustee: Trustee) {
     setFormData(trustee)
     setEditingId(trustee.id)
@@ -297,13 +326,22 @@ export default function TrusteeRegisterEditor() {
             </div>
           </div>
 
-          <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end' }}>
-            <button style={s('#8a9a8f')} onClick={cancel} disabled={saving}>
-              Cancel
-            </button>
-            <button style={s('#1a3c2e')} onClick={saveTrustee} disabled={saving}>
-              {saving ? 'Saving...' : 'Save Trustee'}
-            </button>
+          <div style={{ display: 'flex', gap: 10, justifyContent: 'space-between' }}>
+            <div>
+              {editingId && (
+                <button style={s('#dc2626')} onClick={deleteTrustee} disabled={saving}>
+                  {saving ? 'Deleting...' : 'Delete'}
+                </button>
+              )}
+            </div>
+            <div style={{ display: 'flex', gap: 10 }}>
+              <button style={s('#8a9a8f')} onClick={cancel} disabled={saving}>
+                Cancel
+              </button>
+              <button style={s('#1a3c2e')} onClick={saveTrustee} disabled={saving}>
+                {saving ? 'Saving...' : 'Save Trustee'}
+              </button>
+            </div>
           </div>
         </div>
       )}
