@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { PAGE_COPY_SCHEMAS } from '@/lib/page-copy-schema'
 import { siteContentKeyFor } from '@/lib/page-copy-shared'
 import { POLICY_PAGES } from '@/lib/policy-doc'
+import { DEFAULT_BRAND, brandFromSettings, brandify, type Brand } from '@/lib/brand'
 import PolicySectionsEditor from './PolicySectionsEditor'
 
 const lbl = { fontSize: '.72rem', fontWeight: 700, letterSpacing: '.08em', textTransform: 'uppercase' as const, color: '#8a9a8f', display: 'block', marginBottom: 4 }
@@ -23,18 +24,26 @@ export default function PageCopyEditor() {
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
   const [error, setError] = useState('')
+  const [brand, setBrand] = useState<Brand>(DEFAULT_BRAND)
 
   const load = useCallback(async (s: typeof schema) => {
     if (!s) return
     setLoading(true); setError('')
     try {
-      const res = await fetch(`/api/admin/content/${siteContentKeyFor(s.slug)}`)
+      const [res, settingsRes] = await Promise.all([
+        fetch(`/api/admin/content/${siteContentKeyFor(s.slug)}`),
+        fetch('/api/admin/content/site_settings').catch(() => null),
+      ])
       const data = await res.json()
+      const b = brandFromSettings(settingsRes ? (await settingsRes.json().catch(() => ({}))).value : null)
+      setBrand(b)
       const saved = (data.value ?? {}) as Record<string, unknown>
       const next: Record<string, string> = {}
+      // Untouched fields show the built-in text with the current brand applied, so the
+      // editor matches the live page; typed text is shown exactly as saved.
       for (const f of s.fields) {
         const v = saved[f.key]
-        next[f.key] = typeof v === 'string' && v.trim() ? v : f.default
+        next[f.key] = typeof v === 'string' && v.trim() ? v : brandify(f.default, b)
       }
       setValues(next)
     } catch {
@@ -52,7 +61,9 @@ export default function PageCopyEditor() {
       const res = await fetch(`/api/admin/content/${siteContentKeyFor(schema.slug)}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ value: values }),
+        // A field left at its (branded) default is saved empty so it keeps following the brand name;
+        // anything an editor changed is saved verbatim and never rewritten.
+        body: JSON.stringify({ value: Object.fromEntries(schema.fields.map(f => [f.key, values[f.key] === brandify(f.default, brand) ? '' : (values[f.key] ?? '')])) }),
       })
       if (!res.ok) {
         const d = await res.json().catch(() => ({}))

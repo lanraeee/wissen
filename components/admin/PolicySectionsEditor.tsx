@@ -2,7 +2,8 @@
 
 import { useCallback, useEffect, useState } from 'react'
 import { POLICY_DEFAULTS } from '@/lib/policy-doc-defaults'
-import { MAX_BODY, MAX_SECTIONS, MAX_TITLE, coerceSections, policyContentKey, withIds, type PolicySection } from '@/lib/policy-doc'
+import { MAX_BODY, MAX_SECTIONS, MAX_TITLE, coerceSections, policyContentKey, resolveSections, withIds, type PolicySection } from '@/lib/policy-doc'
+import { DEFAULT_BRAND, brandFromSettings, brandify, type Brand } from '@/lib/brand'
 
 const lbl = { fontSize: '.72rem', fontWeight: 700, letterSpacing: '.08em', textTransform: 'uppercase' as const, color: '#8a9a8f', display: 'block', marginBottom: 4 }
 const mini = { padding: '4px 10px', borderRadius: 6, fontSize: '.75rem', fontWeight: 600, background: '#fff', color: '#3a4a3f', border: '1px solid #e8e4dc', cursor: 'pointer' } as const
@@ -11,6 +12,7 @@ const mini = { padding: '4px 10px', borderRadius: 6, fontSize: '.75rem', fontWei
 export default function PolicySectionsEditor({ slug }: { slug: string }) {
   const builtIn = withIds(POLICY_DEFAULTS[slug] ?? [])
   const [sections, setSections] = useState<PolicySection[]>(builtIn)
+  const [brand, setBrand] = useState<Brand>(DEFAULT_BRAND)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState('')
@@ -19,9 +21,15 @@ export default function PolicySectionsEditor({ slug }: { slug: string }) {
   const load = useCallback(async () => {
     setLoading(true); setError('')
     try {
-      const res = await fetch(`/api/admin/content/${policyContentKey(slug)}`)
+      const [res, settingsRes] = await Promise.all([
+        fetch(`/api/admin/content/${policyContentKey(slug)}`),
+        fetch('/api/admin/content/site_settings').catch(() => null),
+      ])
       const data = await res.json()
-      setSections(coerceSections(data.value) ?? withIds(POLICY_DEFAULTS[slug] ?? []))
+      const b = brandFromSettings(settingsRes ? (await settingsRes.json().catch(() => ({}))).value : null)
+      setBrand(b)
+      // Built-in sections show with the current brand (as on the live page); typed text exactly as saved.
+      setSections(resolveSections(coerceSections(data.value), withIds(POLICY_DEFAULTS[slug] ?? []), t => brandify(t, b)))
     } catch {
       setError('Could not load the sections.')
     }
@@ -60,12 +68,19 @@ export default function PolicySectionsEditor({ slug }: { slug: string }) {
   async function save() {
     if (sections.some(s => !s.title.trim())) { setError('Every section needs a title.'); return }
     const next = withIds(sections)
-    if (await put({ sections: next }, 'Sections saved!')) setSections(next)
+    // A section left exactly at its (branded) built-in text is saved as a marker so it keeps
+    // following the brand name; anything an editor changed is saved verbatim.
+    const defaults = new Map(withIds(POLICY_DEFAULTS[slug] ?? []).map(d => [d.id, d]))
+    const stored = next.map(x => {
+      const d = defaults.get(x.id)
+      return d && x.title === brandify(d.title, brand) && x.body === brandify(d.body, brand) ? { id: x.id, isDefault: true } : x
+    })
+    if (await put({ sections: stored }, 'Sections saved!')) setSections(next)
   }
 
   async function reset() {
     if (!window.confirm('Discard all saved edits to these sections and go back to the original text?')) return
-    if (await put(null, 'Restored original text')) setSections(withIds(POLICY_DEFAULTS[slug] ?? []))
+    if (await put(null, 'Restored original text')) setSections(resolveSections(null, withIds(POLICY_DEFAULTS[slug] ?? []), t => brandify(t, brand)))
   }
 
   if (loading) return <div style={{ padding: 24, color: '#8a9a8f' }}>Loading sections…</div>

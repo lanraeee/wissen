@@ -23,15 +23,16 @@ export async function getOgCopy(schema: OgPageSchema, overrideDefaults?: Partial
     getSiteContent<unknown>('site_settings'),
   ])
   const brand = brandFromSettings(settings)
+  // Saved text is shown exactly as typed; only built-in defaults follow the brand.
+  const pick = (v: unknown, d: string) => (typeof v === 'string' && v.trim()) || brandify(d, brand)
   const out: OgCopy = {
-    title: (typeof saved?.title === 'string' && saved.title.trim()) || defaults.title,
-    ogTitle: (typeof saved?.ogTitle === 'string' && saved.ogTitle.trim()) || defaults.ogTitle,
-    description: (typeof saved?.description === 'string' && saved.description.trim()) || defaults.description,
+    title: pick(saved?.title, defaults.title),
+    ogTitle: pick(saved?.ogTitle, defaults.ogTitle),
+    description: pick(saved?.description, defaults.description),
   }
-  const ogTitle = brandify(out.ogTitle, brand)
-  const description = brandify(out.description, brand)
+  const { ogTitle, description } = out
   return {
-    title: brandify(out.title, brand), ogTitle, description,
+    title: out.title, ogTitle, description,
     // Hashing the brand-applied text means any edit (or rename) changes the URL.
     ogImage: schema.slug === 'home' ? undefined : ogImageUrl(schema.slug, `${ogTitle}|${description}|${brand.name}|${brand.descriptor}`),
   }

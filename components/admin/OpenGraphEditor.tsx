@@ -39,8 +39,8 @@ export default function OpenGraphEditor() {
 
   // The card is rendered server-side from the text being typed (admin-only
   // override params), debounced so it isn't re-rendered on every keystroke.
-  const shareTitle = brandify(values.ogTitle || schema?.defaultOgTitle || '', brand)
-  const shareDesc = brandify(values.description || schema?.defaultDescription || '', brand)
+  const shareTitle = values.ogTitle || brandify(schema?.defaultOgTitle ?? '', brand)
+  const shareDesc = values.description || brandify(schema?.defaultDescription ?? '', brand)
   const [cardSrc, setCardSrc] = useState('')
   useEffect(() => {
     if (!schema) return
@@ -57,13 +57,19 @@ export default function OpenGraphEditor() {
     if (!s) return
     setLoading(true); setError('')
     try {
-      const res = await fetch(`/api/admin/content/${ogSiteContentKeyFor(s.slug)}`)
+      const [res, settingsRes] = await Promise.all([
+        fetch(`/api/admin/content/${ogSiteContentKeyFor(s.slug)}`),
+        fetch('/api/admin/content/site_settings').catch(() => null),
+      ])
       const data = await res.json()
+      const b = brandFromSettings(settingsRes ? (await settingsRes.json().catch(() => ({}))).value : null)
+      setBrand(b)
       const saved = (data.value ?? {}) as Partial<OgCopy>
+      // Untouched fields show the built-in text with the current brand; typed text is shown exactly as saved.
       setValues({
-        title: (typeof saved.title === 'string' && saved.title.trim()) || s.defaultTitle,
-        ogTitle: (typeof saved.ogTitle === 'string' && saved.ogTitle.trim()) || s.defaultOgTitle,
-        description: (typeof saved.description === 'string' && saved.description.trim()) || s.defaultDescription,
+        title: (typeof saved.title === 'string' && saved.title.trim()) || brandify(s.defaultTitle, b),
+        ogTitle: (typeof saved.ogTitle === 'string' && saved.ogTitle.trim()) || brandify(s.defaultOgTitle, b),
+        description: (typeof saved.description === 'string' && saved.description.trim()) || brandify(s.defaultDescription, b),
       })
     } catch {
       setError('Could not load this page’s Open Graph settings.')
@@ -80,7 +86,12 @@ export default function OpenGraphEditor() {
       const res = await fetch(`/api/admin/content/${ogSiteContentKeyFor(schema.slug)}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ value: values }),
+        // Fields still at their branded default are saved empty so they keep following the brand name.
+        body: JSON.stringify({ value: {
+          title: values.title === brandify(schema.defaultTitle, brand) ? '' : values.title,
+          ogTitle: values.ogTitle === brandify(schema.defaultOgTitle, brand) ? '' : values.ogTitle,
+          description: values.description === brandify(schema.defaultDescription, brand) ? '' : values.description,
+        } }),
       })
       if (!res.ok) {
         const d = await res.json().catch(() => ({}))
@@ -105,7 +116,7 @@ export default function OpenGraphEditor() {
         body: JSON.stringify({ value: {} }),
       })
       if (!res.ok) throw new Error('Reset failed.')
-      setValues({ title: schema.defaultTitle, ogTitle: schema.defaultOgTitle, description: schema.defaultDescription })
+      setValues({ title: brandify(schema.defaultTitle, brand), ogTitle: brandify(schema.defaultOgTitle, brand), description: brandify(schema.defaultDescription, brand) })
       loadBrand()
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Reset failed.')
@@ -173,7 +184,7 @@ export default function OpenGraphEditor() {
 
           <div style={{ fontSize: '.7rem', fontWeight: 700, letterSpacing: '.08em', textTransform: 'uppercase', color: '#8a9a8f', marginBottom: 8 }}>Preview <span style={{ textTransform: 'none', fontWeight: 400, letterSpacing: 0 }}>— updates as you type; the image and brand name are read live from Settings</span></div>
           <div data-testid="og-tab-preview" style={{ maxWidth: 420, marginBottom: 12, padding: '6px 12px', background: '#e8e4dc', borderRadius: '8px 8px 0 0', fontSize: '.78rem', color: '#1a2e24', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-            {brandify(values.title || schema.defaultTitle, brand)}
+            {values.title || brandify(schema.defaultTitle, brand)}
           </div>
           <div style={{ border: '1px solid #e8e4dc', borderRadius: 10, overflow: 'hidden', maxWidth: 420 }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}

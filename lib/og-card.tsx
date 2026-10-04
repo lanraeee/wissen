@@ -61,7 +61,7 @@ export async function loadPageCopy(slug: string, brand: Brand): Promise<Pick<OgC
     const rows = await sql`SELECT value FROM site_content WHERE key = ${ogSiteContentKeyFor(slug)}`
     saved = rows[0]?.value as Partial<OgCopy> | undefined
   } catch { /* defaults */ }
-  const pick = (v: unknown, d: string) => brandify((typeof v === 'string' && v.trim()) || d, brand)
+  const pick = (v: unknown, d: string) => (typeof v === 'string' && v.trim()) || brandify(d, brand)
   return { ogTitle: pick(saved?.ogTitle, schema.defaultOgTitle), description: pick(saved?.description, schema.defaultDescription) }
 }
 

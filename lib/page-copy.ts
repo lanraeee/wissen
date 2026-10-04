@@ -19,7 +19,8 @@ export async function getPageCopy(schema: PageCopySchema): Promise<Record<string
   const out: Record<string, string> = {}
   for (const field of schema.fields) {
     const v = saved?.[field.key]
-    out[field.key] = brandify(typeof v === 'string' && v.trim() ? v : field.default, brand)
+    // Saved text is shown exactly as typed; only the built-in default follows the brand.
+    out[field.key] = typeof v === 'string' && v.trim() ? v : brandify(field.default, brand)
   }
   return out
 }

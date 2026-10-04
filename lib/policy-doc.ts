@@ -4,7 +4,13 @@
 // rendered as React elements -- never raw HTML -- so an editor can reword or
 // restructure a policy but cannot inject markup or scripts.
 
-export interface PolicySection { id: string; title: string; body: string }
+export interface PolicySection {
+  id: string
+  title: string
+  body: string
+  /** Saved marker: "this section is still the built-in text" -- it follows the brand name and any code update to the default. */
+  isDefault?: boolean
+}
 
 export type PolicyPage = { slug: string; label: string }
 export const POLICY_PAGES: PolicyPage[] = [
@@ -110,11 +116,12 @@ export function coerceSections(v: unknown): PolicySection[] | null {
   const out: PolicySection[] = []
   for (const s of list) {
     if (!s || typeof s !== 'object') return null
-    const { id, title, body } = s as Record<string, unknown>
+    const { id, title, body, isDefault } = s as Record<string, unknown>
+    if (isDefault === true && typeof id === 'string') { out.push({ id, title: '', body: '', isDefault: true }); continue }
     if (typeof title !== 'string' || typeof body !== 'string' || !title.trim()) return null
     out.push({ id: typeof id === 'string' ? id : '', title: title.slice(0, MAX_TITLE), body: body.slice(0, MAX_BODY) })
   }
-  return withIds(out)
+  return withIdsKeepDefaults(out)
 }
 
 /** Parses "Label | value" lines (blank lines and lines without a separator are skipped). */
@@ -127,4 +134,35 @@ export function parsePairs(text: string): [string, string][] {
     if (a && b) out.push([a, b])
   }
   return out
+}
+
+function withIdsKeepDefaults(list: PolicySection[]): PolicySection[] {
+  // Default-markers keep their id (it is the lookup key); everything else gets a unique anchor id.
+  const taken = new Set(list.filter(x => x.isDefault).map(x => x.id))
+  return list.map(x => {
+    if (x.isDefault) return x
+    const base = /^[a-z0-9-]+$/.test(x.id) ? x.id : slugify(x.title)
+    let id = base, n = 2
+    while (taken.has(id)) id = `${base}-${n++}`
+    taken.add(id)
+    return { ...x, id }
+  })
+}
+
+/**
+ * Turns saved sections into displayable ones. Sections still marked as the
+ * built-in text are looked up by id in `defaults` and passed through `apply`
+ * (the brand swap); anything an editor typed is shown exactly as typed.
+ */
+export function resolveSections(saved: PolicySection[] | null, defaults: PolicySection[], apply: (text: string) => string = t => t): PolicySection[] {
+  const byId = new Map(defaults.map(d => [d.id, d]))
+  const base = saved ?? defaults.map(d => ({ ...d, isDefault: true }))
+  const out: PolicySection[] = []
+  for (const s of base) {
+    if (s.isDefault) {
+      const d = byId.get(s.id)
+      if (d) out.push({ id: d.id, title: apply(d.title), body: apply(d.body) })
+    } else out.push({ id: s.id, title: s.title, body: s.body })
+  }
+  return withIds(out)
 }

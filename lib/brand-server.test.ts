@@ -26,10 +26,31 @@ describe('brand applied at read time', () => {
     expect(JSON.stringify(secs)).not.toContain('Wissen-Haus')
     expect(JSON.stringify(secs)).toContain('Acme')
   })
-  it('saved copy that mentions the old name is renamed too', async () => {
+  it('text an editor typed is shown exactly as typed, never rewritten', async () => {
     store.site_settings = { brand_name: 'Acme' }
-    store.page_copy_about = { heroEyebrow: 'Hello from Wissen-Haus' }
-    expect((await getPageCopy(ABOUT_SCHEMA)).heroEyebrow).toBe('Hello from Acme')
+    const aka = 'Wissen Haus Foundation (“Wissen-Haus”, “Wissen Haus”, “Wissen-Haus Foundation”)'
+    store.page_copy_about = { heroEyebrow: aka }
+    expect((await getPageCopy(ABOUT_SCHEMA)).heroEyebrow).toBe(aka)
+    // ...while untouched fields on the same page still follow the brand
+    expect((await getPageCopy(ABOUT_SCHEMA)).storyTitle).toBeDefined()
+    store.og_meta_about = { ogTitle: 'Also known as Wissen-Haus' }
+    expect((await getOgCopy(ogSchemaFor('about')!)).ogTitle).toBe('Also known as Wissen-Haus')
+  })
+  it('policy/wiki sections: built-in markers follow the brand, typed sections stay literal', async () => {
+    store.site_settings = { brand_name: 'Acme' }
+    store.policy_doc_wiki = { sections: [
+      { id: 'background', isDefault: true },
+      { id: 'mine', title: 'Also known as', body: 'Wissen-Haus, Wissen Haus, Wissen-Haus Foundation' },
+    ] }
+    const secs = await getPolicySections('wiki')
+    expect(secs.map(x => x.id)).toEqual(['background', 'mine'])
+    expect(secs[0].body).toContain('Acme')
+    expect(secs[0].body).not.toContain('Wissen-Haus was founded')
+    expect(secs[1].body).toBe('Wissen-Haus, Wissen Haus, Wissen-Haus Foundation')
+  })
+  it('a marker for a section that no longer exists is dropped', async () => {
+    store.policy_doc_wiki = { sections: [{ id: 'gone', isDefault: true }, { id: 'x', title: 'X', body: 'y' }] }
+    expect((await getPolicySections('wiki')).map(x => x.id)).toEqual(['x'])
   })
 })
 
