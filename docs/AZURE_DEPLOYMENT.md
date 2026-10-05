@@ -266,7 +266,7 @@ After the domain is live, update `NEXT_PUBLIC_SITE_URL` and `NEXT_PUBLIC_BASE_UR
 
 ## Entra Domain Services (uk.wissenhaus.org) is not used
 
-A Microsoft Entra Domain Services managed domain, `uk.wissenhaus.org`, existed in resource group `Wissen-Haus-Live`. Its deletion was started in the portal on 2026-10-04.
+A Microsoft Entra Domain Services managed domain, `uk.wissenhaus.org`, existed in resource group `Wissen-Haus-Live`. Its deletion was started in the portal shortly before 2026-10-05.
 
 The web app does not depend on it. Checked against the repo on 2026-10-05:
 
