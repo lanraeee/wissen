@@ -125,7 +125,7 @@ export async function getPendingCounts(): Promise<Record<AgentName, number>> {
  */
 export async function generateMorningBrief(): Promise<MorningBrief> {
   const now = new Date()
-  const summaries = []
+  const summaries: MorningBrief['agent_summaries'] = []
 
   try {
     const pendingCounts = await getPendingCounts()
