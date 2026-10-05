@@ -7,15 +7,12 @@ import { generateMorningBrief } from '@/lib/agents/runner'
  * Called at 03:00 UTC by GitHub Actions nightly-crons.yml
  */
 export async function POST(request: NextRequest) {
-  // Verify cron secret
-  const authHeader = request.headers.get('authorization')
-  if (!authHeader?.startsWith('Bearer ')) {
+  // Verify cron secret. Guard against an unset/empty CRON_SECRET so an empty
+  // `Bearer ` token can never authorize the request (this project has been
+  // bitten by env vars that were present but empty — see docs/AZURE_DEPLOYMENT.md).
+  const cronSecret = process.env.CRON_SECRET
+  if (!cronSecret || request.headers.get('authorization') !== `Bearer ${cronSecret}`) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  }
-
-  const token = authHeader.slice(7)
-  if (token !== process.env.CRON_SECRET) {
-    return NextResponse.json({ error: 'Invalid token' }, { status: 403 })
   }
 
   try {

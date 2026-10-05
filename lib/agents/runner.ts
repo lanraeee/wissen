@@ -109,14 +109,14 @@ export async function getPendingCounts(): Promise<Record<AgentName, number>> {
       GROUP BY agent_name
     ` as { agent_name: AgentName; count: number }[]
 
-    const counts: Record<string, number> = {}
+    const counts: Record<AgentName, number> = {} as Record<AgentName, number>
     for (const row of rows) {
       counts[row.agent_name] = Number(row.count)
     }
     return counts
   } catch (err) {
     log.error('agent-runner', err, { stage: 'get-pending-counts' })
-    return {}
+    return {} as Record<AgentName, number>
   }
 }
 
@@ -147,13 +147,13 @@ export async function generateMorningBrief(): Promise<MorningBrief> {
       try {
         const [lastRun] = await sql`
           SELECT last_run FROM agent_settings WHERE agent_name = ${agentName}
-        ` as { last_run?: Date }[]
+        ` as { last_run?: string }[]
 
         summaries.push({
           agent: agentName,
           status: pending > 0 ? 'warning' : 'ok',
           pending_approvals: pending,
-          last_run: lastRun?.last_run?.toISOString(),
+          last_run: lastRun?.last_run ? new Date(lastRun.last_run).toISOString() : undefined,
         })
       } catch {
         summaries.push({
