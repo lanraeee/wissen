@@ -266,7 +266,7 @@ After the domain is live, update `NEXT_PUBLIC_SITE_URL` and `NEXT_PUBLIC_BASE_UR
 
 ## Entra Domain Services (uk.wissenhaus.org) is not used
 
-A Microsoft Entra Domain Services managed domain, `uk.wissenhaus.org`, existed in resource group `Wissen-Haus-Live`. Its deletion was started in the portal shortly before 2026-10-05.
+A Microsoft Entra Domain Services managed domain, `uk.wissenhaus.org`, existed in resource group `Wissen-Haus-Live`. It was deleted on 2026-10-05.
 
 The web app does not depend on it. Checked against the repo on 2026-10-05:
 
@@ -276,14 +276,14 @@ The web app does not depend on it. Checked against the repo on 2026-10-05:
 
 The only Entra piece the deployment uses is the app registration behind GitHub's OIDC login ([section 1](#recovering-githubs-oidc-login-if-the-app-registration-is-gone)). That lives in the Entra ID tenant, not in Domain Services, and is unaffected.
 
-**Deletion status: not yet confirmed.** Domain Services deletion can take an hour or more. Confirm it finished with:
+**Deletion status: confirmed deleted on 2026-10-05** (reported by the owner from the Azure portal). To re-check, an empty result here means it is gone:
 
 ```bash
 az resource list --resource-group Wissen-Haus-Live \
   --resource-type Microsoft.AAD/domainServices -o table
 ```
 
-An empty result means it is gone. Then check for leftovers it created, which are billed or block cleanup on their own: the `aadds-*` virtual network or subnet, its network security group, and any public IP or load balancer named after the domain. Update this paragraph with the date once confirmed.
+Domain Services can leave resources behind that are billed or block cleanup on their own: the `aadds-*` virtual network or subnet, its network security group, and any public IP or load balancer named after the domain. Delete any that remain.
 
 ## The scale-out trap (read this before scaling)
 
