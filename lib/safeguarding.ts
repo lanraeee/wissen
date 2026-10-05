@@ -99,12 +99,13 @@ export function looksLikeSafeguarding(...texts: (string | null | undefined)[]) {
 // ─── Team accounts ──────────────────────────────────────────────────────────
 
 /**
- * Makes sure a team address has a login. Accounts here are self-registered
- * and nothing verifies that the person who signs up owns the address, so a
- * designated address must not be left open for a stranger to register first.
- * Creating the account up front with an unusable password closes that gap:
- * the real owner sets a password through "Forgot password", which proves they
- * read that mailbox. Returns the user id when an account was created now.
+ * Makes sure a team address has a login. Self-registered accounts can't sign
+ * in until their owner clicks the emailed confirmation link, but a stranger
+ * could still sit on a pending sign-up for a designated address, so the
+ * account is created here up front with an unusable password and no
+ * confirmation. The real owner sets a password through "Forgot password",
+ * which proves they read that mailbox and confirms the address in the same
+ * step. Returns the user id when an account was created now.
  */
 export async function ensureTeamAccount(email: string, name?: string | null): Promise<string | null> {
   const [first, ...rest] = (name || 'Safeguarding Team').trim().split(/\s+/)

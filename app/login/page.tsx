@@ -14,6 +14,8 @@ import posthog from 'posthog-js'
 
 import { RETURN_PARAM, safeReturnPath } from '@/lib/return-url'
 
+import CheckEmailNotice from '@/components/CheckEmailNotice'
+
 
 
 export default function LoginPage() {
@@ -47,6 +49,9 @@ export default function LoginPage() {
 
   const [error, setError] = useState('')
 
+  // Set once a sign-up or sign-in needs the email confirmed before going further.
+  const [pending, setPending] = useState<{ email: string; justSignedUp: boolean } | null>(null)
+
   const [showPw, setShowPw] = useState(false)
 
 
@@ -59,17 +64,21 @@ export default function LoginPage() {
 
     const fd = new FormData(e.currentTarget)
 
+    const email = String(fd.get('email') ?? '')
+
     const res = await fetch('/api/auth/login', {
 
       method: 'POST', headers: { 'Content-Type': 'application/json' },
 
-      body: JSON.stringify({ email: fd.get('email'), password: fd.get('password') })
+      body: JSON.stringify({ email, password: fd.get('password') })
 
     })
 
     const data = await res.json()
 
     setLoading(false)
+
+    if (data.code === 'email_unverified') { setPending({ email, justSignedUp: false }); return }
 
     if (!res.ok) { setError(data.error || 'Login failed'); return }
 
@@ -115,9 +124,11 @@ export default function LoginPage() {
 
     posthog.capture('user_signed_up', { source: 'login_page' })
 
-    router.push(returnTo ?? '/community')
+    // No session until the emailed link is clicked; say where to look.
 
-    router.refresh()
+    setPending({ email: data.user.email, justSignedUp: true })
+
+    setTab('login')
 
   }
 
@@ -151,15 +162,19 @@ export default function LoginPage() {
 
           <div style={{ display: 'flex', gap: '1rem', marginBottom: '2rem', borderBottom: '1px solid var(--line)', paddingBottom: '1rem' }}>
 
-            <button onClick={() => { setTab('signup'); setError('') }} style={{ fontFamily: 'var(--ff-display)', fontWeight: 700, fontSize: '1.1rem', color: tab === 'signup' ? 'var(--green-800)' : 'var(--ink-60)', borderBottom: tab === 'signup' ? '2px solid var(--red)' : '2px solid transparent', paddingBottom: 4, background: 'none', cursor: 'pointer' }}>Create Account</button>
+            <button onClick={() => { setTab('signup'); setError(''); setPending(null) }} style={{ fontFamily: 'var(--ff-display)', fontWeight: 700, fontSize: '1.1rem', color: tab === 'signup' ? 'var(--green-800)' : 'var(--ink-60)', borderBottom: tab === 'signup' ? '2px solid var(--red)' : '2px solid transparent', paddingBottom: 4, background: 'none', cursor: 'pointer' }}>Create Account</button>
 
-            <button onClick={() => { setTab('login'); setError('') }} style={{ fontFamily: 'var(--ff-display)', fontWeight: 700, fontSize: '1.1rem', color: tab === 'login' ? 'var(--green-800)' : 'var(--ink-60)', borderBottom: tab === 'login' ? '2px solid var(--red)' : '2px solid transparent', paddingBottom: 4, background: 'none', cursor: 'pointer' }}>Sign In</button>
+            <button onClick={() => { setTab('login'); setError(''); setPending(null) }} style={{ fontFamily: 'var(--ff-display)', fontWeight: 700, fontSize: '1.1rem', color: tab === 'login' ? 'var(--green-800)' : 'var(--ink-60)', borderBottom: tab === 'login' ? '2px solid var(--red)' : '2px solid transparent', paddingBottom: 4, background: 'none', cursor: 'pointer' }}>Sign In</button>
 
           </div>
 
 
 
-          {returnTo && !error && (
+          {pending && <CheckEmailNotice email={pending.email} justSignedUp={pending.justSignedUp} />}
+
+
+
+          {returnTo && !error && !pending && (
 
             <div style={{ background: 'var(--green-50, #f0f5f1)', color: 'var(--green-800)', padding: '12px 14px', borderRadius: 'var(--radius)', fontSize: '.9rem', marginBottom: 20 }}>
 

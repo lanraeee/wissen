@@ -56,9 +56,22 @@ export const EMAIL_TEMPLATES: EmailTemplateInfo[] = [
 <a href="https://wissenhaus.org/community" class="btn">Explore the Community →</a>
 <div class="divider"></div>
 <p style="font-size:.85rem;color:#8a9a8f">If you have any questions, reply to this email or reach us at <a href="mailto:info@wissenhaus.org" style="color:#1a3c2e">info@wissenhaus.org</a>.</p>`,
-    trigger: 'Sent when a new user creates an account.',
+    trigger: 'Sent when a new user confirms their email address.',
     source: 'sendWelcomeEmail',
     sampleVars: { firstNameRaw: 'Ada', firstName: 'Ada' },
+  },
+  {
+    id: 'verify-email', name: 'Confirm Email Address', category: 'Account & Security', recipient: 'User',
+    variables: ['firstName', 'verifyUrl'],
+    defaultSubject: 'Confirm your Wissen-Haus email address',
+    defaultBody: `<span class="badge">Confirm Email</span>
+<h2>Hi {{firstName}},</h2>
+<p>Thanks for creating a Wissen-Haus account. Please confirm this is your email address so you can sign in. This link expires in 24 hours.</p>
+<a href="{{verifyUrl}}" class="btn">Confirm my email →</a>
+<p style="font-size:.85rem;color:#8a9a8f">If you didn't create a Wissen-Haus account, ignore this email and don't click the link. If someone used your address without permission, you can take the account back with "Forgot password" on the sign-in page.</p>`,
+    trigger: 'Sent when someone creates an account, or asks for a new confirmation link. The account cannot sign in until the link is used.',
+    source: 'sendVerificationEmail',
+    sampleVars: { firstName: 'Ada', verifyUrl: `${SITE_URL}/verify-email?token=sample` },
   },
   {
     id: 'password-reset', name: 'Password Reset', category: 'Account & Security', recipient: 'User',

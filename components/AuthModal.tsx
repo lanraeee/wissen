@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import posthog from 'posthog-js'
+import CheckEmailNotice from '@/components/CheckEmailNotice'
 
 interface Props {
   onClose: () => void
@@ -15,18 +16,22 @@ export default function AuthModal({ onClose, defaultTab = 'login' }: Props) {
   const [tab, setTab] = useState<'login' | 'signup'>(defaultTab)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  // Set once a sign-up or sign-in needs the email confirmed before going further.
+  const [pending, setPending] = useState<{ email: string; justSignedUp: boolean } | null>(null)
 
   async function handleLogin(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     setError(''); setLoading(true)
     const fd = new FormData(e.currentTarget)
+    const email = String(fd.get('email') ?? '')
     const res = await fetch('/api/auth/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email: fd.get('email'), password: fd.get('password') })
+      body: JSON.stringify({ email, password: fd.get('password') })
     })
     const data = await res.json()
     setLoading(false)
+    if (data.code === 'email_unverified') { setPending({ email, justSignedUp: false }); return }
     if (!res.ok) { setError(data.error || 'Login failed'); return }
     // Identify the user and capture login event
     posthog.identify(data.user.id, { role: data.user.role ?? 'user' })
@@ -56,9 +61,9 @@ export default function AuthModal({ onClose, defaultTab = 'login' }: Props) {
     // Identify the new user and capture signup event
     posthog.identify(data.user.id, { role: 'user' })
     posthog.capture('user_signed_up', { source: 'auth_modal' })
-    onClose()
-    router.push('/community')
-    router.refresh()
+    // No session until the emailed link is clicked; say where to look.
+    setPending({ email: data.user.email, justSignedUp: true })
+    setTab('login')
   }
 
   return (
@@ -81,7 +86,7 @@ export default function AuthModal({ onClose, defaultTab = 'login' }: Props) {
           {(['login', 'signup'] as const).map(t => (
             <button
               key={t}
-              onClick={() => { setTab(t); setError('') }}
+              onClick={() => { setTab(t); setError(''); setPending(null) }}
               style={{ fontFamily: 'var(--ff-display)', fontWeight: 700, fontSize: '1.1rem', color: tab === t ? 'var(--green-800)' : 'var(--ink-60)', borderBottom: tab === t ? '2px solid var(--red)' : '2px solid transparent', paddingBottom: '4px', background: 'none', cursor: 'pointer', textTransform: 'capitalize' }}
             >
               {t === 'login' ? 'Log In' : 'Create Account'}
@@ -94,6 +99,8 @@ export default function AuthModal({ onClose, defaultTab = 'login' }: Props) {
             {error}
           </div>
         )}
+
+        {pending && <CheckEmailNotice email={pending.email} justSignedUp={pending.justSignedUp} />}
 
         {tab === 'login' ? (
           <form className="form" onSubmit={handleLogin}>

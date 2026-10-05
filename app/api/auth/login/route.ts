@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
     const { email, password } = data
 
     const [user] = await sql`
-      SELECT id, email, password_hash, first_name, last_name, membership_expiry, role
+      SELECT id, email, password_hash, first_name, last_name, membership_expiry, role, email_verified_at
       FROM users WHERE email = ${email.toLowerCase()}
     `
     if (!user) {
@@ -29,6 +29,15 @@ export async function POST(req: NextRequest) {
     const valid = await verifyPassword(password, user.password_hash)
     if (!valid) {
       return NextResponse.json({ error: 'Invalid email or password' }, { status: 401 })
+    }
+
+    // Checked after the password so this can't be used to probe which
+    // addresses have pending sign-ups.
+    if (!user.email_verified_at) {
+      return NextResponse.json({
+        error: 'Please confirm your email address first. We sent a link to your inbox when you signed up.',
+        code: 'email_unverified',
+      }, { status: 403 })
     }
 
     const token = await signToken({

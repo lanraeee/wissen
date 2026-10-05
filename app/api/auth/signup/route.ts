@@ -1,8 +1,9 @@
 ﻿import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import sql from '@/lib/db'
-import { hashPassword, signToken, COOKIE_NAME } from '@/lib/auth'
-import { sendWelcomeEmail } from '@/lib/email'
+import { hashPassword } from '@/lib/auth'
+import { sendVerificationEmail } from '@/lib/email'
+import { createEmailVerificationUrl } from '@/lib/email-verification'
 import { runAfterResponse } from '@/lib/background'
 import { parseBody, zEmail, zName } from '@/lib/validation'
 import { log } from '@/lib/logger'
@@ -25,33 +26,26 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'An account with this email already exists' }, { status: 409 })
     }
 
+    // No session yet: the account stays unusable until its owner clicks the
+    // emailed link, so registering someone else's address gets you nothing.
     const passwordHash = await hashPassword(password)
     const [user] = await sql`
-      INSERT INTO users (email, password_hash, first_name, last_name)
-      VALUES (${email.toLowerCase()}, ${passwordHash}, ${firstName}, ${lastName})
-      RETURNING id, email, first_name, last_name, membership_expiry
+      INSERT INTO users (email, password_hash, first_name, last_name, email_verified_at)
+      VALUES (${email.toLowerCase()}, ${passwordHash}, ${firstName}, ${lastName}, NULL)
+      RETURNING id, email, first_name, last_name
     `
 
-    const token = await signToken({
-      id: user.id,
-      email: user.email,
-      name: `${user.first_name} ${user.last_name}`,
-      membershipExpiry: user.membership_expiry,
-    })
-
+    const verifyUrl = await createEmailVerificationUrl(user.id as string)
     runAfterResponse(() =>
-      sendWelcomeEmail(user.email as string, `${user.first_name} ${user.last_name}`).catch(e => log.error('welcome email', e))
+      sendVerificationEmail(user.email as string, `${user.first_name} ${user.last_name}`, verifyUrl)
+        .catch(e => log.error('verification email', e))
     )
 
-    const res = NextResponse.json({ success: true, user: { id: user.id, email: user.email, name: `${user.first_name} ${user.last_name}` } })
-    res.cookies.set(COOKIE_NAME, token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      maxAge: 60 * 60 * 24 * 30,
-      path: '/',
+    return NextResponse.json({
+      success: true,
+      verificationRequired: true,
+      user: { id: user.id, email: user.email, name: `${user.first_name} ${user.last_name}` },
     })
-    return res
   } catch (err) {
     log.error('signup', err)
     return NextResponse.json({ error: 'Server error' }, { status: 500 })

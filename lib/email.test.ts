@@ -121,6 +121,11 @@ describe('every transactional email renders its default template with no leftove
     assertFullyRendered(sent())
   })
 
+  it('sendVerificationEmail', async () => {
+    await email.sendVerificationEmail('ada@example.com', 'Ada Lovelace', 'https://wissenhaus.org/verify-email?token=abc')
+    assertFullyRendered(sent())
+  })
+
   it('sendPasswordResetEmail', async () => {
     await email.sendPasswordResetEmail('ada@example.com', 'Ada Lovelace', 'https://wissenhaus.org/reset-password?token=abc')
     assertFullyRendered(sent())

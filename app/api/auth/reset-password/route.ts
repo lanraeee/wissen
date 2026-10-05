@@ -28,8 +28,13 @@ export async function POST(req: NextRequest) {
 
   const passwordHash = await hashPassword(password)
 
+  // The reset link was emailed to this address, so using it proves the same
+  // mailbox ownership as the signup confirmation link. This is also how team
+  // accounts created by a director (lib/safeguarding.ts) become usable, and
+  // how the real owner reclaims an address someone else registered first.
   const [user] = await sql`
-    UPDATE users SET password_hash = ${passwordHash} WHERE id = ${row.user_id}
+    UPDATE users SET password_hash = ${passwordHash}, email_verified_at = COALESCE(email_verified_at, NOW())
+    WHERE id = ${row.user_id}
     RETURNING email, first_name, last_name
   `
 

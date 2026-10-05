@@ -252,6 +252,13 @@ export async function sendTestimonialNotification(data: { name: string; role: st
   return sendEmail({ from: FROM, to: ADMIN_EMAILS, subject, html })
 }
 
+// ─── Email address confirmation (to user) ──────────────────────────────────
+export async function sendVerificationEmail(to: string, name: string, verifyUrl: string) {
+  const vars = { firstName: firstNameOf(name), verifyUrl: esc(verifyUrl) }
+  const { subject, html } = await renderTemplate('verify-email', vars, defaultsFor('verify-email'))
+  return sendEmail({ from: FROM, to, subject, html })
+}
+
 // ─── Password reset request (to user) ──────────────────────────────────────
 export async function sendPasswordResetEmail(to: string, name: string, resetUrl: string) {
   const vars = { firstName: firstNameOf(name), resetUrl: esc(resetUrl) }
