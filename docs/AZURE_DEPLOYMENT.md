@@ -236,7 +236,7 @@ Payments break silently if you skip this — Stripe keeps delivering to Vercel, 
 
 ## 5. Replace the crons
 
-`vercel.json` means nothing on Azure. This is done in the repo: `.github/workflows/nightly-crons.yml` runs both jobs from GitHub Actions against the Azure app, and the `crons` block in `vercel.json` (the file's only content) has been deleted, along with the old `update-opportunities.yml`, which posted to `secrets.VERCEL_URL` and so kept hitting Vercel. Before this, the opportunities job ran twice a night (Vercel Cron plus that workflow) and nothing at all would have called the knowledge job on Azure.
+`vercel.json` means nothing on Azure. This is done in the repo: `.github/workflows/nightly-crons.yml` runs both jobs from GitHub Actions against the Azure app, and the `crons` list in `vercel.json` is now empty, along with the deletion of the old `update-opportunities.yml`, which posted to `secrets.VERCEL_URL` and so kept hitting Vercel. Before this, the opportunities job ran twice a night (Vercel Cron plus that workflow) and nothing at all would have called the knowledge job on Azure.
 
 | Path | When (UTC) | What it does |
 |---|---|---|
@@ -254,7 +254,7 @@ The workflow fails with a named error if either is missing, rather than calling 
 
 `VERCEL_URL` is no longer read by anything and can be deleted from the repo secrets.
 
-**If Vercel is still serving production:** that is fine. Both hosts use the same Neon database, so a job run against Azure updates the data Vercel serves too. Vercel stops running its own crons on the first production deploy after this change lands, because that deploy no longer carries a `crons` block.
+**If Vercel is still serving production:** that is fine. Both hosts use the same Neon database, so a job run against Azure updates the data Vercel serves too. Vercel stops running its own crons on the first production deploy after this change lands, because that deploy carries an empty `crons` list.
 
 ### Mind the 230-second ceiling
 
