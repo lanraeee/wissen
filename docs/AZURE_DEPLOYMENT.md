@@ -13,7 +13,8 @@ The app itself is portable — Next.js 15 with `next start` is a plain Node serv
 | Cron scheduling (`vercel.json`) | Must be rebuilt — see [Replace the crons](#5-replace-the-crons) |
 | `VERCEL_OIDC_TOKEN` for the AI Gateway | Gone; `ANTHROPIC_API_KEY` becomes mandatory |
 | Shared data cache across instances | Per-instance only — the scale-out trap |
-| Image optimization | Needs `sharp` installed locally |
+| Image optimization | Needs `sharp` — already a dependency in `package.json` |
+| Blob storage (`@vercel/blob`) | Keeps working off Vercel, but only with `BLOB_READ_WRITE_TOKEN` copied over by hand — see step 2 |
 
 `@vercel/analytics` and `@vercel/speed-insights` also stop collecting. They fail silently and cost you nothing but bundle weight, so removing them is cleanup, not a blocker.
 
@@ -38,7 +39,31 @@ az webapp config show --name WH-webApp --resource-group Wissen-Haus-Live \
   --query "{stack:linuxFxVersion, startup:appCommandLine, alwaysOn:alwaysOn}"
 ```
 
-The commands below are for provisioning from scratch — substitute your own names.
+The commands below are for provisioning from scratch. They use the live names; substitute your own if you are building a second app. Later steps reuse `$RG` and `$APP`.
+
+```bash
+RG=Wissen-Haus-Live
+APP=WH-webApp
+LOC=swedencentral
+
+az group create --name $RG --location $LOC
+
+az appservice plan create \
+  --name WH-webApp-plan --resource-group $RG \
+  --is-linux --sku B1
+
+az webapp create \
+  --name $APP --resource-group $RG \
+  --plan WH-webApp-plan \
+  --runtime "NODE|22-lts"
+
+az webapp config set --name $APP --resource-group $RG \
+  --startup-file "npm run start" \
+  --always-on true \
+  --http20-enabled true
+
+az webapp update --name $APP --resource-group $RG --https-only true
+```
 
 > **2026-10-01: the plan and web app were deleted and recreated.** Recreated in the existing `Wissen-Haus-Live` resource group as `WH-webApp-plan` (B1, Linux) and `WH-webApp`, in `swedencentral` (West Europe refused new resources on this subscription — see the Region row above). The GitHub Actions workflow identifies the app by name only (no resource group in `azure/webapps-deploy@v3`), so recreating under the same name in the same subscription was enough for CI to keep working — but **App Service settings are not part of the git-tracked app**: the runtime env vars (step 2), custom domain/TLS (step 6), and anything set by hand are gone and must be redone. The Azure AD app registration behind the `AZUREAPPSERVICE_*` secrets was **also** deleted in the same cleanup (it did not survive, despite being a separate resource type) — see below for how that was rebuilt.
 
@@ -77,37 +102,19 @@ az ad app federated-credential create \
 
 Finally, update the three GitHub secrets (`AZUREAPPSERVICE_CLIENTID_*`, `_TENANTID_*`, `_SUBSCRIPTIONID_*`, read as exact names from `.github/workflows/main_wh-webapp.yml` — tenant and subscription IDs are unchanged, only the client ID is new) and re-run the workflow.
 
-```bash
-RG=wissen-haus-rg
-APP=wissen-haus
-LOC=westeurope
-
-az group create --name $RG --location $LOC
-
-az appservice plan create \
-  --name wissen-haus-plan --resource-group $RG \
-  --is-linux --sku B1
-
-az webapp create \
-  --name $APP --resource-group $RG \
-  --plan wissen-haus-plan \
-  --runtime "NODE|22-lts"
-
-az webapp config set --name $APP --resource-group $RG \
-  --startup-file "npm run start" \
-  --always-on true \
-  --http20-enabled true
-
-az webapp update --name $APP --resource-group $RG --https-only true
-```
-
 `next start` reads the `PORT` that App Service injects, so no port configuration is needed.
+
+**Read the default hostname, do not guess it.** Apps created since Azure introduced unique default hostnames get a name like `wh-webapp-<hash>.swedencentral-01.azurewebsites.net`, not `wh-webapp.azurewebsites.net`. Everything below that says `<azure-host>` means the value this prints:
+
+```bash
+az webapp show --name $APP --resource-group $RG --query defaultHostName -o tsv
+```
 
 ## 2. Set the environment variables
 
 **Set these before the first build.** The four `NEXT_PUBLIC_*` values are inlined into the client bundle at build time, not read at runtime — adding them after a build bakes in `undefined` and silently kills client-side PostHog and Sentry with no error anywhere.
 
-Thirteen variables are required. Everything else that exists in the Vercel project is either integration-provisioned noise or platform-injected, and should not be carried over.
+Twelve variables are required, plus two more if the WHF-CIO document store is used. Everything else that exists in the Vercel project is either integration-provisioned noise or platform-injected, and should not be carried over.
 
 | Variable | Source | Notes |
 |---|---|---|
@@ -115,7 +122,7 @@ Thirteen variables are required. Everything else that exists in the Vercel proje
 | `WISSENDB_DATABASE_URL_UNPOOLED` | Vercel / Neon dashboard | |
 | `JWT_SECRET` | Vercel dashboard | **Copy verbatim.** A new value invalidates every `wh_token` cookie and logs out every user. |
 | `CRON_SECRET` | Generate fresh | `openssl rand -hex 32`. Must match what your scheduler sends. |
-| `ANTHROPIC_API_KEY` | Vercel dashboard | **Mandatory here.** `lib/ai-provider.ts` falls back to `VERCEL_OIDC_TOKEN`, which does not exist off Vercel — without this, both the admin and support agents go dead with no deploy-time error. |
+| `ANTHROPIC_API_KEY` | Vercel dashboard | **Mandatory here.** `lib/ai-provider.ts` uses the AI Gateway only if `AI_GATEWAY_API_KEY` or `VERCEL_OIDC_TOKEN` is set, and the OIDC token does not exist off Vercel. Without this key (or an explicit `AI_GATEWAY_API_KEY`), both the admin and support agents go dead with no deploy-time error. |
 | `RESEND_API_KEY` | Vercel dashboard | |
 | `STRIPE_SECRET_KEY` | Vercel dashboard | |
 | `STRIPE_WEBHOOK_SECRET` | **Stripe dashboard — new value** | A new endpoint URL gets a new signing secret. The Vercel one will not verify. See step 4. |
@@ -123,11 +130,15 @@ Thirteen variables are required. Everything else that exists in the Vercel proje
 | `NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN` | Vercel dashboard | Build-time |
 | `NEXT_PUBLIC_POSTHOG_HOST` | Vercel dashboard | Build-time |
 | `NEXT_PUBLIC_SITE_URL` | Set by hand | Not set on Vercel today, so the code falls back to a hardcoded `https://wissenhaus.org` in nine places. |
-| `NEXT_PUBLIC_BASE_URL` | Set by hand | Same, via `lib/email.ts:385`. |
+| `NEXT_PUBLIC_BASE_URL` | Set by hand | Same, via `lib/email.ts:393`. |
+| `BLOB_READ_WRITE_TOKEN` | Vercel dashboard (Storage → the Blob store) | Needed by the WHF-CIO document upload, download and delete routes. Vercel injects it automatically; off Vercel it must be copied, or uploads return 503 "File storage is not configured". |
+| `WHF_BLOB_ACCESS` | Vercel dashboard | `public` or `private`, matching how the Blob store was created (`lib/whf-cio-files.ts`). Unset means `private`. |
+
+Optional: `GOOGLE_DRIVE_CLIENT_ID`, `GOOGLE_DRIVE_CLIENT_SECRET`, `GOOGLE_DRIVE_REFRESH_TOKEN` and `GOOGLE_DRIVE_FOLDER_ID` enable the WHF-CIO document backup to Google Drive (`lib/whf-cio-drive.ts`). Copy them if they are set in Vercel; without them the backup feature is simply off.
 
 ### The two URL vars matter most during testing
 
-Left unset, your Azure instance sends password-reset links, Stripe success redirects and every receipt email pointing at **live production**. Set both to the Azure hostname (`https://wissen-haus.azurewebsites.net`) until you cut the domain over, then change them to the real domain and rebuild — they are build-time values, so a restart is not enough.
+Left unset, your Azure instance sends password-reset links, Stripe success redirects and every receipt email pointing at **live production**. Set both to `https://<azure-host>` until you cut the domain over, then change them to the real domain and rebuild — they are build-time values, so a restart is not enough.
 
 ### Never set a variable to an empty string
 
@@ -144,14 +155,7 @@ az webapp config appsettings set \
 
 The build is self-contained. `prebuild` runs `scripts/generate-schema-snapshot.mjs`, which only reads `lib/schema.sql` and writes a `.ts` file — no database connection — so the build will not fail on a host without DB access.
 
-Add `sharp`, which Vercel provided as a platform service. It must be a committed dependency in `package.json`, not a local install — CI builds from the lockfile, so a machine-local install will not reach Azure:
-
-```bash
-npm install --save sharp
-# commit the package.json / package-lock.json change
-```
-
-Without it, `/_next/image` requests degrade or fail in self-hosted production.
+`sharp`, which Vercel provided as a platform service, is already a committed dependency in `package.json`, so image optimization works on Azure with no extra step. Keep it there: without it, `/_next/image` requests degrade or fail in self-hosted production.
 
 ### The CI workflow
 
@@ -175,14 +179,14 @@ The fail-fast step means **the build will now fail until all five of these exist
 
 | Secret | Value |
 |---|---|
-| `NEXT_PUBLIC_SITE_URL` | `https://wh-webapp.azurewebsites.net` while testing, the real domain after cutover |
+| `NEXT_PUBLIC_SITE_URL` | `https://<azure-host>` while testing, the real domain after cutover |
 | `NEXT_PUBLIC_BASE_URL` | Same |
 | `NEXT_PUBLIC_POSTHOG_HOST` | From the Vercel project |
 | `NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN` | From the Vercel project |
 | `WISSENDB_DATABASE_URL` | Pooled Neon connection string |
 
 ```bash
-gh secret set NEXT_PUBLIC_SITE_URL --body "https://wh-webapp.azurewebsites.net"
+gh secret set NEXT_PUBLIC_SITE_URL --body "https://<azure-host>"
 # ...and so on for the rest
 ```
 
@@ -200,14 +204,14 @@ There is no migration framework (see `docs/adr/001-neon-postgres.md`); `lib/sche
 
 Payments break silently if you skip this — Stripe keeps delivering to Vercel, and the Azure app never learns about completed checkouts.
 
-1. Stripe Dashboard → Developers → Webhooks → add endpoint `https://<your-domain>/api/payments/stripe/webhook`
+1. Stripe Dashboard → Developers → Webhooks → add endpoint `https://<your-domain>/api/webhooks/stripe`
 2. Subscribe to the same events the existing endpoint has
 3. Copy the **new** signing secret into `STRIPE_WEBHOOK_SECRET` and restart
 4. Keep the old Vercel endpoint live until cutover is verified, then delete it
 
 ## 5. Replace the crons
 
-`vercel.json` means nothing on Azure. Two jobs need rebuilding:
+`vercel.json` means nothing on Azure. Two jobs need rebuilding. While Vercel is still live, its own crons keep firing too, so remove the `crons` block from `vercel.json` (or pause the Vercel project) at cutover to avoid each job running twice a night.
 
 | Path | Schedule (UTC) | Method |
 |---|---|---|
@@ -218,7 +222,7 @@ Both already authenticate on `Authorization: Bearer ${CRON_SECRET}`, so the repl
 
 **Azure-native:** a Logic App (Consumption) with a Recurrence trigger and an HTTP action, with the secret stored in Key Vault. Two tiny resources, a few cents a month.
 
-**Zero new infrastructure:** a scheduled GitHub Actions workflow. Timing can drift by several minutes under load, which is irrelevant for a 03:00 job.
+**Zero new infrastructure:** a scheduled GitHub Actions workflow. Half of this already exists: `.github/workflows/update-opportunities.yml` calls `/api/cron/opportunities` at `17 3 * * *`, but it targets `${{ secrets.VERCEL_URL }}`, so it still hits Vercel. At cutover, point that secret (or a renamed `APP_HOST` one) at the Azure host and add the knowledge job, either as a second workflow or by replacing it with the combined one below. Timing can drift by several minutes under load, which is irrelevant for a 03:00 job.
 
 ```yaml
 name: Scheduled jobs
@@ -246,7 +250,7 @@ jobs:
 
 ### Mind the 230-second ceiling
 
-Both cron routes declare `export const maxDuration = 300`, a Vercel-only hint. Azure App Service's load balancer closes idle HTTP connections at **230 seconds**, and that is not configurable. If the knowledge rebuild runs long, your caller gets a 502 even though the work may finish server-side — so you lose the success signal rather than the work. Watch the duration after the first few runs; if it approaches 230s, move the job to an Azure Function with a timer trigger instead of an HTTP call.
+`/api/cron/knowledge` declares `export const maxDuration = 300`, a Vercel-only hint. Azure App Service's load balancer closes idle HTTP connections at **230 seconds**, and that is not configurable. If the knowledge rebuild runs long, your caller gets a 502 even though the work may finish server-side — so you lose the success signal rather than the work. Watch the duration after the first few runs; if it approaches 230s, move the job to an Azure Function with a timer trigger instead of an HTTP call.
 
 ## 6. Custom domain and TLS
 
@@ -303,7 +307,7 @@ Work through this against the Azure hostname before cutting DNS over.
 
 ## Cutover and rollback
 
-Keep the Vercel deployment live and the DNS TTL low (300s) through cutover. Both hosts can serve from the same Neon database simultaneously, so there is no split-brain risk in running them in parallel — the only resource that must not be double-owned is the Stripe webhook, which should point at exactly one host at a time.
+Keep the Vercel deployment live and the DNS TTL low (300s) through cutover. Note that every push to `main` currently deploys to **both** hosts: the Vercel Git integration still builds it, and `main_wh-webapp.yml` ships it to Azure. Disconnect the Vercel Git integration once cutover is verified, and update the deploy note in `README.md` and the comments in `.github/workflows/deploy.yml`, which still say the app is deployed by Vercel. Both hosts can serve from the same Neon database simultaneously, so there is no split-brain risk in running them in parallel — the only resource that must not be double-owned is the Stripe webhook, which should point at exactly one host at a time.
 
 Rollback is pointing DNS back at Vercel. On Standard tier and above, you also get deployment slots: deploy to `staging`, verify, then `az webapp deployment slot swap`, which makes rollback an instant swap back.
 
