@@ -1,0 +1,73 @@
+# Nightly jobs for the Azure-hosted app. Replaces the `crons` block that used
+# to live in vercel.json (Vercel Cron does nothing on App Service) and the old
+# update-opportunities.yml, which posted to secrets.VERCEL_URL and so kept
+# hitting Vercel. With both of those in place each job ran twice a night.
+#
+# Both routes run in one job, in order: the knowledge rebuild summarises the
+# listings the opportunities job has just refreshed, so it must not start
+# before that one finishes. Two separate schedules (03:17 and 03:45, as on
+# Vercel) only kept that order as long as the first job stayed under 28 min.
+#
+# Needs:
+#   vars.AZURE_APP_URL  - repository variable, e.g. https://<azure-host> (no
+#                         trailing slash). Not a secret: it is a public URL.
+#   secrets.CRON_SECRET - must equal the CRON_SECRET app setting on WH-webApp.
+#
+# See "5. Replace the crons" in docs/AZURE_DEPLOYMENT.md.
+
+name: Nightly crons
+
+on:
+  schedule:
+    - cron: '17 3 * * *'
+  workflow_dispatch:
+    inputs:
+      job:
+        description: Which job to run
+        type: choice
+        options: [both, opportunities, knowledge]
+        default: both
+
+concurrency:
+  group: nightly-crons
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    env:
+      APP_URL: ${{ vars.AZURE_APP_URL }}
+      CRON_SECRET: ${{ secrets.CRON_SECRET }}
+      JOB: ${{ inputs.job || 'both' }}
+    steps:
+      # A missing variable or secret expands to '', which would turn into a
+      # request to "/api/cron/..." or an empty bearer token and a confusing
+      # curl error. Fail with the name of what is missing instead.
+      - name: Verify configuration
+        run: |
+          missing=0
+          if [ -z "$APP_URL" ]; then
+            echo "::error::Repository variable AZURE_APP_URL is missing or empty. See step 5 in docs/AZURE_DEPLOYMENT.md."
+            missing=1
+          fi
+          if [ -z "$CRON_SECRET" ]; then
+            echo "::error::Repository secret CRON_SECRET is missing or empty. See step 5 in docs/AZURE_DEPLOYMENT.md."
+            missing=1
+          fi
+          exit $missing
+
+      # --max-time 240: App Service's front end drops a request at 230s, so
+      # waiting longer than that only delays the failure.
+      - name: Refresh opportunities
+        if: env.JOB == 'both' || env.JOB == 'opportunities'
+        run: |
+          curl -fsS -X POST --max-time 240 \
+            -H "Authorization: Bearer $CRON_SECRET" \
+            "${APP_URL%/}/api/cron/opportunities"
+
+      - name: Rebuild knowledge base
+        if: env.JOB == 'both' || env.JOB == 'knowledge'
+        run: |
+          curl -fsS -X POST --max-time 240 \
+            -H "Authorization: Bearer $CRON_SECRET" \
+            "${APP_URL%/}/api/cron/knowledge"

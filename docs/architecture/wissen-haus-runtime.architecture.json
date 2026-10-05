@@ -98,7 +98,7 @@
       "id": "scheduler",
       "type": "cloud",
       "label": "Scheduler / CI",
-      "sublabel": "Vercel Cron + Actions",
+      "sublabel": "GitHub Actions",
       "tag": "daily 03:17 UTC",
       "pos": [
         28,
@@ -110,11 +110,7 @@
       ],
       "sources": [
         {
-          "path": "vercel.json",
-          "label": "cron entry"
-        },
-        {
-          "path": ".github/workflows/update-opportunities.yml",
+          "path": ".github/workflows/nightly-crons.yml",
           "label": "curl trigger"
         }
       ]
