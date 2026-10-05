@@ -3,7 +3,10 @@ import { rebuildKnowledgeBase } from '@/lib/knowledge-base'
 import { log } from '@/lib/logger'
 
 export const dynamic = 'force-dynamic'
-export const maxDuration = 300
+// Vercel-only hint; App Service ignores it and cuts requests at 230s, which
+// is the real ceiling here. See "Mind the 230-second ceiling" in
+// docs/AZURE_DEPLOYMENT.md.
+export const maxDuration = 230
 
 // Nightly rebuild, scheduled after the opportunities cron so the knowledge
 // base summarises the listings that job has just refreshed rather than

@@ -2,6 +2,12 @@
 import sql from '@/lib/db'
 import { log } from '@/lib/logger'
 
+// maxDuration is read only by Vercel; `next start` on App Service ignores it.
+// The limit that applies on Azure is the front end's fixed 230s request
+// timeout, so declare that rather than a number nothing enforces. Same value
+// as /api/cron/knowledge.
+export const maxDuration = 230
+
 const BROWSER_UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0 Safari/537.36'
 const GENERIC_UA = 'Mozilla/5.0 (compatible; WissenHaus/1.0)'
 

@@ -10,7 +10,7 @@ The app itself is portable — Next.js 15 with `next start` is a plain Node serv
 
 | Was provided by Vercel | On Azure |
 |---|---|
-| Cron scheduling (`vercel.json`) | Must be rebuilt — see [Replace the crons](#5-replace-the-crons) |
+| Cron scheduling (`vercel.json`) | Replaced by a GitHub Actions schedule — see [Replace the crons](#5-replace-the-crons) |
 | `VERCEL_OIDC_TOKEN` for the AI Gateway | Gone; `ANTHROPIC_API_KEY` becomes mandatory |
 | Shared data cache across instances | Per-instance only — the scale-out trap |
 | Image optimization | Needs `sharp` — already a dependency in `package.json` |
@@ -121,7 +121,7 @@ Twelve variables are required, plus two more if the WHF-CIO document store is us
 | `WISSENDB_DATABASE_URL` | Vercel / Neon dashboard | Pooled connection string. `lib/db.ts` reads this first, falling back to `DATABASE_URL`. |
 | `WISSENDB_DATABASE_URL_UNPOOLED` | Vercel / Neon dashboard | |
 | `JWT_SECRET` | Vercel dashboard | **Copy verbatim.** A new value invalidates every `wh_token` cookie and logs out every user. |
-| `CRON_SECRET` | Generate fresh | `openssl rand -hex 32`. Must match what your scheduler sends. |
+| `CRON_SECRET` | Generate fresh | `openssl rand -hex 32`. Must match the `CRON_SECRET` GitHub repo secret that `nightly-crons.yml` sends (step 5). |
 | `ANTHROPIC_API_KEY` | Vercel dashboard | **Mandatory here.** `lib/ai-provider.ts` uses the AI Gateway only if `AI_GATEWAY_API_KEY` or `VERCEL_OIDC_TOKEN` is set, and the OIDC token does not exist off Vercel. Without this key (or an explicit `AI_GATEWAY_API_KEY`), both the admin and support agents go dead with no deploy-time error. |
 | `RESEND_API_KEY` | Vercel dashboard | |
 | `STRIPE_SECRET_KEY` | Vercel dashboard | |
@@ -135,6 +135,31 @@ Twelve variables are required, plus two more if the WHF-CIO document store is us
 | `WHF_BLOB_ACCESS` | Vercel dashboard | `public` or `private`, matching how the Blob store was created (`lib/whf-cio-files.ts`). Unset means `private`. |
 
 Optional: `GOOGLE_DRIVE_CLIENT_ID`, `GOOGLE_DRIVE_CLIENT_SECRET`, `GOOGLE_DRIVE_REFRESH_TOKEN` and `GOOGLE_DRIVE_FOLDER_ID` enable the WHF-CIO document backup to Google Drive (`lib/whf-cio-drive.ts`). Copy them if they are set in Vercel; without them the backup feature is simply off.
+
+### Setting the Blob variables
+
+The WHF-CIO document routes check for `BLOB_READ_WRITE_TOKEN` first and return **503 "File storage is not configured"** without it (`app/api/admin/whf-cio/documents/route.ts`). The files themselves stay in Vercel Blob; Azure only needs the token to reach them.
+
+1. Vercel dashboard → Storage → the Blob store → `.env.local` tab (or Settings): copy `BLOB_READ_WRITE_TOKEN`. Note whether the store was created as public or private.
+2. Set both on the App Service. Run this yourself; paste the token at the prompt so it never lands in your shell history:
+
+```bash
+read -rs -p "BLOB_READ_WRITE_TOKEN: " BLOB_TOKEN; echo
+az webapp config appsettings set \
+  --name WH-webApp --resource-group Wissen-Haus-Live \
+  --settings BLOB_READ_WRITE_TOKEN="$BLOB_TOKEN" WHF_BLOB_ACCESS=private \
+  --output none
+unset BLOB_TOKEN
+```
+
+Use `WHF_BLOB_ACCESS=public` instead if the store is public. A mismatch does not 503; uploads fail with a 502 "check that WHF_BLOB_ACCESS matches how the Blob store was created". Changing app settings restarts the app, so nothing else is needed. `--output none` matters: without it the command prints every app setting, token included.
+
+3. Confirm the names are present without printing values:
+
+```bash
+az webapp config appsettings list --name WH-webApp --resource-group Wissen-Haus-Live \
+  --query "[?name=='BLOB_READ_WRITE_TOKEN' || name=='WHF_BLOB_ACCESS'].{name:name, set:length(value)>\`0\`}" -o table
+```
 
 ### The two URL vars matter most during testing
 
@@ -211,46 +236,31 @@ Payments break silently if you skip this — Stripe keeps delivering to Vercel, 
 
 ## 5. Replace the crons
 
-`vercel.json` means nothing on Azure. Two jobs need rebuilding. While Vercel is still live, its own crons keep firing too, so remove the `crons` block from `vercel.json` (or pause the Vercel project) at cutover to avoid each job running twice a night.
+`vercel.json` means nothing on Azure. This is done in the repo: `.github/workflows/nightly-crons.yml` runs both jobs from GitHub Actions against the Azure app, and the `crons` block in `vercel.json` (the file's only content) has been deleted, along with the old `update-opportunities.yml`, which posted to `secrets.VERCEL_URL` and so kept hitting Vercel. Before this, the opportunities job ran twice a night (Vercel Cron plus that workflow) and nothing at all would have called the knowledge job on Azure.
 
-| Path | Schedule (UTC) | Method |
+| Path | When (UTC) | What it does |
 |---|---|---|
-| `/api/cron/opportunities` | `17 3 * * *` | GET or POST |
-| `/api/cron/knowledge` | `45 3 * * *` | GET or POST |
+| `/api/cron/opportunities` | 03:17 daily | Scrapes six job/scholarship sources, upserts `opportunities`, prunes anything expired or older than 30 days. |
+| `/api/cron/knowledge` | straight after, in the same run | Rebuilds the `server` entries of the knowledge base from the listings just refreshed. Staff-approved answers are never touched. |
 
-Both already authenticate on `Authorization: Bearer ${CRON_SECRET}`, so the replacement just has to send that header. Both export `GET` as well as `POST`, so either verb works.
+**Keep both.** Without the first, the opportunities board goes stale and stops pruning; without the second, the support agent answers from yesterday's listings. They used to be two separate schedules (03:17 and 03:45), which only kept the knowledge rebuild after the refresh as long as the refresh finished inside 28 minutes. The workflow now runs them as two steps of one job, so the order is guaranteed and a failed refresh stops the rebuild from running on stale data.
 
-**Azure-native:** a Logic App (Consumption) with a Recurrence trigger and an HTTP action, with the secret stored in Key Vault. Two tiny resources, a few cents a month.
+**One-time setup** (GitHub → repo Settings → Secrets and variables → Actions):
 
-**Zero new infrastructure:** a scheduled GitHub Actions workflow. Half of this already exists: `.github/workflows/update-opportunities.yml` calls `/api/cron/opportunities` at `17 3 * * *`, but it targets `${{ secrets.VERCEL_URL }}`, so it still hits Vercel. At cutover, point that secret (or a renamed `APP_HOST` one) at the Azure host and add the knowledge job, either as a second workflow or by replacing it with the combined one below. Timing can drift by several minutes under load, which is irrelevant for a 03:00 job.
+- **Variable** `AZURE_APP_URL`: `https://<azure-host>`, no trailing slash. Change it to `https://www.wissenhaus.org` after the custom domain is bound in step 6 (either works; both reach the same app).
+- **Secret** `CRON_SECRET`: the same value as the `CRON_SECRET` app setting from step 2. If you generated a fresh one for Azure, the old repo secret will 401.
 
-```yaml
-name: Scheduled jobs
-on:
-  schedule:
-    - cron: '17 3 * * *'
-    - cron: '45 3 * * *'
-  workflow_dispatch:
+The workflow fails with a named error if either is missing, rather than calling a broken URL. To test without waiting for 03:17: Actions → Nightly crons → Run workflow, and pick `opportunities`, `knowledge` or `both`.
 
-jobs:
-  run:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Trigger cron endpoint
-        run: |
-          if [ "${{ github.event.schedule }}" = "17 3 * * *" ]; then
-            PATH_=opportunities
-          else
-            PATH_=knowledge
-          fi
-          curl -fsS -X POST \
-            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
-            "https://${{ secrets.APP_HOST }}/api/cron/$PATH_"
-```
+`VERCEL_URL` is no longer read by anything and can be deleted from the repo secrets.
+
+**If Vercel is still serving production:** that is fine. Both hosts use the same Neon database, so a job run against Azure updates the data Vercel serves too. Vercel stops running its own crons on the first production deploy after this change lands, because that deploy no longer carries a `crons` block.
 
 ### Mind the 230-second ceiling
 
-`/api/cron/knowledge` declares `export const maxDuration = 300`, a Vercel-only hint. Azure App Service's load balancer closes idle HTTP connections at **230 seconds**, and that is not configurable. If the knowledge rebuild runs long, your caller gets a 502 even though the work may finish server-side — so you lose the success signal rather than the work. Watch the duration after the first few runs; if it approaches 230s, move the job to an Azure Function with a timer trigger instead of an HTTP call.
+Azure App Service's front end closes a request at **230 seconds**, and that is not configurable. Both cron routes declare `export const maxDuration = 230` to say so, but that export is a Vercel-only hint: `next start` ignores it and enforces nothing. If a job runs past 230s, the caller gets a 502 even though the work may finish server-side, so you lose the success signal rather than the work. The workflow's `curl --max-time 240` gives up just after that point instead of hanging.
+
+The knowledge rebuild is the one at risk. Check the step durations in the Actions run history after the first few nights; if either approaches 230s, move that job to an Azure Function with a timer trigger, or make the route return `202` and do the work after responding.
 
 ## 6. Custom domain and TLS
 
@@ -323,6 +333,8 @@ Work through this against the Azure hostname before cutting DNS over.
 - [ ] Admin or support agent returns an answer (proves `ANTHROPIC_API_KEY`)
 - [ ] `curl -X POST -H "Authorization: Bearer $CRON_SECRET" .../api/cron/knowledge` returns 200, not 401/500
 - [ ] Same for `/api/cron/opportunities`
+- [ ] Actions → Nightly crons → Run workflow (`both`) goes green
+- [ ] A WHF-CIO document uploads and downloads (proves `BLOB_READ_WRITE_TOKEN` and `WHF_BLOB_ACCESS`)
 - [ ] An optimized `/_next/image` URL returns a transformed image (proves `sharp`)
 - [ ] App Service log stream shows the schema drift check passing at boot
 

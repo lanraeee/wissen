@@ -128,10 +128,15 @@ Raw body, verified via `stripe-signature` header + `STRIPE_WEBHOOK_SECRET`. Reco
 
 ---
 
-## Cron — `/api/cron/opportunities`, `/api/admin/cron`
+## Cron — `/api/cron/opportunities`, `/api/cron/knowledge`, `/api/admin/cron`
+
+Both cron routes are called nightly at 03:17 UTC, in that order, by `.github/workflows/nightly-crons.yml`. Both also accept `GET`.
 
 ### `POST /api/cron/opportunities` — `Authorization: Bearer <CRON_SECRET>`
 Scrapes RemoteOK, WeWorkRemotely, Himalayas, Arbeitnow, Devpost, and a scholarships source; upserts into `opportunities`. Not user-facing.
+
+### `POST /api/cron/knowledge` — `Authorization: Bearer <CRON_SECRET>`
+Rebuilds the `server` entries of the knowledge base. Staff-approved entries are never removed. Not user-facing.
 
 ### `POST /api/admin/cron` — Session (director email only)
 Manually triggers the above via an internal fetch with `CRON_SECRET` attached. Response: whatever `/api/cron/opportunities` returned.
