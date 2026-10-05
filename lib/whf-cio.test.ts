@@ -59,3 +59,15 @@ describe('whf-cio generic records', () => {
     expect(dbErrorResponse(new Error('x')).status).toBe(500)
   })
 })
+
+describe('fixed_costs resource', () => {
+  it('accepts an amount and rounds it to pence', () => {
+    const r = parseBody(RESOURCES.fixed_costs, { name: 'Hosting', category: 'tools', amount: '12.345', currency: 'GBP', billing_cycle: 'monthly' }, false)
+    expect(r).toEqual({ ok: true, values: { name: 'Hosting', category: 'tools', amount: 12.35, currency: 'GBP', billing_cycle: 'monthly' } })
+  })
+
+  it('refuses a negative amount and an unknown currency', () => {
+    expect(parseBody(RESOURCES.fixed_costs, { name: 'X', category: 'tools', amount: -1, currency: 'GBP', billing_cycle: 'monthly' }, false).ok).toBe(false)
+    expect(parseBody(RESOURCES.fixed_costs, { name: 'X', category: 'tools', amount: 1, currency: 'XYZ', billing_cycle: 'monthly' }, false).ok).toBe(false)
+  })
+})

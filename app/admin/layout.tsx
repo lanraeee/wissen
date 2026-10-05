@@ -1,6 +1,8 @@
 ﻿import { redirect } from 'next/navigation'
+import { headers } from 'next/headers'
 import { getSession } from '@/lib/auth'
 import { adminRole } from '@/lib/admin-guard'
+import { canAccessAdminPath, PATH_HEADER, SAFEGUARDING_HOME } from '@/lib/admin-access'
 import { canUseAdminAgent } from '@/lib/ai-settings'
 import AdminNav from '@/components/admin/AdminNav'
 import AdminMobileNav from '@/components/admin/AdminMobileNav'
@@ -14,6 +16,14 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   // silently demoted wissenhaus@outlook.com to whatever its stored role said.
   const role = await adminRole()
   if (!session || !role) redirect('/login?mode=login')
+  // The safeguarding team holds no other admin role, so unlike editors (whose
+  // restricted sections each refuse in their own layout) they are fenced in
+  // here, once: anything outside WHF-CIO Records sends them to their tab. The
+  // dashboard alone would otherwise show them user counts and recent signups.
+  if (role === 'safeguarding') {
+    const path = (await headers()).get(PATH_HEADER)
+    if (!path || !canAccessAdminPath(role, path)) redirect(SAFEGUARDING_HOME)
+  }
   const canUseAgent = await canUseAdminAgent(session.email)
   const brand = await getBrand()
 

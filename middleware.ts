@@ -2,6 +2,7 @@
 import { COOKIE_NAME, verifyToken } from '@/lib/auth-edge'
 import { hit, clientIp, findRateLimit } from '@/lib/rate-limit'
 import { RETURN_PARAM } from '@/lib/return-url'
+import { PATH_HEADER } from '@/lib/admin-access'
 
 // The Community Hub itself is PUBLIC: browsing opportunities is the front
 // door, and gating it hid every listing from search engines while the sitemap
@@ -86,6 +87,15 @@ export async function middleware(req: NextRequest) {
     return res
   }
 
+  // Server layouts are not told the path. app/admin/layout.tsx needs it to
+  // keep the safeguarding team inside the one section they may see, so pass
+  // it on -- always overwritten here, so a client cannot supply its own.
+  if (isAdmin) {
+    const headers = new Headers(req.headers)
+    headers.set(PATH_HEADER, pathname)
+    return NextResponse.next({ request: { headers } })
+  }
+
   return NextResponse.next()
 }
 
@@ -93,7 +103,7 @@ export const config = {
   matcher: [
     '/community/threads/:path*', '/profile', '/admin/:path*',
     '/partners/:partner/apply',
-    '/api/auth/:path*', '/api/contact', '/api/partner', '/api/volunteer', '/api/submissions',
+    '/api/auth/:path*', '/api/contact', '/api/safeguarding/:path*', '/api/partner', '/api/volunteer', '/api/submissions',
     '/api/payments/:path*', '/api/forum/:path*', '/api/testimonials', '/api/career-fair/:path*',
     '/api/scholarships/:path*',
   ]

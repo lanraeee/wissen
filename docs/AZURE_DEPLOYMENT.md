@@ -134,6 +134,18 @@ Twelve variables are required, plus two more if the WHF-CIO document store is us
 | `BLOB_READ_WRITE_TOKEN` | Vercel dashboard (Storage → the Blob store) | Needed by the WHF-CIO document upload, download and delete routes. Vercel injects it automatically; off Vercel it must be copied, or uploads return 503 "File storage is not configured". |
 | `WHF_BLOB_ACCESS` | Vercel dashboard | `public` or `private`, matching how the Blob store was created (`lib/whf-cio-files.ts`). Unset means `private`. |
 
+**WHF-CIO Financial Ledger and Safeguarding** (all optional; each feature works without them, just with less in it):
+
+| Variable | Notes |
+|---|---|
+| `SAFEGUARDING_LEAD_EMAIL` | The Designated Safeguarding Lead's login address. Defaults to `safeguarding@wissenhaus.org`. This address always has access to the Safeguarding tab; directors add other team members in the tab itself. |
+| `GOCARDLESS_SECRET_ID`, `GOCARDLESS_SECRET_KEY` | GoCardless Bank Account Data (formerly Nordigen) user secrets. The ledger reaches Tide and other UK banks through it; Tide has no direct API for this. |
+| `LEDGER_GOCARDLESS_ACCOUNTS` | Which linked accounts to read: `source:label:accountId` entries separated by `;`, where `source` is `tide` or `uk_bank`. Example: `tide:Tide current account:3fa85f64-...;uk_bank:Barclays reserve:7b1c...`. The account ids come from linking each bank once in the GoCardless portal (an end-user agreement and a requisition). |
+| `MONO_SECRET_KEY` | Mono (withmono.com) secret key, for Nigerian bank accounts. |
+| `LEDGER_MONO_ACCOUNTS` | `label:accountId` entries separated by `;`, e.g. `GTBank NGN:65f1...`. The ids come from linking each account through Mono Connect. |
+
+Stripe needs nothing new: the ledger reads balance transactions with the existing `STRIPE_SECRET_KEY`. The GoCardless and Mono connectors are written against their documented APIs but have not yet been run against live credentials, so watch the provider status cards in the Financial Ledger tab after the first sync. A connector with no credentials shows "Not connected" and is skipped.
+
 Optional: `GOOGLE_DRIVE_CLIENT_ID`, `GOOGLE_DRIVE_CLIENT_SECRET`, `GOOGLE_DRIVE_REFRESH_TOKEN` and `GOOGLE_DRIVE_FOLDER_ID` enable the WHF-CIO document backup to Google Drive (`lib/whf-cio-drive.ts`). Copy them if they are set in Vercel; without them the backup feature is simply off.
 
 ### The two URL vars matter most during testing
@@ -194,9 +206,11 @@ All five are **build inputs**, so changing any of them needs a workflow re-run, 
 
 Finally: the workflow deploys straight to `slot-name: 'Production'`. On Standard tier or above, deploy to a `staging` slot and swap instead — that is both zero-downtime and your rollback. And leave `SCM_DO_BUILD_DURING_DEPLOYMENT` unset: the package is already built, and a second build on the host would have none of these inputs.
 
-### No migrations to run
+### Migrations
 
-There is no migration framework (see `docs/adr/001-neon-postgres.md`); `lib/schema.sql` is applied by hand with `node scripts/migrate.mjs`. **If the database stays on Neon, there is nothing to run** — the schema is already there. Only touch `migrate.mjs` if you are also moving the database, which is a separate project.
+There is no migration framework (see `docs/adr/001-neon-postgres.md`); `lib/schema.sql` is applied by hand with `node scripts/migrate.mjs`. **If the database stays on Neon, the existing schema is already there.** Only touch `migrate.mjs` if you are also moving the database, which is a separate project.
+
+The one exception is the WHF-CIO Financial Ledger, Operational Fixed Costs and Safeguarding tabs, which add five tables (`cio_ledger_entries`, `cio_ledger_sync`, `cio_fixed_costs`, `cio_safeguarding_incidents`, `cio_safeguarding_team`). Before deploying that change, paste `scripts/whf-cio-migration.sql` into the Neon SQL editor and run it once. It is safe to re-run. Until it has run, the boot-time drift check reports the five tables as missing, the new tabs show an error, and safeguarding reports from the public form fail with a message pointing the reporter at the email address.
 
 `instrumentation.ts` runs a schema drift check at boot. It is deliberately non-blocking and never throws, so a slow or briefly unreachable database at startup will not stop the server.
 
@@ -211,14 +225,15 @@ Payments break silently if you skip this — Stripe keeps delivering to Vercel, 
 
 ## 5. Replace the crons
 
-`vercel.json` means nothing on Azure. Two jobs need rebuilding. While Vercel is still live, its own crons keep firing too, so remove the `crons` block from `vercel.json` (or pause the Vercel project) at cutover to avoid each job running twice a night.
+`vercel.json` means nothing on Azure. Two jobs need rebuilding, plus one new one. While Vercel is still live, its own crons keep firing too, so remove the `crons` block from `vercel.json` (or pause the Vercel project) at cutover to avoid each job running twice a night.
 
 | Path | Schedule (UTC) | Method |
 |---|---|---|
 | `/api/cron/opportunities` | `17 3 * * *` | GET or POST |
 | `/api/cron/knowledge` | `45 3 * * *` | GET or POST |
+| `/api/cron/ledger` | hourly, e.g. `5 * * * *` | GET or POST |
 
-Both already authenticate on `Authorization: Bearer ${CRON_SECRET}`, so the replacement just has to send that header. Both export `GET` as well as `POST`, so either verb works.
+All three authenticate on `Authorization: Bearer ${CRON_SECRET}`, so the replacement just has to send that header, and all export `GET` as well as `POST`, so either verb works. `/api/cron/ledger` is new and has never run on Vercel: it pulls the latest bank-feed transactions so the public ledger stays current when no director opens the tab. Opening the Financial Ledger tab also syncs any feed older than 15 minutes, so the job is a convenience, not a requirement.
 
 **Azure-native:** a Logic App (Consumption) with a Recurrence trigger and an HTTP action, with the secret stored in Key Vault. Two tiny resources, a few cents a month.
 

@@ -1,5 +1,6 @@
 ﻿import { getSession, type UserPayload } from '@/lib/auth'
 import type { AdminRole } from '@/lib/admin-access'
+import { isSafeguardingTeam } from '@/lib/safeguarding'
 
 const PRIMARY_DIRECTOR_EMAIL = process.env.FOUNDER_EMAIL || 'director@wissenhaus.org'
 
@@ -56,5 +57,21 @@ export async function adminRole(): Promise<AdminRole | null> {
   if (isDirector(session.email)) return 'director'
   if (session.role === 'admin') return 'admin'
   if (session.role === 'editor') return 'editor'
+  if (await isSafeguardingTeam(session.email)) return 'safeguarding'
   return null
+}
+
+// The WHF-CIO Safeguarding tab (the incident log): directors and the
+// designated safeguarding team only. Not admins or editors -- the
+// safeguarding policy promises reports are read by the safeguarding lead, not
+// by general staff. Note this is not a superset of adminGuard(): an admin who
+// is not on the team is refused.
+export async function canAccessSafeguarding(email?: string): Promise<boolean> {
+  return isDirector(email) || await isSafeguardingTeam(email)
+}
+
+export async function safeguardingGuard(): Promise<UserPayload | null> {
+  const session = await getSession()
+  if (!session) return null
+  return (await canAccessSafeguarding(session.email)) ? session : null
 }
