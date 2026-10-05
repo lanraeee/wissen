@@ -38,7 +38,7 @@ npm run dev
 | `DATABASE_URL` | Neon PostgreSQL connection string |
 | `JWT_SECRET` | Secret for signing JWTs (min 32 chars) |
 | `FOUNDER_EMAIL` | Receives contact/volunteer/partner submissions |
-| `CRON_SECRET` | Authorises the `/api/cron/opportunities` and `/api/cron/knowledge` endpoints, called nightly by `.github/workflows/nightly-crons.yml` |
+| `CRON_SECRET` | Authorises the `/api/cron/*` endpoints, called by `.github/workflows/nightly-crons.yml` (opportunities, knowledge) and `ledger-sync.yml` (ledger) |
 
 Additional variables for Stripe, Paystack, and Resend are required for payments and email — see your provider dashboards.
 
