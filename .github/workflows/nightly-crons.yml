@@ -1,0 +1,72 @@
+# Nightly jobs for the Azure-hosted app. Triggers opportunities refresh, knowledge rebuild,
+# and operations lead morning brief.
+#
+# Schedule:
+# - 03:00 UTC: Morning brief (generated)
+# - 03:17 UTC: Opportunities refresh
+# - 03:45 UTC: Knowledge base rebuild
+#
+# Knowledge must run after opportunities so it can summarise the fresh listings.
+#
+# Needs:
+#   vars.AZURE_APP_URL  - repository variable, e.g. https://<azure-host> (no trailing slash)
+#   secrets.CRON_SECRET - must equal the CRON_SECRET app setting on WH-webApp
+
+name: Nightly crons
+
+on:
+  schedule:
+    - cron: '0 3 * * *'
+  workflow_dispatch:
+    inputs:
+      job:
+        description: Which job to run
+        type: choice
+        options: [all, brief, opportunities, knowledge]
+        default: all
+
+concurrency:
+  group: nightly-crons
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    env:
+      APP_URL: ${{ vars.AZURE_APP_URL }}
+      CRON_SECRET: ${{ secrets.CRON_SECRET }}
+      JOB: ${{ inputs.job || 'all' }}
+    steps:
+      - name: Verify configuration
+        run: |
+          missing=0
+          if [ -z "$APP_URL" ]; then
+            echo "::error::Repository variable AZURE_APP_URL is missing or empty."
+            missing=1
+          fi
+          if [ -z "$CRON_SECRET" ]; then
+            echo "::error::Repository secret CRON_SECRET is missing or empty."
+            missing=1
+          fi
+          exit $missing
+
+      - name: Morning brief
+        if: env.JOB == 'all' || env.JOB == 'brief'
+        run: |
+          curl -fsS -X POST --max-time 30 \
+            -H "Authorization: Bearer $CRON_SECRET" \
+            "${APP_URL%/}/api/cron/morning-brief"
+
+      - name: Refresh opportunities
+        if: env.JOB == 'all' || env.JOB == 'opportunities'
+        run: |
+          curl -fsS -X POST --max-time 240 \
+            -H "Authorization: Bearer $CRON_SECRET" \
+            "${APP_URL%/}/api/cron/opportunities"
+
+      - name: Rebuild knowledge base
+        if: env.JOB == 'all' || env.JOB == 'knowledge'
+        run: |
+          curl -fsS -X POST --max-time 240 \
+            -H "Authorization: Bearer $CRON_SECRET" \
+            "${APP_URL%/}/api/cron/knowledge"
