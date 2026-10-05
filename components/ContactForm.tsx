@@ -12,6 +12,7 @@ export default function ContactForm() {
       email: fd.get('email'),
       subject: fd.get('subject'),
       message: fd.get('message'),
+      safeguarding: fd.get('safeguarding') === 'on',
     }),
     event: 'contact_form_submitted',
     eventProperties: fd => ({ subject_length: (fd.get('subject') as string | null)?.length ?? 0 }),
@@ -36,6 +37,10 @@ export default function ContactForm() {
       </div>
       <FormInput label="Subject" id="c-subject" name="subject" required placeholder="How can we help?" />
       <FormTextarea label="Message" id="c-msg" name="message" required placeholder="Tell us more…" />
+      <label style={{ display: 'flex', gap: 8, alignItems: 'flex-start', fontSize: '.88rem', margin: '-.2rem 0 1rem' }}>
+        <input type="checkbox" name="safeguarding" style={{ marginTop: 3 }} />
+        <span>This is a safeguarding concern. It will go only to our safeguarding lead and directors. You can also use the <a href="/safeguarding#report-a-concern">safeguarding report form</a>.</span>
+      </label>
       {status === 'error' && <FormError error={error} />}
       <button type="submit" className="btn" disabled={status === 'sending'}>
         {status === 'sending' ? 'Sending…' : 'Send Message'}

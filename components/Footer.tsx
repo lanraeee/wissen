@@ -143,6 +143,7 @@ export default async function Footer() {
               <Link href="/privacy">Privacy Policy</Link>
               <Link href="/terms">Terms &amp; Conditions</Link>
               <Link href="/safeguarding">Safeguarding</Link>
+              <Link href="/transparency/ledger">Financial Ledger</Link>
             </span>
             <span>{settings.tagline || 'Empowering Youth, Shaping Futures'}</span>
           </div>

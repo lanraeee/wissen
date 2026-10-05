@@ -8,7 +8,13 @@ vi.mock('@/lib/email', () => ({
   sendContactConfirmation: vi.fn().mockResolvedValue(undefined),
 }))
 
+vi.mock('@/lib/safeguarding', async () => ({
+  ...(await vi.importActual<typeof import('@/lib/safeguarding')>('@/lib/safeguarding')),
+  recordConcern: vi.fn().mockResolvedValue({ id: 'i1', reference: 'SG-AAAAA-BBBBB' }),
+}))
+
 import { POST } from './route'
+import { recordConcern } from '@/lib/safeguarding'
 import { sendContactNotification, sendContactConfirmation } from '@/lib/email'
 
 function jsonRequest(body: unknown) {
@@ -56,5 +62,29 @@ describe('POST /api/contact', () => {
     vi.mocked(sendContactNotification).mockRejectedValueOnce(new Error('resend down'))
     const res = await POST(jsonRequest(VALID_BODY))
     expect(res.status).toBe(200)
+  })
+})
+
+describe('POST /api/contact safeguarding routing', () => {
+  beforeEach(() => vi.clearAllMocks())
+
+  it('sends a message marked as safeguarding to the incident log, not the general inbox', async () => {
+    const res = await POST(jsonRequest({ ...VALID_BODY, safeguarding: true }))
+    expect(res.status).toBe(200)
+    expect(recordConcern).toHaveBeenCalledWith(expect.objectContaining({ source: 'contact_form', reporterEmail: VALID_BODY.email }))
+    expect(sendContactNotification).not.toHaveBeenCalled()
+    expect(sendContactConfirmation).toHaveBeenCalled()
+  })
+
+  it('copies an unmarked message that reads like a concern, and still notifies the inbox', async () => {
+    const res = await POST(jsonRequest({ ...VALID_BODY, subject: 'Worried about bullying' }))
+    expect(res.status).toBe(200)
+    expect(recordConcern).toHaveBeenCalledTimes(1)
+    expect(sendContactNotification).toHaveBeenCalled()
+  })
+
+  it('leaves an ordinary message alone', async () => {
+    await POST(jsonRequest(VALID_BODY))
+    expect(recordConcern).not.toHaveBeenCalled()
   })
 })

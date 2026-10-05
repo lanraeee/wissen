@@ -259,6 +259,42 @@ export default async function HomePage() {
         </div>
       </section>
 
+      {/* TRANSPARENCY */}
+      <section className="section section--tight">
+        <div className="wrap">
+          <div className="section-head mb-l reveal">
+            <span className="eyebrow">Open Books</span>
+            <h2>See where the money goes.</h2>
+          </div>
+          <div className="grid grid-3">
+            <div className="feature reveal">
+              <div className="feature__ic">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M4 4h16v16H4z" /><path d="M4 9h16M9 9v11" /></svg>
+              </div>
+              <h3>Financial Ledger</h3>
+              <p>Our latest transactions across Stripe and our UK and Nigerian bank accounts: every amount in and every amount out.</p>
+              <Link href="/transparency/ledger" className="textlink">View the ledger {ARROW}</Link>
+            </div>
+            <div className="feature reveal" data-d="1">
+              <div className="feature__ic">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" /></svg>
+              </div>
+              <h3>Operational Fixed Costs</h3>
+              <p>What it costs to keep the foundation running each month: the core tools, services and admin, and nothing optional.</p>
+              <Link href="/transparency/costs" className="textlink">See our running costs {ARROW}</Link>
+            </div>
+            <div className="feature reveal" data-d="2">
+              <div className="feature__ic">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6l8-3z" /></svg>
+              </div>
+              <h3>Safeguarding</h3>
+              <p>How we keep young people safe, and how to tell our safeguarding lead about anything that worries you.</p>
+              <Link href="/safeguarding#report-a-concern" className="textlink">Report a concern {ARROW}</Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* GET INVOLVED CTA */}
       <section className="section">
         <div className="wrap">

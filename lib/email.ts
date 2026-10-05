@@ -488,3 +488,24 @@ export async function sendTicketAccessLink(ticket: TicketLike, token: string) {
     `),
   })
 }
+
+// ─── Safeguarding concern received (to the safeguarding team + directors) ──
+// Deliberately carries no details of the concern: email is forwarded, synced
+// to phones and read over shoulders. The reader signs in to see the record.
+export async function notifySafeguardingTeam(opts: { to: string[]; reference: string; sourceLabel: string; urgent: boolean }) {
+  const url = `${SITE_URL}/admin/whf-cio?tab=safeguarding`
+  return sendEmail({
+    from: FROM,
+    to: Array.from(new Set([...opts.to, ...ADMIN_EMAILS])),
+    subject: `${opts.urgent ? 'URGENT: ' : ''}Safeguarding concern received — ${opts.reference}`,
+    html: shell(`
+      <span class="badge">Safeguarding</span>
+      <h2>A safeguarding concern has been logged.</h2>
+      ${opts.urgent ? '<p><strong>The reporter said someone may be in immediate danger.</strong></p>' : ''}
+      ${fieldMono('Reference', opts.reference)}
+      ${fieldText('Received through', opts.sourceLabel)}
+      <p>The details are in the incident log, which only directors and the designated safeguarding team can open.</p>
+      <p style="margin-top:20px"><a href="${esc(url)}" style="background:#1a3c2e;color:#f4f0e7;padding:11px 20px;border-radius:8px;text-decoration:none;font-weight:700;display:inline-block">Open the incident log</a></p>
+    `),
+  })
+}

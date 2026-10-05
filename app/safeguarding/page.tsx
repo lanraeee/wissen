@@ -6,6 +6,7 @@ import { ogSchemaFor } from '@/lib/og-schema'
 import { getPageCopy } from '@/lib/page-copy'
 import { getPolicySections } from '@/lib/policy-doc-server'
 import PolicyDocument from '@/components/PolicyDocument'
+import SafeguardingReportForm from '@/components/SafeguardingReportForm'
 import { SAFEGUARDING_SCHEMA } from '@/lib/page-copy-schema'
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -40,7 +41,15 @@ export default async function SafeguardingPage() {
             {c.emergencyNotice}
           </div>
 
+          <p style={{ margin: '0 0 24px' }}>
+            <a href="#report-a-concern" style={{ ...link, fontWeight: 700 }}>Report a safeguarding concern &darr;</a>
+          </p>
+
           <PolicyDocument sections={sections} />
+
+          <div style={{ marginTop: 40 }}>
+            <SafeguardingReportForm />
+          </div>
 
           <div style={{ marginTop: 40, background: '#f0ece4', borderLeft: '4px solid #1a3c2e', borderRadius: '0 8px 8px 0', padding: '14px 18px', fontSize: '.85rem', color: '#4a5a4f' }}>
             See also our <Link href="/privacy" style={link}>Privacy Policy</Link> and <Link href="/terms" style={link}>Terms &amp; Conditions</Link>. Worried about someone? <Link href="/contact" style={link}>Contact us</Link>.
