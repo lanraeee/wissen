@@ -264,6 +264,27 @@ The managed certificate is free and auto-renews, but requires the DNS record to 
 
 After the domain is live, update `NEXT_PUBLIC_SITE_URL` and `NEXT_PUBLIC_BASE_URL` to the real domain and **rebuild** — these are compiled into the bundle, so a restart will not pick them up.
 
+## Entra Domain Services (uk.wissenhaus.org) is not used
+
+A Microsoft Entra Domain Services managed domain, `uk.wissenhaus.org`, existed in resource group `Wissen-Haus-Live`. Its deletion was started in the portal on 2026-10-04.
+
+The web app does not depend on it. Checked against the repo on 2026-10-05:
+
+- Sign-in is the app's own: bcrypt password hashes in Neon and a `jose`-signed JWT in the `wh_token` cookie (`lib/auth.ts`, `lib/auth-edge.ts`). No LDAP, Kerberos, MSAL or Entra ID library is in `package.json`.
+- Nothing in `app/`, `lib/`, `components/`, `scripts/`, `middleware.ts` or `.github/workflows/` references `uk.wissenhaus.org`, LDAP or Domain Services. Every other `wissenhaus.org` reference is the public site URL or a contact email.
+- No env var in [section 2](#2-set-the-environment-variables) points at it. The App Service needs no VNet integration with the managed domain's network.
+
+The only Entra piece the deployment uses is the app registration behind GitHub's OIDC login ([section 1](#recovering-githubs-oidc-login-if-the-app-registration-is-gone)). That lives in the Entra ID tenant, not in Domain Services, and is unaffected.
+
+**Deletion status: not yet confirmed.** Domain Services deletion can take an hour or more. Confirm it finished with:
+
+```bash
+az resource list --resource-group Wissen-Haus-Live \
+  --resource-type Microsoft.AAD/domainServices -o table
+```
+
+An empty result means it is gone. Then check for leftovers it created, which are billed or block cleanup on their own: the `aadds-*` virtual network or subnet, its network security group, and any public IP or load balancer named after the domain. Update this paragraph with the date once confirmed.
+
 ## The scale-out trap (read this before scaling)
 
 **Keep the instance count at 1 unless you do the work described here.**
