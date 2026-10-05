@@ -54,7 +54,7 @@ jobs:
                       NEXT_PUBLIC_POSTHOG_HOST NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN \
                       WISSENDB_DATABASE_URL; do
             if [ -z "${!name}" ]; then
-              echo "::error::Repository secret $name is missing or empty. It is needed at BUILD time; see docs/AZURE_DEPLOYMENT.md step 2."
+              echo "::error::Repository secret $name is missing or empty. It is needed at BUILD time; see "Required GitHub repository secrets" in docs/AZURE_DEPLOYMENT.md step 3."
               missing=1
             fi
           done
