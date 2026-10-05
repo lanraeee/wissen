@@ -14,6 +14,25 @@ CREATE TABLE IF NOT EXISTS users (
 -- Migration (run once on existing DBs):
 -- ALTER TABLE users ADD COLUMN IF NOT EXISTS role TEXT NOT NULL DEFAULT 'user';
 
+-- When the account holder proved they read this mailbox (verification link,
+-- or a password reset link, which proves the same). NULL means unconfirmed,
+-- and login refuses to issue a session. Adding the column with DEFAULT NOW()
+-- stamps every account that already exists, so nobody is locked out by this
+-- change; the default is then dropped so new rows start unconfirmed. Both
+-- statements are no-ops on re-run.
+ALTER TABLE users ADD COLUMN IF NOT EXISTS email_verified_at TIMESTAMPTZ DEFAULT NOW();
+ALTER TABLE users ALTER COLUMN email_verified_at DROP DEFAULT;
+
+CREATE TABLE IF NOT EXISTS email_verification_tokens (
+  id         UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id    UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  token_hash TEXT NOT NULL UNIQUE,
+  expires_at TIMESTAMPTZ NOT NULL,
+  used_at    TIMESTAMPTZ,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+CREATE INDEX IF NOT EXISTS idx_email_verification_tokens_user ON email_verification_tokens(user_id);
+
 CREATE TABLE IF NOT EXISTS course_progress (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,

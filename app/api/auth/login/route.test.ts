@@ -32,6 +32,7 @@ const DB_USER = {
   last_name: 'Lovelace',
   membership_expiry: null,
   role: 'user',
+  email_verified_at: '2026-10-01T00:00:00Z',
 }
 
 describe('POST /api/auth/login', () => {
@@ -90,6 +91,25 @@ describe('POST /api/auth/login', () => {
     expect(loginEventCall).toBeDefined()
     expect(loginEventCall).toContain('1.2.3.4')
     expect(loginEventCall).toContain('TestAgent/1.0')
+  })
+
+  it('refuses a session to an account whose email was never confirmed', async () => {
+    sqlMock.mockReset().mockResolvedValueOnce([{ ...DB_USER, email_verified_at: null }])
+    verifyPasswordMock.mockResolvedValue(true)
+    const res = await POST(loginRequest({ email: 'ada@example.com', password: 'correct-password' }))
+    expect(res.status).toBe(403)
+    const body = await res.json()
+    expect(body.code).toBe('email_unverified')
+    expect(signTokenMock).not.toHaveBeenCalled()
+    expect(res.cookies.get('wh_token')).toBeUndefined()
+  })
+
+  it('does not reveal an unconfirmed account to someone with the wrong password', async () => {
+    sqlMock.mockReset().mockResolvedValueOnce([{ ...DB_USER, email_verified_at: null }])
+    verifyPasswordMock.mockResolvedValue(false)
+    const res = await POST(loginRequest({ email: 'ada@example.com', password: 'wrong-password' }))
+    expect(res.status).toBe(401)
+    expect((await res.json()).code).toBeUndefined()
   })
 
   it('rejects a request missing the password field', async () => {
