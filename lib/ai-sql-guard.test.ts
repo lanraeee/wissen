@@ -7,6 +7,17 @@ const why = (sql: string) => {
 }
 
 describe('checkReadOnlySql', () => {
+  it('refuses any query touching the safeguarding tables, however the name is spelled', () => {
+    for (const q of [
+      'SELECT * FROM cio_safeguarding_incidents',
+      'SELECT * FROM "cio_safeguarding_incidents"',
+      'SELECT email FROM CIO_SAFEGUARDING_TEAM',
+      'SELECT * FROM U&"cio_s\\0061feguarding_incidents"',
+    ]) {
+      expect(checkReadOnlySql(q).ok).toBe(false)
+    }
+  })
+
   it('allows a plain SELECT and a CTE', () => {
     expect(ok('SELECT id FROM users')).toBe(true)
     expect(ok('WITH x AS (SELECT 1) SELECT * FROM x')).toBe(true)

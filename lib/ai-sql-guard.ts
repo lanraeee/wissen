@@ -106,6 +106,18 @@ export function checkReadOnlySql(raw: string): SqlCheck {
     return { ok: false, reason: 'System catalog access is not allowed.' }
   }
 
+  // Safeguarding records are readable only by directors and the designated
+  // safeguarding team (lib/admin-guard.ts safeguardingGuard), and the agent
+  // can be granted to admins who are neither. Refused outright rather than
+  // redacted: there is no column of an incident that is safe to summarise.
+  // Tested on the raw text, not `scan`, because scannable() blanks out
+  // double-quoted identifiers -- "cio_safeguarding_incidents" would otherwise
+  // slip through -- and Unicode-escaped identifiers (U&"...") are refused so
+  // the name cannot be spelled around the check.
+  if (/safeguarding/i.test(sql) || /\bu&["']/i.test(sql)) {
+    return { ok: false, reason: 'Safeguarding records are not available to the agent.' }
+  }
+
   // A missing LIMIT on page_views or opportunities would return the table.
   // Appending one is friendlier than refusing, and MAX_ROWS is enforced again
   // on the result set regardless of what the query claims.

@@ -7,6 +7,7 @@ import { visitorContextFrom } from '@/lib/visitor-context'
 import { mintAccessToken, TICKET_TOKEN_COOKIE } from '@/lib/ticket-access'
 import { sendTicketOpened, notifyStaffNewTicket } from '@/lib/email'
 import { log } from '@/lib/logger'
+import { recordConcern, looksLikeSafeguarding } from '@/lib/safeguarding'
 
 const CreateSchema = z.object({
   name: zName,
@@ -36,6 +37,21 @@ export async function POST(req: NextRequest) {
       body: data.message,
       context: visitorContextFrom(req, { page: data.page, referrer: data.referrer }),
     })
+
+    // A ticket that reads like a safeguarding concern is also copied into the
+    // restricted incident log, so it reaches the safeguarding team and not
+    // only the general support queue.
+    if (looksLikeSafeguarding(data.subject, data.message)) {
+      try {
+        await recordConcern({
+          source: 'support_ticket', sourceRef: ticket.reference,
+          reporterName: data.name, reporterEmail: ticket.requester_email,
+          description: `${data.subject}\n\n${data.message}`,
+        })
+      } catch (err) {
+        log.error('support ticket safeguarding', err)
+      }
+    }
 
     // Email is best-effort. A ticket that exists but whose notification failed
     // is recoverable from the admin queue; losing the ticket because Resend

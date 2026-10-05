@@ -134,6 +134,18 @@ Twelve variables are required, plus two more if the WHF-CIO document store is us
 | `BLOB_READ_WRITE_TOKEN` | Vercel dashboard (Storage → the Blob store) | Needed by the WHF-CIO document upload, download and delete routes. Vercel injects it automatically; off Vercel it must be copied, or uploads return 503 "File storage is not configured". |
 | `WHF_BLOB_ACCESS` | Vercel dashboard | `public` or `private`, matching how the Blob store was created (`lib/whf-cio-files.ts`). Unset means `private`. |
 
+**WHF-CIO Financial Ledger and Safeguarding** (all optional; each feature works without them, just with less in it):
+
+| Variable | Notes |
+|---|---|
+| `SAFEGUARDING_LEAD_EMAIL` | The Designated Safeguarding Lead's login address. Defaults to `safeguarding@wissenhaus.org`. This address always has access to the Safeguarding tab; directors add other team members in the tab itself. |
+| `GOCARDLESS_SECRET_ID`, `GOCARDLESS_SECRET_KEY` | GoCardless Bank Account Data (formerly Nordigen) user secrets. The ledger reaches Tide and other UK banks through it; Tide has no direct API for this. |
+| `LEDGER_GOCARDLESS_ACCOUNTS` | Which linked accounts to read: `source:label:accountId` entries separated by `;`, where `source` is `tide` or `uk_bank`. Example: `tide:Tide current account:3fa85f64-...;uk_bank:Barclays reserve:7b1c...`. The account ids come from linking each bank once in the GoCardless portal (an end-user agreement and a requisition). |
+| `MONO_SECRET_KEY` | Mono (withmono.com) secret key, for Nigerian bank accounts. |
+| `LEDGER_MONO_ACCOUNTS` | `label:accountId` entries separated by `;`, e.g. `GTBank NGN:65f1...`. The ids come from linking each account through Mono Connect. |
+
+Stripe needs nothing new: the ledger reads balance transactions with the existing `STRIPE_SECRET_KEY`. The GoCardless and Mono connectors are written against their documented APIs but have not yet been run against live credentials, so watch the provider status cards in the Financial Ledger tab after the first sync. A connector with no credentials shows "Not connected" and is skipped.
+
 Optional: `GOOGLE_DRIVE_CLIENT_ID`, `GOOGLE_DRIVE_CLIENT_SECRET`, `GOOGLE_DRIVE_REFRESH_TOKEN` and `GOOGLE_DRIVE_FOLDER_ID` enable the WHF-CIO document backup to Google Drive (`lib/whf-cio-drive.ts`). Copy them if they are set in Vercel; without them the backup feature is simply off.
 
 ### Setting the Blob variables
@@ -219,9 +231,11 @@ All five are **build inputs**, so changing any of them needs a workflow re-run, 
 
 Finally: the workflow deploys straight to `slot-name: 'Production'`. On Standard tier or above, deploy to a `staging` slot and swap instead — that is both zero-downtime and your rollback. And leave `SCM_DO_BUILD_DURING_DEPLOYMENT` unset: the package is already built, and a second build on the host would have none of these inputs.
 
-### No migrations to run
+### Migrations
 
-There is no migration framework (see `docs/adr/001-neon-postgres.md`); `lib/schema.sql` is applied by hand with `node scripts/migrate.mjs`. **If the database stays on Neon, there is nothing to run** — the schema is already there. Only touch `migrate.mjs` if you are also moving the database, which is a separate project.
+There is no migration framework (see `docs/adr/001-neon-postgres.md`); `lib/schema.sql` is applied by hand with `node scripts/migrate.mjs`. **If the database stays on Neon, the existing schema is already there.** Only touch `migrate.mjs` if you are also moving the database, which is a separate project.
+
+The one exception is the WHF-CIO Financial Ledger, Operational Fixed Costs and Safeguarding tabs, which add five tables (`cio_ledger_entries`, `cio_ledger_sync`, `cio_fixed_costs`, `cio_safeguarding_incidents`, `cio_safeguarding_team`). Before deploying that change, paste `scripts/whf-cio-migration.sql` into the Neon SQL editor and run it once. It is safe to re-run. Until it has run, the boot-time drift check reports the five tables as missing, the new tabs show an error, and safeguarding reports from the public form fail with a message pointing the reporter at the email address.
 
 `instrumentation.ts` runs a schema drift check at boot. It is deliberately non-blocking and never throws, so a slow or briefly unreachable database at startup will not stop the server.
 
@@ -236,21 +250,24 @@ Payments break silently if you skip this — Stripe keeps delivering to Vercel, 
 
 ## 5. Replace the crons
 
-`vercel.json` means nothing on Azure. This is done in the repo: `.github/workflows/nightly-crons.yml` runs both jobs from GitHub Actions against the Azure app, and the `crons` list in `vercel.json` is now empty, along with the deletion of the old `update-opportunities.yml`, which posted to `secrets.VERCEL_URL` and so kept hitting Vercel. Before this, the opportunities job ran twice a night (Vercel Cron plus that workflow) and nothing at all would have called the knowledge job on Azure.
+`vercel.json` means nothing on Azure. This is done in the repo: two GitHub Actions workflows call the cron routes on the Azure app, the `crons` list in `vercel.json` is now empty, and the old `update-opportunities.yml` is deleted. That workflow posted to `secrets.VERCEL_URL` and so kept hitting Vercel: the opportunities job ran twice a night (Vercel Cron plus that workflow), and nothing at all would have called the knowledge job on Azure.
 
-| Path | When (UTC) | What it does |
-|---|---|---|
-| `/api/cron/opportunities` | 03:17 daily | Scrapes six job/scholarship sources, upserts `opportunities`, prunes anything expired or older than 30 days. |
-| `/api/cron/knowledge` | straight after, in the same run | Rebuilds the `server` entries of the knowledge base from the listings just refreshed. Staff-approved answers are never touched. |
+| Path | When (UTC) | Workflow | What it does |
+|---|---|---|---|
+| `/api/cron/opportunities` | 03:17 daily | `nightly-crons.yml` | Scrapes six job/scholarship sources, upserts `opportunities`, prunes anything expired or older than 30 days. |
+| `/api/cron/knowledge` | straight after, in the same run | `nightly-crons.yml` | Rebuilds the `server` entries of the knowledge base from the listings just refreshed. Staff-approved answers are never touched. |
+| `/api/cron/ledger` | hourly at :05 | `ledger-sync.yml` | Pulls the latest bank-feed transactions so the public ledger stays current when no director opens the tab. |
 
-**Keep both.** Without the first, the opportunities board goes stale and stops pruning; without the second, the support agent answers from yesterday's listings. They used to be two separate schedules (03:17 and 03:45), which only kept the knowledge rebuild after the refresh as long as the refresh finished inside 28 minutes. The workflow now runs them as two steps of one job, so the order is guaranteed and a failed refresh stops the rebuild from running on stale data.
+All three authenticate on `Authorization: Bearer ${CRON_SECRET}` and accept `GET` or `POST`.
+
+**Keep all three.** Without the opportunities job, the board goes stale and stops pruning; without the knowledge job, the support agent answers from yesterday's listings. The two used to be separate schedules (03:17 and 03:45), which only kept the rebuild after the refresh while the refresh finished inside 28 minutes. They now run as two steps of one job, so the order is guaranteed and a failed refresh stops the rebuild from running on stale data. The ledger job is the only optional one: opening the Financial Ledger tab also syncs any feed older than 15 minutes, so without it the public ledger is only as fresh as the last director visit. Disable `ledger-sync.yml` in the Actions tab if you would rather not spend the Actions minutes (about 24 short runs a day).
 
 **One-time setup** (GitHub → repo Settings → Secrets and variables → Actions):
 
 - **Variable** `AZURE_APP_URL`: `https://<azure-host>`, no trailing slash. Change it to `https://www.wissenhaus.org` after the custom domain is bound in step 6 (either works; both reach the same app).
 - **Secret** `CRON_SECRET`: the same value as the `CRON_SECRET` app setting from step 2. If you generated a fresh one for Azure, the old repo secret will 401.
 
-The workflow fails with a named error if either is missing, rather than calling a broken URL. To test without waiting for 03:17: Actions → Nightly crons → Run workflow, and pick `opportunities`, `knowledge` or `both`.
+The workflow fails with a named error if either is missing, rather than calling a broken URL. To test without waiting: Actions → Nightly crons → Run workflow, and pick `opportunities`, `knowledge` or `both`; Actions → Ledger sync → Run workflow for the ledger.
 
 `VERCEL_URL` is no longer read by anything and can be deleted from the repo secrets.
 
@@ -258,7 +275,7 @@ The workflow fails with a named error if either is missing, rather than calling 
 
 ### Mind the 230-second ceiling
 
-Azure App Service's front end closes a request at **230 seconds**, and that is not configurable. Both cron routes declare `export const maxDuration = 230` to say so, but that export is a Vercel-only hint: `next start` ignores it and enforces nothing. If a job runs past 230s, the caller gets a 502 even though the work may finish server-side, so you lose the success signal rather than the work. The workflow's `curl --max-time 240` gives up just after that point instead of hanging.
+Azure App Service's front end closes a request at **230 seconds**, and that is not configurable. The opportunities and knowledge routes declare `export const maxDuration = 230` to say so (the ledger route declares 120), but that export is a Vercel-only hint: `next start` ignores it and enforces nothing. If a job runs past 230s, the caller gets a 502 even though the work may finish server-side, so you lose the success signal rather than the work. The workflow's `curl --max-time 240` gives up just after that point instead of hanging.
 
 The knowledge rebuild is the one at risk. Check the step durations in the Actions run history after the first few nights; if either approaches 230s, move that job to an Azure Function with a timer trigger, or make the route return `202` and do the work after responding.
 

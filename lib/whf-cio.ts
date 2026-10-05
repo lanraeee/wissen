@@ -1,11 +1,12 @@
 import sql from './db'
+import { BILLING_CYCLES, COST_CATEGORIES, CURRENCIES } from './ledger-shared'
 
 // @neondatabase/serverless 0.10 accepts (text, params) on the query function but only
 // types the tagged-template form.
 type Row = Record<string, any> // eslint-disable-line @typescript-eslint/no-explicit-any
 const run = sql as unknown as (text: string, params?: unknown[]) => Promise<Row[]>
 
-export type ColType = 'text' | 'date' | 'int' | 'bool'
+export type ColType = 'text' | 'date' | 'int' | 'bool' | 'money'
 
 export interface Col {
   name: string
@@ -78,6 +79,22 @@ export const RESOURCES = {
       { name: 'notes', type: 'text' },
     ],
   },
+  // Operational Fixed Costs tab (components/admin/cio/FixedCostsTab.tsx).
+  fixed_costs: {
+    table: 'cio_fixed_costs',
+    orderBy: 'is_active DESC, category, name',
+    cols: [
+      { name: 'name', type: 'text', required: true },
+      { name: 'category', type: 'text', required: true, options: COST_CATEGORIES },
+      { name: 'supplier', type: 'text' },
+      { name: 'amount', type: 'money', required: true },
+      { name: 'currency', type: 'text', required: true, options: CURRENCIES },
+      { name: 'billing_cycle', type: 'text', required: true, options: BILLING_CYCLES },
+      { name: 'is_active', type: 'bool' },
+      { name: 'is_public', type: 'bool' },
+      { name: 'notes', type: 'text' },
+    ],
+  },
   filings: {
     table: 'cio_filings',
     orderBy: 'due_date',
@@ -125,6 +142,12 @@ function normalise(col: Col, raw: unknown): { ok: true; value: unknown } | { ok:
     }
     case 'bool':
       return { ok: true, value: raw === true || raw === 'true' }
+    case 'money': {
+      const n = typeof raw === 'number' ? raw : Number(String(raw).replace(/,/g, ''))
+      return Number.isFinite(n) && n >= 0
+        ? { ok: true, value: Math.round(n * 100) / 100 }
+        : { ok: false, error: `${col.name} must be an amount of zero or more` }
+    }
   }
 }
 

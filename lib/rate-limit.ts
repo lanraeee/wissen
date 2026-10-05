@@ -64,6 +64,7 @@ export const RATE_LIMITS: Array<{ prefix: string; limit: number; windowMs: numbe
   { prefix: '/api/auth/reset-password', limit: 10, windowMs: 60 * 60_000 },
   // Spam-prone public forms.
   { prefix: '/api/contact', limit: 5, windowMs: 10 * 60_000 },
+  { prefix: '/api/safeguarding', limit: 5, windowMs: 10 * 60_000 },
   { prefix: '/api/partner', limit: 5, windowMs: 10 * 60_000 },
   { prefix: '/api/volunteer', limit: 5, windowMs: 10 * 60_000 },
   { prefix: '/api/submissions', limit: 10, windowMs: 10 * 60_000 },
