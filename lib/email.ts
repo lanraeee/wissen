@@ -1,6 +1,9 @@
 import { Resend } from 'resend'
 import { brandify, getBrand } from './brand-server'
-import { esc, firstNameOf, formatMoney, field, fieldText, fieldPre, fields, fieldMono, mailtoLink, replyButton, shell } from './email-shell'
+import {
+  esc, firstNameOf, formatMoney, field, fieldText, fieldPre, fields, fieldMono, mailtoLink, replyButton, shell,
+  renderEmailHeader, renderEmailFooter, HEADER_START, HEADER_END, FOOTER_START, FOOTER_END,
+} from './email-shell'
 import { renderTemplate } from './email-render'
 import { EMAIL_TEMPLATES_BY_ID } from './email-catalog'
 import { getContactDetails } from './contact-details'
@@ -9,6 +12,28 @@ let _resend: Resend | null = null
 function getResend() {
   if (!_resend) _resend = new Resend(process.env.RESEND_API_KEY ?? 'placeholder')
   return _resend
+}
+
+function escapeRegExp(s: string) {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+}
+
+/**
+ * Swaps shell()'s static placeholder header/footer (bounded by HTML comment
+ * markers -- see lib/email-shell.ts) for the real thing, built from the
+ * brand and contact details this send actually has. Every email -- whichever
+ * of the ~20 send functions built it, via renderTemplate() or shell()
+ * directly -- passes through here, so this is the one place real contact
+ * info/logo/legal links need to be wired in rather than in each of them.
+ * A missing marker (hand-written HTML that never called shell()) is simply
+ * left alone rather than erroring.
+ */
+function brandEmailChrome(html: string, brand: { name: string; descriptor: string }, contact: Awaited<ReturnType<typeof getContactDetails>>) {
+  const headerRe = new RegExp(`${escapeRegExp(HEADER_START)}[\\s\\S]*?${escapeRegExp(HEADER_END)}`)
+  const footerRe = new RegExp(`${escapeRegExp(FOOTER_START)}[\\s\\S]*?${escapeRegExp(FOOTER_END)}`)
+  return html
+    .replace(headerRe, renderEmailHeader(brand))
+    .replace(footerRe, renderEmailFooter(brand, contact))
 }
 
 // Resend's SDK never throws on API-level failures (invalid/unverified sender
@@ -28,7 +53,7 @@ async function sendEmail(payload: SendEmailPayload): Promise<ResendResult> {
     ...payload,
     ...(typeof payload.subject === 'string' ? { subject: brandify(payload.subject, brand) } : {}),
     ...(typeof payload.from === 'string' ? { from: brandify(payload.from, brand) } : {}),
-    ...(typeof payload.html === 'string' ? { html: brandify(payload.html.replace(/(<h1>Wissen-Haus<\/h1>\s*)<p>Empowerment Foundation<\/p>/, (_, h) => `${h}<p>${brand.descriptor}</p>`), brand) } : {}),
+    ...(typeof payload.html === 'string' ? { html: brandify(brandEmailChrome(payload.html, brand, details), brand) } : {}),
   } as SendEmailPayload
   const result = await getResend().emails.send({ replyTo: details.support_email, ...branded })
   if (result.error) throw new Error(`Resend: ${result.error.name} — ${result.error.message}`)
