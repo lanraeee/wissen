@@ -19,6 +19,7 @@ export const NAV = [
   ['Partners', '/admin/partner'],
   ['Donations', '/admin/donations'],
   ['Bank Transfers', '/admin/bank-transfers'],
+  ['Monthly Giving', '/admin/giving'],
   ['Scholarships', '/admin/scholarships'],
   ['Opportunities', '/admin/opportunities'],
   ['Courses & Certs', '/admin/courses'],

@@ -522,3 +522,132 @@ export async function notifySafeguardingTeam(opts: { to: string[]; reference: st
     `),
   })
 }
+
+// ─── Recurring giving (monthly pledges attached to volunteer/partner forms) ─
+// These are not yet in EMAIL_TEMPLATES_BY_ID, same as the support-ticket
+// emails above -- worth adding once the wording settles.
+
+// Sent right after a volunteer/partner application submits, if they chose
+// bank transfer: Stripe donors are redirected straight into Checkout at
+// submit time, so there's no separate "finish setting up" step for them.
+export async function sendRecurringGivingSetupReminder(opts: {
+  to: string; name: string; amount: number; detailsUrl: string
+}) {
+  const vars = {
+    firstName: firstNameOf(opts.name),
+    amountField: field('Monthly amount', `<strong>${formatMoney(opts.amount, 'NGN')} / month</strong>`),
+    detailsUrl: esc(opts.detailsUrl),
+  }
+  return sendEmail({
+    from: FROM,
+    to: opts.to,
+    subject: 'Finish setting up your monthly gift',
+    html: shell(`
+      <h2>Hi ${esc(vars.firstName)},</h2>
+      <p>Thanks for applying — we just need one more thing: your monthly giving commitment isn't set up yet.</p>
+      ${vars.amountField}
+      <p style="margin-top:20px"><a href="${vars.detailsUrl}" style="background:#1a3c2e;color:#f4f0e7;padding:11px 20px;border-radius:8px;text-decoration:none;font-weight:700;display:inline-block">Finish setting it up</a></p>
+    `),
+  })
+}
+
+// A cycle's transfer is due (bank transfer method, recurring). Sent by the
+// cron in app/api/cron/recurring-giving/route.ts.
+export async function sendRecurringGivingDueReminder(opts: {
+  to: string; name: string; amount: number; detailsUrl: string
+}) {
+  const firstName = firstNameOf(opts.name)
+  return sendEmail({
+    from: FROM,
+    to: opts.to,
+    subject: 'Your monthly gift is due',
+    html: shell(`
+      <h2>Hi ${esc(firstName)},</h2>
+      <p>This month's transfer for your recurring gift is due.</p>
+      ${field('Monthly amount', `<strong>${formatMoney(opts.amount, 'NGN')}</strong>`)}
+      <p style="margin-top:20px"><a href="${esc(opts.detailsUrl)}" style="background:#1a3c2e;color:#f4f0e7;padding:11px 20px;border-radius:8px;text-decoration:none;font-weight:700;display:inline-block">View transfer details</a></p>
+    `),
+  })
+}
+
+// Admin confirmed a recurring bank-transfer cycle landed, or a Stripe
+// subscription just activated -- either way, the pledge is now 'active'.
+export async function sendRecurringGivingConfirmed(opts: {
+  to: string; name: string; amount: number; nextDueAt: string | null
+}) {
+  const firstName = firstNameOf(opts.name)
+  const nextLine = opts.nextDueAt
+    ? `<p>Your next gift is due around ${esc(new Date(opts.nextDueAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }))}.</p>`
+    : ''
+  return sendEmail({
+    from: FROM,
+    to: opts.to,
+    subject: 'Your monthly gift is confirmed — thank you',
+    html: shell(`
+      <h2>Hi ${esc(firstName)}, thank you.</h2>
+      <p>Your recurring gift of <strong>${formatMoney(opts.amount, 'NGN')}/month</strong> is confirmed.</p>
+      ${nextLine}
+    `),
+  })
+}
+
+// Admin-triggered: a volunteer/partner applicant hasn't followed through on
+// the giving step they started, and an admin wants to nudge that one person
+// specifically (distinct from the automated cron reminder above).
+export async function sendRecurringGivingFollowUp(opts: {
+  to: string; name: string; amount: number; detailsUrl: string; note?: string
+}) {
+  const firstName = firstNameOf(opts.name)
+  return sendEmail({
+    from: FROM,
+    to: opts.to,
+    subject: 'Following up on your monthly gift',
+    html: shell(`
+      <h2>Hi ${esc(firstName)},</h2>
+      <p>We wanted to follow up on the monthly gift you started setting up.</p>
+      ${field('Monthly amount', `<strong>${formatMoney(opts.amount, 'NGN')}</strong>`)}
+      ${opts.note ? `<p>${esc(opts.note)}</p>` : ''}
+      <p style="margin-top:20px"><a href="${esc(opts.detailsUrl)}" style="background:#1a3c2e;color:#f4f0e7;padding:11px 20px;border-radius:8px;text-decoration:none;font-weight:700;display:inline-block">Continue</a></p>
+    `),
+  })
+}
+
+// Admin-composed broadcast pointing a list of volunteer/partner applicants at
+// a specific donation project. One send per recipient so each gets a plain
+// to: field (no exposed recipient list), same convention as the newsletter
+// sender in lib/newsletter.ts.
+export async function sendDonationRequestBroadcast(opts: {
+  to: string; name: string; projectTitle: string; projectUrl: string; message?: string
+}) {
+  const firstName = firstNameOf(opts.name)
+  return sendEmail({
+    from: FROM,
+    to: opts.to,
+    subject: `Support ${opts.projectTitle}`,
+    html: shell(`
+      <h2>Hi ${esc(firstName)},</h2>
+      ${opts.message ? `<p>${esc(opts.message)}</p>` : `<p>We're raising support for <strong>${esc(opts.projectTitle)}</strong> and wanted to invite you to be part of it.</p>`}
+      <p style="margin-top:20px"><a href="${esc(opts.projectUrl)}" style="background:#1a3c2e;color:#f4f0e7;padding:11px 20px;border-radius:8px;text-decoration:none;font-weight:700;display:inline-block">${esc(opts.projectTitle)} →</a></p>
+    `),
+  })
+}
+
+// ─── Recurring giving declared (to admin) ──────────────────────────────────
+export async function notifyAdminRecurringDeclared(data: {
+  name: string; email: string; amount: number; reference: string
+}) {
+  const details = await getContactDetails()
+  return sendEmail({
+    from: FROM,
+    to: details.admin_emails,
+    subject: `[Monthly Giving] ${data.name} says this month's transfer is sent`,
+    html: shell(`
+      <h2>${esc(data.name)} says the transfer has been sent</h2>
+      ${fieldText('Donor', data.name)}
+      ${field('Email', mailtoLink(data.email))}
+      ${field('Monthly amount', `<strong>${formatMoney(data.amount, 'NGN')}</strong>`)}
+      ${fieldMono('Reference', data.reference)}
+      <p style="margin-top:20px"><a href="${esc(SITE_URL)}/admin/giving" style="background:#1a3c2e;color:#f4f0e7;padding:11px 20px;border-radius:8px;text-decoration:none;font-weight:700;display:inline-block">Open Giving admin</a></p>
+    `),
+  })
+}

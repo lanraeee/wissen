@@ -25,7 +25,7 @@ on:
       job:
         description: Which job to run
         type: choice
-        options: [both, opportunities, knowledge]
+        options: [both, opportunities, knowledge, recurring-giving]
         default: both
 
 concurrency:
@@ -71,3 +71,10 @@ jobs:
           curl -fsS -X POST --max-time 240 \
             -H "Authorization: Bearer $CRON_SECRET" \
             "${APP_URL%/}/api/cron/knowledge"
+
+      - name: Recurring giving reminders
+        if: env.JOB == 'both' || env.JOB == 'recurring-giving'
+        run: |
+          curl -fsS -X POST --max-time 240 \
+            -H "Authorization: Bearer $CRON_SECRET" \
+            "${APP_URL%/}/api/cron/recurring-giving"

@@ -344,6 +344,50 @@ CREATE TABLE IF NOT EXISTS bank_transfers (
 CREATE UNIQUE INDEX IF NOT EXISTS idx_bank_transfers_reference ON bank_transfers(reference);
 CREATE INDEX IF NOT EXISTS idx_bank_transfers_status_created ON bank_transfers(status, created_at DESC);
 
+-- Monthly giving commitments collected alongside volunteer and partner
+-- applications. This is a soft gate: the application itself (volunteer_
+-- applications / partner_inquiries) always submits, this just tracks whether
+-- the applicant has followed through on the recurring gift they set up
+-- alongside it, so admin can chase the ones who haven't.
+--
+-- Two payment rails, two different notions of "recurring":
+--   stripe        -- a real Stripe subscription. stripe_subscription_id is
+--                    set once checkout completes; invoice.paid/payment_failed
+--                    webhooks keep last_payment_at/next_due_at/status current.
+--   bank_transfer -- nothing pulls funds automatically. The donor declares
+--                    each cycle's transfer sent (status -> 'declared'), an
+--                    admin confirms it landed (status -> 'active', same
+--                    confirm action as a one-time bank_transfers pledge), and
+--                    a cron nudges whoever is coming up on next_due_at.
+--
+-- source_type/source_id point at the one volunteer_applications or
+-- partner_inquiries row that created this pledge (one direction only, same
+-- convention as bank_transfers.donation_id).
+CREATE TABLE IF NOT EXISTS recurring_pledges (
+  id                      UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  source_type             TEXT NOT NULL CHECK (source_type IN ('volunteer','partner')),
+  source_id               UUID NOT NULL,
+  name                    TEXT NOT NULL,
+  email                   TEXT NOT NULL,
+  amount                  NUMERIC(12,2) NOT NULL,
+  currency                TEXT NOT NULL DEFAULT 'NGN',
+  method                  TEXT NOT NULL CHECK (method IN ('stripe','bank_transfer')),
+  status                  TEXT NOT NULL DEFAULT 'pending'
+                            CHECK (status IN ('pending','declared','active','lapsed','cancelled')),
+  reference               TEXT NOT NULL,
+  stripe_subscription_id  TEXT,
+  stripe_customer_id      TEXT,
+  declared_at             TIMESTAMPTZ,
+  last_payment_at         TIMESTAMPTZ,
+  next_due_at             TIMESTAMPTZ,
+  reminder_count          INT NOT NULL DEFAULT 0,
+  last_reminder_at        TIMESTAMPTZ,
+  created_at              TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_recurring_pledges_reference ON recurring_pledges(reference);
+CREATE INDEX IF NOT EXISTS idx_recurring_pledges_source ON recurring_pledges(source_type, source_id);
+CREATE INDEX IF NOT EXISTS idx_recurring_pledges_status_due ON recurring_pledges(status, next_due_at);
+
 -- DataCamp Donates scholarship applications. First-class columns for what
 -- the admin sorts/filters by (score, status, email) -- the full 27-question
 -- answer set lives in one `answers` JSONB blob, same convention as

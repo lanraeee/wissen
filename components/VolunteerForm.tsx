@@ -1,10 +1,15 @@
 'use client'
 
+import { useState } from 'react'
 import { useFormSubmit } from '@/lib/useFormSubmit'
 import { FormInput, FormTextarea, FormSelect } from '@/components/form/FormField'
 import { FormSuccess, FormError } from '@/components/form/FormSuccess'
+import GivingFields, { MIN_MONTHLY_NGN } from '@/components/form/GivingFields'
 
 export default function VolunteerForm() {
+  const [givingAmount, setGivingAmount] = useState(String(MIN_MONTHLY_NGN))
+  const [givingMethod, setGivingMethod] = useState<'stripe' | 'bank_transfer'>('stripe')
+
   const { status, error, handleSubmit } = useFormSubmit({
     endpoint: '/api/volunteer',
     buildPayload: fd => ({
@@ -12,9 +17,15 @@ export default function VolunteerForm() {
       email: fd.get('email'),
       role: fd.get('role'),
       message: fd.get('bio'),
+      givingAmount: Number(givingAmount),
+      givingMethod,
     }),
     event: 'volunteer_application_submitted',
-    eventProperties: fd => ({ volunteer_role: fd.get('role') as string | null }),
+    eventProperties: fd => ({ volunteer_role: fd.get('role') as string | null, giving_method: givingMethod }),
+    onSuccess: data => {
+      const redirectUrl = (data as { redirectUrl?: string | null })?.redirectUrl
+      if (redirectUrl) window.location.href = redirectUrl
+    },
   })
 
   if (status === 'done') {
@@ -45,9 +56,16 @@ export default function VolunteerForm() {
         label="Brief background (current role, skills, why you want to volunteer)"
         id="v-bio" name="bio" required placeholder="Tell us about yourself…"
       />
+
+      <GivingFields
+        amount={givingAmount} onAmountChange={setGivingAmount}
+        method={givingMethod} onMethodChange={setGivingMethod}
+        idPrefix="v-giving"
+      />
+
       {status === 'error' && <FormError error={error} />}
       <button type="submit" className="btn btn--block" disabled={status === 'sending'}>
-        {status === 'sending' ? 'Submitting…' : 'Submit Application'}
+        {status === 'sending' ? 'Submitting…' : 'Submit Application & Set Up Monthly Gift'}
       </button>
     </form>
   )

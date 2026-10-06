@@ -100,6 +100,10 @@ export function KnowledgeIcon({ size = 20 }: IconProps) {
   return <svg {...base(size)}><path d="M4 5.5A1.5 1.5 0 0 1 5.5 4H11v16H5.5A1.5 1.5 0 0 1 4 18.5z" /><path d="M20 5.5A1.5 1.5 0 0 0 18.5 4H13v16h5.5a1.5 1.5 0 0 0 1.5-1.5z" /></svg>
 }
 
+export function GivingIcon({ size = 20 }: IconProps) {
+  return <svg {...base(size)}><path d="M12 21s-7-4.5-9.5-9A5.5 5.5 0 0 1 12 6a5.5 5.5 0 0 1 9.5 6c-2.5 4.5-9.5 9-9.5 9z" /><path d="M17 1l2 2-2 2M19 3h-5" strokeLinecap="round" strokeLinejoin="round" /></svg>
+}
+
 export const NAV_ICONS: Record<string, (props: IconProps) => React.ReactElement> = {
   '/admin': DashboardIcon,
   '/admin/analytics': AnalyticsIcon,
@@ -113,6 +117,7 @@ export const NAV_ICONS: Record<string, (props: IconProps) => React.ReactElement>
   '/admin/partner': PartnersIcon,
   '/admin/donations': DonationsIcon,
   '/admin/bank-transfers': BankTransfersIcon,
+  '/admin/giving': GivingIcon,
   '/admin/scholarships': ScholarshipsIcon,
   '/admin/opportunities': OpportunitiesIcon,
   '/admin/courses': CoursesIcon,

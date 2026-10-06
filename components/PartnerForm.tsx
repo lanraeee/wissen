@@ -1,10 +1,15 @@
 'use client'
 
+import { useState } from 'react'
 import { useFormSubmit } from '@/lib/useFormSubmit'
 import { FormInput, FormTextarea, FormSelect } from '@/components/form/FormField'
 import { FormSuccess, FormError } from '@/components/form/FormSuccess'
+import GivingFields, { MIN_MONTHLY_NGN } from '@/components/form/GivingFields'
 
 export default function PartnerForm() {
+  const [givingAmount, setGivingAmount] = useState(String(MIN_MONTHLY_NGN))
+  const [givingMethod, setGivingMethod] = useState<'stripe' | 'bank_transfer'>('stripe')
+
   const { status, error, handleSubmit } = useFormSubmit({
     endpoint: '/api/partner',
     buildPayload: fd => ({
@@ -13,9 +18,15 @@ export default function PartnerForm() {
       organisation: fd.get('org') || '',
       partnershipType: fd.get('type') || undefined,
       message: fd.get('message'),
+      givingAmount: Number(givingAmount),
+      givingMethod,
     }),
     event: 'partner_inquiry_submitted',
-    eventProperties: fd => ({ partnership_type: fd.get('type') as string | null }),
+    eventProperties: fd => ({ partnership_type: fd.get('type') as string | null, giving_method: givingMethod }),
+    onSuccess: data => {
+      const redirectUrl = (data as { redirectUrl?: string | null })?.redirectUrl
+      if (redirectUrl) window.location.href = redirectUrl
+    },
   })
 
   if (status === 'done') {
@@ -47,9 +58,16 @@ export default function PartnerForm() {
         label="Tell us about your goals" id="p-msg" name="message" required
         placeholder="What do you hope to achieve through this partnership?"
       />
+
+      <GivingFields
+        amount={givingAmount} onAmountChange={setGivingAmount}
+        method={givingMethod} onMethodChange={setGivingMethod}
+        idPrefix="p-giving"
+      />
+
       {status === 'error' && <FormError error={error} />}
       <button type="submit" className="btn btn--block" disabled={status === 'sending'}>
-        {status === 'sending' ? 'Sending…' : 'Send Enquiry'}
+        {status === 'sending' ? 'Sending…' : 'Send Enquiry & Set Up Monthly Gift'}
       </button>
     </form>
   )
