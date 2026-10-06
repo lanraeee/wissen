@@ -6,14 +6,16 @@ export interface ContactDetails {
   primary_email: string
   admin_emails: string[]
   support_email: string
-  phone: string
+  phone_nigeria: string
+  phone_uk: string
   whatsapp_url: string
   instagram_url: string
   linkedin_url: string
   twitter_url: string
   google_business_url: string
   bing_places_url: string
-  address: string
+  address_nigeria: string
+  address_uk: string
   tagline: string
 }
 
@@ -21,14 +23,16 @@ const DEFAULT: ContactDetails = {
   primary_email: 'info@wissenhaus.org',
   admin_emails: ['director@wissenhaus.org', 'wissenhaus@outlook.com'],
   support_email: 'info@wissenhaus.org',
-  phone: '+234800947736',
+  phone_nigeria: '+234800947736',
+  phone_uk: '',
   whatsapp_url: '',
   instagram_url: 'https://www.instagram.com/wissen_haus',
   linkedin_url: 'https://www.linkedin.com/company/wissen-haus-empowerment-foundation',
   twitter_url: '',
   google_business_url: '',
   bing_places_url: '',
-  address: 'Ibadan, Nigeria',
+  address_nigeria: 'Ibadan, Oyo State, Nigeria',
+  address_uk: '',
   tagline: 'Empowering Youth, Shaping Futures',
 }
 
@@ -128,29 +132,6 @@ export default function ContactDetailsEditor() {
               placeholder="info@wissenhaus.org"
             />
           </div>
-          <div>
-            <label style={{ display: 'block', fontSize: '.7rem', fontWeight: 700, textTransform: 'uppercase', color: '#8a9a8f', letterSpacing: '.06em', marginBottom: 4 }}>
-              Phone
-            </label>
-            <input
-              style={inp}
-              type="tel"
-              value={details.phone}
-              onChange={e => setDetails(d => ({ ...d, phone: e.target.value }))}
-              placeholder="+234800947736"
-            />
-          </div>
-          <div>
-            <label style={{ display: 'block', fontSize: '.7rem', fontWeight: 700, textTransform: 'uppercase', color: '#8a9a8f', letterSpacing: '.06em', marginBottom: 4 }}>
-              Address
-            </label>
-            <input
-              style={inp}
-              value={details.address}
-              onChange={e => setDetails(d => ({ ...d, address: e.target.value }))}
-              placeholder="Ibadan, Nigeria"
-            />
-          </div>
         </div>
         <div style={{ marginTop: 14 }}>
           <label style={{ display: 'block', fontSize: '.7rem', fontWeight: 700, textTransform: 'uppercase', color: '#8a9a8f', letterSpacing: '.06em', marginBottom: 4 }}>
@@ -164,6 +145,72 @@ export default function ContactDetailsEditor() {
           />
           <p style={{ margin: '6px 0 0', fontSize: '.75rem', color: '#8a9a8f' }}>All notifications for contact forms, volunteer applications, and donations go to these addresses</p>
         </div>
+      </div>
+
+      {/* Office Locations */}
+      <div style={{ marginBottom: 32, paddingTop: 20, borderTop: '1px solid #e8e4dc' }}>
+        <h3 style={{ margin: '0 0 14px', fontSize: '0.95rem', color: '#1a3c2e', fontWeight: 600 }}>Office Locations</h3>
+        <div className="rgrid-2" style={{ gap: 20 }}>
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
+              <span style={{ fontSize: '1.3rem' }} aria-hidden="true">🇳🇬</span>
+              <span style={{ fontSize: '.85rem', fontWeight: 700, color: '#1a3c2e' }}>Nigeria</span>
+            </div>
+            <div style={{ marginBottom: 10 }}>
+              <label style={{ display: 'block', fontSize: '.7rem', fontWeight: 700, textTransform: 'uppercase', color: '#8a9a8f', letterSpacing: '.06em', marginBottom: 4 }}>
+                Phone
+              </label>
+              <input
+                style={inp}
+                type="tel"
+                value={details.phone_nigeria}
+                onChange={e => setDetails(d => ({ ...d, phone_nigeria: e.target.value }))}
+                placeholder="+234800947736"
+              />
+            </div>
+            <div>
+              <label style={{ display: 'block', fontSize: '.7rem', fontWeight: 700, textTransform: 'uppercase', color: '#8a9a8f', letterSpacing: '.06em', marginBottom: 4 }}>
+                Address
+              </label>
+              <input
+                style={inp}
+                value={details.address_nigeria}
+                onChange={e => setDetails(d => ({ ...d, address_nigeria: e.target.value }))}
+                placeholder="Ibadan, Oyo State, Nigeria"
+              />
+            </div>
+          </div>
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
+              <span style={{ fontSize: '1.3rem' }} aria-hidden="true">🇬🇧</span>
+              <span style={{ fontSize: '.85rem', fontWeight: 700, color: '#1a3c2e' }}>United Kingdom</span>
+            </div>
+            <div style={{ marginBottom: 10 }}>
+              <label style={{ display: 'block', fontSize: '.7rem', fontWeight: 700, textTransform: 'uppercase', color: '#8a9a8f', letterSpacing: '.06em', marginBottom: 4 }}>
+                Phone
+              </label>
+              <input
+                style={inp}
+                type="tel"
+                value={details.phone_uk}
+                onChange={e => setDetails(d => ({ ...d, phone_uk: e.target.value }))}
+                placeholder="+44 20 0000 0000"
+              />
+            </div>
+            <div>
+              <label style={{ display: 'block', fontSize: '.7rem', fontWeight: 700, textTransform: 'uppercase', color: '#8a9a8f', letterSpacing: '.06em', marginBottom: 4 }}>
+                Address
+              </label>
+              <input
+                style={inp}
+                value={details.address_uk}
+                onChange={e => setDetails(d => ({ ...d, address_uk: e.target.value }))}
+                placeholder="Leave blank until registered"
+              />
+            </div>
+          </div>
+        </div>
+        <p style={{ margin: '10px 0 0', fontSize: '.75rem', color: '#8a9a8f' }}>Leave the UK fields blank until there&apos;s a UK office — they won&apos;t be shown on the site until filled in.</p>
       </div>
 
       {/* Social & Web */}

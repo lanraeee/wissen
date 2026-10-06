@@ -96,9 +96,27 @@ export default async function Footer() {
 
             <div className="footer-col">
               <h5>Contact</h5>
-              <a href="#">{details.address}</a>
               <a href={`mailto:${details.primary_email}`}>{details.primary_email}</a>
-              <a href={`tel:${details.phone.replace(/\s/g, '')}`}>{details.phone}</a>
+              {details.address_nigeria && (
+                <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <span aria-hidden="true">🇳🇬</span> {details.address_nigeria}
+                </span>
+              )}
+              {details.phone_nigeria && (
+                <a href={`tel:${details.phone_nigeria.replace(/\s/g, '')}`} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <span aria-hidden="true">🇳🇬</span> {details.phone_nigeria}
+                </a>
+              )}
+              {details.address_uk && (
+                <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <span aria-hidden="true">🇬🇧</span> {details.address_uk}
+                </span>
+              )}
+              {details.phone_uk && (
+                <a href={`tel:${details.phone_uk.replace(/\s/g, '')}`} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <span aria-hidden="true">🇬🇧</span> {details.phone_uk}
+                </a>
+              )}
             </div>
           </div>
         </div>
