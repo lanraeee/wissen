@@ -390,10 +390,9 @@ export async function sendNewsletterEmail(to: string, subject: string, bodyHtml:
 }
 
 // ─── Support tickets ────────────────────────────────────────────────────────
-// These deliberately reuse sendEmail/FROM/ADMIN_EMAILS above rather than
-// building their own sender: ADMIN_EMAILS carries a `||` fallback that exists
-// because FOUNDER_EMAIL is an empty string in some environments, and a second
-// copy of that list would be a second chance to reintroduce the bug.
+// These deliberately reuse sendEmail/FROM above rather than building their
+// own sender, and fetch admin_emails from getContactDetails() for the same
+// reason every other admin notification does.
 //
 // Unlike the other transactional mail here these are not yet in
 // EMAIL_TEMPLATES_BY_ID, so they are not admin-editable. Worth adding when
@@ -506,10 +505,11 @@ export async function sendTicketAccessLink(ticket: TicketLike, token: string) {
 // Deliberately carries no details of the concern: email is forwarded, synced
 // to phones and read over shoulders. The reader signs in to see the record.
 export async function notifySafeguardingTeam(opts: { to: string[]; reference: string; sourceLabel: string; urgent: boolean }) {
+  const details = await getContactDetails()
   const url = `${SITE_URL}/admin/whf-cio?tab=safeguarding`
   return sendEmail({
     from: FROM,
-    to: Array.from(new Set([...opts.to, ...ADMIN_EMAILS])),
+    to: Array.from(new Set([...opts.to, ...details.admin_emails])),
     subject: `${opts.urgent ? 'URGENT: ' : ''}Safeguarding concern received — ${opts.reference}`,
     html: shell(`
       <span class="badge">Safeguarding</span>
