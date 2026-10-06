@@ -74,8 +74,12 @@ export const DEFAULT_TAGLINE = 'Empowering Youth, Shaping Futures'
 
 // Resized through Next's own image endpoint rather than shipping a second
 // logo asset -- /img/logo.png is 1750x1750 (290KB), far too heavy to inline
-// into an email at display size.
-const LOGO_URL = `${SITE_URL}/_next/image?url=%2Fimg%2Flogo.png&w=120&q=90`
+// into an email at display size. Entity-encoded ("&amp;" not "&") because it
+// goes straight into an HTML attribute: a bare "&" there is invalid markup
+// that several mail clients' strict/sanitizing parsers choke on, which can
+// silently truncate everything after it in the message -- including, as far
+// as the reader can tell, the footer below it.
+const LOGO_URL = `${SITE_URL}/_next/image?url=%2Fimg%2Flogo.png&amp;w=120&amp;q=90`
 
 export const HEADER_START = '<!--WH_HEADER-->'
 export const HEADER_END = '<!--/WH_HEADER-->'
@@ -190,7 +194,7 @@ export function shell(body: string, tagline: string = DEFAULT_TAGLINE) {
   .field{margin-bottom:16px}
   .field .k{font-size:.75rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#8a9a8f;margin-bottom:3px}
   .field .v{font-size:.95rem;color:#1a2e24}
-  .foot{background:#f4f0e7;padding:26px 36px 30px;text-align:center;font-size:.78rem;color:#8a9a8f;line-height:1.7}
+  .foot{background:#f4f0e7;padding:26px 36px 30px;text-align:center;font-size:.78rem;color:#8a9a8f;line-height:1.7;word-break:break-word;overflow-wrap:anywhere}
   .foot a{color:#1a3c2e;text-decoration:none}
   .foot .legal-links a{color:#8a9a8f;text-decoration:underline}
   @media (max-width:600px){

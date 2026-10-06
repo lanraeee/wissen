@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
+import { BROADCAST_PRESETS } from '@/lib/broadcast-messages'
 
 interface Pledge {
   id: string
@@ -23,6 +24,23 @@ interface Pledge {
 interface Project {
   slug: string
   title: string
+}
+
+interface Contact {
+  id: string
+  email: string
+  name: string | null
+  source: string
+  status: 'subscribed' | 'unsubscribed' | 'bounced' | 'complained'
+  subscribed_at: string
+  unsubscribed_at: string | null
+}
+
+const CONTACT_STATUS_COLORS: Record<string, { background: string; color: string }> = {
+  subscribed:   { background: '#d1fae5', color: '#065f46' },
+  unsubscribed: { background: '#f0ece4', color: '#6b6b5c' },
+  bounced:      { background: '#fee2e2', color: '#991b1b' },
+  complained:   { background: '#fee2e2', color: '#991b1b' },
 }
 
 const STATUS_COLORS: Record<string, { background: string; color: string }> = {
@@ -66,6 +84,28 @@ export default function GivingManager() {
 
   const [csvBusy, setCsvBusy] = useState(false)
   const [csvResult, setCsvResult] = useState('')
+
+  const [contacts, setContacts] = useState<Contact[]>([])
+  const [contactsLoading, setContactsLoading] = useState(true)
+  const [presetKey, setPresetKey] = useState('')
+
+  const loadContacts = useCallback(async () => {
+    setContactsLoading(true)
+    const res = await fetch('/api/admin/newsletter/subscribers')
+    const data = await res.json()
+    setContacts(Array.isArray(data.subscribers) ? data.subscribers : [])
+    setContactsLoading(false)
+  }, [])
+
+  useEffect(() => { loadContacts() }, [loadContacts])
+
+  function applyPreset(key: string) {
+    setPresetKey(key)
+    const preset = BROADCAST_PRESETS.find(p => p.key === key)
+    if (!preset) return
+    const projectTitle = projects.find(p => p.slug === broadcastSlug)?.title ?? 'this project'
+    setBroadcastMessage(preset.message.replace(/\{\{project\}\}/g, projectTitle))
+  }
 
   const load = useCallback(async () => {
     setLoading(true)
@@ -153,6 +193,7 @@ export default function GivingManager() {
       if (!res.ok) throw new Error(data.error || 'Could not add contact')
       setContactMsg(data.resubscribed ? 'Re-subscribed' : 'Added')
       setContactName(''); setContactEmail('')
+      await loadContacts()
     } catch (err) {
       setContactMsg(err instanceof Error ? err.message : 'Could not add contact')
     }
@@ -170,6 +211,7 @@ export default function GivingManager() {
       const data = await res.json()
       if (!res.ok) throw new Error(data.error || 'Import failed')
       setCsvResult(`Imported ${data.imported}, skipped ${data.skipped} (already on list), ${data.invalid} invalid.`)
+      await loadContacts()
     } catch (err) {
       setCsvResult(err instanceof Error ? err.message : 'Import failed')
     }
@@ -204,11 +246,18 @@ export default function GivingManager() {
             </select>
           </div>
         </div>
+        <div style={{ marginBottom: 10 }}>
+          <label style={{ display: 'block', fontSize: '.7rem', fontWeight: 700, textTransform: 'uppercase', color: '#8a9a8f', marginBottom: 4 }}>Message Style (optional starting point)</label>
+          <select value={presetKey} onChange={e => applyPreset(e.target.value)} style={{ width: '100%', padding: '7px 10px', borderRadius: 6, border: '1px solid #d0ccc4', fontSize: '.85rem' }}>
+            <option value="">Write my own / use default…</option>
+            {BROADCAST_PRESETS.map(p => <option key={p.key} value={p.key}>{p.label}</option>)}
+          </select>
+        </div>
         <textarea
           value={broadcastMessage}
           onChange={e => setBroadcastMessage(e.target.value)}
           placeholder="Optional custom message (otherwise a default invite is used)"
-          style={{ width: '100%', minHeight: 70, padding: '7px 10px', borderRadius: 6, border: '1px solid #d0ccc4', fontSize: '.85rem', boxSizing: 'border-box', marginBottom: 12 }}
+          style={{ width: '100%', minHeight: 90, padding: '7px 10px', borderRadius: 6, border: '1px solid #d0ccc4', fontSize: '.85rem', boxSizing: 'border-box', marginBottom: 12 }}
         />
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <button onClick={sendBroadcast} disabled={!broadcastSlug || broadcastBusy} style={btn('#1a3c2e')}>
@@ -252,6 +301,46 @@ export default function GivingManager() {
             />
             {csvBusy && <div style={{ fontSize: '.8rem', color: '#8a9a8f', marginTop: 6 }}>Importing…</div>}
             {csvResult && <div style={{ fontSize: '.8rem', color: '#5a6a5f', marginTop: 6 }}>{csvResult}</div>}
+          </div>
+        </div>
+
+        <div style={{ marginTop: 18, paddingTop: 16, borderTop: '1px solid #e8e4dc' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 8 }}>
+            <span style={{ fontSize: '.75rem', fontWeight: 700, textTransform: 'uppercase', color: '#8a9a8f' }}>
+              {contactsLoading ? 'Loading…' : `${contacts.length} contact${contacts.length === 1 ? '' : 's'}`}
+            </span>
+          </div>
+          <div style={{ maxHeight: 260, overflowY: 'auto', border: '1px solid #e8e4dc', borderRadius: 8 }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '.82rem' }}>
+              <thead>
+                <tr style={{ background: '#f8f6f0', textAlign: 'left' }}>
+                  <th style={{ padding: '8px 12px', fontSize: '.7rem', fontWeight: 700, textTransform: 'uppercase', color: '#8a9a8f' }}>Name</th>
+                  <th style={{ padding: '8px 12px', fontSize: '.7rem', fontWeight: 700, textTransform: 'uppercase', color: '#8a9a8f' }}>Email</th>
+                  <th style={{ padding: '8px 12px', fontSize: '.7rem', fontWeight: 700, textTransform: 'uppercase', color: '#8a9a8f' }}>Source</th>
+                  <th style={{ padding: '8px 12px', fontSize: '.7rem', fontWeight: 700, textTransform: 'uppercase', color: '#8a9a8f' }}>Status</th>
+                  <th style={{ padding: '8px 12px', fontSize: '.7rem', fontWeight: 700, textTransform: 'uppercase', color: '#8a9a8f' }}>Added</th>
+                </tr>
+              </thead>
+              <tbody>
+                {!contactsLoading && contacts.length === 0 && (
+                  <tr><td colSpan={5} style={{ padding: 20, textAlign: 'center', color: '#8a9a8f' }}>No contacts yet.</td></tr>
+                )}
+                {contacts.map(c => {
+                  const sc = CONTACT_STATUS_COLORS[c.status] ?? CONTACT_STATUS_COLORS.subscribed
+                  return (
+                    <tr key={c.id} style={{ borderTop: '1px solid #f0ece4' }}>
+                      <td style={{ padding: '7px 12px', color: '#1a2e24' }}>{c.name || '—'}</td>
+                      <td style={{ padding: '7px 12px', color: '#1a2e24' }}>{c.email}</td>
+                      <td style={{ padding: '7px 12px', color: '#8a9a8f' }}>{c.source}</td>
+                      <td style={{ padding: '7px 12px' }}>
+                        <span style={{ ...sc, borderRadius: 99, padding: '2px 8px', fontSize: '.68rem', fontWeight: 700 }}>{c.status}</span>
+                      </td>
+                      <td style={{ padding: '7px 12px', color: '#8a9a8f' }}>{new Date(c.subscribed_at).toLocaleDateString('en-GB')}</td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
