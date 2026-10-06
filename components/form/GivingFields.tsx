@@ -43,7 +43,7 @@ export default function GivingFields({ amount, onAmountChange, method, onMethodC
             onChange={e => onMethodChange(e.target.value as 'stripe' | 'bank_transfer')}
           >
             <option value="stripe">Card (sets up automatic monthly billing)</option>
-            <option value="bank_transfer">Bank transfer (we'll remind you each month)</option>
+            <option value="bank_transfer">Bank transfer (we&apos;ll remind you each month)</option>
           </select>
         </div>
       </div>
