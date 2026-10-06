@@ -72,14 +72,15 @@ export function replyButton(email: string, name: string) {
 export const SITE_URL = 'https://www.wissenhaus.org'
 export const DEFAULT_TAGLINE = 'Empowering Youth, Shaping Futures'
 
-// Resized through Next's own image endpoint rather than shipping a second
-// logo asset -- /img/logo.png is 1750x1750 (290KB), far too heavy to inline
-// into an email at display size. Entity-encoded ("&amp;" not "&") because it
-// goes straight into an HTML attribute: a bare "&" there is invalid markup
-// that several mail clients' strict/sanitizing parsers choke on, which can
-// silently truncate everything after it in the message -- including, as far
-// as the reader can tell, the footer below it.
-const LOGO_URL = `${SITE_URL}/_next/image?url=%2Fimg%2Flogo.png&amp;w=120&amp;q=90`
+// A plain static file, not Next's /_next/image optimizer: that route is
+// dynamic (on-demand resizing, its own caching/auth path), and several
+// email clients fetch images through their own proxy (Gmail's, Outlook's
+// Safe Links) that doesn't always reach a dynamic route the same way it
+// reaches a static one -- which is what showed up as the logo just not
+// loading. public/img/logo-email.png is a pre-resized 120x120 copy of
+// public/img/logo.png (1750x1750, 290KB -- far too heavy to inline at
+// display size), checked in rather than generated at request time.
+const LOGO_URL = `${SITE_URL}/img/logo-email.png`
 
 export const HEADER_START = '<!--WH_HEADER-->'
 export const HEADER_END = '<!--/WH_HEADER-->'

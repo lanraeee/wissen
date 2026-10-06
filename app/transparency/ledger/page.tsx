@@ -15,7 +15,19 @@ export const metadata: Metadata = pageMetadata({
 })
 
 const cell = { padding: '10px 8px', borderBottom: '1px solid #e8e4dc', verticalAlign: 'top' as const }
-const fmtDate = (v: string) => new Date(`${String(v).slice(0, 10)}T00:00:00Z`).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' })
+// occurred_on is a Postgres DATE column, and the Neon driver returns those as
+// a native JS Date (not a string) -- String(v).slice(0, 10) on a Date gives
+// its default toString() prefix ("Mon Jan 15 2026" style, from
+// Date.prototype.toString(), not an ISO string), which then fails to parse
+// and renders "Invalid Date". Same v instanceof Date check as
+// lib/ledger.ts's normaliseForCompare(), which hit the same issue.
+const fmtDate = (v: string | Date) => {
+  const iso = v instanceof Date ? v.toISOString() : String(v)
+  const d = new Date(`${iso.slice(0, 10)}T00:00:00Z`)
+  return Number.isNaN(d.getTime())
+    ? '—'
+    : d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' })
+}
 const humanise = (v: string) => v.replace(/_/g, ' ').replace(/^./, c => c.toUpperCase())
 
 export default async function LedgerPage() {

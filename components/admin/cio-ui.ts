@@ -4,12 +4,20 @@ export const btn = (bg: string, color = '#fff') => ({ padding: '6px 16px', borde
 export const th = { padding: '10px', textAlign: 'left' as const, fontWeight: 600, color: '#0F2D1D' }
 export const td = { padding: '10px', verticalAlign: 'top' as const }
 
-/** API dates arrive as ISO timestamps; <input type=date> needs YYYY-MM-DD. */
-export const dateInput = (v: unknown) => (v ? String(v).slice(0, 10) : '')
+// API dates normally arrive as ISO timestamp strings (JSON.stringify turns a
+// Date into one automatically), but a raw Date object slipping through --
+// Date.prototype.toString() has no relation to its ISO form -- would wreck
+// a bare String(v).slice(0, 10), so both helpers below normalise it first.
+function isoDateString(v: unknown): string {
+  return v instanceof Date ? v.toISOString() : String(v)
+}
+
+/** <input type=date> needs YYYY-MM-DD. */
+export const dateInput = (v: unknown) => (v ? isoDateString(v).slice(0, 10) : '')
 
 export function fmtDate(v: unknown) {
   if (!v) return '—'
-  const d = new Date(`${String(v).slice(0, 10)}T00:00:00Z`)
+  const d = new Date(`${isoDateString(v).slice(0, 10)}T00:00:00Z`)
   return Number.isNaN(d.getTime()) ? '—' : d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' })
 }
 
