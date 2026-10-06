@@ -198,3 +198,66 @@ describe('an admin-saved override replaces the default without needing every var
     expect(payload.html).toContain('Custom body for Ada')
   })
 })
+
+describe('every email carries the header and footer built from the admin contact details', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+    sendMock.mockResolvedValue({ data: { id: 'test' }, error: null })
+  })
+
+  // Answers site_content lookups by key, the way lib/email-render.ts asks for them.
+  function storeWith(store: Record<string, unknown>) {
+    sqlMock.mockImplementation((_strings: TemplateStringsArray, ...values: unknown[]) => {
+      const key = values[0]
+      return Promise.resolve(typeof key === 'string' && key in store ? [{ value: store[key] }] : [])
+    })
+  }
+
+  function html() {
+    return (sendMock.mock.calls[0][0] as { html: string }).html
+  }
+
+  it('shows both offices, the contact email and every legal link', async () => {
+    storeWith({
+      contact_details: {
+        primary_email: 'hello@example.org',
+        address_nigeria: '1 Ring Road, Ibadan', phone_nigeria: '+234 800 000 0000',
+        address_uk: '10 High Street, London', phone_uk: '+44 20 0000 0000',
+      },
+    })
+    await email.sendPartnerConfirmation('ada@example.com', 'Ada Lovelace')
+    const out = html()
+    expect(out).toContain('1 Ring Road, Ibadan')
+    expect(out).toContain('10 High Street, London')
+    expect(out).toContain('href="tel:+442000000000"')
+    expect(out).toContain('mailto:hello@example.org')
+    for (const path of ['/privacy', '/terms', '/safeguarding', '/transparency/ledger', '/contact']) {
+      expect(out).toContain(`${path}"`)
+    }
+    expect(out).toContain('/img/email-logo.png')
+    expect(out).not.toContain('Unsubscribe')
+  })
+
+  it('leaves out an office with no address or phone', async () => {
+    storeWith({ contact_details: { address_uk: '', phone_uk: '' } })
+    await email.sendWelcomeEmail('ada@example.com', 'Ada Lovelace')
+    expect(html()).not.toContain('United Kingdom')
+    expect(html()).toContain('Nigeria')
+  })
+
+  it('uses the configured brand in the header', async () => {
+    storeWith({ site_settings: { brand_name: 'Acme', brand_descriptor: 'Trust' } })
+    await email.sendWelcomeEmail('ada@example.com', 'Ada Lovelace')
+    expect(html()).toContain('<h1>Acme</h1>')
+    expect(html()).toContain('<p>Trust</p>')
+  })
+
+  it('puts the unsubscribe link in the footer of bulk mail', async () => {
+    storeWith({})
+    await email.sendDonationRequestBroadcast({
+      to: 'ada@example.com', name: 'Ada Lovelace', projectTitle: 'Laptops for Learners',
+      projectUrl: 'https://wissenhaus.org/donate/laptops', unsubscribeUrl: 'https://wissenhaus.org/unsubscribe?token=abc',
+    })
+    expect(html()).toContain('href="https://wissenhaus.org/unsubscribe?token=abc">Unsubscribe</a>')
+  })
+})

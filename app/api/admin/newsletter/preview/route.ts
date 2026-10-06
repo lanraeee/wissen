@@ -11,7 +11,7 @@ const PreviewSchema = z.object({
 
 // Renders a draft campaign/template subject+HTML inside the real email
 // shell, exactly as sendNewsletterEmail() would, including a stand-in
-// unsubscribe line -- never touches the database, never sends anything.
+// unsubscribe link -- never writes to the database, never sends anything.
 export async function POST(req: NextRequest) {
   const session = await userAdminGuard()
   if (!session) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
@@ -19,10 +19,6 @@ export async function POST(req: NextRequest) {
   const { data, error } = await parseBody(req, PreviewSchema)
   if (error) return error
 
-  const bodyWithFooter = `${data.body}
-<div class="divider"></div>
-<p style="font-size:.78rem;color:#8a9a8f">You're receiving this because you're subscribed to Wissen-Haus updates. <a href="#" style="color:#8a9a8f;text-decoration:underline">Unsubscribe</a></p>`
-
-  const { subject, html } = renderPreview(data.subject, bodyWithFooter, {})
+  const { subject, html } = await renderPreview(data.subject, data.body, {}, { unsubscribeUrl: '#' })
   return NextResponse.json({ subject, html })
 }

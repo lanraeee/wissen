@@ -1,7 +1,7 @@
 import { Resend } from 'resend'
 import { brandify, getBrand } from './brand-server'
-import { esc, firstNameOf, formatMoney, field, fieldText, fieldPre, fields, fieldMono, mailtoLink, replyButton, shell } from './email-shell'
-import { renderTemplate } from './email-render'
+import { esc, firstNameOf, formatMoney, field, fieldText, fieldPre, fields, fieldMono, mailtoLink, replyButton, shell, type EmailChrome } from './email-shell'
+import { renderTemplate, getEmailChrome } from './email-render'
 import { EMAIL_TEMPLATES_BY_ID } from './email-catalog'
 import { getContactDetails } from './contact-details'
 
@@ -28,7 +28,7 @@ async function sendEmail(payload: SendEmailPayload): Promise<ResendResult> {
     ...payload,
     ...(typeof payload.subject === 'string' ? { subject: brandify(payload.subject, brand) } : {}),
     ...(typeof payload.from === 'string' ? { from: brandify(payload.from, brand) } : {}),
-    ...(typeof payload.html === 'string' ? { html: brandify(payload.html.replace(/(<h1>Wissen-Haus<\/h1>\s*)<p>Empowerment Foundation<\/p>/, (_, h) => `${h}<p>${brand.descriptor}</p>`), brand) } : {}),
+    ...(typeof payload.html === 'string' ? { html: brandify(payload.html, brand) } : {}),
   } as SendEmailPayload
   const result = await getResend().emails.send({ replyTo: details.support_email, ...branded })
   if (result.error) throw new Error(`Resend: ${result.error.name} — ${result.error.message}`)
@@ -36,6 +36,13 @@ async function sendEmail(payload: SendEmailPayload): Promise<ResendResult> {
 }
 
 const FROM = 'Wissen-Haus <noreply@noreply.wissenhaus.org>'
+
+// For the emails below that build their HTML inline rather than through
+// renderTemplate(): the same shell, header and footer, built from the current
+// brand and contact details.
+async function wrap(body: string, extra: Partial<EmailChrome> = {}) {
+  return shell(body, await getEmailChrome(extra))
+}
 
 // Admin notification emails are now fetched from contact_details via
 // getContactDetails(), which is called in each send function that needs them.
@@ -374,18 +381,14 @@ export async function sendScholarshipNotification(data: {
 // ─── Newsletter campaigns (admin-composed, sent to the subscriber list) ────
 // Campaign/template content is full HTML+CSS the admin writes directly (see
 // components/admin/newsletter/*) -- wrapped in the same shell() as every
-// other email so it carries the Wissen-Haus header/footer, but otherwise
-// passed through untouched.
+// other email so it carries the Wissen-Haus header/footer (with the
+// unsubscribe link), but otherwise passed through untouched.
 export async function sendNewsletterEmail(to: string, subject: string, bodyHtml: string, unsubscribeUrl: string) {
   return sendEmail({
     from: FROM,
     to,
     subject,
-    html: shell(`
-      ${bodyHtml}
-      <div class="divider"></div>
-      <p style="font-size:.78rem;color:#8a9a8f">You're receiving this because you're subscribed to Wissen-Haus updates. <a href="${esc(unsubscribeUrl)}" style="color:#8a9a8f;text-decoration:underline">Unsubscribe</a></p>
-    `),
+    html: await wrap(bodyHtml, { unsubscribeUrl }),
   })
 }
 
@@ -415,7 +418,7 @@ export async function sendTicketOpened(ticket: TicketLike) {
     to: ticket.requester_email,
     replyTo: 'info@wissenhaus.org',
     subject: `We've got your message — ${ticket.reference}`,
-    html: shell(`
+    html: await wrap(`
       <h2>Thanks, ${esc(firstNameOf(ticket.requester_name))} — we've got it.</h2>
       <p>Someone from the Wissen-Haus team will reply as soon as they can. You can follow the conversation any time using the link below.</p>
       ${fieldMono('Your reference', esc(ticket.reference))}
@@ -434,7 +437,7 @@ export async function notifyStaffNewTicket(ticket: TicketLike, body: string) {
     to: details.admin_emails,
     replyTo: ticket.requester_email ?? details.support_email,
     subject: `New support ticket: ${ticket.subject} (${ticket.reference})`,
-    html: shell(`
+    html: await wrap(`
       <h2>New support ticket</h2>
       ${fields([
         ['Reference', esc(ticket.reference)],
@@ -456,7 +459,7 @@ export async function notifyStaffReply(ticket: TicketLike, body: string) {
     to: details.admin_emails,
     replyTo: ticket.requester_email ?? details.support_email,
     subject: `Reply on ${ticket.reference}: ${ticket.subject}`,
-    html: shell(`
+    html: await wrap(`
       <h2>${esc(ticket.requester_name)} replied</h2>
       ${fieldPre('Message', esc(body))}
       <p style="margin-top:20px"><a href="${esc(url)}" style="background:#1a3c2e;color:#f4f0e7;padding:11px 20px;border-radius:8px;text-decoration:none;font-weight:700;display:inline-block">Open in admin</a></p>
@@ -473,7 +476,7 @@ export async function sendStaffReplyToRequester(ticket: TicketLike, body: string
     to: ticket.requester_email,
     replyTo: details.support_email,
     subject: `Re: ${ticket.subject} (${ticket.reference})`,
-    html: shell(`
+    html: await wrap(`
       <h2>Hi ${esc(firstNameOf(ticket.requester_name))},</h2>
       ${fieldPre('', esc(body))}
       <p style="margin-top:20px"><a href="${esc(url)}" style="background:#1a3c2e;color:#f4f0e7;padding:11px 20px;border-radius:8px;text-decoration:none;font-weight:700;display:inline-block">Reply to this</a></p>
@@ -490,7 +493,7 @@ export async function sendTicketAccessLink(ticket: TicketLike, token: string) {
     to: ticket.requester_email,
     replyTo: details.support_email,
     subject: `Open your conversation — ${ticket.reference}`,
-    html: shell(`
+    html: await wrap(`
       <h2>Hi ${esc(firstNameOf(ticket.requester_name))},</h2>
       <p>Someone asked to open this conversation. If that was you, use the button below.</p>
       ${field('Subject', esc(ticket.subject))}
@@ -511,7 +514,7 @@ export async function notifySafeguardingTeam(opts: { to: string[]; reference: st
     from: FROM,
     to: Array.from(new Set([...opts.to, ...details.admin_emails])),
     subject: `${opts.urgent ? 'URGENT: ' : ''}Safeguarding concern received — ${opts.reference}`,
-    html: shell(`
+    html: await wrap(`
       <span class="badge">Safeguarding</span>
       <h2>A safeguarding concern has been logged.</h2>
       ${opts.urgent ? '<p><strong>The reporter said someone may be in immediate danger.</strong></p>' : ''}
@@ -542,7 +545,7 @@ export async function sendRecurringGivingSetupReminder(opts: {
     from: FROM,
     to: opts.to,
     subject: 'Finish setting up your monthly gift',
-    html: shell(`
+    html: await wrap(`
       <h2>Hi ${esc(vars.firstName)},</h2>
       <p>Thanks for applying — we just need one more thing: your monthly giving commitment isn't set up yet.</p>
       ${vars.amountField}
@@ -561,7 +564,7 @@ export async function sendRecurringGivingDueReminder(opts: {
     from: FROM,
     to: opts.to,
     subject: 'Your monthly gift is due',
-    html: shell(`
+    html: await wrap(`
       <h2>Hi ${esc(firstName)},</h2>
       <p>This month's transfer for your recurring gift is due.</p>
       ${field('Monthly amount', `<strong>${formatMoney(opts.amount, 'NGN')}</strong>`)}
@@ -583,7 +586,7 @@ export async function sendRecurringGivingConfirmed(opts: {
     from: FROM,
     to: opts.to,
     subject: 'Your monthly gift is confirmed — thank you',
-    html: shell(`
+    html: await wrap(`
       <h2>Hi ${esc(firstName)}, thank you.</h2>
       <p>Your recurring gift of <strong>${formatMoney(opts.amount, 'NGN')}/month</strong> is confirmed.</p>
       ${nextLine}
@@ -602,7 +605,7 @@ export async function sendRecurringGivingFollowUp(opts: {
     from: FROM,
     to: opts.to,
     subject: 'Following up on your monthly gift',
-    html: shell(`
+    html: await wrap(`
       <h2>Hi ${esc(firstName)},</h2>
       <p>We wanted to follow up on the monthly gift you started setting up.</p>
       ${field('Monthly amount', `<strong>${formatMoney(opts.amount, 'NGN')}</strong>`)}
@@ -624,13 +627,11 @@ export async function sendDonationRequestBroadcast(opts: {
     from: FROM,
     to: opts.to,
     subject: `Support ${opts.projectTitle}`,
-    html: shell(`
+    html: await wrap(`
       <h2>Hi ${esc(firstName)},</h2>
       ${opts.message ? `<p>${esc(opts.message)}</p>` : `<p>We're raising support for <strong>${esc(opts.projectTitle)}</strong> and wanted to invite you to be part of it.</p>`}
       <p style="margin-top:20px"><a href="${esc(opts.projectUrl)}" style="background:#1a3c2e;color:#f4f0e7;padding:11px 20px;border-radius:8px;text-decoration:none;font-weight:700;display:inline-block">${esc(opts.projectTitle)} →</a></p>
-      <div class="divider"></div>
-      <p style="font-size:.78rem;color:#8a9a8f">You're receiving this because you've engaged with Wissen-Haus. <a href="${esc(opts.unsubscribeUrl)}" style="color:#8a9a8f;text-decoration:underline">Unsubscribe</a></p>
-    `),
+    `, { unsubscribeUrl: opts.unsubscribeUrl }),
   })
 }
 
@@ -643,7 +644,7 @@ export async function notifyAdminRecurringDeclared(data: {
     from: FROM,
     to: details.admin_emails,
     subject: `[Monthly Giving] ${data.name} says this month's transfer is sent`,
-    html: shell(`
+    html: await wrap(`
       <h2>${esc(data.name)} says the transfer has been sent</h2>
       ${fieldText('Donor', data.name)}
       ${field('Email', mailtoLink(data.email))}

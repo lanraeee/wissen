@@ -1,7 +1,7 @@
 import { getSiteContent } from './site-content'
 import type { ContactDetails } from '@/components/admin/ContactDetailsEditor'
 
-const DEFAULTS: ContactDetails = {
+export const CONTACT_DETAILS_DEFAULTS: ContactDetails = {
   primary_email: 'info@wissenhaus.org',
   admin_emails: ['director@wissenhaus.org', 'wissenhaus@outlook.com'],
   support_email: 'info@wissenhaus.org',
@@ -20,5 +20,5 @@ const DEFAULTS: ContactDetails = {
 
 export async function getContactDetails(): Promise<ContactDetails> {
   const stored = await getSiteContent<Partial<ContactDetails>>('contact_details')
-  return { ...DEFAULTS, ...stored }
+  return { ...CONTACT_DETAILS_DEFAULTS, ...stored }
 }
