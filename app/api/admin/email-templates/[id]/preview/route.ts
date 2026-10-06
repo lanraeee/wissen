@@ -24,6 +24,6 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   const { data, error } = await parseBody(req, PreviewSchema)
   if (error) return error
 
-  const { subject, html } = renderPreview(data.subject, data.html, template.sampleVars)
+  const { subject, html } = await renderPreview(data.subject, data.html, template.sampleVars)
   return NextResponse.json({ subject, html })
 }
