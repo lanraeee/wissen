@@ -204,17 +204,35 @@ CREATE TABLE IF NOT EXISTS fair_registrations (
 CREATE INDEX IF NOT EXISTS idx_fair_reg_event    ON fair_registrations(event_id, created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_fair_reg_token    ON fair_registrations(checkin_token);
 
+-- 'bounced'/'complained' are driven by app/api/webhooks/resend, not by the
+-- subscriber themselves -- a hard bounce or spam complaint on ANY send
+-- (newsletter campaign or a /admin/giving donation-request broadcast)
+-- suppresses the address from every future send through this table, same as
+-- an explicit unsubscribe. This is the deliverability safeguard: a sender
+-- reputation tanks fast once a mailbox provider sees repeat sends to
+-- addresses that bounced or were marked spam, so nothing re-sends to one
+-- without a human clearing it first.
 CREATE TABLE IF NOT EXISTS newsletter_subscribers (
   id                 UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   email              TEXT UNIQUE NOT NULL,
   name               TEXT,
   source             TEXT NOT NULL DEFAULT 'admin',
-  status             TEXT NOT NULL DEFAULT 'subscribed' CHECK (status IN ('subscribed', 'unsubscribed')),
+  status             TEXT NOT NULL DEFAULT 'subscribed' CHECK (status IN ('subscribed', 'unsubscribed', 'bounced', 'complained')),
   unsubscribe_token  TEXT UNIQUE NOT NULL,
   subscribed_at      TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  unsubscribed_at    TIMESTAMPTZ
+  unsubscribed_at    TIMESTAMPTZ,
+  bounced_at         TIMESTAMPTZ,
+  complained_at      TIMESTAMPTZ
 );
 CREATE INDEX IF NOT EXISTS idx_newsletter_subscribers_status ON newsletter_subscribers(status);
+-- Existing databases created before 'bounced'/'complained' were added to the
+-- CHECK above need it widened explicitly -- CREATE TABLE IF NOT EXISTS is a
+-- no-op once the table exists, so it never revisits an already-created
+-- constraint.
+ALTER TABLE newsletter_subscribers DROP CONSTRAINT IF EXISTS newsletter_subscribers_status_check;
+ALTER TABLE newsletter_subscribers ADD CONSTRAINT newsletter_subscribers_status_check CHECK (status IN ('subscribed', 'unsubscribed', 'bounced', 'complained'));
+ALTER TABLE newsletter_subscribers ADD COLUMN IF NOT EXISTS bounced_at TIMESTAMPTZ;
+ALTER TABLE newsletter_subscribers ADD COLUMN IF NOT EXISTS complained_at TIMESTAMPTZ;
 
 -- `body` is full HTML+CSS the admin authors directly (components/admin/
 -- newsletter/*), wrapped in lib/email.ts's shell() at send/preview time --

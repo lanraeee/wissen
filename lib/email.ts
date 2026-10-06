@@ -617,7 +617,7 @@ export async function sendRecurringGivingFollowUp(opts: {
 // to: field (no exposed recipient list), same convention as the newsletter
 // sender in lib/newsletter.ts.
 export async function sendDonationRequestBroadcast(opts: {
-  to: string; name: string; projectTitle: string; projectUrl: string; message?: string
+  to: string; name: string; projectTitle: string; projectUrl: string; message?: string; unsubscribeUrl: string
 }) {
   const firstName = firstNameOf(opts.name)
   return sendEmail({
@@ -628,6 +628,8 @@ export async function sendDonationRequestBroadcast(opts: {
       <h2>Hi ${esc(firstName)},</h2>
       ${opts.message ? `<p>${esc(opts.message)}</p>` : `<p>We're raising support for <strong>${esc(opts.projectTitle)}</strong> and wanted to invite you to be part of it.</p>`}
       <p style="margin-top:20px"><a href="${esc(opts.projectUrl)}" style="background:#1a3c2e;color:#f4f0e7;padding:11px 20px;border-radius:8px;text-decoration:none;font-weight:700;display:inline-block">${esc(opts.projectTitle)} →</a></p>
+      <div class="divider"></div>
+      <p style="font-size:.78rem;color:#8a9a8f">You're receiving this because you've engaged with Wissen-Haus. <a href="${esc(opts.unsubscribeUrl)}" style="color:#8a9a8f;text-decoration:underline">Unsubscribe</a></p>
     `),
   })
 }

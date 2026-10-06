@@ -54,10 +54,18 @@ export default function GivingManager() {
 
   const [projects, setProjects] = useState<Project[]>([])
   const [broadcastSlug, setBroadcastSlug] = useState('')
-  const [broadcastAudience, setBroadcastAudience] = useState<'pending' | 'all'>('pending')
+  const [broadcastAudience, setBroadcastAudience] = useState<'pledges_pending' | 'pledges_all' | 'subscribers' | 'users' | 'all'>('pledges_pending')
   const [broadcastMessage, setBroadcastMessage] = useState('')
   const [broadcastBusy, setBroadcastBusy] = useState(false)
   const [broadcastResult, setBroadcastResult] = useState('')
+
+  const [contactName, setContactName] = useState('')
+  const [contactEmail, setContactEmail] = useState('')
+  const [contactBusy, setContactBusy] = useState(false)
+  const [contactMsg, setContactMsg] = useState('')
+
+  const [csvBusy, setCsvBusy] = useState(false)
+  const [csvResult, setCsvResult] = useState('')
 
   const load = useCallback(async () => {
     setLoading(true)
@@ -126,11 +134,46 @@ export default function GivingManager() {
       })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error || 'Broadcast failed')
-      setBroadcastResult(`Sent to ${data.sent} of ${data.total} recipients.`)
+      setBroadcastResult(`Sent to ${data.sent} of ${data.total} recipients${data.failed ? ` (${data.failed} failed)` : ''}.`)
     } catch (err) {
       setBroadcastResult(err instanceof Error ? err.message : 'Broadcast failed')
     }
     setBroadcastBusy(false)
+  }
+
+  async function addContact() {
+    if (!contactEmail) return
+    setContactBusy(true); setContactMsg('')
+    try {
+      const res = await fetch('/api/admin/newsletter/subscribers', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: contactEmail, name: contactName || undefined }),
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error || 'Could not add contact')
+      setContactMsg(data.resubscribed ? 'Re-subscribed' : 'Added')
+      setContactName(''); setContactEmail('')
+    } catch (err) {
+      setContactMsg(err instanceof Error ? err.message : 'Could not add contact')
+    }
+    setContactBusy(false)
+  }
+
+  async function uploadCsv(file: File) {
+    setCsvBusy(true); setCsvResult('')
+    try {
+      const csv = await file.text()
+      const res = await fetch('/api/admin/newsletter/subscribers/import-csv', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ csv }),
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error || 'Import failed')
+      setCsvResult(`Imported ${data.imported}, skipped ${data.skipped} (already on list), ${data.invalid} invalid.`)
+    } catch (err) {
+      setCsvResult(err instanceof Error ? err.message : 'Import failed')
+    }
+    setCsvBusy(false)
   }
 
   const visible = filter === 'all' ? rows : rows.filter(r => r.status === filter)
@@ -152,9 +195,12 @@ export default function GivingManager() {
           </div>
           <div>
             <label style={{ display: 'block', fontSize: '.7rem', fontWeight: 700, textTransform: 'uppercase', color: '#8a9a8f', marginBottom: 4 }}>Audience</label>
-            <select value={broadcastAudience} onChange={e => setBroadcastAudience(e.target.value as 'pending' | 'all')} style={{ width: '100%', padding: '7px 10px', borderRadius: 6, border: '1px solid #d0ccc4', fontSize: '.85rem' }}>
-              <option value="pending">Pending / declared / lapsed only</option>
-              <option value="all">Everyone who set up a pledge</option>
+            <select value={broadcastAudience} onChange={e => setBroadcastAudience(e.target.value as typeof broadcastAudience)} style={{ width: '100%', padding: '7px 10px', borderRadius: 6, border: '1px solid #d0ccc4', fontSize: '.85rem' }}>
+              <option value="pledges_pending">Pledges: pending / declared / lapsed only</option>
+              <option value="pledges_all">Pledges: everyone who set one up</option>
+              <option value="subscribers">Uploaded / added contacts list</option>
+              <option value="users">All registered users (current &amp; future)</option>
+              <option value="all">Everyone above, combined</option>
             </select>
           </div>
         </div>
@@ -169,6 +215,44 @@ export default function GivingManager() {
             {broadcastBusy ? 'Sending…' : 'Send Broadcast'}
           </button>
           {broadcastResult && <span style={{ fontSize: '.82rem', color: '#5a6a5f' }}>{broadcastResult}</span>}
+        </div>
+      </div>
+
+      <div style={{ background: '#fff', borderRadius: 10, padding: '18px 22px', boxShadow: '0 1px 4px rgba(0,0,0,.06)', marginBottom: 20 }}>
+        <h2 style={{ margin: '0 0 4px', fontSize: '1rem' }}>Contacts List</h2>
+        <p style={{ margin: '0 0 14px', fontSize: '.8rem', color: '#8a9a8f' }}>
+          Add people one at a time, or upload a CSV (needs an &quot;email&quot; column; a &quot;name&quot; column is optional). Shared with the newsletter — see{' '}
+          <a href="/admin/newsletter?tab=subscribers" style={{ color: '#1a3c2e', fontWeight: 600 }}>all contacts</a>.
+        </p>
+        <div className="rgrid-2" style={{ gap: 20 }}>
+          <div>
+            <div style={{ display: 'flex', gap: 8, marginBottom: 8 }}>
+              <input
+                placeholder="Name (optional)" value={contactName} onChange={e => setContactName(e.target.value)}
+                style={{ flex: 1, padding: '7px 10px', borderRadius: 6, border: '1px solid #d0ccc4', fontSize: '.85rem' }}
+              />
+              <input
+                placeholder="Email" type="email" value={contactEmail} onChange={e => setContactEmail(e.target.value)}
+                style={{ flex: 1, padding: '7px 10px', borderRadius: 6, border: '1px solid #d0ccc4', fontSize: '.85rem' }}
+              />
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              <button onClick={addContact} disabled={!contactEmail || contactBusy} style={btn('#1a3c2e')}>
+                {contactBusy ? 'Adding…' : 'Add Contact'}
+              </button>
+              {contactMsg && <span style={{ fontSize: '.8rem', color: '#5a6a5f' }}>{contactMsg}</span>}
+            </div>
+          </div>
+          <div>
+            <input
+              type="file" accept=".csv,text/csv"
+              onChange={e => { const f = e.target.files?.[0]; if (f) uploadCsv(f); e.target.value = '' }}
+              disabled={csvBusy}
+              style={{ fontSize: '.85rem' }}
+            />
+            {csvBusy && <div style={{ fontSize: '.8rem', color: '#8a9a8f', marginTop: 6 }}>Importing…</div>}
+            {csvResult && <div style={{ fontSize: '.8rem', color: '#5a6a5f', marginTop: 6 }}>{csvResult}</div>}
+          </div>
         </div>
       </div>
 
