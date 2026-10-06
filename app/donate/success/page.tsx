@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { verifyStripeSession, recordDonation } from '@/lib/donations'
 import { getOgCopy } from '@/lib/og'
 import { ogSchemaFor } from '@/lib/og-schema'
+import { getContactDetails } from '@/lib/contact-details'
 
 export async function generateMetadata(): Promise<Metadata> {
   return pageMetadata(await getOgCopy(ogSchemaFor('donate-success')!))
@@ -28,7 +29,10 @@ async function verifyAndRecord(sp: Awaited<Props['searchParams']>) {
 }
 
 export default async function DonateSuccess({ searchParams }: Props) {
-  const sp = await searchParams
+  const [sp, details] = await Promise.all([
+    searchParams,
+    getContactDetails(),
+  ])
   const donation = await verifyAndRecord(sp)
 
   return (
@@ -54,7 +58,7 @@ export default async function DonateSuccess({ searchParams }: Props) {
           <Link href="/" className="btn btn--ghost">Back to Home</Link>
         </div>
         <p style={{ marginTop: '2rem', fontSize: '.82rem', color: 'var(--ink-60)' }}>
-          Questions? Email <a href="mailto:info@wissenhaus.org" style={{ color: 'inherit', fontWeight: 600 }}>info@wissenhaus.org</a>
+          Questions? Email <a href={`mailto:${details.primary_email}`} style={{ color: 'inherit', fontWeight: 600 }}>{details.primary_email}</a>
         </p>
       </div>
     </section>

@@ -9,15 +9,17 @@ import { getPageCopy } from '@/lib/page-copy'
 import { PARTNER_SCHEMA } from '@/lib/page-copy-schema'
 import { getOgCopy } from '@/lib/og'
 import { ogSchemaFor } from '@/lib/og-schema'
+import { getContactDetails } from '@/lib/contact-details'
 
 export async function generateMetadata(): Promise<Metadata> {
   return pageMetadata(await getOgCopy(ogSchemaFor('partner')!))
 }
 
 export default async function PartnerPage() {
-  const [partners, c] = await Promise.all([
+  const [partners, c, details] = await Promise.all([
     getSiteContent<Partner[]>('partners').then(p => p ?? []),
     getPageCopy(PARTNER_SCHEMA),
+    getContactDetails(),
   ])
   return (
     <>
@@ -49,7 +51,7 @@ export default async function PartnerPage() {
               <div className="feature__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M3 7l9-4 9 4-9 4-9-4z" /><path d="M6 12v4c0 1 2.7 3 6 3s6-2 6-3v-4" /></svg></div>
               <h3>{c.model1Title}</h3>
               <p>{c.model1Body}</p>
-              <a href="mailto:info@wissenhaus.org?subject=School Partnership Enquiry" className="textlink">{c.model1LinkText}
+              <a href={`mailto:${details.primary_email}?subject=School Partnership Enquiry`} className="textlink">{c.model1LinkText}
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><path d="M5 12h14M13 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" /></svg>
               </a>
             </div>
@@ -57,7 +59,7 @@ export default async function PartnerPage() {
               <div className="feature__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><rect x="2" y="7" width="20" height="14" rx="2" /><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2" /></svg></div>
               <h3>{c.model2Title}</h3>
               <p>{c.model2Body}</p>
-              <a href="mailto:info@wissenhaus.org?subject=Corporate Partnership Enquiry" className="textlink">{c.model2LinkText}
+              <a href={`mailto:${details.primary_email}?subject=Corporate Partnership Enquiry`} className="textlink">{c.model2LinkText}
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><path d="M5 12h14M13 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" /></svg>
               </a>
             </div>

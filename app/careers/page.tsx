@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { getSiteContent } from '@/lib/site-content'
 import { getOgCopy } from '@/lib/og'
 import { ogSchemaFor } from '@/lib/og-schema'
+import { getContactDetails } from '@/lib/contact-details'
 
 export async function generateMetadata(): Promise<Metadata> {
   return pageMetadata(await getOgCopy(ogSchemaFor('careers')!))
@@ -39,7 +40,10 @@ async function getContent() {
 }
 
 export default async function CareersPage() {
-  const { roles, internships } = await getContent()
+  const [{ roles, internships }, details] = await Promise.all([
+    getContent(),
+    getContactDetails(),
+  ])
 
   return (
     <>
@@ -75,7 +79,7 @@ export default async function CareersPage() {
                   <span className="card__num">{role.type}</span>
                   <h3 style={{ marginTop: '.4rem' }}>{role.title}</h3>
                   <p>{role.desc}</p>
-                  <a href={`mailto:info@wissenhaus.org?subject=Application: ${role.title}`} className="textlink" style={{ marginTop: 'auto', paddingTop: '.6rem' }}>
+                  <a href={`mailto:${details.primary_email}?subject=Application: ${role.title}`} className="textlink" style={{ marginTop: 'auto', paddingTop: '.6rem' }}>
                     Apply now
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><path d="M5 12h14M13 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" /></svg>
                   </a>
@@ -97,7 +101,7 @@ export default async function CareersPage() {
                   <span className="card__num">{role.type}</span>
                   <h3 style={{ marginTop: '.4rem' }}>{role.title}</h3>
                   <p>{role.desc}</p>
-                  <a href={`mailto:info@wissenhaus.org?subject=Internship Application: ${role.title}`} className="textlink" style={{ marginTop: 'auto', paddingTop: '.6rem' }}>
+                  <a href={`mailto:${details.primary_email}?subject=Internship Application: ${role.title}`} className="textlink" style={{ marginTop: 'auto', paddingTop: '.6rem' }}>
                     Apply
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><path d="M5 12h14M13 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" /></svg>
                   </a>
@@ -114,7 +118,7 @@ export default async function CareersPage() {
             <h2>Don&#39;t see your role?</h2>
             <p className="lead">We&#39;re always on the lookout for passionate people. Send us your CV and a note about how you&#39;d contribute.</p>
             <div className="cta-actions">
-              <a href="mailto:info@wissenhaus.org?subject=Speculative Application" className="btn btn--light btn--lg">Send a speculative application</a>
+              <a href={`mailto:${details.primary_email}?subject=Speculative Application`} className="btn btn--light btn--lg">Send a speculative application</a>
             </div>
           </div>
         </div>

@@ -5,6 +5,7 @@ import { getPageCopy } from '@/lib/page-copy'
 import { CONTACT_SCHEMA } from '@/lib/page-copy-schema'
 import { getOgCopy } from '@/lib/og'
 import { ogSchemaFor } from '@/lib/og-schema'
+import { getContactDetails } from '@/lib/contact-details'
 
 export async function generateMetadata(): Promise<Metadata> {
   return pageMetadata(await getOgCopy(ogSchemaFor('contact')!))
@@ -12,6 +13,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function ContactPage() {
   const c = await getPageCopy(CONTACT_SCHEMA)
+  const details = await getContactDetails()
   return (
     <section className="section" style={{ paddingTop: 'clamp(48px,6vw,84px)' }}>
       <div className="wrap">
@@ -29,7 +31,7 @@ export default async function ContactPage() {
                 </div>
                 <div>
                   <div className="k">{c.generalLabel}</div>
-                  <a href="mailto:info@wissenhaus.org" className="v">info@wissenhaus.org</a>
+                  <a href={`mailto:${details.primary_email}`} className="v">{details.primary_email}</a>
                 </div>
               </div>
               <div className="info-item">
@@ -38,7 +40,7 @@ export default async function ContactPage() {
                 </div>
                 <div>
                   <div className="k">{c.partnershipsLabel}</div>
-                  <a href="mailto:director@wissenhaus.org" className="v">director@wissenhaus.org</a>
+                  <a href={`mailto:${details.admin_emails[0]}`} className="v">{details.admin_emails[0]}</a>
                 </div>
               </div>
               <div className="info-item">
@@ -69,8 +71,8 @@ export default async function ContactPage() {
           <h3>{c.followTitle}</h3>
           <p style={{ color: 'var(--ink-60)', margin: '0.75rem 0 1.2rem' }}>{c.followBody}</p>
           <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-            <a href="https://www.instagram.com/wissen_haus" target="_blank" rel="noopener noreferrer" className="btn btn--ghost btn--sm">Instagram</a>
-            <a href="https://www.linkedin.com/company/wissen-haus-empowerment-foundation" target="_blank" rel="noopener noreferrer" className="btn btn--ghost btn--sm">LinkedIn</a>
+            {details.instagram_url && <a href={details.instagram_url} target="_blank" rel="noopener noreferrer" className="btn btn--ghost btn--sm">Instagram</a>}
+            {details.linkedin_url && <a href={details.linkedin_url} target="_blank" rel="noopener noreferrer" className="btn btn--ghost btn--sm">LinkedIn</a>}
           </div>
         </div>
       </div>

@@ -22,6 +22,10 @@ _transform.py
 *.pdf
 !public/*.pdf
 
+# Large binaries that don't belong in the repo
+*.iso
+*.dmg
+
 # Next.js
 .next/
 out/

@@ -3,6 +3,7 @@ import { brandify, getBrand } from './brand-server'
 import { esc, firstNameOf, formatMoney, field, fieldText, fieldPre, fields, fieldMono, mailtoLink, replyButton, shell } from './email-shell'
 import { renderTemplate } from './email-render'
 import { EMAIL_TEMPLATES_BY_ID } from './email-catalog'
+import { getContactDetails } from './contact-details'
 
 let _resend: Resend | null = null
 function getResend() {
@@ -22,29 +23,22 @@ async function sendEmail(payload: SendEmailPayload): Promise<ResendResult> {
   // land by default. Call sites that set their own replyTo (e.g. replying to
   // whoever submitted a form) override this.
   const brand = await getBrand()
+  const details = await getContactDetails()
   const branded = {
     ...payload,
     ...(typeof payload.subject === 'string' ? { subject: brandify(payload.subject, brand) } : {}),
     ...(typeof payload.from === 'string' ? { from: brandify(payload.from, brand) } : {}),
     ...(typeof payload.html === 'string' ? { html: brandify(payload.html.replace(/(<h1>Wissen-Haus<\/h1>\s*)<p>Empowerment Foundation<\/p>/, (_, h) => `${h}<p>${brand.descriptor}</p>`), brand) } : {}),
   } as SendEmailPayload
-  const result = await getResend().emails.send({ replyTo: 'info@wissenhaus.org', ...branded })
+  const result = await getResend().emails.send({ replyTo: details.support_email, ...branded })
   if (result.error) throw new Error(`Resend: ${result.error.name} — ${result.error.message}`)
   return result
 }
 
 const FROM = 'Wissen-Haus <noreply@noreply.wissenhaus.org>'
-// `||` (not `??`): FOUNDER_EMAIL is set to an empty string in some
-// environments, and `??` only falls back on null/undefined, not "" -- which
-// left every admin notification silently failing with a Resend "Invalid
-// `to` field" error. lib/admin-guard.ts and app/admin/layout.tsx already
-// read the same var with `||` for this reason.
-// Admin notifications go to every director/admin inbox, not just the
-// primary one -- mirrors lib/admin-guard.ts's DIRECTOR_EMAILS list.
-const ADMIN_EMAILS = Array.from(new Set([
-  process.env.FOUNDER_EMAIL || 'director@wissenhaus.org',
-  'wissenhaus@outlook.com',
-]))
+
+// Admin notification emails are now fetched from contact_details via
+// getContactDetails(), which is called in each send function that needs them.
 
 // Every send function below follows the same shape: compute a `vars` object
 // (escaping anything untrusted, exactly as before), then hand it to
@@ -69,6 +63,7 @@ export async function sendWelcomeEmail(to: string, name: string) {
 export async function sendContactNotification(data: {
   name: string; email: string; subject: string; message: string
 }) {
+  const details = await getContactDetails()
   const vars = {
     nameRaw: data.name, subjectLine: data.subject,
     nameField: fieldText('Name', data.name),
@@ -78,7 +73,7 @@ export async function sendContactNotification(data: {
     replyBtn: replyButton(data.email, data.name),
   }
   const { subject, html } = await renderTemplate('contact-notification', vars, defaultsFor('contact-notification'))
-  return sendEmail({ from: FROM, to: ADMIN_EMAILS, replyTo: data.email, subject, html })
+  return sendEmail({ from: FROM, to: details.admin_emails, replyTo: data.email, subject, html })
 }
 
 // ─── Contact confirmation (to user) ────────────────────────────────────────
@@ -92,6 +87,7 @@ export async function sendContactConfirmation(to: string, name: string) {
 export async function sendVolunteerNotification(data: {
   name: string; email: string; role: string; message: string
 }) {
+  const details = await getContactDetails()
   const vars = {
     nameRaw: data.name, roleRaw: data.role,
     nameField: fieldText('Name', data.name),
@@ -101,7 +97,7 @@ export async function sendVolunteerNotification(data: {
     replyBtn: replyButton(data.email, data.name),
   }
   const { subject, html } = await renderTemplate('volunteer-notification', vars, defaultsFor('volunteer-notification'))
-  return sendEmail({ from: FROM, to: ADMIN_EMAILS, replyTo: data.email, subject, html })
+  return sendEmail({ from: FROM, to: details.admin_emails, replyTo: data.email, subject, html })
 }
 
 // ─── Volunteer confirmation (to user) ──────────────────────────────────────
@@ -128,6 +124,7 @@ export async function sendDonationReceipt(to: string, name: string, amount: numb
 export async function sendDonationNotification(data: {
   name: string; email: string; amount: number; currency: string; ref: string; provider: string
 }) {
+  const details = await getContactDetails()
   const formatted = formatMoney(data.amount, data.currency)
   const vars = {
     nameRaw: data.name, providerRaw: data.provider, formatted,
@@ -138,7 +135,7 @@ export async function sendDonationNotification(data: {
     refField: fieldMono('Reference', data.ref),
   }
   const { subject, html } = await renderTemplate('donation-notification', vars, defaultsFor('donation-notification'))
-  return sendEmail({ from: FROM, to: ADMIN_EMAILS, subject, html })
+  return sendEmail({ from: FROM, to: details.admin_emails, subject, html })
 }
 
 // ─── Bank transfer instructions (to donor) ──────────────────────────────────
@@ -184,6 +181,7 @@ export async function sendBankTransferNotification(data: {
   reference: string
   stage: 'pledged' | 'declared_sent'
 }) {
+  const details = await getContactDetails()
   const formatted = formatMoney(data.amount, data.currency)
   const declared = data.stage === 'declared_sent'
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://wissenhaus.org'
@@ -205,7 +203,7 @@ export async function sendBankTransferNotification(data: {
     bankTransfersUrl: esc(siteUrl) + '/admin/bank-transfers',
   }
   const { subject, html } = await renderTemplate('bank-transfer-notification', vars, defaultsFor('bank-transfer-notification'))
-  return sendEmail({ from: FROM, to: ADMIN_EMAILS, replyTo: data.email, subject, html })
+  return sendEmail({ from: FROM, to: details.admin_emails, replyTo: data.email, subject, html })
 }
 
 // ─── Certificate email ──────────────────────────────────────────────────────
@@ -222,6 +220,7 @@ export async function sendCertificateEmail(to: string, name: string, courseName:
 export async function sendPartnerNotification(data: {
   name: string; email: string; organisation: string; message: string
 }) {
+  const details = await getContactDetails()
   const vars = {
     nameRaw: data.name, orgRaw: data.organisation,
     nameField: fieldText('Name', data.name),
@@ -231,7 +230,7 @@ export async function sendPartnerNotification(data: {
     replyBtn: replyButton(data.email, data.name),
   }
   const { subject, html } = await renderTemplate('partner-notification', vars, defaultsFor('partner-notification'))
-  return sendEmail({ from: FROM, to: ADMIN_EMAILS, replyTo: data.email, subject, html })
+  return sendEmail({ from: FROM, to: details.admin_emails, replyTo: data.email, subject, html })
 }
 
 // ─── Partner confirmation (to inquirer) ────────────────────────────────────
@@ -243,13 +242,14 @@ export async function sendPartnerConfirmation(to: string, name: string) {
 
 // ─── Testimonial submitted for moderation (to admin) ───────────────────────
 export async function sendTestimonialNotification(data: { name: string; role: string | null; quote: string }) {
+  const details = await getContactDetails()
   const vars = {
     nameRaw: data.name,
     fieldsHtml: fields([['Name', esc(data.name)], data.role && ['Role', esc(data.role)]]),
     quoteField: fieldPre('Quote', data.quote),
   }
   const { subject, html } = await renderTemplate('testimonial-notification', vars, defaultsFor('testimonial-notification'))
-  return sendEmail({ from: FROM, to: ADMIN_EMAILS, subject, html })
+  return sendEmail({ from: FROM, to: details.admin_emails, subject, html })
 }
 
 // ─── Email address confirmation (to user) ──────────────────────────────────
@@ -312,6 +312,7 @@ export async function sendFairRegistrationConfirmation(opts: {
 export async function sendFairRegistrationNotification(data: {
   name: string; email: string; phone: string; school: string; eventTitle: string
 }) {
+  const details = await getContactDetails()
   const vars = {
     nameRaw: data.name, eventTitleRaw: data.eventTitle,
     nameField: fieldText('Name', data.name),
@@ -321,7 +322,7 @@ export async function sendFairRegistrationNotification(data: {
     eventField: fieldText('Event', data.eventTitle),
   }
   const { subject, html } = await renderTemplate('fair-registration-notification', vars, defaultsFor('fair-registration-notification'))
-  return sendEmail({ from: FROM, to: ADMIN_EMAILS, replyTo: data.email, subject, html })
+  return sendEmail({ from: FROM, to: details.admin_emails, replyTo: data.email, subject, html })
 }
 
 // ─── Career Fair check-in reminder (to attendee, admin-triggered bulk send) ─
@@ -355,6 +356,7 @@ export async function sendScholarshipConfirmation(to: string, name: string) {
 export async function sendScholarshipNotification(data: {
   name: string; email: string; score: number; redFlags: string[]; goalsEssay: string; whyApplyingEssay: string
 }) {
+  const details = await getContactDetails()
   const vars = {
     nameRaw: data.name, scoreRaw: String(data.score),
     nameField: fieldText('Name', data.name),
@@ -366,7 +368,7 @@ export async function sendScholarshipNotification(data: {
     replyBtn: replyButton(data.email, data.name),
   }
   const { subject, html } = await renderTemplate('scholarship-notification', vars, defaultsFor('scholarship-notification'))
-  return sendEmail({ from: FROM, to: ADMIN_EMAILS, replyTo: data.email, subject, html })
+  return sendEmail({ from: FROM, to: details.admin_emails, replyTo: data.email, subject, html })
 }
 
 // ─── Newsletter campaigns (admin-composed, sent to the subscriber list) ────
@@ -426,11 +428,12 @@ export async function sendTicketOpened(ticket: TicketLike) {
 }
 
 export async function notifyStaffNewTicket(ticket: TicketLike, body: string) {
+  const details = await getContactDetails()
   const url = `${SITE_URL}/admin/support/${encodeURIComponent(ticket.reference)}`
   return sendEmail({
     from: FROM,
-    to: ADMIN_EMAILS,
-    replyTo: ticket.requester_email ?? 'info@wissenhaus.org',
+    to: details.admin_emails,
+    replyTo: ticket.requester_email ?? details.support_email,
     subject: `New support ticket: ${ticket.subject} (${ticket.reference})`,
     html: shell(`
       <h2>New support ticket</h2>
@@ -447,11 +450,12 @@ export async function notifyStaffNewTicket(ticket: TicketLike, body: string) {
 }
 
 export async function notifyStaffReply(ticket: TicketLike, body: string) {
+  const details = await getContactDetails()
   const url = `${SITE_URL}/admin/support/${encodeURIComponent(ticket.reference)}`
   return sendEmail({
     from: FROM,
-    to: ADMIN_EMAILS,
-    replyTo: ticket.requester_email ?? 'info@wissenhaus.org',
+    to: details.admin_emails,
+    replyTo: ticket.requester_email ?? details.support_email,
     subject: `Reply on ${ticket.reference}: ${ticket.subject}`,
     html: shell(`
       <h2>${esc(ticket.requester_name)} replied</h2>
@@ -463,11 +467,12 @@ export async function notifyStaffReply(ticket: TicketLike, body: string) {
 
 export async function sendStaffReplyToRequester(ticket: TicketLike, body: string) {
   if (!ticket.requester_email) return
+  const details = await getContactDetails()
   const url = `${SITE_URL}/support/${encodeURIComponent(ticket.reference)}`
   return sendEmail({
     from: FROM,
     to: ticket.requester_email,
-    replyTo: 'info@wissenhaus.org',
+    replyTo: details.support_email,
     subject: `Re: ${ticket.subject} (${ticket.reference})`,
     html: shell(`
       <h2>Hi ${esc(firstNameOf(ticket.requester_name))},</h2>
@@ -479,11 +484,12 @@ export async function sendStaffReplyToRequester(ticket: TicketLike, body: string
 
 export async function sendTicketAccessLink(ticket: TicketLike, token: string) {
   if (!ticket.requester_email) return
+  const details = await getContactDetails()
   const url = `${SITE_URL}/api/support/tickets/${encodeURIComponent(ticket.reference)}/access?t=${encodeURIComponent(token)}`
   return sendEmail({
     from: FROM,
     to: ticket.requester_email,
-    replyTo: 'info@wissenhaus.org',
+    replyTo: details.support_email,
     subject: `Open your conversation — ${ticket.reference}`,
     html: shell(`
       <h2>Hi ${esc(firstNameOf(ticket.requester_name))},</h2>

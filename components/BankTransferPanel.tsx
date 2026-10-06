@@ -23,6 +23,7 @@ interface Props {
   certUrl?: string
   instructions?: string
   donorEmail: string
+  supportEmail?: string
 }
 
 const GREEN = '#1a3c2e'
@@ -59,7 +60,7 @@ function CopyButton({ value, label }: { value: string; label: string }) {
 }
 
 export default function BankTransferPanel({
-  reference, rows, amountLabel, initialStatus, certUrl, instructions, donorEmail,
+  reference, rows, amountLabel, initialStatus, certUrl, instructions, donorEmail, supportEmail = 'info@wissenhaus.org',
 }: Props) {
   const router = useRouter()
   const [status, setStatus] = useState(initialStatus)
@@ -111,7 +112,7 @@ export default function BankTransferPanel({
       <div style={{ textAlign: 'center', padding: '8px 0' }}>
         <h2 style={{ margin: '0 0 .75rem', fontSize: '1.3rem' }}>This donation was cancelled</h2>
         <p style={{ color: 'var(--ink-60,#8a9a8f)', marginBottom: '1.5rem' }}>
-          If that&apos;s a mistake, email <a href="mailto:info@wissenhaus.org" style={{ color: GREEN, fontWeight: 600 }}>info@wissenhaus.org</a> quoting {reference}.
+          If that&apos;s a mistake, email <a href={`mailto:${supportEmail}`} style={{ color: GREEN, fontWeight: 600 }}>{supportEmail}</a> quoting {reference}.
         </p>
         <Link href="/donate" className="btn">Start a new donation</Link>
       </div>

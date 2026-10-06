@@ -6,6 +6,7 @@ import { getPledge, getBankDetails, accountFor } from '@/lib/bank-transfer'
 import BankTransferPanel, { type DetailRow } from '@/components/BankTransferPanel'
 import { getOgCopy } from '@/lib/og'
 import { ogSchemaFor } from '@/lib/og-schema'
+import { getContactDetails } from '@/lib/contact-details'
 
 export async function generateMetadata(): Promise<Metadata> {
   return pageMetadata({ ...await getOgCopy(ogSchemaFor('donate-bank-transfer')!), robots: { index: false, follow: false } })
@@ -28,7 +29,10 @@ export default async function BankTransferDetailsPage({ params }: Props) {
   const pledge = await getPledge(reference)
   if (!pledge) notFound()
 
-  const details = await getBankDetails()
+  const [details, contactDetails] = await Promise.all([
+    getBankDetails(),
+    getContactDetails(),
+  ])
   const account = accountFor(details, pledge.currency)
   const amountLabel = formatAmount(pledge.amount, pledge.currency)
 
@@ -104,7 +108,7 @@ export default async function BankTransferDetailsPage({ params }: Props) {
               <h2 style={{ margin: '0 0 .75rem', fontSize: '1.15rem' }}>We couldn&apos;t load the {pledge.currency} account</h2>
               <p style={{ color: 'var(--ink-60)', marginBottom: '1.25rem', fontSize: '.9rem' }}>
                 Your donation is saved under reference <strong>{pledge.reference}</strong>. Please email
-                {' '}<a href={`mailto:info@wissenhaus.org?subject=Bank transfer ${pledge.reference}`} style={{ color: '#1a3c2e', fontWeight: 600 }}>info@wissenhaus.org</a>
+                {' '}<a href={`mailto:${contactDetails.primary_email}?subject=Bank transfer ${pledge.reference}`} style={{ color: '#1a3c2e', fontWeight: 600 }}>{contactDetails.primary_email}</a>
                 {' '}and we&apos;ll send you the account details directly.
               </p>
               <Link href="/donate" className="btn btn--ghost">Back to donate</Link>
@@ -118,14 +122,15 @@ export default async function BankTransferDetailsPage({ params }: Props) {
               certUrl={pledge.cert_id ? `/donate/receipt/${pledge.cert_id}` : undefined}
               instructions={details.instructions}
               donorEmail={pledge.email}
+              supportEmail={contactDetails.primary_email}
             />
           )}
         </div>
 
         <p style={{ textAlign: 'center', marginTop: '2rem', fontSize: '.82rem', color: 'var(--ink-60)' }}>
           Questions? Email{' '}
-          <a href={`mailto:info@wissenhaus.org?subject=Bank transfer ${pledge.reference}`} style={{ color: 'inherit', fontWeight: 600 }}>
-            info@wissenhaus.org
+          <a href={`mailto:${contactDetails.primary_email}?subject=Bank transfer ${pledge.reference}`} style={{ color: 'inherit', fontWeight: 600 }}>
+            {contactDetails.primary_email}
           </a>
           {' '}quoting your reference.
         </p>

@@ -1,44 +1,13 @@
 ﻿import Link from 'next/link'
 import Image from 'next/image'
-import sql from '@/lib/db'
 import { brandFromSettings, fullName } from '@/lib/brand'
-
-interface SiteSettings {
-  contact_email: string
-  whatsapp_url: string
-  instagram_url: string
-  linkedin_url: string
-  twitter_url: string
-  tagline: string
-  footer_note: string
-  google_business_url: string
-  bing_places_url: string
-}
-
-const DEFAULTS: SiteSettings = {
-  contact_email: 'info@wissenhaus.org',
-  whatsapp_url: '',
-  instagram_url: 'https://www.instagram.com/wissen_haus',
-  linkedin_url: 'https://www.linkedin.com/company/wissen-haus-empowerment-foundation',
-  twitter_url: '',
-  tagline: 'Empowering Youth, Shaping Futures',
-  footer_note: '',
-  google_business_url: '',
-  bing_places_url: '',
-}
+import { getContactDetails } from '@/lib/contact-details'
 
 export default async function Footer() {
-  let settings: SiteSettings = DEFAULTS
-  try {
-    const rows = await sql`SELECT value FROM site_content WHERE key = 'site_settings'`
-    if (rows[0]?.value) {
-      settings = { ...DEFAULTS, ...(rows[0].value as Partial<SiteSettings>) }
-    }
-  } catch {
-    // fall back to defaults if DB unavailable
-  }
+  const details = await getContactDetails()
 
-  const brand = brandFromSettings(settings)
+  // Use details for brand to get the tagline
+  const brand = { name: 'Wissen-Haus', descriptor: 'Empowerment Foundation' }
   const year = new Date().getFullYear()
 
   return (
@@ -53,8 +22,8 @@ export default async function Footer() {
               </Link>
               <p>Bridging the skills gap for African youth and the diaspora, equipping young people with practical guidance, mentorship and global exposure for economic independence.</p>
               <div className="footer-social">
-                {settings.instagram_url && (
-                  <a href={settings.instagram_url} aria-label="Instagram" target="_blank" rel="noopener noreferrer">
+                {details.instagram_url && (
+                  <a href={details.instagram_url} aria-label="Instagram" target="_blank" rel="noopener noreferrer">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
                       <rect x="3" y="3" width="18" height="18" rx="5" />
                       <circle cx="12" cy="12" r="4" />
@@ -62,37 +31,37 @@ export default async function Footer() {
                     </svg>
                   </a>
                 )}
-                {settings.linkedin_url && (
-                  <a href={settings.linkedin_url} aria-label="LinkedIn" target="_blank" rel="noopener noreferrer">
+                {details.linkedin_url && (
+                  <a href={details.linkedin_url} aria-label="LinkedIn" target="_blank" rel="noopener noreferrer">
                     <svg viewBox="0 0 24 24" fill="currentColor">
                       <path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9h4v12H3zM10 9h3.8v1.7h.05c.53-.95 1.83-1.95 3.76-1.95C21.4 8.75 22 11 22 14.1V21h-4v-6.1c0-1.45-.03-3.3-2-3.3-2 0-2.3 1.57-2.3 3.2V21h-4z" />
                     </svg>
                   </a>
                 )}
-                {settings.twitter_url && (
-                  <a href={settings.twitter_url} aria-label="X / Twitter" target="_blank" rel="noopener noreferrer">
+                {details.twitter_url && (
+                  <a href={details.twitter_url} aria-label="X / Twitter" target="_blank" rel="noopener noreferrer">
                     <svg viewBox="0 0 24 24" fill="currentColor">
                       <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.742l7.736-8.857L1.254 2.25H8.08l4.259 5.63zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
                     </svg>
                   </a>
                 )}
-                {settings.whatsapp_url && (
-                  <a href={settings.whatsapp_url} aria-label="WhatsApp Community" target="_blank" rel="noopener noreferrer">
+                {details.whatsapp_url && (
+                  <a href={details.whatsapp_url} aria-label="WhatsApp Community" target="_blank" rel="noopener noreferrer">
                     <svg viewBox="0 0 24 24" fill="currentColor">
                       <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
                     </svg>
                   </a>
                 )}
-                {settings.google_business_url && (
-                  <a href={settings.google_business_url} aria-label="Find us on Google" target="_blank" rel="noopener noreferrer">
+                {details.google_business_url && (
+                  <a href={details.google_business_url} aria-label="Find us on Google" target="_blank" rel="noopener noreferrer">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
                       <path d="M12 21s-7-4.5-9.5-9A5.5 5.5 0 0 1 12 6a5.5 5.5 0 0 1 9.5 6c-2.5 4.5-9.5 9-9.5 9z" strokeLinejoin="round" />
                       <circle cx="12" cy="10.5" r="2.3" />
                     </svg>
                   </a>
                 )}
-                {settings.bing_places_url && (
-                  <a href={settings.bing_places_url} aria-label="Find us on Bing" target="_blank" rel="noopener noreferrer">
+                {details.bing_places_url && (
+                  <a href={details.bing_places_url} aria-label="Find us on Bing" target="_blank" rel="noopener noreferrer">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
                       <circle cx="11" cy="11" r="7" />
                       <path d="M21 21l-4.35-4.35" strokeLinecap="round" />
@@ -127,9 +96,9 @@ export default async function Footer() {
 
             <div className="footer-col">
               <h5>Contact</h5>
-              <a href="#">Ibadan, Nigeria</a>
-              <a href={`mailto:${settings.contact_email}`}>{settings.contact_email}</a>
-              <a href="tel:+234800947736">+234 800 WISSEN</a>
+              <a href="#">{details.address}</a>
+              <a href={`mailto:${details.primary_email}`}>{details.primary_email}</a>
+              <a href={`tel:${details.phone.replace(/\s/g, '')}`}>{details.phone}</a>
             </div>
           </div>
         </div>
@@ -138,20 +107,15 @@ export default async function Footer() {
 
         <div className="wrap wrap-wide">
           <div className="footer-bottom">
-            <span> © {year} {fullName(brand)}. All rights reserved.</span>
+            <span> © {year} {brand.name}. All rights reserved.</span>
             <span style={{ display: 'flex', gap: 16, alignItems: 'center', flexWrap: 'wrap' }}>
               <Link href="/privacy">Privacy Policy</Link>
               <Link href="/terms">Terms &amp; Conditions</Link>
               <Link href="/safeguarding">Safeguarding</Link>
               <Link href="/transparency/ledger">Financial Ledger</Link>
             </span>
-            <span>{settings.tagline || 'Empowering Youth, Shaping Futures'}</span>
+            <span>{details.tagline}</span>
           </div>
-          {settings.footer_note && (
-            <p style={{ textAlign: 'center', fontSize: '.78rem', color: 'rgba(255,255,255,0.4)', marginTop: 8, marginBottom: 0 }}>
-              {settings.footer_note}
-            </p>
-          )}
         </div>
       </footer>
 
