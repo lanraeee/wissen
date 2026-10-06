@@ -12,17 +12,27 @@ export function siteContentTag(key: string) {
  * still reflecting admin edits immediately (rather than after the next
  * deploy or an arbitrary time-based revalidation window).
  */
-export function getSiteContent<T>(key: string) {
-  return cache(
-    async (): Promise<T | null> => {
-      try {
-        const rows = await sql`SELECT value FROM site_content WHERE key = ${key}`
-        return (rows[0]?.value as T) ?? null
-      } catch {
-        return null
-      }
-    },
-    ['site-content', key],
-    { tags: [siteContentTag(key)] }
-  )()
+async function readSiteContent<T>(key: string): Promise<T | null> {
+  try {
+    const rows = await sql`SELECT value FROM site_content WHERE key = ${key}`
+    return (rows[0]?.value as T) ?? null
+  } catch {
+    return null
+  }
+}
+
+export async function getSiteContent<T>(key: string): Promise<T | null> {
+  try {
+    return await cache(
+      () => readSiteContent<T>(key),
+      ['site-content', key],
+      { tags: [siteContentTag(key)] }
+    )()
+  } catch {
+    // unstable_cache requires the Next.js incremental cache context, which
+    // isn't present outside an actual request (unit tests, scripts run
+    // outside next start/dev). Fall back to an uncached read there instead
+    // of letting every caller of getSiteContent crash.
+    return readSiteContent<T>(key)
+  }
 }
