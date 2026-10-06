@@ -79,6 +79,7 @@ export default function LedgerTab() {
   const [error, setError] = useState('')
   const [form, setForm] = useState<Form | null>(null)
   const [editing, setEditing] = useState<Entry | null>(null)
+  const [connecting, setConnecting] = useState(false)
 
   const load = useCallback(async () => {
     try {
@@ -115,6 +116,19 @@ export default function LedgerTab() {
       return false
     } finally {
       setBusy(false)
+    }
+  }
+
+  async function connectTide() {
+    setConnecting(true); setError('')
+    try {
+      const res = await fetch('/api/admin/whf-cio/ledger/gocardless/connect', { method: 'POST' })
+      const data = await res.json().catch(() => ({}))
+      if (!res.ok) throw new Error(data?.error || 'Could not start the connection')
+      window.location.href = data.link
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Could not start the connection')
+      setConnecting(false)
     }
   }
 
@@ -175,6 +189,15 @@ export default function LedgerTab() {
               : <Badge tone="amber">Waiting for first sync</Badge>}
             {p.configured && p.lastStatus === 'error' && p.lastError && (
               <div style={{ color: '#dc2626', marginTop: 4 }}>{p.lastError}</div>
+            )}
+            {p.key === 'gocardless' && (
+              <button
+                style={{ ...btn('#1a3c2e'), marginTop: 8, padding: '3px 10px', fontSize: '.72rem' }}
+                onClick={connectTide}
+                disabled={connecting}
+              >
+                {connecting ? 'Opening Tide…' : p.configured ? 'Connect another account' : 'Connect Tide'}
+              </button>
             )}
           </div>
         ))}

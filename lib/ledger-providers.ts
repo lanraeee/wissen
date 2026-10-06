@@ -1,5 +1,7 @@
 import crypto from 'crypto'
 import { getStripe } from '@/lib/stripe'
+import { getSiteContent } from '@/lib/site-content'
+import { writeContent } from '@/lib/content-approvals'
 import type { LedgerSource } from '@/lib/ledger-shared'
 
 // Bank-feed connectors for the WHF-CIO Financial Ledger. Each one turns a
@@ -33,7 +35,7 @@ export interface LedgerProvider {
   /** Key for cio_ledger_sync. */
   key: string
   label: string
-  configured(): boolean
+  configured(): boolean | Promise<boolean>
   fetchRecent(limit: number): Promise<ProviderTxn[]>
 }
 
@@ -177,7 +179,7 @@ export function mapGoCardlessTxn(acct: BankAccountConfig, t: GoCardlessTxn): Pro
 
 const GOCARDLESS_BASE = 'https://bankaccountdata.gocardless.com/api/v2'
 
-async function gocardlessToken(): Promise<string> {
+export async function gocardlessToken(): Promise<string> {
   const res = await fetch(`${GOCARDLESS_BASE}/token/new/`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
@@ -191,16 +193,45 @@ async function gocardlessToken(): Promise<string> {
 
 const UK_SOURCES: LedgerSource[] = ['tide', 'uk_bank']
 
+// Accounts linked through the in-admin "Connect" flow (see the gocardless/
+// connect + callback routes) are stored here rather than requiring an env
+// var + redeploy -- LEDGER_GOCARDLESS_ACCOUNTS still works too, and both are
+// merged, so an account set either way is picked up.
+const STORED_ACCOUNTS_KEY = 'ledger_bank_accounts'
+
+export async function getStoredAccounts(): Promise<BankAccountConfig[]> {
+  const stored = await getSiteContent<BankAccountConfig[]>(STORED_ACCOUNTS_KEY)
+  return Array.isArray(stored) ? stored : []
+}
+
+/** Merges by accountId -- a newly linked account replaces a same-id entry rather than duplicating it. */
+export async function addStoredAccounts(newAccounts: BankAccountConfig[]): Promise<BankAccountConfig[]> {
+  const existing = await getStoredAccounts()
+  const byId = new Map(existing.map(a => [a.accountId, a]))
+  for (const a of newAccounts) byId.set(a.accountId, a)
+  const merged = Array.from(byId.values())
+  await writeContent(STORED_ACCOUNTS_KEY, merged)
+  return merged
+}
+
+async function allGocardlessAccounts(): Promise<BankAccountConfig[]> {
+  const envAccounts = parseAccountList(process.env.LEDGER_GOCARDLESS_ACCOUNTS, UK_SOURCES)
+  const byId = new Map(envAccounts.map(a => [a.accountId, a]))
+  for (const a of await getStoredAccounts()) if (!byId.has(a.accountId)) byId.set(a.accountId, a)
+  return Array.from(byId.values())
+}
+
 export const gocardlessProvider: LedgerProvider = {
   key: 'gocardless',
   label: 'Tide & UK banks (GoCardless)',
-  configured: () =>
-    present(process.env.GOCARDLESS_SECRET_ID) && present(process.env.GOCARDLESS_SECRET_KEY)
-    && parseAccountList(process.env.LEDGER_GOCARDLESS_ACCOUNTS, UK_SOURCES).length > 0,
+  async configured() {
+    if (!present(process.env.GOCARDLESS_SECRET_ID) || !present(process.env.GOCARDLESS_SECRET_KEY)) return false
+    return (await allGocardlessAccounts()).length > 0
+  },
   async fetchRecent(limit) {
     const token = await gocardlessToken()
     const out: ProviderTxn[] = []
-    for (const acct of parseAccountList(process.env.LEDGER_GOCARDLESS_ACCOUNTS, UK_SOURCES)) {
+    for (const acct of await allGocardlessAccounts()) {
       const res = await fetch(`${GOCARDLESS_BASE}/accounts/${encodeURIComponent(acct.accountId)}/transactions/`, {
         headers: { Authorization: `Bearer ${token}`, Accept: 'application/json' },
       })
@@ -214,6 +245,87 @@ export const gocardlessProvider: LedgerProvider = {
     }
     return out
   },
+}
+
+// ─── GoCardless requisition flow (the in-admin "Connect Tide" button) ─────
+// A requisition is GoCardless's term for one bank-consent session: create
+// it, send the director to `link` to log into Tide and authorise read
+// access, then once they're back, the requisition's `accounts` array has
+// the account id(s) to start pulling transactions from. None of this is a
+// webhook -- Bank Account Data has no webhook feature at all, this is a
+// create-then-redirect-then-poll-once flow, same pull model as fetchRecent.
+
+export interface GCInstitution { id: string; name: string }
+
+export async function gocardlessFindInstitution(token: string, nameQuery: string, country = 'GB'): Promise<GCInstitution | null> {
+  const res = await fetch(`${GOCARDLESS_BASE}/institutions/?country=${encodeURIComponent(country)}`, {
+    headers: { Authorization: `Bearer ${token}`, Accept: 'application/json' },
+  })
+  if (!res.ok) throw new Error(`GoCardless institutions lookup failed (${res.status})`)
+  const list = await res.json() as GCInstitution[]
+  const needle = nameQuery.trim().toLowerCase()
+  return list.find(i => i.name.toLowerCase().includes(needle)) ?? null
+}
+
+export interface GCRequisition { id: string; link: string; status?: string; accounts?: string[]; reference?: string }
+
+export async function gocardlessCreateRequisition(token: string, opts: { institutionId: string; redirectUrl: string; reference: string }): Promise<GCRequisition> {
+  const res = await fetch(`${GOCARDLESS_BASE}/requisitions/`, {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json', Accept: 'application/json' },
+    body: JSON.stringify({ redirect: opts.redirectUrl, institution_id: opts.institutionId, reference: opts.reference }),
+  })
+  if (!res.ok) throw new Error(`GoCardless requisition create failed (${res.status})`)
+  return res.json() as Promise<GCRequisition>
+}
+
+export async function gocardlessGetRequisition(token: string, requisitionId: string): Promise<GCRequisition> {
+  const res = await fetch(`${GOCARDLESS_BASE}/requisitions/${encodeURIComponent(requisitionId)}/`, {
+    headers: { Authorization: `Bearer ${token}`, Accept: 'application/json' },
+  })
+  if (!res.ok) throw new Error(`GoCardless requisition lookup failed (${res.status})`)
+  return res.json() as Promise<GCRequisition>
+}
+
+/** Best-effort only -- a label worth showing, never worth failing the connect flow over. */
+export async function gocardlessAccountDisplayName(token: string, accountId: string): Promise<string | null> {
+  try {
+    const res = await fetch(`${GOCARDLESS_BASE}/accounts/${encodeURIComponent(accountId)}/details/`, {
+      headers: { Authorization: `Bearer ${token}`, Accept: 'application/json' },
+    })
+    if (!res.ok) return null
+    const data = await res.json() as { account?: { ownerName?: string; name?: string; iban?: string; product?: string } }
+    const a = data.account
+    return a?.name || a?.ownerName || a?.product || (a?.iban ? `IBAN …${a.iban.slice(-4)}` : null)
+  } catch {
+    return null
+  }
+}
+
+// Pending requisitions, keyed by the `reference` we hand GoCardless at
+// creation time -- its redirect back to us only carries that reference, so
+// the callback route looks the requisition id up by it. Short-lived by
+// nature (a director either completes the bank login within minutes or
+// abandons it), so no cleanup job: a stale entry is simply never matched
+// again and is harmless left behind.
+const PENDING_KEY = 'ledger_gocardless_pending'
+
+interface PendingRequisition { requisitionId: string; institutionName: string; createdAt: string }
+
+export async function savePendingRequisition(reference: string, requisitionId: string, institutionName: string): Promise<void> {
+  const all = (await getSiteContent<Record<string, PendingRequisition>>(PENDING_KEY)) ?? {}
+  all[reference] = { requisitionId, institutionName, createdAt: new Date().toISOString() }
+  await writeContent(PENDING_KEY, all)
+}
+
+export async function takePendingRequisition(reference: string): Promise<PendingRequisition | null> {
+  const all = (await getSiteContent<Record<string, PendingRequisition>>(PENDING_KEY)) ?? {}
+  const found = all[reference] ?? null
+  if (found) {
+    delete all[reference]
+    await writeContent(PENDING_KEY, all)
+  }
+  return found
 }
 
 // ─── Nigerian banks: Mono ───────────────────────────────────────────────────

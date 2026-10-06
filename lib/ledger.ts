@@ -60,18 +60,18 @@ export async function providerStatuses(): Promise<ProviderStatus[]> {
   } catch (err) {
     log.error('ledger', err, { stage: 'read sync status' })
   }
-  return PROVIDERS.map(p => {
+  return Promise.all(PROVIDERS.map(async p => {
     const r = rows.find(x => x.provider === p.key)
     return {
       key: p.key,
       label: p.label,
-      configured: p.configured(),
+      configured: await p.configured(),
       lastRunAt: r?.last_run_at ? new Date(r.last_run_at as string).toISOString() : null,
       lastStatus: (r?.last_status as string) ?? null,
       lastError: (r?.last_error as string) ?? null,
       lastCount: r?.last_count == null ? null : Number(r.last_count),
     }
-  })
+  }))
 }
 
 /**
@@ -110,7 +110,7 @@ export interface SyncResult {
 }
 
 async function syncOne(p: LedgerProvider, force: boolean): Promise<SyncResult> {
-  if (!p.configured()) return { key: p.key, status: 'not_configured' }
+  if (!(await p.configured())) return { key: p.key, status: 'not_configured' }
 
   if (!force) {
     const [row] = await sql`SELECT last_run_at FROM cio_ledger_sync WHERE provider = ${p.key}`
