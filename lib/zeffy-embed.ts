@@ -29,7 +29,13 @@ export const ZEFFY_POPUP_SCRIPT_SRC = 'https://zeffy-scripts.s3.ca-central-1.ama
 function toZeffyUrl(formUrl: string): string {
   // Accepts either the bare path Zeffy's iframe embed uses
   // ("/embed/donation-form/x") or an already-absolute zeffy.com URL.
-  return formUrl.startsWith('http') ? formUrl : `https://www.zeffy.com${formUrl}`
+  // Admins pasting just the path portion from Zeffy's snippet sometimes
+  // drop the leading slash -- "embed/donation-form/x" instead of
+  // "/embed/donation-form/x" -- which without this check concatenates
+  // straight onto the domain with no separator ("zeffy.comembed/...").
+  if (formUrl.startsWith('http')) return formUrl
+  const path = formUrl.startsWith('/') ? formUrl : `/${formUrl}`
+  return `https://www.zeffy.com${path}`
 }
 
 function withModalParam(url: string): string {
