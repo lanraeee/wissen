@@ -87,8 +87,22 @@ export default function DonationProcessorEditor() {
         >
           <div style={{ fontWeight: 700, marginBottom: 4 }}>🎁 Zeffy {data.active_processor === 'zeffy' && <span style={{ color: '#1a3c2e' }}>✓ Active</span>}</div>
           <div style={{ fontSize: '.8rem', color: '#8a9a8f' }}>Zero platform fees — 100% of the gift reaches the foundation. Needs a Zeffy form set up below (or per-project in Donation Projects).</div>
+          <div style={{ fontSize: '.75rem', color: '#b45309', marginTop: 6 }}>⚠️ Naira cards often fail — see note below.</div>
         </button>
       </div>
+
+      {data.active_processor === 'zeffy' && (
+        <div style={{ marginBottom: 16, background: '#fef3c7', border: '1px solid #f3cf7a', borderRadius: 8, padding: '12px 16px', fontSize: '.8rem', color: '#78350f', lineHeight: 1.6 }}>
+          <strong>⚠️ Naira donors may not be able to pay.</strong> Our Zeffy account is UK-registered (Zeffy only supports nonprofits
+          based in the US, Canada, UK, Ireland, Germany or Australia — not Nigeria), so every charge processes in <strong>GBP</strong>, never NGN.
+          A Nigerian donor&apos;s card is charged in GBP and their own bank converts it — but many Naira debit/credit cards restrict or
+          cap international/foreign-currency transactions by default, so the payment can simply fail for them. Stripe accepts Nigerian
+          cards natively in NGN with none of this friction. Zeffy&apos;s zero-fee advantage is strongest for GBP/USD/CAD/AUD donors
+          (UK diaspora, international partners) — switching the <em>general</em> /donate page to Zeffy risks quietly breaking payment
+          for Naira-paying donors, who are likely most of our traffic. Safer to use Zeffy per-project (Donation Projects) for
+          UK/international-focused campaigns rather than as the site-wide default.
+        </div>
+      )}
 
       <div>
         <label style={{ display: 'block', fontSize: '.7rem', fontWeight: 700, textTransform: 'uppercase', color: '#8a9a8f', letterSpacing: '.06em', marginBottom: 4 }}>
