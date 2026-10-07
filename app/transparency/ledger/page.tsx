@@ -47,8 +47,8 @@ export default async function LedgerPage() {
       title="Financial Ledger"
       intro={<>
         Every pound and naira that comes in or goes out of the foundation&apos;s accounts, so you can see where money is going.
-        This shows the last {LEDGER_LIMIT} transactions from Stripe, Zeffy, and our UK and Nigerian bank accounts, plus entries our
-        directors record by hand. Donations made via Zeffy carry zero platform fees — 100% of those gifts reach Wissen-Haus, with
+        This shows the last {LEDGER_LIMIT} transactions from Stripe, Zeffy, and our UK and Nigerian bank accounts.
+        Donations made via Zeffy carry zero platform fees — 100% of those gifts reach Wissen-Haus, with
         donors given the option to tip Zeffy separately instead. Donors are never named. Our month-to-month running costs are on the{' '}
         <Link href="/transparency/costs" style={{ color: '#1a3c2e' }}>operational fixed costs</Link> page.
       </>}
