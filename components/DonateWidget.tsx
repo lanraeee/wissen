@@ -1,8 +1,8 @@
 'use client'
 
-import { useState, FormEvent } from 'react'
+import { useState, useEffect, FormEvent } from 'react'
 import posthog from 'posthog-js'
-import { zeffyEmbedHtml } from '@/lib/zeffy-embed'
+import { zeffyPopupButtonMarkup, loadZeffyPopupScript } from '@/lib/zeffy-embed'
 
 type Currency = 'NGN' | 'USD' | 'GBP' | 'EUR'
 type Method = 'card' | 'zeffy' | 'bank'
@@ -48,6 +48,14 @@ export default function DonateWidget({ zeffyEnabled = false, zeffyFormUrl }: Pro
   const symbol = SYMBOL[currency]
 
   const finalAmount = custom ? parseFloat(custom) : selected
+
+  // Zeffy's popup script has to be loaded with a real <script> element (see
+  // lib/zeffy-embed.ts for why dangerouslySetInnerHTML can't do this) --
+  // loadZeffyPopupScript() no-ops if it's already on the page, so this is
+  // safe to re-run on every render where Zeffy is offered.
+  useEffect(() => {
+    if (showZeffy) loadZeffyPopupScript()
+  }, [showZeffy])
 
   // The amount and currency carry over between methods — only the destination
   // changes — so switching just clears any stale error.
@@ -125,126 +133,130 @@ export default function DonateWidget({ zeffyEnabled = false, zeffyFormUrl }: Pro
   )
 
   // Zeffy can't process payments for a hand-built form (see lib/ledger-
-  // providers.ts's Zeffy section) -- its own embed is the only supported
-  // path, so this is its own tab with just the method toggle + their embed,
-  // not a flow that reuses the amount/name/email UI below (Zeffy's form has
-  // its own). The donor picks this tab themselves -- nothing is forced, so
-  // whoever can't pay this way (see the Naira-card caveat in the admin
-  // Donation Processor settings) just stays on the Card tab.
-  if (method === 'zeffy' && showZeffy) {
-    return (
-      <div style={{ maxWidth: 560, margin: '0 auto' }}>
-        {methodToggle}
-        <p style={{ fontSize: '.8rem', color: 'var(--ink-60,#8a9a8f)', margin: '0 0 22px', lineHeight: 1.5 }}>
-          Pay securely via Zeffy — 100% of your gift reaches Wissen-Haus, with zero platform fees (donors can optionally tip Zeffy instead).
-        </p>
-        <div dangerouslySetInnerHTML={{ __html: zeffyEmbedHtml(zeffyFormUrl!) }} />
-        <p style={{ textAlign: 'center', fontSize: '.78rem', color: 'var(--ink-60,#8a9a8f)', marginTop: '1rem' }}>
-          Powered by Zeffy · Zero platform fees — your whole gift reaches us
-        </p>
-      </div>
-    )
-  }
+  // providers.ts's Zeffy section) -- their own popup button is the only
+  // supported path. Rendered once showZeffy is true and kept mounted for
+  // the component's whole lifetime (just CSS-hidden when another tab is
+  // active) rather than added/removed on every tab switch, in case Zeffy's
+  // script wires up its click behaviour per-element at load time rather
+  // than via event delegation -- a freshly (re)mounted button could
+  // otherwise end up with no popup behaviour attached, though its real
+  // href still works as a plain link either way.
+  const zeffyBlock = showZeffy && (
+    <div style={{ display: method === 'zeffy' ? 'block' : 'none' }}>
+      <p style={{ fontSize: '.8rem', color: 'var(--ink-60,#8a9a8f)', margin: '0 0 22px', lineHeight: 1.5 }}>
+        Pay securely via Zeffy — 100% of your gift reaches Wissen-Haus, with zero platform fees (donors can optionally tip Zeffy instead).
+      </p>
+      <div dangerouslySetInnerHTML={{ __html: zeffyPopupButtonMarkup(zeffyFormUrl!) }} />
+      <p style={{ textAlign: 'center', fontSize: '.78rem', color: 'var(--ink-60,#8a9a8f)', marginTop: '1rem' }}>
+        Powered by Zeffy · Zero platform fees — your whole gift reaches us
+      </p>
+    </div>
+  )
 
   return (
-    <form onSubmit={handleSubmit} style={{ maxWidth: 560, margin: '0 auto' }}>
+    <div style={{ maxWidth: 560, margin: '0 auto' }}>
       {methodToggle}
+      {zeffyBlock}
 
-      <p style={{ fontSize: '.8rem', color: 'var(--ink-60,#8a9a8f)', margin: '0 0 22px', lineHeight: 1.5 }}>
-        {method === 'bank'
-          ? "Fill in your details and we'll show you the account to transfer to, with a reference to quote. Your receipt and certificate follow once the transfer clears."
-          : 'Pay securely by card — your receipt and certificate arrive by email straight away.'}
-      </p>
+      {method !== 'zeffy' && (
+        <form onSubmit={handleSubmit}>
+          <p style={{ fontSize: '.8rem', color: 'var(--ink-60,#8a9a8f)', margin: '0 0 22px', lineHeight: 1.5 }}>
+            {method === 'bank'
+              ? "Fill in your details and we'll show you the account to transfer to, with a reference to quote. Your receipt and certificate follow once the transfer clears."
+              : 'Pay securely by card — your receipt and certificate arrive by email straight away.'}
+          </p>
 
-      {/* Currency toggle */}
-      <div style={{ display: 'flex', gap: 8, marginBottom: 28, flexWrap: 'wrap' }}>
-        {CURRENCIES.map(c => (
+          {/* Currency toggle */}
+          <div style={{ display: 'flex', gap: 8, marginBottom: 28, flexWrap: 'wrap' }}>
+            {CURRENCIES.map(c => (
+              <button
+                key={c}
+                type="button"
+                onClick={() => { setCurrency(c); setSelected(null); setCustom('') }}
+                aria-pressed={currency === c}
+                aria-label={`Select ${TOGGLE_LABEL[c]} currency`}
+                style={{
+                  flex: '1 1 140px', padding: '10px 0', borderRadius: 8, border: '2px solid',
+                  borderColor: currency === c ? 'var(--green-800,#1a3c2e)' : '#e8e4dc',
+                  background: currency === c ? 'var(--green-800,#1a3c2e)' : '#fff',
+                  color: currency === c ? '#f4f0e7' : '#3a4a3f',
+                  fontWeight: 700, fontSize: '.88rem', cursor: 'pointer', transition: 'all .15s',
+                }}
+              >
+                {TOGGLE_LABEL[c]}
+              </button>
+            ))}
+          </div>
+
+          {/* Pre-set amounts */}
+          <div className="donate-amounts" style={{ gap: 10, marginBottom: 16 }}>
+            {amounts.map(a => (
+              <button
+                key={a}
+                type="button"
+                onClick={() => { setSelected(a); setCustom('') }}
+                aria-pressed={selected === a && !custom}
+                aria-label={`Select ${symbol}${a.toLocaleString()}`}
+                style={{
+                  padding: '12px 4px', borderRadius: 8, border: '2px solid',
+                  borderColor: selected === a && !custom ? 'var(--green-800,#1a3c2e)' : '#e8e4dc',
+                  background: selected === a && !custom ? '#f0ece4' : '#fff',
+                  fontWeight: 700, fontSize: '.9rem', cursor: 'pointer', color: '#1a2e24',
+                }}
+              >
+                {symbol}{a.toLocaleString()}
+              </button>
+            ))}
+          </div>
+
+          {/* Custom amount */}
+          <div className="field" style={{ marginBottom: 20 }}>
+            <label htmlFor="d-custom">Or enter your own amount ({symbol})</label>
+            <input
+              id="d-custom"
+              type="number"
+              min="1"
+              step="any"
+              placeholder={`e.g. ${symbol}${CUSTOM_PLACEHOLDER[currency]}`}
+              value={custom}
+              onChange={e => { setCustom(e.target.value); setSelected(null) }}
+            />
+          </div>
+
+          {/* Donor details */}
+          <div className="form-row" style={{ marginBottom: 20 }}>
+            <div className="field">
+              <label htmlFor="d-name">Your Name</label>
+              <input id="d-name" required placeholder="Ada Lovelace" value={name} onChange={e => setName(e.target.value)} />
+            </div>
+            <div className="field">
+              <label htmlFor="d-email">Email</label>
+              <input id="d-email" type="email" required placeholder="you@example.com" value={email} onChange={e => setEmail(e.target.value)} />
+            </div>
+          </div>
+
+          {error && <p style={{ color: '#c0392b', fontSize: '.875rem', marginBottom: '1rem' }}>{error}</p>}
+
           <button
-            key={c}
-            type="button"
-            onClick={() => { setCurrency(c); setSelected(null); setCustom('') }}
-            aria-pressed={currency === c}
-            aria-label={`Select ${TOGGLE_LABEL[c]} currency`}
-            style={{
-              flex: '1 1 140px', padding: '10px 0', borderRadius: 8, border: '2px solid',
-              borderColor: currency === c ? 'var(--green-800,#1a3c2e)' : '#e8e4dc',
-              background: currency === c ? 'var(--green-800,#1a3c2e)' : '#fff',
-              color: currency === c ? '#f4f0e7' : '#3a4a3f',
-              fontWeight: 700, fontSize: '.88rem', cursor: 'pointer', transition: 'all .15s',
-            }}
+            type="submit"
+            className="btn btn--block btn--lg"
+            disabled={status === 'loading'}
+            style={{ fontSize: '1rem' }}
           >
-            {TOGGLE_LABEL[c]}
+            {status === 'loading'
+              ? (method === 'bank' ? 'Preparing your details…' : 'Redirecting to payment…')
+              : method === 'bank'
+                ? `Get bank details${finalAmount ? ` for ${symbol}${Number(finalAmount).toLocaleString()}` : ''}`
+                : `Donate ${finalAmount ? `${symbol}${Number(finalAmount).toLocaleString()}` : 'Now'}`}
           </button>
-        ))}
-      </div>
 
-      {/* Pre-set amounts */}
-      <div className="donate-amounts" style={{ gap: 10, marginBottom: 16 }}>
-        {amounts.map(a => (
-          <button
-            key={a}
-            type="button"
-            onClick={() => { setSelected(a); setCustom('') }}
-            aria-pressed={selected === a && !custom}
-            aria-label={`Select ${symbol}${a.toLocaleString()}`}
-            style={{
-              padding: '12px 4px', borderRadius: 8, border: '2px solid',
-              borderColor: selected === a && !custom ? 'var(--green-800,#1a3c2e)' : '#e8e4dc',
-              background: selected === a && !custom ? '#f0ece4' : '#fff',
-              fontWeight: 700, fontSize: '.9rem', cursor: 'pointer', color: '#1a2e24',
-            }}
-          >
-            {symbol}{a.toLocaleString()}
-          </button>
-        ))}
-      </div>
-
-      {/* Custom amount */}
-      <div className="field" style={{ marginBottom: 20 }}>
-        <label htmlFor="d-custom">Or enter your own amount ({symbol})</label>
-        <input
-          id="d-custom"
-          type="number"
-          min="1"
-          step="any"
-          placeholder={`e.g. ${symbol}${CUSTOM_PLACEHOLDER[currency]}`}
-          value={custom}
-          onChange={e => { setCustom(e.target.value); setSelected(null) }}
-        />
-      </div>
-
-      {/* Donor details */}
-      <div className="form-row" style={{ marginBottom: 20 }}>
-        <div className="field">
-          <label htmlFor="d-name">Your Name</label>
-          <input id="d-name" required placeholder="Ada Lovelace" value={name} onChange={e => setName(e.target.value)} />
-        </div>
-        <div className="field">
-          <label htmlFor="d-email">Email</label>
-          <input id="d-email" type="email" required placeholder="you@example.com" value={email} onChange={e => setEmail(e.target.value)} />
-        </div>
-      </div>
-
-      {error && <p style={{ color: '#c0392b', fontSize: '.875rem', marginBottom: '1rem' }}>{error}</p>}
-
-      <button
-        type="submit"
-        className="btn btn--block btn--lg"
-        disabled={status === 'loading'}
-        style={{ fontSize: '1rem' }}
-      >
-        {status === 'loading'
-          ? (method === 'bank' ? 'Preparing your details…' : 'Redirecting to payment…')
-          : method === 'bank'
-            ? `Get bank details${finalAmount ? ` for ${symbol}${Number(finalAmount).toLocaleString()}` : ''}`
-            : `Donate ${finalAmount ? `${symbol}${Number(finalAmount).toLocaleString()}` : 'Now'}`}
-      </button>
-
-      <p style={{ textAlign: 'center', fontSize: '.78rem', color: 'var(--ink-60,#8a9a8f)', marginTop: '1rem' }}>
-        {method === 'bank'
-          ? 'Direct transfer in Naira, Dollars, Pounds or Euros · No card needed'
-          : 'Powered by Stripe · Secure payments in Naira, Dollars, Pounds or Euros'}
-      </p>
-    </form>
+          <p style={{ textAlign: 'center', fontSize: '.78rem', color: 'var(--ink-60,#8a9a8f)', marginTop: '1rem' }}>
+            {method === 'bank'
+              ? 'Direct transfer in Naira, Dollars, Pounds or Euros · No card needed'
+              : 'Powered by Stripe · Secure payments in Naira, Dollars, Pounds or Euros'}
+          </p>
+        </form>
+      )}
+    </div>
   )
 }
