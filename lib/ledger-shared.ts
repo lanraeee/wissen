@@ -3,7 +3,7 @@
 // public /transparency pages show. No server imports, so client components can
 // use it. lib/ledger.ts owns the database side.
 
-export const LEDGER_SOURCES = ['stripe', 'tide', 'uk_bank', 'ng_bank', 'manual'] as const
+export const LEDGER_SOURCES = ['stripe', 'tide', 'uk_bank', 'ng_bank', 'zeffy', 'manual'] as const
 export type LedgerSource = (typeof LEDGER_SOURCES)[number]
 
 export const SOURCE_LABELS: Record<LedgerSource, string> = {
@@ -11,6 +11,7 @@ export const SOURCE_LABELS: Record<LedgerSource, string> = {
   tide: 'Tide',
   uk_bank: 'UK bank',
   ng_bank: 'Nigerian bank',
+  zeffy: 'Zeffy',
   manual: 'Manual entry',
 }
 

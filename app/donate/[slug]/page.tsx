@@ -4,6 +4,7 @@ import Link from 'next/link'
 import sql from '@/lib/db'
 import DonateWidget from '@/components/DonateWidget'
 import { pageMetadata } from '@/lib/seo'
+import { zeffyEmbedHtml } from '@/lib/zeffy-embed'
 
 type Project = {
   id: number
@@ -30,6 +31,7 @@ type Project = {
   stages: Array<{ n: string; title: string; desc: string }>
   accountability: Array<{ title: string; desc: string }>
   donation_equivalents: Array<{ amount: string; equiv: string }>
+  zeffy_form_url: string | null
 }
 
 // Fixed dark-to-light green ramp for however many stages exist -- lets the
@@ -321,6 +323,19 @@ export default async function DonationProjectPage({ params }: { params: Promise<
           <div className="card reveal" style={{ padding: 'clamp(24px,4vw,48px)', maxWidth: 640, margin: '0 auto' }}>
             <DonateWidget />
           </div>
+
+          {p.zeffy_form_url && (
+            <div className="card reveal" style={{ padding: 'clamp(24px,4vw,48px)', maxWidth: 640, margin: '2rem auto 0' }}>
+              <div style={{ textAlign: 'center', marginBottom: '1.25rem' }}>
+                <h3 style={{ margin: '0 0 6px' }}>Give via Zeffy — zero platform fees</h3>
+                <p style={{ color: 'var(--ink-60)', fontSize: '.88rem', margin: 0 }}>
+                  100% of your gift reaches Wissen-Haus. Zeffy charges nothing to process it (donors can optionally tip Zeffy instead).
+                </p>
+              </div>
+              <div dangerouslySetInnerHTML={{ __html: zeffyEmbedHtml(p.zeffy_form_url) }} />
+            </div>
+          )}
+
           <div style={{ textAlign: 'center', marginTop: '2rem' }} className="reveal">
             <p style={{ color: 'var(--ink-60)', marginBottom: '.75rem', fontSize: '.9rem' }}>Corporate sponsorships and named partnerships available.</p>
             <a href="mailto:director@wissenhaus.org?subject=Donation Drive — Sponsorship Enquiry" className="textlink">

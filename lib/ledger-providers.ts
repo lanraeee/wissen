@@ -386,4 +386,84 @@ export const monoProvider: LedgerProvider = {
   },
 }
 
-export const PROVIDERS: LedgerProvider[] = [stripeProvider, gocardlessProvider, monoProvider]
+// ─── Zeffy ──────────────────────────────────────────────────────────────────
+// Free, self-serve API (api.zeffy.com) -- unlike GoCardless/Tide or Mono,
+// no bank-grade regulatory registration needed, just an API key from
+// Zeffy's own Settings -> Integrations. Zeffy partners with Stripe
+// internally, and its confirmed-live Campaign object follows Stripe-like
+// conventions (amount in minor units, `created` as Unix seconds) -- the
+// Payment object is expected to follow the same conventions, cross-checked
+// against the filter field names Zeffy's own docs document (currency,
+// status, type, contact, campaign, created[gte/lte]), but NOT yet verified
+// against a real Payment object: this account has no completed donations
+// yet. mapZeffyTxn() is defensive (returns null on anything unexpected)
+// specifically because of that -- re-check this against a real payload
+// once the embedded form on /donate takes its first donation.
+//
+// Every Zeffy payment is money coming in (it's a donation platform, not a
+// two-way bank feed), so direction is always 'in'.
+
+const ZEFFY_BASE = 'https://api.zeffy.com/api/v1'
+
+export interface ZeffyPayment {
+  id: string
+  created: number // unix seconds, per the confirmed Campaign object
+  amount: number // minor units, per the confirmed Campaign object
+  currency: string
+  status: string // 'succeeded' | 'failed' | 'pending', per Zeffy's documented filters
+  campaign?: { id: string; title?: string } | string | null
+  contact?: { id: string; name?: string; email?: string } | string | null
+  fee?: number | null
+}
+
+export function mapZeffyTxn(p: ZeffyPayment): ProviderTxn | null {
+  if (p.status !== 'succeeded') return null // only completed donations belong in the ledger
+  if (!Number.isFinite(p.amount) || !Number.isFinite(p.created) || !p.currency) return null
+
+  const divisor = ZERO_DECIMAL.has(p.currency.toLowerCase()) ? 1 : 100
+  const contactName = typeof p.contact === 'object' && p.contact ? (p.contact.name ?? p.contact.email ?? null) : null
+  const campaignTitle = typeof p.campaign === 'object' && p.campaign ? p.campaign.title ?? null : null
+
+  return {
+    source: 'zeffy',
+    accountLabel: 'Zeffy',
+    externalId: p.id,
+    occurredOn: isoDate(new Date(p.created * 1000)),
+    direction: 'in',
+    amount: Math.abs(p.amount) / divisor,
+    fee: p.fee != null ? Math.abs(p.fee) / divisor : null,
+    currency: p.currency.toUpperCase(),
+    description: campaignTitle ? `Donation via Zeffy (${campaignTitle})` : 'Donation via Zeffy',
+    category: 'donation',
+    counterparty: contactName,
+    isTransfer: false,
+  }
+}
+
+export const zeffyProvider: LedgerProvider = {
+  key: 'zeffy',
+  label: 'Zeffy',
+  configured: () => present(process.env.ZEFFY_API_KEY),
+  async fetchRecent(limit) {
+    const out: ProviderTxn[] = []
+    let cursor: string | undefined
+    while (out.length < limit) {
+      const qs = new URLSearchParams({ status: 'succeeded', limit: String(Math.min(limit - out.length, 100)) })
+      if (cursor) qs.set('starting_after', cursor)
+      const res = await fetch(`${ZEFFY_BASE}/payments?${qs}`, {
+        headers: { Authorization: `Bearer ${process.env.ZEFFY_API_KEY}`, Accept: 'application/json' },
+      })
+      if (!res.ok) throw new Error(`Zeffy payments fetch failed (${res.status})`)
+      const data = await res.json() as { data?: ZeffyPayment[]; has_more?: boolean; next_cursor?: string | null }
+      for (const p of data.data ?? []) {
+        const m = mapZeffyTxn(p)
+        if (m) out.push(m)
+      }
+      if (!data.has_more || !data.next_cursor) break
+      cursor = data.next_cursor
+    }
+    return out
+  },
+}
+
+export const PROVIDERS: LedgerProvider[] = [stripeProvider, gocardlessProvider, monoProvider, zeffyProvider]

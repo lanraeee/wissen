@@ -36,6 +36,13 @@ const ProjectCreateSchema = z.object({
   stages: z.array(StageSchema).max(20).optional(),
   accountability: z.array(AccountabilityItemSchema).max(20).optional(),
   donation_equivalents: z.array(EquivalentSchema).max(20).optional(),
+  // Optional: a Zeffy-hosted donation form for this project specifically
+  // (Zeffy takes zero platform fees, unlike the Stripe/bank flow in
+  // DonateWidget). When set, the public project page shows it as an
+  // additional way to give. The value is the embed snippet's
+  // data-form-url (e.g. "/embed/donation-form/donate-to-career-clarity-fair"),
+  // not a full URL -- that's what Zeffy's own embed script expects.
+  zeffy_form_url: z.string().max(500).nullable().optional(),
 })
 
 const ProjectUpdateSchema = ProjectCreateSchema.partial().extend({
@@ -82,6 +89,7 @@ async function ensureTable() {
       stages               JSONB NOT NULL DEFAULT '[]',
       accountability       JSONB NOT NULL DEFAULT '[]',
       donation_equivalents JSONB NOT NULL DEFAULT '[]',
+      zeffy_form_url TEXT,
 
       created_at   TIMESTAMPTZ NOT NULL DEFAULT NOW(),
       updated_at   TIMESTAMPTZ NOT NULL DEFAULT NOW()
@@ -93,6 +101,7 @@ async function ensureTable() {
   await sql`ALTER TABLE donation_projects ADD COLUMN IF NOT EXISTS stages JSONB NOT NULL DEFAULT '[]'`
   await sql`ALTER TABLE donation_projects ADD COLUMN IF NOT EXISTS accountability JSONB NOT NULL DEFAULT '[]'`
   await sql`ALTER TABLE donation_projects ADD COLUMN IF NOT EXISTS donation_equivalents JSONB NOT NULL DEFAULT '[]'`
+  await sql`ALTER TABLE donation_projects ADD COLUMN IF NOT EXISTS zeffy_form_url TEXT`
 }
 
 export async function GET() {
@@ -116,6 +125,7 @@ export async function POST(req: NextRequest) {
     hero_desc = null, partnership_name = null, partnership_desc = null,
     highlights = [], what_funded = [], impact_points = [], faq = [],
     stages = [], accountability = [], donation_equivalents = [],
+    zeffy_form_url = null,
   } = body
 
   const [row] = await sql`
@@ -123,14 +133,16 @@ export async function POST(req: NextRequest) {
       (slug, title, subtitle, status, event_name, event_date, event_location, event_time,
        campaign_start, campaign_end, goal_ngn, raised_ngn, donor_count,
        hero_desc, partnership_name, partnership_desc,
-       highlights, what_funded, impact_points, faq, stages, accountability, donation_equivalents)
+       highlights, what_funded, impact_points, faq, stages, accountability, donation_equivalents,
+       zeffy_form_url)
     VALUES
       (${slug}, ${title}, ${subtitle}, ${status}, ${event_name}, ${event_date}, ${event_location}, ${event_time},
        ${campaign_start}, ${campaign_end}, ${goal_ngn}, ${raised_ngn}, ${donor_count},
        ${hero_desc}, ${partnership_name}, ${partnership_desc},
        ${JSON.stringify(highlights)}, ${JSON.stringify(what_funded)},
        ${JSON.stringify(impact_points)}, ${JSON.stringify(faq)},
-       ${JSON.stringify(stages)}, ${JSON.stringify(accountability)}, ${JSON.stringify(donation_equivalents)})
+       ${JSON.stringify(stages)}, ${JSON.stringify(accountability)}, ${JSON.stringify(donation_equivalents)},
+       ${zeffy_form_url})
     RETURNING *
   `
   logActivity(session, 'donation_project.create', { targetType: 'donation_project', targetId: String(row.id), details: { slug, title } })
@@ -174,6 +186,7 @@ export async function PUT(req: NextRequest) {
       stages               = COALESCE(${fields.stages ?? null}::jsonb, stages),
       accountability       = COALESCE(${fields.accountability ?? null}::jsonb, accountability),
       donation_equivalents = COALESCE(${fields.donation_equivalents ?? null}::jsonb, donation_equivalents),
+      zeffy_form_url   = ${fields.zeffy_form_url ?? null},
       updated_at       = NOW()
     WHERE id = ${id}
     RETURNING *

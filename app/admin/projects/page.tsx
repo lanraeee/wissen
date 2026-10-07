@@ -27,6 +27,7 @@ interface Project {
   stages: Array<{ n: string; title: string; desc: string }>
   accountability: Array<{ title: string; desc: string }>
   donation_equivalents: Array<{ amount: string; equiv: string }>
+  zeffy_form_url: string | null
   created_at: string
   updated_at: string
 }
@@ -49,6 +50,7 @@ const EMPTY_PROJECT: Omit<Project, 'id' | 'created_at' | 'updated_at'> = {
   stages: [],
   accountability: [],
   donation_equivalents: [],
+  zeffy_form_url: null,
 }
 
 const STATUS_COLORS: Record<string, string> = {
@@ -235,6 +237,18 @@ export default function AdminProjects() {
 
             {sectionHead('Hero Description')}
             <textarea className="admin-textarea" value={e.hero_desc ?? ''} onChange={ev => setField('hero_desc', ev.target.value || null)} placeholder="The main lead paragraph on the campaign page…" />
+
+            {sectionHead('Zeffy Donation Form (optional)')}
+            <input
+              className="admin-input" style={{ marginBottom: 6 }}
+              value={e.zeffy_form_url ?? ''}
+              onChange={ev => setField('zeffy_form_url', ev.target.value || null)}
+              placeholder="/embed/donation-form/your-form-slug"
+            />
+            <p style={{ fontSize: '.78rem', color: '#8a9a8f', margin: '0 0 12px' }}>
+              The <code>data-form-url</code> value from Zeffy&apos;s embed code (Share page on your Zeffy form) — not the full zeffy.com URL.
+              When set, this project&apos;s page shows a &quot;Give via Zeffy (zero fees)&quot; option alongside the regular card/bank flow.
+            </p>
 
             {sectionHead('Event Details')}
             <div className="rgrid-2" style={{ gap: 12, marginBottom: 12 }}>

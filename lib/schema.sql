@@ -738,7 +738,7 @@ CREATE INDEX IF NOT EXISTS idx_cio_documents_link ON cio_documents(linked_type, 
 -- reference often carries a donor's name.
 CREATE TABLE IF NOT EXISTS cio_ledger_entries (
   id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  source          TEXT NOT NULL CHECK (source IN ('stripe','tide','uk_bank','ng_bank','manual')),
+  source          TEXT NOT NULL CHECK (source IN ('stripe','tide','uk_bank','ng_bank','zeffy','manual')),
   account_label   TEXT,
   external_id     TEXT,
   occurred_on     DATE NOT NULL,
@@ -762,6 +762,11 @@ CREATE TABLE IF NOT EXISTS cio_ledger_entries (
 );
 CREATE UNIQUE INDEX IF NOT EXISTS idx_cio_ledger_external ON cio_ledger_entries(source, external_id) WHERE external_id IS NOT NULL;
 CREATE INDEX IF NOT EXISTS idx_cio_ledger_occurred ON cio_ledger_entries(occurred_on DESC, created_at DESC);
+-- 'zeffy' added after this table first shipped -- widen the existing
+-- constraint explicitly, same reasoning as newsletter_subscribers' status
+-- CHECK above (CREATE TABLE IF NOT EXISTS is a no-op once the table exists).
+ALTER TABLE cio_ledger_entries DROP CONSTRAINT IF EXISTS cio_ledger_entries_source_check;
+ALTER TABLE cio_ledger_entries ADD CONSTRAINT cio_ledger_entries_source_check CHECK (source IN ('stripe','tide','uk_bank','ng_bank','zeffy','manual'));
 
 -- One row per bank-feed connector: when it last ran and how that went, so
 -- the ledger tab can say "Tide: not configured" or "Stripe: failed" rather
