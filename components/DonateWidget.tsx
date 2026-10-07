@@ -2,6 +2,7 @@
 
 import { useState, FormEvent } from 'react'
 import posthog from 'posthog-js'
+import { zeffyEmbedHtml } from '@/lib/zeffy-embed'
 
 type Currency = 'NGN' | 'USD' | 'GBP' | 'EUR'
 type Method = 'card' | 'bank'
@@ -25,7 +26,15 @@ const CUSTOM_PLACEHOLDER: Record<Currency, string> = { NGN: '15000', USD: '30', 
 // the same choice is offered whichever way the donor pays.
 const CURRENCIES: Currency[] = ['NGN', 'USD', 'GBP', 'EUR']
 
-export default function DonateWidget() {
+interface Props {
+  /** Which rail the card tab uses. Defaults to Stripe (today's behaviour) when omitted. */
+  activeProcessor?: 'stripe' | 'zeffy'
+  /** Required for the card tab to actually show Zeffy -- falls back to Stripe if missing even when activeProcessor is 'zeffy'. */
+  zeffyFormUrl?: string
+}
+
+export default function DonateWidget({ activeProcessor = 'stripe', zeffyFormUrl }: Props) {
+  const useZeffy = activeProcessor === 'zeffy' && !!zeffyFormUrl
   const [method, setMethod] = useState<Method>('card')
   const [currency, setCurrency] = useState<Currency>('NGN')
   const [selected, setSelected] = useState<number | null>(null)
@@ -87,28 +96,50 @@ export default function DonateWidget() {
     }
   }
 
+  const methodToggle = (
+    <div style={{ display: 'flex', gap: 8, marginBottom: 20 }}>
+      {([['card', '💳 Card'], ['bank', '🏦 Bank Transfer']] as [Method, string][]).map(([m, label]) => (
+        <button
+          key={m}
+          type="button"
+          onClick={() => changeMethod(m)}
+          aria-pressed={method === m}
+          style={{
+            flex: 1, padding: '11px 0', borderRadius: 8, border: '2px solid',
+            borderColor: method === m ? 'var(--green-800,#1a3c2e)' : '#e8e4dc',
+            background: method === m ? 'var(--green-800,#1a3c2e)' : '#fff',
+            color: method === m ? '#f4f0e7' : '#3a4a3f',
+            fontWeight: 700, fontSize: '.9rem', cursor: 'pointer', transition: 'all .15s',
+          }}
+        >
+          {label}
+        </button>
+      ))}
+    </div>
+  )
+
+  // Zeffy can't process payments for a hand-built form (see lib/ledger-
+  // providers.ts's Zeffy section) -- its own embed is the only supported
+  // path, so the card tab becomes "method toggle + their embed", with none
+  // of the amount/name/email/submit UI below (Zeffy's form has its own).
+  if (method === 'card' && useZeffy) {
+    return (
+      <div style={{ maxWidth: 560, margin: '0 auto' }}>
+        {methodToggle}
+        <p style={{ fontSize: '.8rem', color: 'var(--ink-60,#8a9a8f)', margin: '0 0 22px', lineHeight: 1.5 }}>
+          Pay securely via Zeffy — 100% of your gift reaches Wissen-Haus, with zero platform fees (donors can optionally tip Zeffy instead).
+        </p>
+        <div dangerouslySetInnerHTML={{ __html: zeffyEmbedHtml(zeffyFormUrl!) }} />
+        <p style={{ textAlign: 'center', fontSize: '.78rem', color: 'var(--ink-60,#8a9a8f)', marginTop: '1rem' }}>
+          Powered by Zeffy · Zero platform fees — your whole gift reaches us
+        </p>
+      </div>
+    )
+  }
+
   return (
     <form onSubmit={handleSubmit} style={{ maxWidth: 560, margin: '0 auto' }}>
-      {/* Payment method */}
-      <div style={{ display: 'flex', gap: 8, marginBottom: 20 }}>
-        {([['card', '💳 Card'], ['bank', '🏦 Bank Transfer']] as [Method, string][]).map(([m, label]) => (
-          <button
-            key={m}
-            type="button"
-            onClick={() => changeMethod(m)}
-            aria-pressed={method === m}
-            style={{
-              flex: 1, padding: '11px 0', borderRadius: 8, border: '2px solid',
-              borderColor: method === m ? 'var(--green-800,#1a3c2e)' : '#e8e4dc',
-              background: method === m ? 'var(--green-800,#1a3c2e)' : '#fff',
-              color: method === m ? '#f4f0e7' : '#3a4a3f',
-              fontWeight: 700, fontSize: '.9rem', cursor: 'pointer', transition: 'all .15s',
-            }}
-          >
-            {label}
-          </button>
-        ))}
-      </div>
+      {methodToggle}
 
       <p style={{ fontSize: '.8rem', color: 'var(--ink-60,#8a9a8f)', margin: '0 0 22px', lineHeight: 1.5 }}>
         {method === 'bank'

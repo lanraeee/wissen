@@ -5,6 +5,7 @@ import sql from '@/lib/db'
 import DonateWidget from '@/components/DonateWidget'
 import { pageMetadata } from '@/lib/seo'
 import { zeffyEmbedHtml } from '@/lib/zeffy-embed'
+import { getDonationSettings } from '@/lib/donation-settings'
 
 type Project = {
   id: number
@@ -92,8 +93,15 @@ function formatDate(d: string | null): string {
 
 export default async function DonationProjectPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
-  const p = await getProject(slug)
+  const [p, donationSettings] = await Promise.all([getProject(slug), getDonationSettings()])
   if (!p) notFound()
+
+  // When Zeffy is already the active card processor AND this project has its
+  // own Zeffy form, DonateWidget's card tab already shows it -- showing the
+  // separate "Give via Zeffy" block below as well would just duplicate the
+  // same embed on one page. It only earns its keep as an *additional* option
+  // alongside Stripe.
+  const showSeparateZeffyBlock = p.zeffy_form_url && donationSettings.active_processor !== 'zeffy'
 
   const left = daysLeft(p.campaign_end)
   const pct = p.goal_ngn > 0 ? Math.min(100, Math.round((p.raised_ngn / p.goal_ngn) * 100)) : 0
@@ -321,10 +329,13 @@ export default async function DonationProjectPage({ params }: { params: Promise<
           )}
 
           <div className="card reveal" style={{ padding: 'clamp(24px,4vw,48px)', maxWidth: 640, margin: '0 auto' }}>
-            <DonateWidget />
+            <DonateWidget
+              activeProcessor={donationSettings.active_processor}
+              zeffyFormUrl={p.zeffy_form_url ?? donationSettings.zeffy_general_form_url}
+            />
           </div>
 
-          {p.zeffy_form_url && (
+          {showSeparateZeffyBlock && (
             <div className="card reveal" style={{ padding: 'clamp(24px,4vw,48px)', maxWidth: 640, margin: '2rem auto 0' }}>
               <div style={{ textAlign: 'center', marginBottom: '1.25rem' }}>
                 <h3 style={{ margin: '0 0 6px' }}>Give via Zeffy — zero platform fees</h3>
@@ -332,7 +343,7 @@ export default async function DonationProjectPage({ params }: { params: Promise<
                   100% of your gift reaches Wissen-Haus. Zeffy charges nothing to process it (donors can optionally tip Zeffy instead).
                 </p>
               </div>
-              <div dangerouslySetInnerHTML={{ __html: zeffyEmbedHtml(p.zeffy_form_url) }} />
+              <div dangerouslySetInnerHTML={{ __html: zeffyEmbedHtml(p.zeffy_form_url!) }} />
             </div>
           )}
 

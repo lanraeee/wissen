@@ -8,6 +8,7 @@ import { DONATE_SCHEMA } from '@/lib/page-copy-schema'
 import { getSiteContent } from '@/lib/site-content'
 import { getOgCopy } from '@/lib/og'
 import { ogSchemaFor } from '@/lib/og-schema'
+import { getDonationSettings } from '@/lib/donation-settings'
 
 export async function generateMetadata(): Promise<Metadata> {
   return pageMetadata(await getOgCopy(ogSchemaFor('donate')!))
@@ -30,9 +31,10 @@ const DEFAULT_STATS: StatItem[] = [
 ]
 
 export default async function DonatePage() {
-  const [c, statsContent] = await Promise.all([
+  const [c, statsContent, donationSettings] = await Promise.all([
     getPageCopy(DONATE_SCHEMA),
     getSiteContent<StatItem[]>('homepage_stats'),
+    getDonationSettings(),
   ])
   const stats = Array.isArray(statsContent) && statsContent.length === 4 ? statsContent : DEFAULT_STATS
 
@@ -84,7 +86,7 @@ export default async function DonatePage() {
             <p className="lead">{c.giveLead}</p>
           </div>
           <div className="card reveal" style={{ padding: 'clamp(24px,4vw,48px)', maxWidth: 640, margin: '0 auto' }}>
-            <DonateWidget />
+            <DonateWidget activeProcessor={donationSettings.active_processor} zeffyFormUrl={donationSettings.zeffy_general_form_url} />
           </div>
 
           <div style={{ textAlign: 'center', marginTop: '2.5rem' }} className="reveal">

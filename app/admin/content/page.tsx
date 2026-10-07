@@ -17,6 +17,7 @@ import BankDetailsEditor from '@/components/admin/BankDetailsEditor'
 import PageCopyEditor from '@/components/admin/PageCopyEditor'
 import PartnerScholarshipsEditor from '@/components/admin/PartnerScholarshipsEditor'
 import ContactDetailsEditor from '@/components/admin/ContactDetailsEditor'
+import DonationProcessorEditor from '@/components/admin/DonationProcessorEditor'
 
 export const metadata: Metadata = { title: 'Content · Admin · Wissen-Haus' }
 
@@ -36,6 +37,7 @@ const TABS = [
   { key: 'impact-stories', label: 'Impact Stories' },
   { key: 'donation-certs', label: '🧾 Donation Receipts' },
   { key: 'bank-details', label: '🏦 Bank Transfer Details', directorOnly: true },
+  { key: 'donation-processor', label: '💳 Donation Processor' },
   { key: 'foundation', label: 'Foundation Details' },
 ]
 
@@ -88,6 +90,7 @@ export default async function AdminContent({ searchParams }: { searchParams: Pro
         {activeTab === 'impact-stories' && <ImpactStoriesEditor />}
         {activeTab === 'donation-certs' && <DonationCertEditor />}
         {activeTab === 'bank-details' && isDirector && <BankDetailsEditor />}
+        {activeTab === 'donation-processor' && <DonationProcessorEditor />}
         {activeTab === 'foundation' && <FoundationDetailsEditor />}
       </div>
     </>
