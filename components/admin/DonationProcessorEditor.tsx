@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import type { DonationSettings } from '@/lib/donation-settings'
 
 const DEFAULT: DonationSettings = {
-  active_processor: 'stripe',
+  zeffy_enabled: false,
   zeffy_general_form_url: '',
 }
 
@@ -51,9 +51,10 @@ export default function DonationProcessorEditor() {
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
         <div>
-          <h2 style={{ margin: '0 0 4px', fontSize: '1.1rem' }}>Card Donation Processor</h2>
+          <h2 style={{ margin: '0 0 4px', fontSize: '1.1rem' }}>Donation Processors</h2>
           <p style={{ margin: 0, fontSize: '.8rem', color: '#8a9a8f' }}>
-            Which platform the card-payment tab on /donate uses. Bank transfer is unaffected either way.
+            Card (Stripe) and Bank Transfer are always available. Turn on Zeffy to offer it as a third, zero-fee choice —
+            donors pick whichever works for them; nothing is forced on anyone.
           </p>
         </div>
         <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
@@ -63,46 +64,25 @@ export default function DonationProcessorEditor() {
       </div>
       {error && <div style={{ marginBottom: 16, color: '#dc2626', fontSize: '.85rem', background: '#fee2e2', padding: '8px 14px', borderRadius: 7 }}>{error}</div>}
 
-      <div className="rgrid-2" style={{ gap: 14, marginBottom: 20 }}>
-        <button
-          type="button"
-          onClick={() => setData(d => ({ ...d, active_processor: 'stripe' }))}
-          style={{
-            textAlign: 'left', padding: '16px 18px', borderRadius: 10, cursor: 'pointer',
-            border: data.active_processor === 'stripe' ? '2px solid #1a3c2e' : '1px solid #e8e4dc',
-            background: data.active_processor === 'stripe' ? '#f0f4f1' : '#fff',
-          }}
-        >
-          <div style={{ fontWeight: 700, marginBottom: 4 }}>💳 Stripe {data.active_processor === 'stripe' && <span style={{ color: '#1a3c2e' }}>✓ Active</span>}</div>
-          <div style={{ fontSize: '.8rem', color: '#8a9a8f' }}>Card payments in Naira, Dollars, Pounds or Euros. Processing fees apply (standard Stripe rates).</div>
-        </button>
-        <button
-          type="button"
-          onClick={() => setData(d => ({ ...d, active_processor: 'zeffy' }))}
-          style={{
-            textAlign: 'left', padding: '16px 18px', borderRadius: 10, cursor: 'pointer',
-            border: data.active_processor === 'zeffy' ? '2px solid #1a3c2e' : '1px solid #e8e4dc',
-            background: data.active_processor === 'zeffy' ? '#f0f4f1' : '#fff',
-          }}
-        >
-          <div style={{ fontWeight: 700, marginBottom: 4 }}>🎁 Zeffy {data.active_processor === 'zeffy' && <span style={{ color: '#1a3c2e' }}>✓ Active</span>}</div>
-          <div style={{ fontSize: '.8rem', color: '#8a9a8f' }}>Zero platform fees — 100% of the gift reaches the foundation. Needs a Zeffy form set up below (or per-project in Donation Projects).</div>
-          <div style={{ fontSize: '.75rem', color: '#b45309', marginTop: 6 }}>⚠️ Naira cards often fail — see note below.</div>
-        </button>
-      </div>
-
-      {data.active_processor === 'zeffy' && (
-        <div style={{ marginBottom: 16, background: '#fef3c7', border: '1px solid #f3cf7a', borderRadius: 8, padding: '12px 16px', fontSize: '.8rem', color: '#78350f', lineHeight: 1.6 }}>
-          <strong>⚠️ Naira donors may not be able to pay.</strong> Our Zeffy account is UK-registered (Zeffy only supports nonprofits
-          based in the US, Canada, UK, Ireland, Germany or Australia — not Nigeria), so every charge processes in <strong>GBP</strong>, never NGN.
-          A Nigerian donor&apos;s card is charged in GBP and their own bank converts it — but many Naira debit/credit cards restrict or
-          cap international/foreign-currency transactions by default, so the payment can simply fail for them. Stripe accepts Nigerian
-          cards natively in NGN with none of this friction. Zeffy&apos;s zero-fee advantage is strongest for GBP/USD/CAD/AUD donors
-          (UK diaspora, international partners) — switching the <em>general</em> /donate page to Zeffy risks quietly breaking payment
-          for Naira-paying donors, who are likely most of our traffic. Safer to use Zeffy per-project (Donation Projects) for
-          UK/international-focused campaigns rather than as the site-wide default.
+      <label style={{
+        display: 'flex', alignItems: 'flex-start', gap: 12, padding: '16px 18px', borderRadius: 10, cursor: 'pointer',
+        border: data.zeffy_enabled ? '2px solid #1a3c2e' : '1px solid #e8e4dc',
+        background: data.zeffy_enabled ? '#f0f4f1' : '#fff', marginBottom: 16,
+      }}>
+        <input
+          type="checkbox"
+          checked={data.zeffy_enabled}
+          onChange={e => setData(d => ({ ...d, zeffy_enabled: e.target.checked }))}
+          style={{ marginTop: 3, width: 18, height: 18, flexShrink: 0 }}
+        />
+        <div>
+          <div style={{ fontWeight: 700, marginBottom: 4 }}>🎁 Offer Zeffy (zero platform fees) as a donor choice</div>
+          <div style={{ fontSize: '.8rem', color: '#8a9a8f' }}>
+            100% of the gift reaches the foundation when a donor picks this. Needs a Zeffy form set below (or per-project in Donation Projects).
+          </div>
+          <div style={{ fontSize: '.75rem', color: '#b45309', marginTop: 6 }}>⚠️ Naira cards often fail on Zeffy — see note below.</div>
         </div>
-      )}
+      </label>
 
       <div>
         <label style={{ display: 'block', fontSize: '.7rem', fontWeight: 700, textTransform: 'uppercase', color: '#8a9a8f', letterSpacing: '.06em', marginBottom: 4 }}>
@@ -120,9 +100,21 @@ export default function DonationProcessorEditor() {
         </p>
       </div>
 
-      {data.active_processor === 'zeffy' && !data.zeffy_general_form_url && (
+      {data.zeffy_enabled && !data.zeffy_general_form_url && (
         <div style={{ marginTop: 16, background: '#fffdf5', border: '1px solid rgba(184,149,42,0.3)', borderRadius: 8, padding: '12px 16px', fontSize: '.8rem', color: '#5a5a4a' }}>
-          <strong style={{ color: '#0F2D1D' }}>⚠️ Heads up:</strong> Zeffy is active but no default form is set. The general /donate page will fall back to Stripe until you add one — project pages with their own Zeffy form (like Donation Projects → Career Clarity Fair) work regardless.
+          <strong style={{ color: '#0F2D1D' }}>⚠️ Heads up:</strong> Zeffy is enabled but no default form is set. The general /donate page won&apos;t show the Zeffy option
+          until you add one — project pages with their own Zeffy form (like Donation Projects → Career Clarity Fair) show it regardless.
+        </div>
+      )}
+
+      {data.zeffy_enabled && (
+        <div style={{ marginTop: 16, background: '#fef3c7', border: '1px solid #f3cf7a', borderRadius: 8, padding: '12px 16px', fontSize: '.8rem', color: '#78350f', lineHeight: 1.6 }}>
+          <strong>⚠️ Naira donors may not be able to pay via Zeffy.</strong> Our Zeffy account is UK-registered (Zeffy only supports nonprofits
+          based in the US, Canada, UK, Ireland, Germany or Australia — not Nigeria), so every Zeffy charge processes in <strong>GBP</strong>, never NGN.
+          A Nigerian donor&apos;s card is charged in GBP and their own bank converts it — but many Naira debit/credit cards restrict or
+          cap international/foreign-currency transactions by default, so the payment can simply fail for them. That&apos;s exactly why
+          Zeffy is offered as an extra <em>choice</em> here rather than a replacement: donors it doesn&apos;t work for can just use the
+          Card (Stripe) tab instead, which accepts Nigerian cards natively in NGN.
         </div>
       )}
     </div>

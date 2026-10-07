@@ -5,7 +5,7 @@ import posthog from 'posthog-js'
 import { zeffyEmbedHtml } from '@/lib/zeffy-embed'
 
 type Currency = 'NGN' | 'USD' | 'GBP' | 'EUR'
-type Method = 'card' | 'bank'
+type Method = 'card' | 'zeffy' | 'bank'
 
 const AMOUNTS: Record<Currency, number[]> = {
   NGN: [5000, 10000, 20000, 50000],
@@ -27,14 +27,14 @@ const CUSTOM_PLACEHOLDER: Record<Currency, string> = { NGN: '15000', USD: '30', 
 const CURRENCIES: Currency[] = ['NGN', 'USD', 'GBP', 'EUR']
 
 interface Props {
-  /** Which rail the card tab uses. Defaults to Stripe (today's behaviour) when omitted. */
-  activeProcessor?: 'stripe' | 'zeffy'
-  /** Required for the card tab to actually show Zeffy -- falls back to Stripe if missing even when activeProcessor is 'zeffy'. */
+  /** Offers Zeffy (zero platform fees) as a third choice alongside Card (Stripe) and Bank Transfer -- the donor picks, nothing is forced. */
+  zeffyEnabled?: boolean
+  /** Required for the Zeffy option to actually appear, even when zeffyEnabled is true. */
   zeffyFormUrl?: string
 }
 
-export default function DonateWidget({ activeProcessor = 'stripe', zeffyFormUrl }: Props) {
-  const useZeffy = activeProcessor === 'zeffy' && !!zeffyFormUrl
+export default function DonateWidget({ zeffyEnabled = false, zeffyFormUrl }: Props) {
+  const showZeffy = zeffyEnabled && !!zeffyFormUrl
   const [method, setMethod] = useState<Method>('card')
   const [currency, setCurrency] = useState<Currency>('NGN')
   const [selected, setSelected] = useState<number | null>(null)
@@ -96,16 +96,22 @@ export default function DonateWidget({ activeProcessor = 'stripe', zeffyFormUrl 
     }
   }
 
+  const methodOptions: [Method, string][] = [
+    ['card', '💳 Card'],
+    ...(showZeffy ? [['zeffy', '🎁 Zero-Fee (Zeffy)'] as [Method, string]] : []),
+    ['bank', '🏦 Bank Transfer'],
+  ]
+
   const methodToggle = (
-    <div style={{ display: 'flex', gap: 8, marginBottom: 20 }}>
-      {([['card', '💳 Card'], ['bank', '🏦 Bank Transfer']] as [Method, string][]).map(([m, label]) => (
+    <div style={{ display: 'flex', gap: 8, marginBottom: 20, flexWrap: 'wrap' }}>
+      {methodOptions.map(([m, label]) => (
         <button
           key={m}
           type="button"
           onClick={() => changeMethod(m)}
           aria-pressed={method === m}
           style={{
-            flex: 1, padding: '11px 0', borderRadius: 8, border: '2px solid',
+            flex: '1 1 140px', padding: '11px 0', borderRadius: 8, border: '2px solid',
             borderColor: method === m ? 'var(--green-800,#1a3c2e)' : '#e8e4dc',
             background: method === m ? 'var(--green-800,#1a3c2e)' : '#fff',
             color: method === m ? '#f4f0e7' : '#3a4a3f',
@@ -120,9 +126,12 @@ export default function DonateWidget({ activeProcessor = 'stripe', zeffyFormUrl 
 
   // Zeffy can't process payments for a hand-built form (see lib/ledger-
   // providers.ts's Zeffy section) -- its own embed is the only supported
-  // path, so the card tab becomes "method toggle + their embed", with none
-  // of the amount/name/email/submit UI below (Zeffy's form has its own).
-  if (method === 'card' && useZeffy) {
+  // path, so this is its own tab with just the method toggle + their embed,
+  // not a flow that reuses the amount/name/email UI below (Zeffy's form has
+  // its own). The donor picks this tab themselves -- nothing is forced, so
+  // whoever can't pay this way (see the Naira-card caveat in the admin
+  // Donation Processor settings) just stays on the Card tab.
+  if (method === 'zeffy' && showZeffy) {
     return (
       <div style={{ maxWidth: 560, margin: '0 auto' }}>
         {methodToggle}

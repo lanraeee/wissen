@@ -86,7 +86,7 @@ export default async function DonatePage() {
             <p className="lead">{c.giveLead}</p>
           </div>
           <div className="card reveal" style={{ padding: 'clamp(24px,4vw,48px)', maxWidth: 640, margin: '0 auto' }}>
-            <DonateWidget activeProcessor={donationSettings.active_processor} zeffyFormUrl={donationSettings.zeffy_general_form_url} />
+            <DonateWidget zeffyEnabled={donationSettings.zeffy_enabled} zeffyFormUrl={donationSettings.zeffy_general_form_url} />
           </div>
 
           <div style={{ textAlign: 'center', marginTop: '2.5rem' }} className="reveal">
