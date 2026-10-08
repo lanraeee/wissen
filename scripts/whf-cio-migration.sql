@@ -62,11 +62,13 @@ CREATE TABLE IF NOT EXISTS cio_trustee_declarations (
   accepts_office          BOOLEAN NOT NULL DEFAULT FALSE,
   consents_to_application BOOLEAN NOT NULL DEFAULT FALSE,
   signed_name             TEXT,
+  signature_data          TEXT,
   notes                   TEXT,
   created_at              TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at              TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   UNIQUE (trustee_id)
 );
+ALTER TABLE cio_trustee_declarations ADD COLUMN IF NOT EXISTS signature_data TEXT;
 
 CREATE TABLE IF NOT EXISTS cio_policies (
   id           UUID PRIMARY KEY DEFAULT gen_random_uuid(),

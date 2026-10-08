@@ -683,9 +683,8 @@ CREATE TABLE IF NOT EXISTS cio_declarations (
 
 -- One-time eligibility + acceptance-of-office declaration each trustee signs
 -- (constitution clauses 4.3, 5.2.5) -- distinct from cio_declarations above,
--- which is the annual conflicts-of-interest declaration. signed_name is a
--- typed-name placeholder for now; see MinutesPreview-style preview in
--- TrusteeDeclarationsTab for the printable/signable document.
+-- which is the annual conflicts-of-interest declaration. See
+-- components/admin/cio/SignaturePad.tsx for how signature_data is captured.
 CREATE TABLE IF NOT EXISTS cio_trustee_declarations (
   id                      UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   trustee_id              UUID NOT NULL REFERENCES trustee_register(id) ON DELETE CASCADE,
@@ -694,11 +693,20 @@ CREATE TABLE IF NOT EXISTS cio_trustee_declarations (
   accepts_office          BOOLEAN NOT NULL DEFAULT FALSE,
   consents_to_application BOOLEAN NOT NULL DEFAULT FALSE,
   signed_name             TEXT,
+  -- Drawn-signature PNG as a data: URL, captured by the canvas pad in
+  -- TrusteeDeclarationPreview/SignaturePad. A simple electronic signature
+  -- (no identity verification or audit trail), same legal standing as
+  -- signed_name -- chosen over a third-party e-signature service since
+  -- it's 3 trustees who already hold admin logins to this exact system.
+  signature_data          TEXT,
   notes                   TEXT,
   created_at              TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at              TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   UNIQUE (trustee_id)
 );
+-- Defensive: covers a DB where this table was already created by an
+-- earlier run of this migration, before signature_data existed.
+ALTER TABLE cio_trustee_declarations ADD COLUMN IF NOT EXISTS signature_data TEXT;
 
 CREATE TABLE IF NOT EXISTS cio_policies (
   id           UUID PRIMARY KEY DEFAULT gen_random_uuid(),

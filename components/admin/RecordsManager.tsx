@@ -31,7 +31,7 @@ interface Props {
   summary?: (rows: Row[]) => ReactNode
   /** Render the summary even when there are no rows (e.g. a list of who is still outstanding). */
   summaryWhenEmpty?: boolean
-  renderExtra?: (row: Row) => ReactNode
+  renderExtra?: (row: Row, reload: () => Promise<void>) => ReactNode
 }
 
 export default function RecordsManager({ resource, heading, blurb, addLabel, emptyText, fields, columns, defaults = {}, summary, summaryWhenEmpty, renderExtra }: Props) {
@@ -164,7 +164,7 @@ export default function RecordsManager({ resource, heading, blurb, addLabel, emp
             ))}
           </div>
 
-          {editingRow && renderExtra && <div style={{ marginBottom: 16 }}>{renderExtra(editingRow)}</div>}
+          {editingRow && renderExtra && <div style={{ marginBottom: 16 }}>{renderExtra(editingRow, load)}</div>}
 
           <div style={{ display: 'flex', gap: 10, justifyContent: 'space-between' }}>
             <div>{editingId && <button style={btn('#dc2626')} onClick={() => setConfirmDelete(true)} disabled={saving}>Delete</button>}</div>

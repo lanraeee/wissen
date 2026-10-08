@@ -78,6 +78,7 @@ export const RESOURCES = {
       { name: 'accepts_office', type: 'bool' },
       { name: 'consents_to_application', type: 'bool' },
       { name: 'signed_name', type: 'text' },
+      { name: 'signature_data', type: 'text' },
       { name: 'notes', type: 'text' },
     ],
   },

@@ -5,6 +5,7 @@ import RecordsManager, { type Field, type Column } from '../RecordsManager'
 import { fmtDate, type Row } from '../cio-ui'
 import Badge from './Badge'
 import TrusteeDeclarationPreview from './TrusteeDeclarationPreview'
+import SignaturePad from './SignaturePad'
 import DocumentsPanel from './DocumentsPanel'
 
 interface Trustee { id: string; full_name: string; position_title: string | null; status: string }
@@ -34,7 +35,7 @@ export default function TrusteeDeclarationsTab() {
     { name: 'confirms_eligible', label: 'Confirms not disqualified as a charity trustee (Charities Act 2011, ss178–180)', type: 'checkbox' },
     { name: 'accepts_office', label: 'Accepts appointment as a charity trustee', type: 'checkbox' },
     { name: 'consents_to_application', label: 'Consents to details being used for the Charity Commission application', type: 'checkbox' },
-    { name: 'signed_name', label: 'Signed name (typed, interim — see note on signatures)', type: 'text', placeholder: 'As the trustee would sign it' },
+    { name: 'signed_name', label: 'Printed name (alongside the drawn signature below)', type: 'text', placeholder: 'As the trustee would sign it' },
     { name: 'notes', label: 'Notes', type: 'textarea' },
   ]
 
@@ -85,10 +86,16 @@ export default function TrusteeDeclarationsTab() {
       }}
       summary={summary}
       summaryWhenEmpty
-      renderExtra={row => {
+      renderExtra={(row, reload) => {
         const trustee = trustees.find(t => t.id === row.trustee_id)
         return (
           <>
+            <SignaturePad
+              resource="trustee_declarations"
+              recordId={row.id}
+              existing={row.signature_data as string | null}
+              onSaved={reload}
+            />
             <div style={{ marginBottom: 20 }}>
               <TrusteeDeclarationPreview
                 fullName={trustee?.full_name ?? String(row.full_name ?? '')}
@@ -98,6 +105,7 @@ export default function TrusteeDeclarationsTab() {
                 acceptsOffice={!!row.accepts_office}
                 consentsToApplication={!!row.consents_to_application}
                 signedName={row.signed_name as string | null}
+                signatureData={row.signature_data as string | null}
               />
             </div>
             <DocumentsPanel linkedType="trustee_declarations" linkedId={row.id} heading="Signed copy" />

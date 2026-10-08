@@ -12,6 +12,7 @@ interface Props {
   acceptsOffice: boolean
   consentsToApplication: boolean
   signedName?: string | null
+  signatureData?: string | null
   orgName?: string
 }
 
@@ -35,7 +36,7 @@ function Pill({ ok }: { ok: boolean }) {
 }
 
 export default function TrusteeDeclarationPreview({
-  fullName, positionTitle, signedDate, confirmsEligible, acceptsOffice, consentsToApplication, signedName, orgName = 'Wissen Haus Foundation',
+  fullName, positionTitle, signedDate, confirmsEligible, acceptsOffice, consentsToApplication, signedName, signatureData, orgName = 'Wissen Haus Foundation',
 }: Props) {
   const sheetRef = useRef<HTMLDivElement>(null)
 
@@ -103,7 +104,13 @@ export default function TrusteeDeclarationPreview({
           {signedName && <div className="mn-plain" style={{ marginTop: 8 }}>Signed name on file: <strong>{signedName}</strong></div>}
 
           <div className="mn-sigrow">
-            <div className="mn-sigblock"><div className="mn-sigline" /><div className="mn-sigcap">Trustee&apos;s signature</div></div>
+            <div className="mn-sigblock">
+              {signatureData
+                // eslint-disable-next-line @next/next/no-img-element
+                ? <img className="mn-sig-img" src={signatureData} alt={`${fullName}'s signature`} />
+                : <div className="mn-sigline" />}
+              <div className="mn-sigcap">Trustee&apos;s signature</div>
+            </div>
             <div className="mn-sigblock"><div className="mn-sigline" /><div className="mn-sigcap">Date</div></div>
           </div>
         </div>
