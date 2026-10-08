@@ -66,6 +66,21 @@ export const RESOURCES = {
       { name: 'details', type: 'text' },
     ],
   },
+  trustee_declarations: {
+    table: 'cio_trustee_declarations',
+    orderBy: 'created_at',
+    listQuery:
+      'SELECT d.*, t.full_name, t.position_title FROM cio_trustee_declarations d JOIN trustee_register t ON t.id = d.trustee_id ORDER BY t.full_name',
+    cols: [
+      { name: 'trustee_id', type: 'text', required: true },
+      { name: 'signed_date', type: 'date', required: true },
+      { name: 'confirms_eligible', type: 'bool' },
+      { name: 'accepts_office', type: 'bool' },
+      { name: 'consents_to_application', type: 'bool' },
+      { name: 'signed_name', type: 'text' },
+      { name: 'notes', type: 'text' },
+    ],
+  },
   policies: {
     table: 'cio_policies',
     orderBy: 'title',

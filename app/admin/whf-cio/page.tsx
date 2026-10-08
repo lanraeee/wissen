@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation'
 import { getSession } from '@/lib/auth'
 import { isDirector, canAccessSafeguarding } from '@/lib/admin-guard'
 import TrusteeRegisterEditor from '@/components/admin/TrusteeRegisterEditor'
+import TrusteeDeclarationsTab from '@/components/admin/cio/TrusteeDeclarationsTab'
 import RegistrationsTab from '@/components/admin/cio/RegistrationsTab'
 import MeetingsTab from '@/components/admin/cio/MeetingsTab'
 import PoliciesTab from '@/components/admin/cio/PoliciesTab'
@@ -18,6 +19,7 @@ export const metadata: Metadata = { title: 'WHF-CIO Records · Admin · Wissen-H
 
 const TABS = [
   { key: 'trustees', label: 'Trustees' },
+  { key: 'trustee_declarations', label: 'Trustee Declarations' },
   { key: 'constitution', label: 'Constitution' },
   { key: 'registrations', label: 'Registrations' },
   { key: 'meetings', label: 'Meetings & Minutes' },
@@ -38,6 +40,7 @@ const SAFEGUARDING_TABS: readonly TabKey[] = ['safeguarding']
 
 const CONTENT: Record<TabKey, React.ReactNode> = {
   trustees: <TrusteeRegisterEditor />,
+  trustee_declarations: <TrusteeDeclarationsTab />,
   constitution: <ConstitutionTab />,
   registrations: <RegistrationsTab />,
   meetings: <MeetingsTab />,

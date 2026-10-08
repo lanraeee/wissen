@@ -54,6 +54,20 @@ CREATE TABLE IF NOT EXISTS cio_declarations (
   UNIQUE (trustee_id, declaration_year)
 );
 
+CREATE TABLE IF NOT EXISTS cio_trustee_declarations (
+  id                      UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  trustee_id              UUID NOT NULL REFERENCES trustee_register(id) ON DELETE CASCADE,
+  signed_date             DATE NOT NULL,
+  confirms_eligible       BOOLEAN NOT NULL DEFAULT FALSE,
+  accepts_office          BOOLEAN NOT NULL DEFAULT FALSE,
+  consents_to_application BOOLEAN NOT NULL DEFAULT FALSE,
+  signed_name             TEXT,
+  notes                   TEXT,
+  created_at              TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at              TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  UNIQUE (trustee_id)
+);
+
 CREATE TABLE IF NOT EXISTS cio_policies (
   id           UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   title        TEXT NOT NULL,
