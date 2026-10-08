@@ -31,15 +31,21 @@ const STATUS_COLORS: Record<string, { background: string; color: string }> = {
 }
 
 const ANSWER_LABELS: Record<string, string> = {
-  currentStatus: 'Current status', educationLevel: 'Education level', fieldOfStudy: 'Field of study/profession',
-  learningGoals: 'What they want to learn', experienceLevel: 'Experience level', goalsEssay: 'What DataCamp would help them achieve',
-  whyApplyingEssay: 'Why they are applying', situation: 'Situation', accessMethod: 'How they would access DataCamp otherwise',
-  weeklyHours: 'Weekly time commitment', deviceAccess: 'Device access', internetAccess: 'Internet access', planEssay: 'What they will do differently',
-  visionEssay: 'Where they see themselves in 12 months', impactEssay: 'How this could benefit others',
-  priorCourses: 'Completed online courses before?', priorCoursesDetail: 'Prior course details',
-  evidenceTypes: 'Evidence of interest', evidenceUrl: 'Evidence link', tieBreakerEssay: 'Why they should receive this scholarship',
-  agreeCommitments: 'Agreed to commitments', agreeNoResale: 'Agreed not to resell access',
-  consentContact: 'Consented to contact', consentSuccessStory: 'Consented to share success story',
+  // Current (post-simplification) fields
+  currentStatus: 'Current status', educationLevel: 'Education level',
+  learningGoals: 'What they want to learn', experienceLevel: 'Experience level', motivationEssay: 'Their motivation',
+  situation: 'Situation', accessMethod: 'How they would access DataCamp otherwise',
+  weeklyHours: 'Weekly time commitment', accessSupport: 'Device/internet access',
+  priorCourses: 'Completed online courses before?', evidenceTypes: 'Evidence of interest', impactAreas: 'Who this could benefit',
+  agreeAll: 'Agreed to commitments', consentSuccessStory: 'Consented to share success story',
+  // Legacy fields -- kept so applications submitted before the form was
+  // trimmed down (fewer, shorter questions) still render in full here.
+  fieldOfStudy: 'Field of study/profession', goalsEssay: 'What DataCamp would help them achieve',
+  whyApplyingEssay: 'Why they are applying', deviceAccess: 'Device access', internetAccess: 'Internet access',
+  planEssay: 'What they will do differently', visionEssay: 'Where they see themselves in 12 months',
+  impactEssay: 'How this could benefit others', priorCoursesDetail: 'Prior course details',
+  evidenceUrl: 'Evidence link', tieBreakerEssay: 'Why they should receive this scholarship',
+  agreeCommitments: 'Agreed to commitments', agreeNoResale: 'Agreed not to resell access', consentContact: 'Consented to contact',
 }
 
 const CRITERION_LABELS: Record<keyof ScoreBreakdown, string> = {

@@ -4,8 +4,8 @@ import sql from '@/lib/db'
 import { parseBody, zEmail, zName } from '@/lib/validation'
 import {
   AGE_RANGES, CURRENT_STATUS_OPTIONS, EDUCATION_LEVELS, LEARNING_GOALS, EXPERIENCE_LEVELS,
-  SITUATION_OPTIONS, ACCESS_METHOD_OPTIONS, WEEKLY_HOURS_OPTIONS, DEVICE_OPTIONS, INTERNET_OPTIONS,
-  EVIDENCE_OPTIONS, type ScholarshipAnswers,
+  SITUATION_OPTIONS, ACCESS_METHOD_OPTIONS, WEEKLY_HOURS_OPTIONS, ACCESS_SUPPORT_OPTIONS,
+  EVIDENCE_OPTIONS, IMPACT_AREA_OPTIONS, type ScholarshipAnswers,
 } from '@/lib/scholarship-shared'
 import { scoreApplication } from '@/lib/scholarship-scoring'
 import { sendScholarshipConfirmation, sendScholarshipNotification } from '@/lib/email'
@@ -24,39 +24,22 @@ const ScholarshipSchema = z.object({
 
   currentStatus: z.enum(CURRENT_STATUS_OPTIONS),
   educationLevel: z.enum(EDUCATION_LEVELS),
-  fieldOfStudy: z.string().trim().max(200).optional(),
 
   learningGoals: z.array(z.enum(LEARNING_GOALS)).min(1).max(3),
   experienceLevel: z.enum(EXPERIENCE_LEVELS),
-  goalsEssay: z.string().trim().min(50).max(3000),
-
-  whyApplyingEssay: z.string().trim().min(50).max(3000),
+  motivationEssay: z.string().trim().min(60).max(3000),
   situation: z.array(z.enum(SITUATION_OPTIONS)).min(1),
   accessMethod: z.enum(ACCESS_METHOD_OPTIONS),
 
   weeklyHours: z.enum(WEEKLY_HOURS_OPTIONS),
-  deviceAccess: z.enum(DEVICE_OPTIONS),
-  internetAccess: z.enum(INTERNET_OPTIONS),
-  planEssay: z.string().trim().min(20).max(2000),
-
-  visionEssay: z.string().trim().min(20).max(2000),
-  impactEssay: z.string().trim().min(1).max(2000),
+  accessSupport: z.enum(ACCESS_SUPPORT_OPTIONS),
   priorCourses: z.enum(['Yes', 'No']),
-  priorCoursesDetail: z.string().trim().max(1000).optional(),
-
   evidenceTypes: z.array(z.enum(EVIDENCE_OPTIONS)).default([]),
-  evidenceUrl: z.string().trim().max(500).optional(),
+  impactAreas: z.array(z.enum(IMPACT_AREA_OPTIONS)).min(1),
 
-  tieBreakerEssay: z.string().trim().min(10).max(1000),
-
-  agreeCommitments: z.literal(true),
-  agreeNoResale: z.literal(true),
-  consentContact: z.literal(true),
+  agreeAll: z.literal(true),
   consentSuccessStory: z.boolean().optional(),
-}).refine(
-  data => data.priorCourses === 'No' || !!data.priorCoursesDetail?.trim(),
-  { message: 'priorCoursesDetail: Please tell us about the courses you completed', path: ['priorCoursesDetail'] },
-)
+})
 
 export async function POST(req: NextRequest) {
   // The form page is gated by middleware, but that only stops a browser
@@ -97,7 +80,7 @@ export async function POST(req: NextRequest) {
       sendScholarshipConfirmation(normalizedEmail, name),
       sendScholarshipNotification({
         name, email: normalizedEmail, score: scored.score, redFlags,
-        goalsEssay: answers.goalsEssay, whyApplyingEssay: answers.whyApplyingEssay,
+        motivationEssay: answers.motivationEssay,
       }),
     ]).catch(err => log.error('scholarship application email', err))
   )

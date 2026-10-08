@@ -20,20 +20,15 @@ function scoreFinancialNeed(a: ScholarshipAnswers): number {
   return Math.min(barrierPoints + (accessPoints[a.accessMethod] ?? 0), 25)
 }
 
-// Motivation -- 20pts, split across the two free-text motivation questions.
-// Length is used only as a structural proxy for effort, never as a judgment
-// of the writing's quality -- reviewers read the actual answers.
-function motivationBucket(words: number, thresholds: [number, number, number], points: [number, number, number, number]): number {
-  if (words < thresholds[0]) return points[0]
-  if (words < thresholds[1]) return points[1]
-  if (words < thresholds[2]) return points[2]
-  return points[3]
-}
-
+// Motivation -- 20pts, from the single free-text motivation question. Length
+// is used only as a structural proxy for effort, never as a judgment of the
+// writing's quality -- reviewers read the actual answer.
 function scoreMotivation(a: ScholarshipAnswers): number {
-  const goals = motivationBucket(wordCount(a.goalsEssay), [30, 80, 150], [2, 5, 8, 10])
-  const tieBreaker = motivationBucket(wordCount(a.tieBreakerEssay), [15, 40, 80], [2, 5, 8, 10])
-  return goals + tieBreaker
+  const words = wordCount(a.motivationEssay)
+  if (words < 40) return 6
+  if (words < 100) return 12
+  if (words < 180) return 17
+  return 20
 }
 
 // Career/education goals -- 20pts. Weighted toward beginners/basic learners
@@ -58,12 +53,13 @@ function scoreCommitment(a: ScholarshipAnswers): number {
   return hoursPoints[a.weeklyHours] ?? 0
 }
 
-// Potential impact -- 10pts, from how much the applicant says about who else benefits.
+// Potential impact -- 10pts, from how many groups the applicant says their
+// new skills would reach (a checklist, not an essay -- see impactAreas).
 function scorePotentialImpact(a: ScholarshipAnswers): number {
-  const words = wordCount(a.impactEssay)
-  if (words === 0) return 0
-  if (words < 20) return 3
-  if (words < 50) return 6
+  const count = a.impactAreas.length
+  if (count === 0) return 0
+  if (count === 1) return 4
+  if (count === 2) return 7
   return 10
 }
 
@@ -91,8 +87,8 @@ export function scoreApplication(a: ScholarshipAnswers): { score: number; breakd
   const redFlags: RedFlag[] = []
   const claimsEmployed = a.currentStatus === 'Employed' || a.currentStatus === 'Self-employed/Freelancer'
   if (claimsEmployed && a.situation.includes('I am unemployed')) redFlags.push('inconsistent')
-  if (wordCount(a.goalsEssay) < 30 || wordCount(a.tieBreakerEssay) < 15) redFlags.push('thin_answer')
-  if (a.deviceAccess === 'No' && a.internetAccess === 'No') redFlags.push('access_barrier')
+  if (wordCount(a.motivationEssay) < 40) redFlags.push('thin_answer')
+  if (a.accessSupport === 'No — I have neither a reliable device nor internet access') redFlags.push('access_barrier')
 
   return { score, breakdown, redFlags }
 }

@@ -411,7 +411,7 @@ export const EMAIL_TEMPLATES: EmailTemplateInfo[] = [
   },
   {
     id: 'scholarship-notification', name: 'DataCamp Scholarship Application Notification', category: 'Admin Notifications', recipient: 'Admin',
-    variables: ['nameField', 'emailField', 'scoreField', 'redFlagsField', 'goalsField', 'whyApplyingField', 'replyBtn'],
+    variables: ['nameField', 'emailField', 'scoreField', 'redFlagsField', 'goalsField', 'replyBtn'],
     defaultSubject: '[Scholarship] New DataCamp application — {{nameRaw}} (score {{scoreRaw}})',
     defaultBody: `<span class="badge">New Scholarship Application</span>
 <h2>New DataCamp scholarship application</h2>
@@ -420,7 +420,6 @@ export const EMAIL_TEMPLATES: EmailTemplateInfo[] = [
 {{scoreField}}
 {{redFlagsField}}
 {{goalsField}}
-{{whyApplyingField}}
 {{replyBtn}}`,
     trigger: 'Sent to admins on a new DataCamp scholarship application.',
     source: 'sendScholarshipNotification',
@@ -428,8 +427,7 @@ export const EMAIL_TEMPLATES: EmailTemplateInfo[] = [
       nameRaw: 'Ada Lovelace', scoreRaw: '78',
       nameField: fieldText('Name', 'Ada Lovelace'), emailField: field('Email', mailtoLink('ada@example.com')),
       scoreField: fieldText('Score', '78 / 100'), redFlagsField: fieldText('Red flags', 'None'),
-      goalsField: fieldPre('What they hope to achieve', 'I want to learn data analysis to start a career in tech...'),
-      whyApplyingField: fieldPre('Why they are applying', "I can't currently afford premium learning platforms..."),
+      goalsField: fieldPre('Their motivation', "I can't currently afford premium learning platforms and want to learn data analysis to start a career in tech..."),
     },
   },
 ]

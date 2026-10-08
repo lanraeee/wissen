@@ -25,7 +25,7 @@ export default async function DataCampScholarshipApplyPage() {
             premium learning resources. Designed for learners who demonstrate motivation, genuine financial/access
             barriers, commitment to learning, and a clear plan for using their skills.
           </p>
-          <p className="mt-s" style={{ fontSize: '.85rem', color: 'var(--ink-60)' }}>Estimated completion time: 7–10 minutes.</p>
+          <p className="mt-s" style={{ fontSize: '.85rem', color: 'var(--ink-60)' }}>Estimated completion time: 3–5 minutes.</p>
         </div>
 
         <ScholarshipApplicationForm tagline={tagline} />

@@ -1,7 +1,7 @@
 import { scoreApplication } from './scholarship-scoring'
 import type { ScholarshipAnswers } from './scholarship-shared'
 
-const LONG_ESSAY = Array(160).fill('word').join(' ') // 160 words -- top bucket for every essay question
+const LONG_ESSAY = Array(190).fill('word').join(' ') // 190 words -- top bucket for the motivation question
 const SHORT_ESSAY = 'too short'
 
 function baseAnswers(overrides: Partial<ScholarshipAnswers> = {}): ScholarshipAnswers {
@@ -12,22 +12,15 @@ function baseAnswers(overrides: Partial<ScholarshipAnswers> = {}): ScholarshipAn
     educationLevel: "Bachelor's degree",
     learningGoals: ['Python', 'SQL'],
     experienceLevel: 'Beginner — little or no experience',
-    goalsEssay: LONG_ESSAY,
-    whyApplyingEssay: LONG_ESSAY,
+    motivationEssay: LONG_ESSAY,
     situation: ['I cannot currently afford premium learning platforms', 'I am unemployed'],
     accessMethod: 'I would be unable to afford it',
     weeklyHours: '5–7 hours',
-    deviceAccess: 'Yes — personal laptop',
-    internetAccess: 'Yes',
-    planEssay: LONG_ESSAY,
-    visionEssay: LONG_ESSAY,
-    impactEssay: LONG_ESSAY,
+    accessSupport: 'Yes — I have a reliable device and internet access',
     priorCourses: 'No',
     evidenceTypes: ['None yet'],
-    tieBreakerEssay: LONG_ESSAY,
-    agreeCommitments: true,
-    agreeNoResale: true,
-    consentContact: true,
+    impactAreas: ['Myself'],
+    agreeAll: true,
     ...overrides,
   }
 }
@@ -40,6 +33,7 @@ describe('scoreApplication', () => {
       weeklyHours: '10+ hours',
       priorCourses: 'Yes',
       evidenceTypes: ['GitHub'],
+      impactAreas: ['Myself', 'My family', 'Other young people'],
     }))
     expect(score).toBeGreaterThan(85)
     expect(breakdown.financialNeed).toBeLessThanOrEqual(25)
@@ -63,23 +57,29 @@ describe('scoreApplication', () => {
     expect(beginner.breakdown.careerGoals).toBeGreaterThan(advanced.breakdown.careerGoals)
   })
 
+  it('rewards more impact areas with a higher potential-impact score', () => {
+    const one = scoreApplication(baseAnswers({ impactAreas: ['Myself'] }))
+    const three = scoreApplication(baseAnswers({ impactAreas: ['Myself', 'My family', 'Other young people'] }))
+    expect(three.breakdown.potentialImpact).toBeGreaterThan(one.breakdown.potentialImpact)
+  })
+
   it('flags inconsistent answers (claims employed and unemployed)', () => {
     const { redFlags } = scoreApplication(baseAnswers({ currentStatus: 'Employed', situation: ['I am unemployed'] }))
     expect(redFlags).toContain('inconsistent')
   })
 
   it('flags thin answers below the word-count floor', () => {
-    const { redFlags } = scoreApplication(baseAnswers({ goalsEssay: SHORT_ESSAY, tieBreakerEssay: SHORT_ESSAY }))
+    const { redFlags } = scoreApplication(baseAnswers({ motivationEssay: SHORT_ESSAY }))
     expect(redFlags).toContain('thin_answer')
   })
 
-  it('flags no-device-and-no-internet as an access barrier', () => {
-    const { redFlags } = scoreApplication(baseAnswers({ deviceAccess: 'No', internetAccess: 'No' }))
+  it('flags having neither a device nor internet as an access barrier', () => {
+    const { redFlags } = scoreApplication(baseAnswers({ accessSupport: 'No — I have neither a reliable device nor internet access' }))
     expect(redFlags).toContain('access_barrier')
   })
 
-  it('does not flag access barrier when only one of device/internet is missing', () => {
-    const { redFlags } = scoreApplication(baseAnswers({ deviceAccess: 'No', internetAccess: 'Mostly' }))
+  it('does not flag access barrier when support is only partial', () => {
+    const { redFlags } = scoreApplication(baseAnswers({ accessSupport: 'Partial — I have one but not reliably both' }))
     expect(redFlags).not.toContain('access_barrier')
   })
 })

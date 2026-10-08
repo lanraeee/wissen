@@ -2,6 +2,11 @@
 // used by both the public form (components/ScholarshipApplicationForm.tsx)
 // and the server (app/api/scholarships/datacamp/route.ts, lib/scholarship-scoring.ts)
 // so the two can never drift -- same pattern as lib/career-fair-shared.ts.
+//
+// Trimmed to a 3-5 minute fill (from an earlier ~27-question, 6-essay version)
+// by replacing most free-text essays with checkboxes/selects that still feed
+// every scoring dimension in lib/scholarship-scoring.ts -- only one essay
+// (motivationEssay) remains.
 
 export const AGE_RANGES = ['16–18', '19–21', '22–25', '26–30', '31–35', '36+'] as const
 
@@ -49,12 +54,22 @@ export const ACCESS_METHOD_OPTIONS = [
 
 export const WEEKLY_HOURS_OPTIONS = ['Less than 2 hours', '2–4 hours', '5–7 hours', '8–10 hours', '10+ hours'] as const
 
-export const DEVICE_OPTIONS = ['Yes — personal laptop', 'Yes — shared laptop/computer', 'Tablet', 'Smartphone only', 'No'] as const
-
-export const INTERNET_OPTIONS = ['Yes', 'Mostly', 'Sometimes', 'No'] as const
+// Replaces the old separate deviceAccess/internetAccess selects with one
+// combined question -- still enough for the access_barrier red flag.
+export const ACCESS_SUPPORT_OPTIONS = [
+  'Yes — I have a reliable device and internet access',
+  'Partial — I have one but not reliably both',
+  'No — I have neither a reliable device nor internet access',
+] as const
 
 export const EVIDENCE_OPTIONS = [
   'Portfolio', 'GitHub', 'LinkedIn', 'Previous project', 'Certificate', 'Business/project website', 'Other', 'None yet',
+] as const
+
+// Replaces the old free-text impactEssay -- who benefits is just as legible
+// from a checklist, and it's a two-second tap instead of a paragraph.
+export const IMPACT_AREA_OPTIONS = [
+  'Myself', 'My family', 'My community or the people I mentor', 'My employer or my own business', 'Other young people', 'Other',
 ] as const
 
 export interface ScholarshipAnswers {
@@ -64,34 +79,20 @@ export interface ScholarshipAnswers {
   city: string
   currentStatus: typeof CURRENT_STATUS_OPTIONS[number]
   educationLevel: typeof EDUCATION_LEVELS[number]
-  fieldOfStudy?: string
 
   learningGoals: string[]
   experienceLevel: typeof EXPERIENCE_LEVELS[number]
-  goalsEssay: string
-
-  whyApplyingEssay: string
+  motivationEssay: string
   situation: string[]
   accessMethod: typeof ACCESS_METHOD_OPTIONS[number]
 
   weeklyHours: typeof WEEKLY_HOURS_OPTIONS[number]
-  deviceAccess: typeof DEVICE_OPTIONS[number]
-  internetAccess: typeof INTERNET_OPTIONS[number]
-  planEssay: string
-
-  visionEssay: string
-  impactEssay: string
+  accessSupport: typeof ACCESS_SUPPORT_OPTIONS[number]
   priorCourses: 'Yes' | 'No'
-  priorCoursesDetail?: string
-
   evidenceTypes: string[]
-  evidenceUrl?: string
+  impactAreas: string[]
 
-  tieBreakerEssay: string
-
-  agreeCommitments: boolean
-  agreeNoResale: boolean
-  consentContact: boolean
+  agreeAll: boolean
   consentSuccessStory?: boolean
 }
 
@@ -118,6 +119,6 @@ export type RedFlag = 'duplicate' | 'inconsistent' | 'thin_answer' | 'access_bar
 export const RED_FLAG_LABELS: Record<RedFlag, string> = {
   duplicate: 'Duplicate application (same email already applied)',
   inconsistent: 'Inconsistent answers (claims to be employed and unemployed)',
-  thin_answer: 'Very short answers to the motivation/tie-breaker questions',
+  thin_answer: 'Very short answer to the motivation question',
   access_barrier: 'No device and no internet — may not be able to complete the programme',
 }

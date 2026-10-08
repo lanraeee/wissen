@@ -379,7 +379,7 @@ export async function sendScholarshipConfirmation(to: string, name: string) {
 
 // ─── DataCamp scholarship application notification (to admin) ──────────────
 export async function sendScholarshipNotification(data: {
-  name: string; email: string; score: number; redFlags: string[]; goalsEssay: string; whyApplyingEssay: string
+  name: string; email: string; score: number; redFlags: string[]; motivationEssay: string
 }) {
   const details = await getContactDetails()
   const vars = {
@@ -388,8 +388,7 @@ export async function sendScholarshipNotification(data: {
     emailField: field('Email', mailtoLink(data.email)),
     scoreField: fieldText('Score', `${data.score} / 100`),
     redFlagsField: fieldText('Red flags', data.redFlags.length > 0 ? data.redFlags.join(', ') : 'None'),
-    goalsField: fieldPre('What they hope to achieve', data.goalsEssay),
-    whyApplyingField: fieldPre('Why they are applying', data.whyApplyingEssay),
+    goalsField: fieldPre('Their motivation', data.motivationEssay),
     replyBtn: replyButton(data.email, data.name),
   }
   const { subject, html } = await renderTemplate('scholarship-notification', vars, defaultsFor('scholarship-notification'))

@@ -7,40 +7,33 @@ import { FormCheckboxGroup } from '@/components/form/FormCheckboxGroup'
 import { FormSuccess, FormError } from '@/components/form/FormSuccess'
 import {
   AGE_RANGES, CURRENT_STATUS_OPTIONS, EDUCATION_LEVELS, LEARNING_GOALS, EXPERIENCE_LEVELS,
-  SITUATION_OPTIONS, ACCESS_METHOD_OPTIONS, WEEKLY_HOURS_OPTIONS, DEVICE_OPTIONS, INTERNET_OPTIONS,
-  EVIDENCE_OPTIONS,
+  SITUATION_OPTIONS, ACCESS_METHOD_OPTIONS, WEEKLY_HOURS_OPTIONS, ACCESS_SUPPORT_OPTIONS,
+  EVIDENCE_OPTIONS, IMPACT_AREA_OPTIONS,
 } from '@/lib/scholarship-shared'
 
 interface FormState {
   name: string; email: string; phone: string
   ageRange: string; country: string; stateRegion: string; city: string
-  currentStatus: string; educationLevel: string; fieldOfStudy: string
-  learningGoals: string[]; experienceLevel: string; goalsEssay: string
-  whyApplyingEssay: string; situation: string[]; accessMethod: string
-  weeklyHours: string; deviceAccess: string; internetAccess: string; planEssay: string
-  visionEssay: string; impactEssay: string; priorCourses: string; priorCoursesDetail: string
-  evidenceTypes: string[]; evidenceUrl: string
-  tieBreakerEssay: string
-  agreeCommitments: boolean; agreeNoResale: boolean; consentContact: boolean; consentSuccessStory: boolean
+  currentStatus: string; educationLevel: string
+  learningGoals: string[]; experienceLevel: string; motivationEssay: string
+  situation: string[]; accessMethod: string
+  weeklyHours: string; accessSupport: string; priorCourses: string
+  evidenceTypes: string[]; impactAreas: string[]
+  agreeAll: boolean; consentSuccessStory: boolean
 }
 
 const INITIAL_STATE: FormState = {
   name: '', email: '', phone: '',
   ageRange: '', country: '', stateRegion: '', city: '',
-  currentStatus: '', educationLevel: '', fieldOfStudy: '',
-  learningGoals: [], experienceLevel: '', goalsEssay: '',
-  whyApplyingEssay: '', situation: [], accessMethod: '',
-  weeklyHours: '', deviceAccess: '', internetAccess: '', planEssay: '',
-  visionEssay: '', impactEssay: '', priorCourses: '', priorCoursesDetail: '',
-  evidenceTypes: [], evidenceUrl: '',
-  tieBreakerEssay: '',
-  agreeCommitments: false, agreeNoResale: false, consentContact: false, consentSuccessStory: false,
+  currentStatus: '', educationLevel: '',
+  learningGoals: [], experienceLevel: '', motivationEssay: '',
+  situation: [], accessMethod: '',
+  weeklyHours: '', accessSupport: '', priorCourses: '',
+  evidenceTypes: [], impactAreas: [],
+  agreeAll: false, consentSuccessStory: false,
 }
 
-const STEP_TITLES = [
-  'About You', 'Your DataCamp Goals', 'Why You Need the Scholarship', 'Commitment',
-  'Your Potential Impact', 'Evidence of Motivation', 'Final Statement', 'Commitment & Consent',
-]
+const STEP_TITLES = ['About You', 'Your Goals', 'Your Readiness', 'Commitment']
 
 function wordCount(s: string) {
   return s.trim().split(/\s+/).filter(Boolean).length
@@ -60,34 +53,18 @@ function validateStep(step: number, f: FormState): string | null {
     case 1:
       if (f.learningGoals.length === 0) return 'Please select at least one thing you want to learn.'
       if (!f.experienceLevel) return 'Please select your experience level.'
-      if (wordCount(f.goalsEssay) < 20) return 'Please write a bit more about what you hope to achieve (at least a few sentences).'
-      return null
-    case 2:
-      if (wordCount(f.whyApplyingEssay) < 20) return 'Please write a bit more about why you need this scholarship.'
+      if (wordCount(f.motivationEssay) < 40) return 'Please write a little more about your goals and why you need this scholarship (a few sentences is fine).'
       if (f.situation.length === 0) return 'Please select at least one option describing your situation.'
       if (!f.accessMethod) return 'Please tell us how you would access DataCamp without this scholarship.'
       return null
-    case 3:
+    case 2:
       if (!f.weeklyHours) return 'Please select how many hours a week you can dedicate.'
-      if (!f.deviceAccess) return 'Please select your device access.'
-      if (!f.internetAccess) return 'Please select your internet access.'
-      if (wordCount(f.planEssay) < 10) return 'Please tell us a bit more about what you will do differently.'
-      return null
-    case 4:
-      if (wordCount(f.visionEssay) < 5) return 'Please tell us where you see yourself in 12 months.'
-      if (wordCount(f.impactEssay) < 5) return 'Please tell us how your new skills could benefit others.'
+      if (!f.accessSupport) return 'Please tell us about your device and internet access.'
       if (!f.priorCourses) return 'Please let us know if you have completed any online courses before.'
-      if (f.priorCourses === 'Yes' && !f.priorCoursesDetail.trim()) return 'Please tell us about the courses you completed.'
+      if (f.impactAreas.length === 0) return 'Please select at least one answer for who this could benefit.'
       return null
-    case 5:
-      return null
-    case 6:
-      if (wordCount(f.tieBreakerEssay) < 5) return 'Please tell us why you should receive this scholarship.'
-      return null
-    case 7:
-      if (!f.agreeCommitments) return 'Please confirm you agree to the commitments above.'
-      if (!f.agreeNoResale) return 'Please confirm you will not sell, transfer or exchange your scholarship access.'
-      if (!f.consentContact) return 'Please consent to being contacted about your application.'
+    case 3:
+      if (!f.agreeAll) return 'Please confirm you agree to the commitments above.'
       return null
     default:
       return null
@@ -126,16 +103,12 @@ export default function ScholarshipApplicationForm({ tagline }: { tagline: strin
       const payload = {
         name: f.name, email: f.email, phone: f.phone,
         ageRange: f.ageRange, country: f.country, stateRegion: f.stateRegion, city: f.city,
-        currentStatus: f.currentStatus, educationLevel: f.educationLevel, fieldOfStudy: f.fieldOfStudy || undefined,
-        learningGoals: f.learningGoals, experienceLevel: f.experienceLevel, goalsEssay: f.goalsEssay,
-        whyApplyingEssay: f.whyApplyingEssay, situation: f.situation, accessMethod: f.accessMethod,
-        weeklyHours: f.weeklyHours, deviceAccess: f.deviceAccess, internetAccess: f.internetAccess, planEssay: f.planEssay,
-        visionEssay: f.visionEssay, impactEssay: f.impactEssay, priorCourses: f.priorCourses,
-        priorCoursesDetail: f.priorCourses === 'Yes' ? f.priorCoursesDetail : undefined,
-        evidenceTypes: f.evidenceTypes, evidenceUrl: f.evidenceUrl || undefined,
-        tieBreakerEssay: f.tieBreakerEssay,
-        agreeCommitments: f.agreeCommitments, agreeNoResale: f.agreeNoResale,
-        consentContact: f.consentContact, consentSuccessStory: f.consentSuccessStory || undefined,
+        currentStatus: f.currentStatus, educationLevel: f.educationLevel,
+        learningGoals: f.learningGoals, experienceLevel: f.experienceLevel, motivationEssay: f.motivationEssay,
+        situation: f.situation, accessMethod: f.accessMethod,
+        weeklyHours: f.weeklyHours, accessSupport: f.accessSupport, priorCourses: f.priorCourses,
+        evidenceTypes: f.evidenceTypes, impactAreas: f.impactAreas,
+        agreeAll: f.agreeAll, consentSuccessStory: f.consentSuccessStory || undefined,
       }
       const res = await fetch('/api/scholarships/datacamp', {
         method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload),
@@ -202,7 +175,6 @@ export default function ScholarshipApplicationForm({ tagline }: { tagline: strin
             <option value="">Select…</option>
             {EDUCATION_LEVELS.map(o => <option key={o} value={o}>{o}</option>)}
           </FormSelect>
-          <FormInput label="Field of Study / Profession (optional)" id="s-field" value={f.fieldOfStudy} onChange={e => update('fieldOfStudy', e.target.value)} placeholder="Economics, Nursing, Graphic Design…" />
         </>
       )}
 
@@ -214,19 +186,9 @@ export default function ScholarshipApplicationForm({ tagline }: { tagline: strin
             {EXPERIENCE_LEVELS.map(o => <option key={o} value={o}>{o}</option>)}
           </FormSelect>
           <FormTextarea
-            label="What do you hope to achieve with the skills you gain from DataCamp?" id="s-goals"
-            value={f.goalsEssay} onChange={e => update('goalsEssay', e.target.value)}
-            placeholder="Tell us how DataCamp could help you achieve your education, career, business or professional goals." rows={5}
-          />
-        </>
-      )}
-
-      {step === 2 && (
-        <>
-          <FormTextarea
-            label="Why are you applying for this scholarship?" id="s-why"
-            value={f.whyApplyingEssay} onChange={e => update('whyApplyingEssay', e.target.value)}
-            placeholder="Explain why you need access to DataCamp and what barriers currently prevent you from accessing similar learning opportunities." rows={5}
+            label="In a few sentences: what do you hope to achieve, and why do you need this scholarship?" id="s-motivation"
+            value={f.motivationEssay} onChange={e => update('motivationEssay', e.target.value)}
+            placeholder="Tell us what DataCamp would help you achieve, and what currently stops you accessing learning like this." rows={5}
           />
           <FormCheckboxGroup label="Which of the following best describes your current situation?" options={SITUATION_OPTIONS} values={f.situation} onChange={v => update('situation', v)} />
           <FormSelect label="How would you currently access DataCamp if you did not receive this scholarship?" id="s-access" value={f.accessMethod} onChange={e => update('accessMethod', e.target.value)}>
@@ -237,83 +199,36 @@ export default function ScholarshipApplicationForm({ tagline }: { tagline: strin
         </>
       )}
 
-      {step === 3 && (
+      {step === 2 && (
         <>
           <FormSelect label="How much time can you realistically dedicate to learning each week?" id="s-hours" value={f.weeklyHours} onChange={e => update('weeklyHours', e.target.value)}>
             <option value="">Select…</option>
             {WEEKLY_HOURS_OPTIONS.map(o => <option key={o} value={o}>{o}</option>)}
           </FormSelect>
-          <FormSelect label="Do you currently have access to a device suitable for online learning?" id="s-device" value={f.deviceAccess} onChange={e => update('deviceAccess', e.target.value)}>
+          <FormSelect label="Do you have reliable access to a device and the internet for online learning?" id="s-access-support" value={f.accessSupport} onChange={e => update('accessSupport', e.target.value)}>
             <option value="">Select…</option>
-            {DEVICE_OPTIONS.map(o => <option key={o} value={o}>{o}</option>)}
+            {ACCESS_SUPPORT_OPTIONS.map(o => <option key={o} value={o}>{o}</option>)}
           </FormSelect>
-          <FormSelect label="Do you have reliable internet access?" id="s-internet" value={f.internetAccess} onChange={e => update('internetAccess', e.target.value)}>
-            <option value="">Select…</option>
-            {INTERNET_OPTIONS.map(o => <option key={o} value={o}>{o}</option>)}
-          </FormSelect>
-          <FormTextarea
-            label="What will you do differently with this opportunity?" id="s-plan"
-            value={f.planEssay} onChange={e => update('planEssay', e.target.value)}
-            placeholder="Tell us how you plan to use the scholarship and what concrete steps you intend to take during the programme." rows={4}
-          />
-        </>
-      )}
-
-      {step === 4 && (
-        <>
-          <FormTextarea
-            label="Where do you see yourself 12 months from now?" id="s-vision"
-            value={f.visionEssay} onChange={e => update('visionEssay', e.target.value)}
-            placeholder="What would success look like for you after completing your DataCamp learning journey?" rows={4}
-          />
-          <FormTextarea
-            label="How could your new skills benefit others?" id="s-impact"
-            value={f.impactEssay} onChange={e => update('impactEssay', e.target.value)}
-            placeholder="This could include your workplace, business, community, school, organisation, family or other young people." rows={4}
-          />
           <FormSelect label="Have you previously completed any online courses or professional training?" id="s-prior" value={f.priorCourses} onChange={e => update('priorCourses', e.target.value)}>
             <option value="">Select…</option>
             <option value="Yes">Yes</option>
             <option value="No">No</option>
           </FormSelect>
-          {f.priorCourses === 'Yes' && (
-            <FormTextarea
-              label="Tell us about them (course/platform + what you learned)" id="s-prior-detail"
-              value={f.priorCoursesDetail} onChange={e => update('priorCoursesDetail', e.target.value)} rows={3}
-            />
-          )}
+          <FormCheckboxGroup label="Do you have any evidence of your interest in this field? (optional)" options={EVIDENCE_OPTIONS} values={f.evidenceTypes} onChange={v => update('evidenceTypes', v)} />
+          <p style={{ fontSize: '.82rem', color: 'var(--ink-60)', marginTop: '-.5rem' }}>Not having a portfolio will not disadvantage your application.</p>
+          <FormCheckboxGroup label="Who else could benefit from the skills you gain?" options={IMPACT_AREA_OPTIONS} values={f.impactAreas} onChange={v => update('impactAreas', v)} />
         </>
       )}
 
-      {step === 5 && (
-        <>
-          <FormCheckboxGroup label="Do you have any evidence of your interest in this field?" options={EVIDENCE_OPTIONS} values={f.evidenceTypes} onChange={v => update('evidenceTypes', v)} />
-          <FormInput label="Optional link" id="s-evidence-url" value={f.evidenceUrl} onChange={e => update('evidenceUrl', e.target.value)} placeholder="https://github.com/…" />
-          <p style={{ fontSize: '.82rem', color: 'var(--ink-60)' }}>Not having a portfolio will not disadvantage your application.</p>
-        </>
-      )}
-
-      {step === 6 && (
-        <FormTextarea
-          label="In 100 words or less, why should YOU receive this scholarship?" id="s-tiebreaker"
-          value={f.tieBreakerEssay} onChange={e => update('tieBreakerEssay', e.target.value)}
-          placeholder="If you were selected, what would make this opportunity particularly meaningful to you?" rows={4}
-        />
-      )}
-
-      {step === 7 && (
+      {step === 3 && (
         <>
           <label className="field" style={{ flexDirection: 'row', alignItems: 'flex-start', gap: '.6rem', display: 'flex' }}>
-            <input type="checkbox" checked={f.agreeCommitments} onChange={e => update('agreeCommitments', e.target.checked)} style={{ marginTop: 3 }} />
-            <span>If selected, I agree to: use the scholarship primarily for learning and professional development; make a genuine effort to complete DataCamp courses; provide occasional updates on my learning progress; and complete any required Wissen-Haus/DataCamp scholar feedback or impact survey.</span>
-          </label>
-          <label className="field" style={{ flexDirection: 'row', alignItems: 'flex-start', gap: '.6rem', display: 'flex' }}>
-            <input type="checkbox" checked={f.agreeNoResale} onChange={e => update('agreeNoResale', e.target.checked)} style={{ marginTop: 3 }} />
-            <span>I will not sell, transfer or exchange my scholarship access for money or other benefits.</span>
-          </label>
-          <label className="field" style={{ flexDirection: 'row', alignItems: 'flex-start', gap: '.6rem', display: 'flex' }}>
-            <input type="checkbox" checked={f.consentContact} onChange={e => update('consentContact', e.target.checked)} style={{ marginTop: 3 }} />
-            <span>I agree that Wissen-Haus may contact me regarding my application, scholarship, learning progress and relevant programme opportunities.</span>
+            <input type="checkbox" checked={f.agreeAll} onChange={e => update('agreeAll', e.target.checked)} style={{ marginTop: 3 }} />
+            <span>
+              If selected, I agree to use the scholarship for genuine learning and professional development, make a genuine effort to
+              complete DataCamp courses, provide occasional progress updates, and not sell, transfer or exchange my scholarship access
+              for money or other benefits. I agree that Wissen-Haus may contact me about my application, scholarship and learning progress.
+            </span>
           </label>
           <label className="field" style={{ flexDirection: 'row', alignItems: 'flex-start', gap: '.6rem', display: 'flex' }}>
             <input type="checkbox" checked={f.consentSuccessStory} onChange={e => update('consentSuccessStory', e.target.checked)} style={{ marginTop: 3 }} />
