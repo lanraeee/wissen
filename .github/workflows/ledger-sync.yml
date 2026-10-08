@@ -2,8 +2,16 @@
 # current when no director opens the Financial Ledger tab. Optional: opening
 # that tab also syncs any feed older than 15 minutes.
 #
-# Same configuration as nightly-crons.yml: vars.AZURE_APP_URL and
-# secrets.CRON_SECRET. See "5. Replace the crons" in docs/AZURE_DEPLOYMENT.md.
+# Runs against Vercel (vars.APP_URL) -- that is the host DNS actually sends
+# www.wissenhaus.org traffic to (confirmed 2026-10-08: both the apex and the
+# www CNAME resolve to Vercel), so it is also the host whose env vars
+# (ZEFFY_API_KEY etc.) are the ones that matter. The project went through a
+# brief Azure App Service migration (docs/AZURE_DEPLOYMENT.md) that pointed
+# this workflow at vars.AZURE_APP_URL instead; that left Vercel's own crons
+# empty (vercel.json) while Azure silently fell behind on env vars Vercel had
+# (exactly how a real Zeffy donation went unsynced -- Azure never had
+# ZEFFY_API_KEY). Same configuration as nightly-crons.yml: vars.APP_URL and
+# secrets.CRON_SECRET (now the Vercel project's own cron secret, not Azure's).
 
 name: Ledger sync
 
@@ -20,18 +28,18 @@ jobs:
   run:
     runs-on: ubuntu-latest
     env:
-      APP_URL: ${{ vars.AZURE_APP_URL }}
+      APP_URL: ${{ vars.APP_URL }}
       CRON_SECRET: ${{ secrets.CRON_SECRET }}
     steps:
       - name: Verify configuration
         run: |
           missing=0
           if [ -z "$APP_URL" ]; then
-            echo "::error::Repository variable AZURE_APP_URL is missing or empty. See step 5 in docs/AZURE_DEPLOYMENT.md."
+            echo "::error::Repository variable APP_URL is missing or empty."
             missing=1
           fi
           if [ -z "$CRON_SECRET" ]; then
-            echo "::error::Repository secret CRON_SECRET is missing or empty. See step 5 in docs/AZURE_DEPLOYMENT.md."
+            echo "::error::Repository secret CRON_SECRET is missing or empty, or does not match the Vercel project's CRON_SECRET."
             missing=1
           fi
           exit $missing

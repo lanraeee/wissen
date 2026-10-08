@@ -1,19 +1,23 @@
-# Nightly jobs for the Azure-hosted app. Replaces the `crons` block that used
-# to live in vercel.json (Vercel Cron does nothing on App Service) and the old
-# update-opportunities.yml, which posted to secrets.VERCEL_URL and so kept
-# hitting Vercel. With both of those in place each job ran twice a night.
+# Nightly jobs for the live app. Runs against Vercel (vars.APP_URL) -- DNS
+# confirms that is what www.wissenhaus.org actually resolves to, and so the
+# host whose env vars are the ones that matter. This previously targeted an
+# Azure App Service deployment (docs/AZURE_DEPLOYMENT.md) via
+# vars.AZURE_APP_URL, which left Vercel's own `crons` list in vercel.json
+# empty; repointed back to Vercel on 2026-10-08 after Azure's env silently
+# fell behind Vercel's (missing ZEFFY_API_KEY meant Zeffy donations never
+# synced to the ledger). If a native Vercel Cron is ever added back to
+# vercel.json for any of these routes, drop the matching job here first --
+# otherwise it runs twice.
 #
 # Both routes run in one job, in order: the knowledge rebuild summarises the
 # listings the opportunities job has just refreshed, so it must not start
-# before that one finishes. Two separate schedules (03:17 and 03:45, as on
-# Vercel) only kept that order as long as the first job stayed under 28 min.
+# before that one finishes.
 #
 # Needs:
-#   vars.AZURE_APP_URL  - repository variable, e.g. https://<azure-host> (no
-#                         trailing slash). Not a secret: it is a public URL.
-#   secrets.CRON_SECRET - must equal the CRON_SECRET app setting on WH-webApp.
-#
-# See "5. Replace the crons" in docs/AZURE_DEPLOYMENT.md.
+#   vars.APP_URL        - repository variable, e.g. https://www.wissenhaus.org
+#                         (no trailing slash). Not a secret: it is a public URL.
+#   secrets.CRON_SECRET - must equal the CRON_SECRET env var on the Vercel
+#                         project (Project Settings -> Environment Variables).
 
 name: Nightly crons
 
@@ -36,7 +40,7 @@ jobs:
   run:
     runs-on: ubuntu-latest
     env:
-      APP_URL: ${{ vars.AZURE_APP_URL }}
+      APP_URL: ${{ vars.APP_URL }}
       CRON_SECRET: ${{ secrets.CRON_SECRET }}
       JOB: ${{ inputs.job || 'both' }}
     steps:
@@ -47,11 +51,11 @@ jobs:
         run: |
           missing=0
           if [ -z "$APP_URL" ]; then
-            echo "::error::Repository variable AZURE_APP_URL is missing or empty. See step 5 in docs/AZURE_DEPLOYMENT.md."
+            echo "::error::Repository variable APP_URL is missing or empty."
             missing=1
           fi
           if [ -z "$CRON_SECRET" ]; then
-            echo "::error::Repository secret CRON_SECRET is missing or empty. See step 5 in docs/AZURE_DEPLOYMENT.md."
+            echo "::error::Repository secret CRON_SECRET is missing or empty, or does not match the Vercel project's CRON_SECRET."
             missing=1
           fi
           exit $missing
