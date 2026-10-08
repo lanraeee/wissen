@@ -1,14 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import sql from '@/lib/db'
-import { adminGuard } from '@/lib/admin-guard'
+import { adminGuard, sectionGuard } from '@/lib/admin-guard'
 import { parseBody } from '@/lib/validation'
 import { logActivity } from '@/lib/audit-log'
 
 const PatchSchema = z.object({ checkedIn: z.boolean() })
 
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  const session = await adminGuard()
+  const session = (await adminGuard() || await sectionGuard('career_fair'))
   if (!session) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   const { id } = await params
   const { data, error } = await parseBody(req, PatchSchema)
@@ -28,7 +28,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
 }
 
 export async function DELETE(_: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  const session = await adminGuard()
+  const session = (await adminGuard() || await sectionGuard('career_fair'))
   if (!session) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   const { id } = await params
   await sql`DELETE FROM fair_registrations WHERE id = ${id}`

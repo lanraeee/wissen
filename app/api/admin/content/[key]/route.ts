@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
-import { adminGuard, directorGuard, adminRole } from '@/lib/admin-guard'
+import { adminGuard, directorGuard, masterAdminGuard, adminRole } from '@/lib/admin-guard'
+import { ACCESS_GRANTS_KEY } from '@/lib/admin-access-grants-shared'
 import sql from '@/lib/db'
 import { parseBody } from '@/lib/validation'
 import { writeContent } from '@/lib/content-approvals'
@@ -25,7 +26,13 @@ const ContentSchema = z.object({
 // director for them, matching how role assignment is already restricted.
 const DIRECTOR_ONLY_KEYS = new Set(['bank_transfer_details', 'ai_settings'])
 
+// Who may grant/revoke every other section: the master admin only, not even
+// a director -- same restriction as the AI agent's allow-list, and for the
+// same reason (this key decides who can reach the other sensitive ones).
+const MASTER_ADMIN_ONLY_KEYS = new Set([ACCESS_GRANTS_KEY])
+
 function guardFor(key: string) {
+  if (MASTER_ADMIN_ONLY_KEYS.has(key)) return masterAdminGuard()
   return DIRECTOR_ONLY_KEYS.has(key) ? directorGuard() : adminGuard()
 }
 

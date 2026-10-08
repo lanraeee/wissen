@@ -1,12 +1,12 @@
 import { NextResponse } from 'next/server'
 import sql from '@/lib/db'
-import { adminGuard } from '@/lib/admin-guard'
+import { adminGuard, sectionGuard } from '@/lib/admin-guard'
 
 // Joins each pledge back to the application/inquiry that created it, so the
 // admin list can link straight to the applicant's record without a second
 // round trip per row.
 export async function GET() {
-  if (!await adminGuard()) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  if (!(await adminGuard() || await sectionGuard('giving'))) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const rows = await sql`
     SELECT

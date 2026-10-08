@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { usePathname } from 'next/navigation'
 import { canAccessAdminPath, type AdminRole } from '@/lib/admin-access'
-import { NAV, BADGE_KEYS, isNavActive } from './AdminNav'
+import { NAV, BADGE_KEYS, isNavActive, ACCESS_CONTROL_ITEM } from './AdminNav'
 import { NAV_ICONS, MoreIcon, CloseIcon, MenuIcon } from './AdminIcons'
 import AdminLogoutButton from './AdminLogoutButton'
 import NavBadge from './NavBadge'
@@ -22,14 +22,23 @@ function pageTitle(pathname: string): string {
   return match?.[0] ?? 'Admin'
 }
 
-export default function AdminMobileNav({ email, role, canUseAgent }: { email: string; role: AdminRole; canUseAgent: boolean }) {
+interface Props {
+  email: string
+  role: AdminRole
+  canUseAgent: boolean
+  grantedSections?: string[]
+  isMasterAdmin?: boolean
+}
+
+export default function AdminMobileNav({ email, role, canUseAgent, grantedSections = [], isMasterAdmin = false }: Props) {
   const pathname = usePathname()
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [moreOpen, setMoreOpen] = useState(false)
   const counts = useSubmissionsBadge()
 
-  const nav = NAV.filter(([, href]) => canAccessAdminPath(role, href, canUseAgent))
-  const primaryHrefs = PRIMARY_PREFERENCE.filter(href => canAccessAdminPath(role, href, canUseAgent)).slice(0, 4)
+  const items: readonly (readonly [string, string])[] = isMasterAdmin ? [...NAV, ACCESS_CONTROL_ITEM] : NAV
+  const nav = items.filter(([, href]) => href === ACCESS_CONTROL_ITEM[1] || canAccessAdminPath(role, href, canUseAgent, grantedSections))
+  const primaryHrefs = PRIMARY_PREFERENCE.filter(href => canAccessAdminPath(role, href, canUseAgent, grantedSections)).slice(0, 4)
   const PRIMARY = nav.filter(([, href]) => primaryHrefs.includes(href))
   const OVERFLOW = nav.filter(([, href]) => !primaryHrefs.includes(href))
   const overflowActive = OVERFLOW.some(([, href]) => isNavActive(pathname, href))

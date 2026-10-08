@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { userAdminGuard } from '@/lib/admin-guard'
+import { userAdminGuard, sectionGuard } from '@/lib/admin-guard'
 import sql from '@/lib/db'
 import { generateUnsubscribeToken } from '@/lib/newsletter'
 import { logActivity } from '@/lib/audit-log'
@@ -10,7 +10,7 @@ const forbidden = () => NextResponse.json({ error: 'Forbidden' }, { status: 403 
 // form and isn't already a subscriber -- the only other place on the site
 // that collects opt-in interest today.
 export async function POST() {
-  const session = await userAdminGuard()
+  const session = (await userAdminGuard() || await sectionGuard('newsletter'))
   if (!session) return forbidden()
 
   const candidates = await sql`

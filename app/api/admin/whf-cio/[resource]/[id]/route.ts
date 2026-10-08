@@ -1,16 +1,23 @@
 import { NextResponse } from 'next/server'
-import { directorGuard } from '@/lib/admin-guard'
+import { sectionGuard } from '@/lib/admin-guard'
 import { logActivity } from '@/lib/audit-log'
 import { log } from '@/lib/logger'
 import { getResource, parseBody, updateRow, deleteRow, dbErrorResponse, UUID_RE } from '@/lib/whf-cio'
 
 type Ctx = { params: Promise<{ resource: string; id: string }> }
 
+// See app/api/admin/whf-cio/[resource]/route.ts's guard() for who this
+// admits and why the two keys below get translated.
+const SECTION_KEY_FOR_RESOURCE: Record<string, string> = { declarations: 'conflicts', fixed_costs: 'costs' }
+function guard(resource: string) {
+  return sectionGuard(`whf_cio.${SECTION_KEY_FOR_RESOURCE[resource] ?? resource}`)
+}
+
 export async function PUT(request: Request, { params }: Ctx) {
-  const session = await directorGuard()
+  const { resource, id } = await params
+  const session = await guard(resource)
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
 
-  const { resource, id } = await params
   const res = getResource(resource)
   if (!res || !UUID_RE.test(id)) return NextResponse.json({ error: 'Not found' }, { status: 404 })
 
@@ -31,10 +38,10 @@ export async function PUT(request: Request, { params }: Ctx) {
 }
 
 export async function DELETE(_: Request, { params }: Ctx) {
-  const session = await directorGuard()
+  const { resource, id } = await params
+  const session = await guard(resource)
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
 
-  const { resource, id } = await params
   const res = getResource(resource)
   if (!res || !UUID_RE.test(id)) return NextResponse.json({ error: 'Not found' }, { status: 404 })
 

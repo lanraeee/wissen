@@ -1,10 +1,10 @@
 import { NextResponse } from 'next/server'
-import { adminGuard } from '@/lib/admin-guard'
+import { adminGuard, sectionGuard } from '@/lib/admin-guard'
 import sql from '@/lib/db'
 import { EMAIL_TEMPLATES, EMAIL_CATEGORIES } from '@/lib/email-catalog'
 
 export async function GET() {
-  const session = await adminGuard()
+  const session = (await adminGuard() || await sectionGuard('email_templates'))
   if (!session) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 
   let overrides: Record<string, { subject: string; html: string; updated_at: string }> = {}

@@ -1,7 +1,7 @@
 ﻿import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import sql from '@/lib/db'
-import { adminGuard } from '@/lib/admin-guard'
+import { adminGuard, sectionGuard } from '@/lib/admin-guard'
 import { ensureTestimonialsTable } from '@/lib/testimonials-db'
 import { parseBody } from '@/lib/validation'
 import { logActivity } from '@/lib/audit-log'
@@ -24,14 +24,14 @@ const TestimonialUpdateSchema = TestimonialCreateSchema.partial().extend({
 const IdSchema = z.object({ id: z.union([z.string(), z.number()]) })
 
 export async function GET() {
-  if (!await adminGuard()) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  if (!(await adminGuard() || await sectionGuard('testimonials'))) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   await ensureTestimonialsTable()
   const rows = await sql`SELECT * FROM testimonials ORDER BY created_at DESC`
   return NextResponse.json({ testimonials: rows })
 }
 
 export async function POST(req: NextRequest) {
-  const session = await adminGuard()
+  const session = (await adminGuard() || await sectionGuard('testimonials'))
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   await ensureTestimonialsTable()
   const { data: body, error } = await parseBody(req, TestimonialCreateSchema)
@@ -51,7 +51,7 @@ export async function POST(req: NextRequest) {
 }
 
 export async function PUT(req: NextRequest) {
-  const session = await adminGuard()
+  const session = (await adminGuard() || await sectionGuard('testimonials'))
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   const { data: body, error } = await parseBody(req, TestimonialUpdateSchema)
   if (error) return error
@@ -79,7 +79,7 @@ export async function PUT(req: NextRequest) {
 }
 
 export async function DELETE(req: NextRequest) {
-  const session = await adminGuard()
+  const session = (await adminGuard() || await sectionGuard('testimonials'))
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   const { data, error } = await parseBody(req, IdSchema)
   if (error) return error

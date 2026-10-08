@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
-import { adminGuard, directorGuard } from '@/lib/admin-guard'
+import { adminGuard, directorGuard, sectionGuard } from '@/lib/admin-guard'
 import sql from '@/lib/db'
 import { parseBody } from '@/lib/validation'
 import { rebuildKnowledgeBase } from '@/lib/knowledge-base'
@@ -10,7 +10,7 @@ export const dynamic = 'force-dynamic'
 export const maxDuration = 120
 
 export async function GET(req: NextRequest) {
-  if (!await adminGuard()) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+  if (!(await adminGuard() || await sectionGuard('knowledge'))) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 
   const status = req.nextUrl.searchParams.get('status') ?? 'active'
   const rows = status === 'all'

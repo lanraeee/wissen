@@ -1,9 +1,9 @@
 ﻿import { NextResponse } from 'next/server'
-import { adminGuard } from '@/lib/admin-guard'
+import { adminGuard, sectionGuard } from '@/lib/admin-guard'
 import sql from '@/lib/db'
 
 export async function GET() {
-  if (!await adminGuard()) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+  if (!(await adminGuard() || await sectionGuard('courses'))) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 
   const [certs, progress, byUser] = await Promise.all([
     sql`

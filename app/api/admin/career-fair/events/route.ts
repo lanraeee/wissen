@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import sql from '@/lib/db'
-import { adminGuard } from '@/lib/admin-guard'
+import { adminGuard, sectionGuard } from '@/lib/admin-guard'
 import { parseBody } from '@/lib/validation'
 import { logActivity } from '@/lib/audit-log'
 
@@ -30,7 +30,7 @@ function slugify(s: string) {
 }
 
 export async function GET() {
-  if (!await adminGuard()) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+  if (!(await adminGuard() || await sectionGuard('career_fair'))) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   const events = await sql`
     SELECT e.*, COUNT(r.id)::int AS registration_count, COUNT(r.id) FILTER (WHERE r.checked_in)::int AS checked_in_count
     FROM fair_events e
@@ -42,7 +42,7 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
-  const session = await adminGuard()
+  const session = (await adminGuard() || await sectionGuard('career_fair'))
   if (!session) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   const { data, error } = await parseBody(req, EventCreateSchema)
   if (error) return error

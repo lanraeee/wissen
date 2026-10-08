@@ -1,7 +1,9 @@
 import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
 import { getSession } from '@/lib/auth'
-import { isDirector, canAccessSafeguarding } from '@/lib/admin-guard'
+import { isDirector, isMasterAdmin, canAccessSafeguarding } from '@/lib/admin-guard'
+import { getGrantedSections } from '@/lib/admin-access-grants'
+import { grantedWhfCioTabs } from '@/lib/admin-sections'
 import TrusteeRegisterEditor from '@/components/admin/TrusteeRegisterEditor'
 import TrusteeDeclarationsTab from '@/components/admin/cio/TrusteeDeclarationsTab'
 import RegistrationsTab from '@/components/admin/cio/RegistrationsTab'
@@ -55,10 +57,16 @@ const CONTENT: Record<TabKey, React.ReactNode> = {
 
 export default async function WhfCioPage({ searchParams }: { searchParams: Promise<{ tab?: string }> }) {
   const session = await getSession()
-  const director = isDirector(session?.email)
-  if (!session || (!director && !await canAccessSafeguarding(session.email))) redirect('/admin')
+  const director = isDirector(session?.email) || isMasterAdmin(session?.email)
+  const safeguarding = !director && !!session && await canAccessSafeguarding(session.email)
+  const trusteeTabs = director || safeguarding || !session ? [] : grantedWhfCioTabs(await getGrantedSections(session.email))
+  if (!session || (!director && !safeguarding && trusteeTabs.length === 0)) redirect('/admin')
 
-  const tabs = director ? TABS : TABS.filter(t => SAFEGUARDING_TABS.includes(t.key))
+  const tabs = director
+    ? TABS
+    : safeguarding
+      ? TABS.filter(t => SAFEGUARDING_TABS.includes(t.key))
+      : TABS.filter(t => (trusteeTabs as readonly string[]).includes(t.key))
   const { tab = tabs[0].key } = await searchParams
   const active = tabs.find(t => t.key === tab) ?? tabs[0]
 
@@ -69,7 +77,9 @@ export default async function WhfCioPage({ searchParams }: { searchParams: Promi
         <p className="admin-page-desc">
           {director
             ? 'CIO Trustee governance record for Wissen-Haus Empowerment Foundation. Only directors can view and manage trustee information required by the Charity Commission.'
-            : 'Safeguarding incident log for Wissen-Haus Empowerment Foundation. Visible only to directors and the designated safeguarding team.'}
+            : safeguarding
+              ? 'Safeguarding incident log for Wissen-Haus Empowerment Foundation. Visible only to directors and the designated safeguarding team.'
+              : 'CIO Trustee governance record for Wissen-Haus Empowerment Foundation. You can see the sections the master admin has granted you.'}
         </p>
       </div>
 

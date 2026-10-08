@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
-import { userAdminGuard } from '@/lib/admin-guard'
+import { userAdminGuard, sectionGuard } from '@/lib/admin-guard'
 import sql from '@/lib/db'
 import { parseBody } from '@/lib/validation'
 import { logActivity } from '@/lib/audit-log'
@@ -8,7 +8,7 @@ import { logActivity } from '@/lib/audit-log'
 const forbidden = () => NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 
 export async function GET() {
-  const session = await userAdminGuard()
+  const session = (await userAdminGuard() || await sectionGuard('newsletter'))
   if (!session) return forbidden()
 
   const campaigns = await sql`SELECT * FROM newsletter_campaigns ORDER BY created_at DESC`
@@ -21,7 +21,7 @@ const CampaignSchema = z.object({
 })
 
 export async function POST(req: NextRequest) {
-  const session = await userAdminGuard()
+  const session = (await userAdminGuard() || await sectionGuard('newsletter'))
   if (!session) return forbidden()
 
   const { data, error } = await parseBody(req, CampaignSchema)

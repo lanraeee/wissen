@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { adminGuard, isDirector, MASTER_ADMIN_EMAIL } from '@/lib/admin-guard'
+import { adminGuard, isDirector, MASTER_ADMIN_EMAIL, sectionGuard } from '@/lib/admin-guard'
 import sql from '@/lib/db'
 
 const LIMIT = 150
@@ -15,7 +15,7 @@ const LIMIT = 150
 // them in admin_activity_log for the underlying audit trail, they just don't
 // surface here.
 export async function GET() {
-  const session = await adminGuard()
+  const session = (await adminGuard() || await sectionGuard('activity'))
   if (!session) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 
   const viewerIsDirector = isDirector(session.email)

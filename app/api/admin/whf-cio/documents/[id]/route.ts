@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { del } from '@vercel/blob'
-import { directorGuard } from '@/lib/admin-guard'
+import { documentByIdGuard } from '@/lib/admin-guard'
 import { logActivity } from '@/lib/audit-log'
 import { log } from '@/lib/logger'
 import sql from '@/lib/db'
@@ -9,11 +9,10 @@ import { dbErrorResponse, UUID_RE } from '@/lib/whf-cio'
 type Ctx = { params: Promise<{ id: string }> }
 
 export async function PUT(request: Request, { params }: Ctx) {
-  const session = await directorGuard()
-  if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
-
   const { id } = await params
   if (!UUID_RE.test(id)) return NextResponse.json({ error: 'Not found' }, { status: 404 })
+  const session = await documentByIdGuard(id)
+  if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
 
   const body = (await request.json().catch(() => null)) as Record<string, unknown> | null
   if (!body || typeof body !== 'object') return NextResponse.json({ error: 'Invalid request body' }, { status: 400 })
@@ -58,11 +57,10 @@ export async function PUT(request: Request, { params }: Ctx) {
 }
 
 export async function DELETE(_: Request, { params }: Ctx) {
-  const session = await directorGuard()
-  if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
-
   const { id } = await params
   if (!UUID_RE.test(id)) return NextResponse.json({ error: 'Not found' }, { status: 404 })
+  const session = await documentByIdGuard(id)
+  if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
 
   try {
     const rows = await sql`DELETE FROM cio_documents WHERE id = ${id} RETURNING blob_path`

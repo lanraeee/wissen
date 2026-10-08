@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
-import { adminGuard } from '@/lib/admin-guard'
+import { adminGuard, sectionGuard } from '@/lib/admin-guard'
 import sql from '@/lib/db'
 import { parseBody } from '@/lib/validation'
 import { getTicketByReference, getMessages, addMessage } from '@/lib/tickets'
@@ -15,7 +15,7 @@ export const dynamic = 'force-dynamic'
 export const maxDuration = 60
 
 export async function GET(_: NextRequest, { params }: { params: Promise<{ reference: string }> }) {
-  if (!await adminGuard()) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+  if (!(await adminGuard() || await sectionGuard('support'))) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   const { reference } = await params
 
   const ticket = await getTicketByReference(reference)
@@ -37,7 +37,7 @@ const ActionSchema = z.object({
 })
 
 export async function POST(req: NextRequest, { params }: { params: Promise<{ reference: string }> }) {
-  const session = await adminGuard()
+  const session = (await adminGuard() || await sectionGuard('support'))
   if (!session) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   const { reference } = await params
 

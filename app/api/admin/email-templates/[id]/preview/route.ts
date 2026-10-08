@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
-import { adminGuard } from '@/lib/admin-guard'
+import { adminGuard, sectionGuard } from '@/lib/admin-guard'
 import { EMAIL_TEMPLATES_BY_ID } from '@/lib/email-catalog'
 import { renderPreview } from '@/lib/email-render'
 import { parseBody } from '@/lib/validation'
@@ -14,7 +14,7 @@ const PreviewSchema = z.object({
 // touches the database, never sends anything. Lets the admin see exactly
 // what a real send will look like (shell and all) before saving.
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  const session = await adminGuard()
+  const session = (await adminGuard() || await sectionGuard('email_templates'))
   if (!session) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 
   const { id } = await params

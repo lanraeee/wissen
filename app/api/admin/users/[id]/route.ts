@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
-import { userAdminGuard, isDirector, isMasterAdmin } from '@/lib/admin-guard'
+import { userAdminGuard, isDirector, isMasterAdmin, sectionGuard } from '@/lib/admin-guard'
 import sql from '@/lib/db'
 import { hashPassword } from '@/lib/auth'
 import { sendPasswordResetEmail, sendTempPasswordEmail } from '@/lib/email'
@@ -55,7 +55,7 @@ async function findUser(id: string): Promise<TargetUser | undefined> {
 }
 
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  const session = await userAdminGuard()
+  const session = (await userAdminGuard() || await sectionGuard('users'))
   if (!session) return forbidden()
 
   const { id } = await params
@@ -147,7 +147,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
 }
 
 export async function DELETE(_: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  const session = await userAdminGuard()
+  const session = (await userAdminGuard() || await sectionGuard('users'))
   if (!session) return forbidden()
 
   const { id } = await params

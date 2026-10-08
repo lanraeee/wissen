@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import sql from '@/lib/db'
-import { adminGuard } from '@/lib/admin-guard'
+import { adminGuard, sectionGuard } from '@/lib/admin-guard'
 
 export async function GET(_: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  if (!await adminGuard()) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+  if (!(await adminGuard() || await sectionGuard('career_fair'))) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   const { id } = await params
   const registrations = await sql`
     SELECT id, name, email, phone, school, class_grade, career_interest, attending_as,

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import sql from '@/lib/db'
-import { adminGuard } from '@/lib/admin-guard'
+import { adminGuard, sectionGuard } from '@/lib/admin-guard'
 import { parseBody } from '@/lib/validation'
 import { logActivity } from '@/lib/audit-log'
 
@@ -26,7 +26,7 @@ const EventUpdateSchema = z.object({
 })
 
 export async function GET(_: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  if (!await adminGuard()) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+  if (!(await adminGuard() || await sectionGuard('career_fair'))) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   const { id } = await params
   const [row] = await sql`SELECT * FROM fair_events WHERE id = ${id}`
   if (!row) return NextResponse.json({ error: 'Not found' }, { status: 404 })
@@ -34,7 +34,7 @@ export async function GET(_: NextRequest, { params }: { params: Promise<{ id: st
 }
 
 export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  const session = await adminGuard()
+  const session = (await adminGuard() || await sectionGuard('career_fair'))
   if (!session) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   const { id } = await params
   const { data: fields, error } = await parseBody(req, EventUpdateSchema)
@@ -66,7 +66,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
 }
 
 export async function DELETE(_: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  const session = await adminGuard()
+  const session = (await adminGuard() || await sectionGuard('career_fair'))
   if (!session) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   const { id } = await params
   await sql`DELETE FROM fair_events WHERE id = ${id}`

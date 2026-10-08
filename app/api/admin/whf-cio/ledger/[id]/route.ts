@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { directorGuard } from '@/lib/admin-guard'
+import { directorGuard, sectionGuard } from '@/lib/admin-guard'
 import { logActivity } from '@/lib/audit-log'
 import { log } from '@/lib/logger'
 import { parseBody } from '@/lib/validation'
@@ -16,6 +16,9 @@ const run = sql as unknown as (text: string, params?: unknown[]) => Promise<Row[
 // director override of what the bank reported: it needs a reason, marks the
 // row overridden (so the next sync leaves it alone), keeps the bank's values
 // in `original` the first time, and writes the before/after to the audit log.
+// Deliberately still director-only (not sectionGuard), unlike DELETE below:
+// a trustee granted the Ledger tab can add/remove their own manual entries,
+// but overriding what the bank itself reported stays a director act.
 export async function PUT(req: NextRequest, { params }: Ctx) {
   const session = await directorGuard()
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
@@ -70,7 +73,7 @@ export async function PUT(req: NextRequest, { params }: Ctx) {
 // Only manual entries can be deleted. A synced row would simply come back on
 // the next sync; excluding it is the way to take it out of the figures.
 export async function DELETE(_: NextRequest, { params }: Ctx) {
-  const session = await directorGuard()
+  const session = await sectionGuard('whf_cio.ledger')
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
 
   const { id } = await params

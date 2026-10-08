@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { adminGuard } from '@/lib/admin-guard'
+import { adminGuard, sectionGuard } from '@/lib/admin-guard'
 import sql from '@/lib/db'
 
 export const dynamic = 'force-dynamic'
 
 export async function GET(req: NextRequest) {
-  if (!await adminGuard()) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+  if (!(await adminGuard() || await sectionGuard('support'))) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 
   const status = req.nextUrl.searchParams.get('status') ?? 'open'
   const rows = status === 'all'

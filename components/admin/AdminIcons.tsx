@@ -104,6 +104,10 @@ export function GivingIcon({ size = 20 }: IconProps) {
   return <svg {...base(size)}><path d="M12 21s-7-4.5-9.5-9A5.5 5.5 0 0 1 12 6a5.5 5.5 0 0 1 9.5 6c-2.5 4.5-9.5 9-9.5 9z" /><path d="M17 1l2 2-2 2M19 3h-5" strokeLinecap="round" strokeLinejoin="round" /></svg>
 }
 
+export function AccessControlIcon({ size = 20 }: IconProps) {
+  return <svg {...base(size)}><circle cx="7.5" cy="15.5" r="4.5" /><path d="M11 12l8-8M15 8l3 3M18 5l3 3" /></svg>
+}
+
 export const NAV_ICONS: Record<string, (props: IconProps) => React.ReactElement> = {
   '/admin': DashboardIcon,
   '/admin/analytics': AnalyticsIcon,
@@ -130,4 +134,5 @@ export const NAV_ICONS: Record<string, (props: IconProps) => React.ReactElement>
   '/admin/newsletter': NewsletterIcon,
   '/admin/email-templates': EmailTemplatesIcon,
   '/admin/settings': SettingsIcon,
+  '/admin/access-control': AccessControlIcon,
 }

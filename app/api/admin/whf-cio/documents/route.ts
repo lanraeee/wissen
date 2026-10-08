@@ -1,6 +1,6 @@
 import { NextResponse, after } from 'next/server'
 import { put } from '@vercel/blob'
-import { directorGuard } from '@/lib/admin-guard'
+import { documentsGuard } from '@/lib/admin-guard'
 import { logActivity } from '@/lib/audit-log'
 import { log } from '@/lib/logger'
 import sql from '@/lib/db'
@@ -9,14 +9,14 @@ import { LINKED_TYPES, blobAccess, safeFileName, validateUpload } from '@/lib/wh
 import { backupDocument } from '@/lib/whf-cio-drive'
 
 export async function GET(request: Request) {
-  const session = await directorGuard()
-  if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
-
   const url = new URL(request.url)
   const linkedType = url.searchParams.get('linked_type')
   const linkedId = url.searchParams.get('linked_id')
   if (linkedType && !(LINKED_TYPES as readonly string[]).includes(linkedType)) return NextResponse.json({ error: 'Invalid linked_type' }, { status: 400 })
   if (linkedId && !UUID_RE.test(linkedId)) return NextResponse.json({ error: 'Invalid linked_id' }, { status: 400 })
+
+  const session = await documentsGuard(linkedType)
+  if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
 
   try {
     const rows = await sql`
@@ -36,8 +36,6 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-  const session = await directorGuard()
-  if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
   if (!process.env.BLOB_READ_WRITE_TOKEN) {
     return NextResponse.json({ error: 'File storage is not configured (BLOB_READ_WRITE_TOKEN is missing)' }, { status: 503 })
   }
@@ -54,6 +52,9 @@ export async function POST(request: Request) {
   const linkedId = str('linked_id')
   if (linkedType && !(LINKED_TYPES as readonly string[]).includes(linkedType)) return NextResponse.json({ error: 'Invalid linked_type' }, { status: 400 })
   if (linkedId && !UUID_RE.test(linkedId)) return NextResponse.json({ error: 'Invalid linked_id' }, { status: 400 })
+
+  const session = await documentsGuard(linkedType)
+  if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
   const title = str('title') ?? file.name
 
   let blob

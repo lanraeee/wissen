@@ -34,6 +34,10 @@ export const NAV = [
   ['Settings', '/admin/settings'],
 ] as const
 
+// Not part of canAccessAdminPath's role logic at all -- shown only when
+// isMasterAdmin is passed, same shape of exception as AI_AGENT_PATH/canUseAgent.
+export const ACCESS_CONTROL_ITEM = ['Access Control', '/admin/access-control'] as const
+
 // Maps a nav href to its key in useSubmissionsBadge()'s pending-counts
 // object (app/api/admin/inbox-counts). Donations/Opportunities/etc. have no
 // pending-triage concept, so they're simply absent here -- no badge shown.
@@ -52,13 +56,23 @@ export function isNavActive(pathname: string, href: string) {
   return href === '/admin' ? pathname === '/admin' : pathname.startsWith(href)
 }
 
-export default function AdminNav({ role, canUseAgent }: { role: AdminRole; canUseAgent: boolean }) {
+interface Props {
+  role: AdminRole
+  canUseAgent: boolean
+  /** Only meaningful for role 'trustee' -- see lib/admin-sections.ts. */
+  grantedSections?: string[]
+  /** Shows the Access Control link. Not derived from `role` at all -- see lib/admin-access.ts's ACCESS_CONTROL_PATH. */
+  isMasterAdmin?: boolean
+}
+
+export default function AdminNav({ role, canUseAgent, grantedSections = [], isMasterAdmin = false }: Props) {
   const pathname = usePathname()
   const counts = useSubmissionsBadge()
+  const items: readonly (readonly [string, string])[] = isMasterAdmin ? [...NAV, ACCESS_CONTROL_ITEM] : NAV
 
   return (
     <nav style={{ padding: '16px 12px', flex: 1, overflowY: 'auto' }}>
-      {NAV.filter(([, href]) => canAccessAdminPath(role, href, canUseAgent)).map(([label, href]) => {
+      {items.filter(([, href]) => href === ACCESS_CONTROL_ITEM[1] || canAccessAdminPath(role, href, canUseAgent, grantedSections)).map(([label, href]) => {
         const active = isNavActive(pathname, href)
         const Icon = NAV_ICONS[href]
         const badgeKey = BADGE_KEYS[href]

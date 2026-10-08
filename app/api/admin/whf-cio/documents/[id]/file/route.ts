@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { get } from '@vercel/blob'
-import { directorGuard } from '@/lib/admin-guard'
+import { documentByIdGuard } from '@/lib/admin-guard'
 import { log } from '@/lib/logger'
 import sql from '@/lib/db'
 import { UUID_RE } from '@/lib/whf-cio'
@@ -8,14 +8,13 @@ import { blobAccess, contentDisposition } from '@/lib/whf-cio-files'
 
 type Ctx = { params: Promise<{ id: string }> }
 
-// Files are served only through this route so the director check applies to every download,
+// Files are served only through this route so the access check applies to every download,
 // whichever access mode the Blob store uses.
 export async function GET(_: Request, { params }: Ctx) {
-  const session = await directorGuard()
-  if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
-
   const { id } = await params
   if (!UUID_RE.test(id)) return NextResponse.json({ error: 'Not found' }, { status: 404 })
+  const session = await documentByIdGuard(id)
+  if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
 
   try {
     const rows = await sql`SELECT blob_path, file_name, content_type FROM cio_documents WHERE id = ${id}`

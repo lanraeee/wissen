@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import sql from '@/lib/db'
-import { adminGuard } from '@/lib/admin-guard'
+import { adminGuard, sectionGuard } from '@/lib/admin-guard'
 import { parseBody } from '@/lib/validation'
 import { logActivity } from '@/lib/audit-log'
 
@@ -12,7 +12,7 @@ const StatusSchema = z.object({
 const IdSchema = z.object({ id: z.string() })
 
 export async function GET() {
-  if (!await adminGuard()) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+  if (!(await adminGuard() || await sectionGuard('scholarships'))) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   const rows = await sql`
     SELECT id, name, email, phone, age_range, country, state_region, city,
            answers, score, score_breakdown, red_flags, status, created_at
@@ -24,7 +24,7 @@ export async function GET() {
 }
 
 export async function PATCH(req: NextRequest) {
-  const session = await adminGuard()
+  const session = (await adminGuard() || await sectionGuard('scholarships'))
   if (!session) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   const { data, error } = await parseBody(req, StatusSchema)
   if (error) return error
@@ -34,7 +34,7 @@ export async function PATCH(req: NextRequest) {
 }
 
 export async function DELETE(req: NextRequest) {
-  const session = await adminGuard()
+  const session = (await adminGuard() || await sectionGuard('scholarships'))
   if (!session) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   const { data, error } = await parseBody(req, IdSchema)
   if (error) return error

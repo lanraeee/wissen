@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
-import { userAdminGuard } from '@/lib/admin-guard'
+import { userAdminGuard, sectionGuard } from '@/lib/admin-guard'
 import sql from '@/lib/db'
 import { parseBody } from '@/lib/validation'
 import { logActivity } from '@/lib/audit-log'
@@ -13,7 +13,7 @@ const CampaignSchema = z.object({
 })
 
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  const session = await userAdminGuard()
+  const session = (await userAdminGuard() || await sectionGuard('newsletter'))
   if (!session) return forbidden()
 
   const { id } = await params
@@ -30,7 +30,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
 }
 
 export async function DELETE(_: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  const session = await userAdminGuard()
+  const session = (await userAdminGuard() || await sectionGuard('newsletter'))
   if (!session) return forbidden()
 
   const { id } = await params

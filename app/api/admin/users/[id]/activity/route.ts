@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { adminGuard, userAdminGuard, directorGuard, isDirector } from '@/lib/admin-guard'
+import { adminGuard, userAdminGuard, directorGuard, isDirector, sectionGuard } from '@/lib/admin-guard'
 import sql from '@/lib/db'
 
 const LIMIT = 100
@@ -47,7 +47,7 @@ export async function GET(_: NextRequest, { params }: { params: Promise<{ id: st
   // and never gets to distinguish "no such user" from "forbidden" --
   // otherwise a 404-vs-403 response is a free user-ID enumeration oracle for
   // anyone, logged in or not.
-  if (!await adminGuard()) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+  if (!(await adminGuard() || await sectionGuard('users'))) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 
   const { id } = await params
   const target = await findUser(id)

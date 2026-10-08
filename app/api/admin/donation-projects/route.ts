@@ -1,7 +1,7 @@
 ﻿import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import sql from '@/lib/db'
-import { adminGuard } from '@/lib/admin-guard'
+import { adminGuard, sectionGuard } from '@/lib/admin-guard'
 import { parseBody } from '@/lib/validation'
 import { logActivity } from '@/lib/audit-log'
 
@@ -54,7 +54,7 @@ const IdSchema = z.object({ id: z.union([z.string(), z.number()]) })
 // This used to check session.isAdmin, a claim signToken never issues, so every
 // caller was rejected. Use the same guard the rest of /api/admin/* uses.
 async function requireAdmin() {
-  return await adminGuard()
+  return (await adminGuard() || await sectionGuard('projects'))
 }
 
 async function ensureTable() {

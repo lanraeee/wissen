@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
-import { directorGuard } from '@/lib/admin-guard'
+import { directorGuard, sectionGuard } from '@/lib/admin-guard'
 import sql from '@/lib/db'
 import { parseBody } from '@/lib/validation'
 import { writeContent } from '@/lib/content-approvals'

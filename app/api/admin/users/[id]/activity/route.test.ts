@@ -13,6 +13,7 @@ vi.mock('@/lib/admin-guard', async () => {
     adminGuard: () => adminGuardMock(),
     userAdminGuard: () => userAdminGuardMock(),
     directorGuard: () => directorGuardMock(),
+    sectionGuard: async () => null,
   }
 })
 

@@ -4,7 +4,7 @@ const sqlMock = vi.fn()
 vi.mock('@/lib/db', () => ({ default: (...args: unknown[]) => sqlMock(...args) }))
 
 const adminGuardMock = vi.fn()
-vi.mock('@/lib/admin-guard', () => ({ adminGuard: () => adminGuardMock() }))
+vi.mock('@/lib/admin-guard', () => ({ adminGuard: () => adminGuardMock(), sectionGuard: async () => null }))
 
 import { GET } from './route'
 

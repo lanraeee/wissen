@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import sql from '@/lib/db'
-import { adminGuard } from '@/lib/admin-guard'
+import { adminGuard, sectionGuard } from '@/lib/admin-guard'
 import { getPledge, updatePledge } from '@/lib/bank-transfer'
 import { recordDonation, type VerifiedDonation } from '@/lib/donations'
 import { parseBody } from '@/lib/validation'
@@ -11,7 +11,7 @@ import { logActivity } from '@/lib/audit-log'
 const ReferenceSchema = z.object({ reference: z.string().trim().min(1).max(100) })
 
 export async function GET() {
-  if (!await adminGuard()) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  if (!(await adminGuard() || await sectionGuard('bank_transfers'))) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   const rows = await sql`
     SELECT bt.*, d.cert_id AS cert_id
     FROM bank_transfers bt
@@ -28,7 +28,7 @@ export async function GET() {
 // Idempotent — recordDonation and the certificate issuer both no-op on a
 // reference that has already been recorded.
 export async function POST(req: NextRequest) {
-  const session = await adminGuard()
+  const session = (await adminGuard() || await sectionGuard('bank_transfers'))
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const { data, error } = await parseBody(req, ReferenceSchema)
@@ -74,7 +74,7 @@ export async function POST(req: NextRequest) {
 // Marks a pledge as cancelled (donor never sent the money, duplicate, etc.).
 // The row is kept so the reference stays resolvable if the donor returns.
 export async function DELETE(req: NextRequest) {
-  const session = await adminGuard()
+  const session = (await adminGuard() || await sectionGuard('bank_transfers'))
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const { data, error } = await parseBody(req, ReferenceSchema)

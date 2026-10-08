@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import sql from '@/lib/db'
-import { adminGuard } from '@/lib/admin-guard'
+import { adminGuard, sectionGuard } from '@/lib/admin-guard'
 
 function csvCell(value: unknown): string {
   const s = value === null || value === undefined ? '' : String(value)
@@ -8,7 +8,7 @@ function csvCell(value: unknown): string {
 }
 
 export async function GET(_: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  if (!await adminGuard()) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+  if (!(await adminGuard() || await sectionGuard('career_fair'))) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   const { id } = await params
 
   const [event] = await sql`SELECT slug, title FROM fair_events WHERE id = ${id}`

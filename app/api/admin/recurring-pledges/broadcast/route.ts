@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import sql from '@/lib/db'
-import { adminGuard } from '@/lib/admin-guard'
+import { adminGuard, sectionGuard } from '@/lib/admin-guard'
 import { sendDonationRequestBroadcast } from '@/lib/email'
 import { resolveBroadcastAudience, sendInBatches, type BroadcastCandidate } from '@/lib/newsletter'
 import { parseBody } from '@/lib/validation'
@@ -61,7 +61,7 @@ async function candidatesFor(audience: z.infer<typeof BroadcastSchema>['audience
 // broadcast) stays suppressed here too, rather than this route needing its
 // own separate suppression list.
 export async function POST(req: NextRequest) {
-  const session = await adminGuard()
+  const session = (await adminGuard() || await sectionGuard('giving'))
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const { data, error } = await parseBody(req, BroadcastSchema)

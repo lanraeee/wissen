@@ -7,6 +7,10 @@ import { dbErrorResponse, UUID_RE } from '@/lib/whf-cio'
 
 type Ctx = { params: Promise<{ id: string }> }
 
+// Deliberately still director-only, not sectionGuard('whf_cio.constitution'):
+// adoption makes a version the permanent governing document, which is a
+// higher-stakes act than the edit access a trustee grant gives. A trustee
+// granted the Constitution tab can draft and edit; only a director adopts.
 export async function POST(request: Request, { params }: Ctx) {
   const session = await directorGuard()
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })

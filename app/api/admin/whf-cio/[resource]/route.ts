@@ -1,16 +1,33 @@
 import { NextResponse } from 'next/server'
-import { directorGuard } from '@/lib/admin-guard'
+import { sectionGuard } from '@/lib/admin-guard'
 import { logActivity } from '@/lib/audit-log'
 import { log } from '@/lib/logger'
 import { getResource, parseBody, listRows, insertRow, dbErrorResponse } from '@/lib/whf-cio'
 
 type Ctx = { params: Promise<{ resource: string }> }
 
+// Two of lib/whf-cio.ts's resource keys don't match their tab's name in
+// app/admin/whf-cio/page.tsx's TABS (and so in lib/admin-sections.ts's grant
+// keys, which follow the tab names since that's what the Access Control
+// editor shows): ConflictsTab posts to "declarations", FixedCostsTab posts
+// to "fixed_costs". Translate before building the section key, or granting
+// "whf_cio.conflicts"/"whf_cio.costs" would silently grant nothing.
+const SECTION_KEY_FOR_RESOURCE: Record<string, string> = { declarations: 'conflicts', fixed_costs: 'costs' }
+
+// A director, the master admin, or a trustee specifically granted this
+// resource's tab (e.g. "whf_cio.meetings" for the Meetings & Minutes tab --
+// see lib/admin-sections.ts). "safeguarding" is never a valid resource here
+// at all: that tab's own routes (app/api/admin/whf-cio/safeguarding/**) are
+// the only path to it, guarded separately by safeguardingGuard().
+function guard(resource: string) {
+  return sectionGuard(`whf_cio.${SECTION_KEY_FOR_RESOURCE[resource] ?? resource}`)
+}
+
 export async function GET(_: Request, { params }: Ctx) {
-  const session = await directorGuard()
+  const { resource } = await params
+  const session = await guard(resource)
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
 
-  const { resource } = await params
   const res = getResource(resource)
   if (!res) return NextResponse.json({ error: 'Not found' }, { status: 404 })
 
@@ -24,10 +41,10 @@ export async function GET(_: Request, { params }: Ctx) {
 }
 
 export async function POST(request: Request, { params }: Ctx) {
-  const session = await directorGuard()
+  const { resource } = await params
+  const session = await guard(resource)
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
 
-  const { resource } = await params
   const res = getResource(resource)
   if (!res) return NextResponse.json({ error: 'Not found' }, { status: 404 })
 

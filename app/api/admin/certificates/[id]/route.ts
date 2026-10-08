@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { adminGuard } from '@/lib/admin-guard'
+import { adminGuard, sectionGuard } from '@/lib/admin-guard'
 import sql from '@/lib/db'
 import { logActivity } from '@/lib/audit-log'
 
 export async function DELETE(_: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  const session = await adminGuard()
+  const session = (await adminGuard() || await sectionGuard('courses'))
   if (!session) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   const { id } = await params
   await sql`DELETE FROM certificates WHERE id = ${id}`

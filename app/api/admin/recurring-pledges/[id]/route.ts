@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
-import { adminGuard } from '@/lib/admin-guard'
+import { adminGuard, sectionGuard } from '@/lib/admin-guard'
 import {
   getRecurringPledgeById, confirmRecurringTransferReceived, setRecurringStatus,
 } from '@/lib/recurring-giving'
@@ -18,7 +18,7 @@ const ActionSchema = z.object({ action: z.enum(['confirm', 'lapse', 'cancel']) }
 // subscription is cancelled on Stripe's side separately; this only updates
 // our own record of it).
 export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  const session = await adminGuard()
+  const session = (await adminGuard() || await sectionGuard('giving'))
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const { id } = await params

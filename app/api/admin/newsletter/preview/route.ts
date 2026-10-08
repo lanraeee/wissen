@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
-import { userAdminGuard } from '@/lib/admin-guard'
+import { userAdminGuard, sectionGuard } from '@/lib/admin-guard'
 import { renderPreview } from '@/lib/email-render'
 import { parseBody } from '@/lib/validation'
 
@@ -13,7 +13,7 @@ const PreviewSchema = z.object({
 // shell, exactly as sendNewsletterEmail() would, including a stand-in
 // unsubscribe line -- never touches the database, never sends anything.
 export async function POST(req: NextRequest) {
-  const session = await userAdminGuard()
+  const session = (await userAdminGuard() || await sectionGuard('newsletter'))
   if (!session) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 
   const { data, error } = await parseBody(req, PreviewSchema)

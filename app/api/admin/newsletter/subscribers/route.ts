@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
-import { userAdminGuard } from '@/lib/admin-guard'
+import { userAdminGuard, sectionGuard } from '@/lib/admin-guard'
 import sql from '@/lib/db'
 import { generateUnsubscribeToken } from '@/lib/newsletter'
 import { parseBody, zEmail, zName } from '@/lib/validation'
@@ -9,7 +9,7 @@ import { logActivity } from '@/lib/audit-log'
 const forbidden = () => NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 
 export async function GET() {
-  const session = await userAdminGuard()
+  const session = (await userAdminGuard() || await sectionGuard('newsletter'))
   if (!session) return forbidden()
 
   const subscribers = await sql`
@@ -22,7 +22,7 @@ export async function GET() {
 const AddSchema = z.object({ email: zEmail, name: zName.optional() })
 
 export async function POST(req: NextRequest) {
-  const session = await userAdminGuard()
+  const session = (await userAdminGuard() || await sectionGuard('newsletter'))
   if (!session) return forbidden()
 
   const { data, error } = await parseBody(req, AddSchema)

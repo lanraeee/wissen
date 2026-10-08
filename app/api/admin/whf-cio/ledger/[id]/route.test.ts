@@ -2,7 +2,10 @@ import { NextRequest } from 'next/server'
 
 const sqlMock = vi.fn()
 vi.mock('@/lib/db', () => ({ default: (...a: unknown[]) => sqlMock(...a) }))
-vi.mock('@/lib/admin-guard', () => ({ directorGuard: vi.fn().mockResolvedValue({ id: 'u1', email: 'director@wissenhaus.org' }) }))
+vi.mock('@/lib/admin-guard', () => ({
+  directorGuard: vi.fn().mockResolvedValue({ id: 'u1', email: 'director@wissenhaus.org' }),
+  sectionGuard: vi.fn().mockResolvedValue({ id: 'u1', email: 'director@wissenhaus.org' }),
+}))
 vi.mock('@/lib/audit-log', () => ({ logActivity: vi.fn() }))
 
 import { PUT, DELETE } from './route'

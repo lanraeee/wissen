@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { directorGuard } from '@/lib/admin-guard'
+import { sectionGuard } from '@/lib/admin-guard'
 import { logActivity } from '@/lib/audit-log'
 import { log } from '@/lib/logger'
 import { parseBody } from '@/lib/validation'
@@ -13,7 +13,7 @@ export const dynamic = 'force-dynamic'
 // GET also tops the feeds up: syncLedger() skips any provider polled in the
 // last 15 minutes, so opening the tab is cheap but never shows a day-old list.
 export async function GET() {
-  const session = await directorGuard()
+  const session = await sectionGuard('whf_cio.ledger')
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
 
   try {
@@ -33,7 +33,7 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
-  const session = await directorGuard()
+  const session = await sectionGuard('whf_cio.ledger')
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
 
   const { data, error } = await parseBody(req, ManualEntrySchema)
