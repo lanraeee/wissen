@@ -7,7 +7,7 @@ export const ALLOWED_TYPES: Record<string, string> = {
   'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'docx',
 }
 
-export const LINKED_TYPES = ['constitution', 'registrations', 'trustees', 'meetings', 'policies', 'filings'] as const
+export const LINKED_TYPES = ['constitution', 'registrations', 'trustees', 'meetings', 'policies', 'filings', 'trustee_declarations'] as const
 export type LinkedType = (typeof LINKED_TYPES)[number]
 
 /** Store access mode. Must match how the Vercel Blob store was created (it cannot be changed afterwards). */
