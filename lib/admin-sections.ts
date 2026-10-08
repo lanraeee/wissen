@@ -46,7 +46,10 @@ export const TOP_LEVEL_SECTIONS: AdminSection[] = [
   { key: 'testimonials', label: 'Testimonials', path: '/admin/testimonials' },
   { key: 'content', label: 'Content', path: '/admin/content' },
   { key: 'content_approvals', label: 'Content Approvals', path: '/admin/content-approvals' },
-  { key: 'whf_cio', label: 'WHF-CIO Records', path: '/admin/whf-cio' },
+  // No bare "whf_cio" entry: access to WHF-CIO Records is entirely a
+  // function of which whf_cio.* tabs below are granted (sectionsCoveringPath
+  // and grantedWhfCioTabs both only look at those) -- a standalone
+  // "whf_cio" key would be a checkbox that does nothing.
   { key: 'newsletter', label: 'Newsletter', path: '/admin/newsletter' },
   { key: 'email_templates', label: 'Email Templates', path: '/admin/email-templates' },
   { key: 'settings', label: 'Settings', path: '/admin/settings' },
