@@ -1,6 +1,7 @@
 'use client'
 
 import DocumentsPanel from './DocumentsPanel'
+import MinutesPreview from './MinutesPreview'
 import RecordsManager, { type Field, type Column } from '../RecordsManager'
 import { fmtDate, humanise } from '../cio-ui'
 import Badge from './Badge'
@@ -38,7 +39,21 @@ export default function MeetingsTab() {
       addLabel="+ Add meeting"
       emptyText="No meetings recorded yet."
       fields={FIELDS}
-      renderExtra={row => <DocumentsPanel linkedType="meetings" linkedId={row.id} heading="Attached documents" />}
+      renderExtra={row => (
+        <>
+          <div style={{ marginBottom: 20 }}>
+            <MinutesPreview
+              title={String(row.title ?? '')}
+              meetingDate={row.meeting_date}
+              meetingType={TYPES.find(t => t.value === row.meeting_type)?.label ?? humanise(row.meeting_type)}
+              status={String(row.status ?? '')}
+              attendees={String(row.attendees ?? '')}
+              minutes={String(row.minutes ?? '')}
+            />
+          </div>
+          <DocumentsPanel linkedType="meetings" linkedId={row.id} heading="Attached documents" />
+        </>
+      )}
       columns={COLUMNS}
       defaults={{ meeting_type: 'trustee', status: 'scheduled' }}
     />
