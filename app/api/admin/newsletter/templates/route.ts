@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
-import { userAdminGuard, sectionGuard } from '@/lib/admin-guard'
+import { userAdminGuard, sectionGuard, sectionWriteGuard } from '@/lib/admin-guard'
 import sql from '@/lib/db'
 import { parseBody } from '@/lib/validation'
 import { logActivity } from '@/lib/audit-log'
@@ -22,7 +22,7 @@ const TemplateSchema = z.object({
 })
 
 export async function POST(req: NextRequest) {
-  const session = (await userAdminGuard() || await sectionGuard('newsletter'))
+  const session = (await userAdminGuard() || await sectionWriteGuard('newsletter'))
   if (!session) return forbidden()
 
   const { data, error } = await parseBody(req, TemplateSchema)

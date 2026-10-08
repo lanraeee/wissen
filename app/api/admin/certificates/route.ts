@@ -1,6 +1,6 @@
 ﻿import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
-import { adminGuard, sectionGuard } from '@/lib/admin-guard'
+import { adminGuard, sectionGuard, sectionWriteGuard } from '@/lib/admin-guard'
 import sql from '@/lib/db'
 import { getCourse } from '@/lib/courses'
 import { sendCertificateEmail } from '@/lib/email'
@@ -16,7 +16,7 @@ const IssueCertSchema = z.object({
 })
 
 export async function POST(req: NextRequest) {
-  const session = (await adminGuard() || await sectionGuard('courses'))
+  const session = (await adminGuard() || await sectionWriteGuard('courses'))
   if (!session) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 
   const { data, error } = await parseBody(req, IssueCertSchema)

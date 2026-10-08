@@ -1,13 +1,29 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { TOP_LEVEL_SECTIONS, WHF_CIO_SECTIONS } from '@/lib/admin-sections'
-import { ACCESS_GRANTS_KEY, ACCESS_GRANTS_DEFAULTS, coerceAccessGrants, type AccessGrants } from '@/lib/admin-access-grants-shared'
+import { TOP_LEVEL_SECTIONS, WHF_CIO_SECTIONS, type AdminSection } from '@/lib/admin-sections'
+import { ACCESS_GRANTS_KEY, ACCESS_GRANTS_DEFAULTS, coerceAccessGrants, type AccessGrants, type AccessLevel } from '@/lib/admin-access-grants-shared'
 
 interface TrusteeAccount { id: string; email: string; first_name: string; last_name: string; created_at: string }
 
 const inp = { padding: '7px 10px', fontSize: '.85rem', border: '1px solid #d0ccc4', borderRadius: 6, width: '100%', boxSizing: 'border-box' as const }
 const btn = (bg: string, color = '#fff') => ({ padding: '6px 16px', borderRadius: 6, fontSize: '.78rem', fontWeight: 600, background: bg, color, border: 'none', cursor: 'pointer' } as const)
+const levelSelect = { padding: '3px 6px', fontSize: '.78rem', border: '1px solid #d0ccc4', borderRadius: 5, background: '#fff' } as const
+
+type LevelChoice = '' | AccessLevel // '' = no access
+
+function LevelRow({ section, level, onChange, shortLabel }: { section: AdminSection; level: LevelChoice; onChange: (v: LevelChoice) => void; shortLabel?: boolean }) {
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10, padding: '4px 0', fontSize: '.85rem' }}>
+      <span>{shortLabel ? section.label.replace('WHF-CIO → ', '') : section.label}</span>
+      <select style={levelSelect} value={level} onChange={e => onChange(e.target.value as LevelChoice)}>
+        <option value="">No access</option>
+        <option value="read">Read only</option>
+        <option value="write">Read &amp; write</option>
+      </select>
+    </div>
+  )
+}
 
 export default function AccessControlEditor() {
   const [trustees, setTrustees] = useState<TrusteeAccount[] | null>(null)
@@ -59,11 +75,12 @@ export default function AccessControlEditor() {
     }
   }
 
-  function toggle(email: string, key: string, checked: boolean) {
+  function setLevel(email: string, key: string, level: LevelChoice) {
     setGrants(g => {
-      const current = new Set(g.grants[email] ?? [])
-      if (checked) current.add(key); else current.delete(key)
-      return { grants: { ...g.grants, [email]: [...current] } }
+      const current = { ...(g.grants[email] ?? {}) }
+      if (level === '') delete current[key]
+      else current[key] = level
+      return { grants: { ...g.grants, [email]: current } }
     })
   }
 
@@ -108,14 +125,19 @@ export default function AccessControlEditor() {
       ) : (
         <div style={{ display: 'grid', gap: 14 }}>
           {trustees.map(t => {
-            const theirKeys = new Set(grants.grants[t.email.toLowerCase()] ?? [])
+            const email = t.email.toLowerCase()
+            const theirLevels = grants.grants[email] ?? {}
+            const grantedCount = Object.keys(theirLevels).length
+            const writeCount = Object.values(theirLevels).filter(l => l === 'write').length
             const open = expanded === t.email
             return (
               <div key={t.id} style={{ background: '#fff', border: '1px solid #e8e4dc', borderRadius: 10, padding: '16px 20px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 10 }}>
                   <div>
                     <div style={{ fontWeight: 600 }}>{t.first_name} {t.last_name}</div>
-                    <div style={{ fontSize: '.82rem', color: '#8a9a8f' }}>{t.email} · {theirKeys.size} section{theirKeys.size === 1 ? '' : 's'} granted</div>
+                    <div style={{ fontSize: '.82rem', color: '#8a9a8f' }}>
+                      {t.email} · {grantedCount} section{grantedCount === 1 ? '' : 's'} granted{writeCount > 0 ? ` (${writeCount} with write access)` : ''}
+                    </div>
                   </div>
                   <button style={btn(open ? '#8a9a8f' : '#1a3c2e')} onClick={() => setExpanded(open ? null : t.email)}>
                     {open ? 'Close' : 'Manage access'}
@@ -124,31 +146,28 @@ export default function AccessControlEditor() {
 
                 {open && (
                   <div style={{ marginTop: 16, paddingTop: 16, borderTop: '1px solid #e8e4dc' }}>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '18px 24px', marginBottom: 16 }}>
+                    <p style={{ margin: '0 0 14px', fontSize: '.78rem', color: '#8a9a8f' }}>
+                      Read only: can open the section and see everything in it. Read &amp; write: can also create, edit and delete there.
+                    </p>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '18px 24px', marginBottom: 16 }}>
                       <div>
                         <div style={{ fontSize: '.72rem', fontWeight: 700, textTransform: 'uppercase', color: '#8a9a8f', letterSpacing: '.04em', marginBottom: 8 }}>Top-level sections</div>
                         {TOP_LEVEL_SECTIONS.map(s => (
-                          <label key={s.key} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: '.85rem', padding: '3px 0' }}>
-                            <input type="checkbox" checked={theirKeys.has(s.key)} onChange={e => toggle(t.email.toLowerCase(), s.key, e.target.checked)} />
-                            {s.label}
-                          </label>
+                          <LevelRow key={s.key} section={s} level={theirLevels[s.key] ?? ''} onChange={v => setLevel(email, s.key, v)} />
                         ))}
                       </div>
                       <div>
                         <div style={{ fontSize: '.72rem', fontWeight: 700, textTransform: 'uppercase', color: '#8a9a8f', letterSpacing: '.04em', marginBottom: 8 }}>WHF-CIO Records tabs</div>
                         {WHF_CIO_SECTIONS.map(s => (
-                          <label key={s.key} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: '.85rem', padding: '3px 0' }}>
-                            <input type="checkbox" checked={theirKeys.has(s.key)} onChange={e => toggle(t.email.toLowerCase(), s.key, e.target.checked)} />
-                            {s.label.replace('WHF-CIO → ', '')}
-                          </label>
+                          <LevelRow key={s.key} section={s} level={theirLevels[s.key] ?? ''} onChange={v => setLevel(email, s.key, v)} shortLabel />
                         ))}
                         <p style={{ margin: '8px 0 0', fontSize: '.74rem', color: '#8a9a8f' }}>
                           Granting any WHF-CIO tab shows the WHF-CIO Records link in their nav. Safeguarding and AI Agent have their own, separate grant mechanisms (not here).
                         </p>
                       </div>
                     </div>
-                    <button style={btn('#1a3c2e')} onClick={() => saveGrants(t.email.toLowerCase())} disabled={savingFor === t.email.toLowerCase()}>
-                      {savingFor === t.email.toLowerCase() ? 'Saving…' : 'Save access'}
+                    <button style={btn('#1a3c2e')} onClick={() => saveGrants(email)} disabled={savingFor === email}>
+                      {savingFor === email ? 'Saving…' : 'Save access'}
                     </button>
                   </div>
                 )}

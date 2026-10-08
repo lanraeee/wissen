@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import sql from '@/lib/db'
-import { adminGuard, sectionGuard } from '@/lib/admin-guard'
+import { adminGuard, sectionGuard, sectionWriteGuard } from '@/lib/admin-guard'
 import { logActivity } from '@/lib/audit-log'
 import { sendFairCheckinReminder } from '@/lib/email'
 import { log } from '@/lib/logger'
 
 export async function POST(_: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  const session = (await adminGuard() || await sectionGuard('career_fair'))
+  const session = (await adminGuard() || await sectionWriteGuard('career_fair'))
   if (!session) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   const { id } = await params
 

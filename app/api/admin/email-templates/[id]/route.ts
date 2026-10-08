@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
-import { userAdminGuard, sectionGuard } from '@/lib/admin-guard'
+import { userAdminGuard, sectionGuard, sectionWriteGuard } from '@/lib/admin-guard'
 import sql from '@/lib/db'
 import { EMAIL_TEMPLATES_BY_ID } from '@/lib/email-catalog'
 import { parseBody } from '@/lib/validation'
@@ -14,7 +14,7 @@ const TemplateSchema = z.object({
 })
 
 export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  const session = (await userAdminGuard() || await sectionGuard('email_templates'))
+  const session = (await userAdminGuard() || await sectionWriteGuard('email_templates'))
   if (!session) return forbidden()
 
   const { id } = await params
@@ -33,7 +33,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
 }
 
 export async function DELETE(_: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  const session = (await userAdminGuard() || await sectionGuard('email_templates'))
+  const session = (await userAdminGuard() || await sectionWriteGuard('email_templates'))
   if (!session) return forbidden()
 
   const { id } = await params

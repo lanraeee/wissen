@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
-import { adminGuard, sectionGuard } from '@/lib/admin-guard'
+import { adminGuard, sectionGuard, sectionWriteGuard } from '@/lib/admin-guard'
 import sql from '@/lib/db'
 import { parseBody } from '@/lib/validation'
 import { logActivity } from '@/lib/audit-log'
@@ -28,7 +28,7 @@ export async function GET(_: NextRequest, { params }: { params: Promise<{ id: st
 }
 
 export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  const session = (await adminGuard() || await sectionGuard('opportunities'))
+  const session = (await adminGuard() || await sectionWriteGuard('opportunities'))
   if (!session) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   const { id } = await params
   const { data: body, error } = await parseBody(req, OpportunityUpdateSchema)
@@ -56,7 +56,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
 }
 
 export async function DELETE(_: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  const session = (await adminGuard() || await sectionGuard('opportunities'))
+  const session = (await adminGuard() || await sectionWriteGuard('opportunities'))
   if (!session) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   const { id } = await params
   await sql`DELETE FROM opportunities WHERE id = ${id}`

@@ -1,6 +1,6 @@
 ﻿import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
-import { adminGuard, sectionGuard } from '@/lib/admin-guard'
+import { adminGuard, sectionGuard, sectionWriteGuard } from '@/lib/admin-guard'
 import sql from '@/lib/db'
 import { parseBody } from '@/lib/validation'
 import { logActivity } from '@/lib/audit-log'
@@ -20,7 +20,7 @@ const OpportunitySchema = z.object({
 })
 
 export async function POST(req: NextRequest) {
-  const session = (await adminGuard() || await sectionGuard('opportunities'))
+  const session = (await adminGuard() || await sectionWriteGuard('opportunities'))
   if (!session) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   const { data: body, error } = await parseBody(req, OpportunitySchema)
   if (error) return error

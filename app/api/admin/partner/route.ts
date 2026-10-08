@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import sql from '@/lib/db'
-import { adminGuard, sectionGuard } from '@/lib/admin-guard'
+import { adminGuard, sectionGuard, sectionWriteGuard } from '@/lib/admin-guard'
 import { parseBody } from '@/lib/validation'
 import { logActivity } from '@/lib/audit-log'
 
@@ -18,7 +18,7 @@ export async function GET() {
 }
 
 export async function PATCH(req: NextRequest) {
-  const session = (await adminGuard() || await sectionGuard('partner'))
+  const session = (await adminGuard() || await sectionWriteGuard('partner'))
   if (!session) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   const { data, error } = await parseBody(req, StatusSchema)
   if (error) return error
@@ -28,7 +28,7 @@ export async function PATCH(req: NextRequest) {
 }
 
 export async function DELETE(req: NextRequest) {
-  const session = (await adminGuard() || await sectionGuard('partner'))
+  const session = (await adminGuard() || await sectionWriteGuard('partner'))
   if (!session) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   const { data, error } = await parseBody(req, IdSchema)
   if (error) return error

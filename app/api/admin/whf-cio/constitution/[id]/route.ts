@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { sectionGuard } from '@/lib/admin-guard'
+import { sectionWriteGuard } from '@/lib/admin-guard'
 import { logActivity } from '@/lib/audit-log'
 import { log } from '@/lib/logger'
 import sql from '@/lib/db'
@@ -9,7 +9,7 @@ type Ctx = { params: Promise<{ id: string }> }
 
 // Adopted and superseded versions are the legal record: only drafts can be edited or deleted.
 export async function PUT(request: Request, { params }: Ctx) {
-  const session = await sectionGuard('whf_cio.constitution')
+  const session = await sectionWriteGuard('whf_cio.constitution')
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
 
   const { id } = await params
@@ -49,7 +49,7 @@ export async function PUT(request: Request, { params }: Ctx) {
 }
 
 export async function DELETE(_: Request, { params }: Ctx) {
-  const session = await sectionGuard('whf_cio.constitution')
+  const session = await sectionWriteGuard('whf_cio.constitution')
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
 
   const { id } = await params

@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { sectionGuard } from '@/lib/admin-guard'
+import { sectionGuard, sectionWriteGuard } from '@/lib/admin-guard'
 import { logActivity } from '@/lib/audit-log'
 import { log } from '@/lib/logger'
 import sql from '@/lib/db'
@@ -23,7 +23,7 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-  const session = await sectionGuard('whf_cio.constitution')
+  const session = await sectionWriteGuard('whf_cio.constitution')
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
 
   const body = (await request.json().catch(() => null)) as Record<string, unknown> | null

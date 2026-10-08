@@ -15,7 +15,7 @@ export async function GET(request: Request) {
   if (linkedType && !(LINKED_TYPES as readonly string[]).includes(linkedType)) return NextResponse.json({ error: 'Invalid linked_type' }, { status: 400 })
   if (linkedId && !UUID_RE.test(linkedId)) return NextResponse.json({ error: 'Invalid linked_id' }, { status: 400 })
 
-  const session = await documentsGuard(linkedType)
+  const session = await documentsGuard(linkedType, 'read')
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
 
   try {
@@ -53,7 +53,7 @@ export async function POST(request: Request) {
   if (linkedType && !(LINKED_TYPES as readonly string[]).includes(linkedType)) return NextResponse.json({ error: 'Invalid linked_type' }, { status: 400 })
   if (linkedId && !UUID_RE.test(linkedId)) return NextResponse.json({ error: 'Invalid linked_id' }, { status: 400 })
 
-  const session = await documentsGuard(linkedType)
+  const session = await documentsGuard(linkedType, 'write')
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
   const title = str('title') ?? file.name
 

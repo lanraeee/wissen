@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
-import { adminGuard, sectionGuard } from '@/lib/admin-guard'
+import { adminGuard, sectionGuard, sectionWriteGuard } from '@/lib/admin-guard'
 import sql from '@/lib/db'
 import { parseBody } from '@/lib/validation'
 import { getTicketByReference, getMessages, addMessage } from '@/lib/tickets'
@@ -37,7 +37,7 @@ const ActionSchema = z.object({
 })
 
 export async function POST(req: NextRequest, { params }: { params: Promise<{ reference: string }> }) {
-  const session = (await adminGuard() || await sectionGuard('support'))
+  const session = (await adminGuard() || await sectionWriteGuard('support'))
   if (!session) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   const { reference } = await params
 

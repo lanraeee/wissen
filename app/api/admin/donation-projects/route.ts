@@ -1,7 +1,7 @@
 ﻿import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import sql from '@/lib/db'
-import { adminGuard, sectionGuard } from '@/lib/admin-guard'
+import { adminGuard, sectionGuard, sectionWriteGuard } from '@/lib/admin-guard'
 import { parseBody } from '@/lib/validation'
 import { logActivity } from '@/lib/audit-log'
 
@@ -53,8 +53,11 @@ const IdSchema = z.object({ id: z.union([z.string(), z.number()]) })
 
 // This used to check session.isAdmin, a claim signToken never issues, so every
 // caller was rejected. Use the same guard the rest of /api/admin/* uses.
-async function requireAdmin() {
+async function requireAdminRead() {
   return (await adminGuard() || await sectionGuard('projects'))
+}
+async function requireAdminWrite() {
+  return (await adminGuard() || await sectionWriteGuard('projects'))
 }
 
 async function ensureTable() {
@@ -105,14 +108,14 @@ async function ensureTable() {
 }
 
 export async function GET() {
-  if (!await requireAdmin()) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  if (!await requireAdminRead()) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   await ensureTable()
   const rows = await sql`SELECT * FROM donation_projects ORDER BY created_at DESC`
   return NextResponse.json({ projects: rows })
 }
 
 export async function POST(req: NextRequest) {
-  const session = await requireAdmin()
+  const session = await requireAdminWrite()
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   await ensureTable()
   const { data: body, error } = await parseBody(req, ProjectCreateSchema)
@@ -150,7 +153,7 @@ export async function POST(req: NextRequest) {
 }
 
 export async function PUT(req: NextRequest) {
-  const session = await requireAdmin()
+  const session = await requireAdminWrite()
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   const { data: body, error } = await parseBody(req, ProjectUpdateSchema)
   if (error) return error
@@ -197,7 +200,7 @@ export async function PUT(req: NextRequest) {
 }
 
 export async function DELETE(req: NextRequest) {
-  const session = await requireAdmin()
+  const session = await requireAdminWrite()
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   const { data, error } = await parseBody(req, IdSchema)
   if (error) return error

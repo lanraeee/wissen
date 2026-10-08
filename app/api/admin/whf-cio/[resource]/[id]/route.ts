@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { sectionGuard } from '@/lib/admin-guard'
+import { sectionWriteGuard } from '@/lib/admin-guard'
 import { logActivity } from '@/lib/audit-log'
 import { log } from '@/lib/logger'
 import { getResource, parseBody, updateRow, deleteRow, dbErrorResponse, UUID_RE } from '@/lib/whf-cio'
@@ -10,7 +10,7 @@ type Ctx = { params: Promise<{ resource: string; id: string }> }
 // admits and why the two keys below get translated.
 const SECTION_KEY_FOR_RESOURCE: Record<string, string> = { declarations: 'conflicts', fixed_costs: 'costs' }
 function guard(resource: string) {
-  return sectionGuard(`whf_cio.${SECTION_KEY_FOR_RESOURCE[resource] ?? resource}`)
+  return sectionWriteGuard(`whf_cio.${SECTION_KEY_FOR_RESOURCE[resource] ?? resource}`)
 }
 
 export async function PUT(request: Request, { params }: Ctx) {

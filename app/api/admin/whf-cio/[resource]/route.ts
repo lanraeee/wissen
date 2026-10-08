@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { sectionGuard } from '@/lib/admin-guard'
+import { sectionGuard, sectionWriteGuard } from '@/lib/admin-guard'
 import { logActivity } from '@/lib/audit-log'
 import { log } from '@/lib/logger'
 import { getResource, parseBody, listRows, insertRow, dbErrorResponse } from '@/lib/whf-cio'
@@ -19,13 +19,19 @@ const SECTION_KEY_FOR_RESOURCE: Record<string, string> = { declarations: 'confli
 // see lib/admin-sections.ts). "safeguarding" is never a valid resource here
 // at all: that tab's own routes (app/api/admin/whf-cio/safeguarding/**) are
 // the only path to it, guarded separately by safeguardingGuard().
-function guard(resource: string) {
-  return sectionGuard(`whf_cio.${SECTION_KEY_FOR_RESOURCE[resource] ?? resource}`)
+function keyFor(resource: string) {
+  return `whf_cio.${SECTION_KEY_FOR_RESOURCE[resource] ?? resource}`
+}
+function readGuard(resource: string) {
+  return sectionGuard(keyFor(resource))
+}
+function writeGuard(resource: string) {
+  return sectionWriteGuard(keyFor(resource))
 }
 
 export async function GET(_: Request, { params }: Ctx) {
   const { resource } = await params
-  const session = await guard(resource)
+  const session = await readGuard(resource)
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
 
   const res = getResource(resource)
@@ -42,7 +48,7 @@ export async function GET(_: Request, { params }: Ctx) {
 
 export async function POST(request: Request, { params }: Ctx) {
   const { resource } = await params
-  const session = await guard(resource)
+  const session = await writeGuard(resource)
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
 
   const res = getResource(resource)

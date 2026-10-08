@@ -13,7 +13,7 @@ type Ctx = { params: Promise<{ id: string }> }
 export async function GET(_: Request, { params }: Ctx) {
   const { id } = await params
   if (!UUID_RE.test(id)) return NextResponse.json({ error: 'Not found' }, { status: 404 })
-  const session = await documentByIdGuard(id)
+  const session = await documentByIdGuard(id, 'read')
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
 
   try {

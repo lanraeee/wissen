@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
-import { adminGuard, sectionGuard } from '@/lib/admin-guard'
+import { adminGuard, sectionGuard, sectionWriteGuard } from '@/lib/admin-guard'
 import sql from '@/lib/db'
 import { sendDonationReceipt } from '@/lib/email'
 import { parseBody } from '@/lib/validation'
@@ -13,7 +13,7 @@ const ReferenceSchema = z.object({ reference: z.string().trim().min(1).max(100) 
 // donation identified by its payment reference. Useful if a donor's original
 // receipt email never arrived.
 export async function POST(req: NextRequest) {
-  const session = (await adminGuard() || await sectionGuard('donations'))
+  const session = (await adminGuard() || await sectionWriteGuard('donations'))
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const { data, error } = await parseBody(req, ReferenceSchema)

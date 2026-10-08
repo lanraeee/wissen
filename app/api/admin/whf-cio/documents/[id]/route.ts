@@ -11,7 +11,7 @@ type Ctx = { params: Promise<{ id: string }> }
 export async function PUT(request: Request, { params }: Ctx) {
   const { id } = await params
   if (!UUID_RE.test(id)) return NextResponse.json({ error: 'Not found' }, { status: 404 })
-  const session = await documentByIdGuard(id)
+  const session = await documentByIdGuard(id, 'write')
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
 
   const body = (await request.json().catch(() => null)) as Record<string, unknown> | null
@@ -59,7 +59,7 @@ export async function PUT(request: Request, { params }: Ctx) {
 export async function DELETE(_: Request, { params }: Ctx) {
   const { id } = await params
   if (!UUID_RE.test(id)) return NextResponse.json({ error: 'Not found' }, { status: 404 })
-  const session = await documentByIdGuard(id)
+  const session = await documentByIdGuard(id, 'write')
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
 
   try {

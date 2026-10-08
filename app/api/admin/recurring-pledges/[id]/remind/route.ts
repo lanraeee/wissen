@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
-import { adminGuard, sectionGuard } from '@/lib/admin-guard'
+import { adminGuard, sectionGuard, sectionWriteGuard } from '@/lib/admin-guard'
 import { getRecurringPledgeById, bumpReminder } from '@/lib/recurring-giving'
 import { sendRecurringGivingFollowUp } from '@/lib/email'
 import { parseBody } from '@/lib/validation'
@@ -13,7 +13,7 @@ const BodySchema = z.object({ note: z.string().trim().max(1000).optional() })
 // reminder in app/api/cron/recurring-giving — this one is a deliberate,
 // one-off nudge an admin chooses to send, optionally with a personal note.
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  const session = (await adminGuard() || await sectionGuard('giving'))
+  const session = (await adminGuard() || await sectionWriteGuard('giving'))
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const { id } = await params

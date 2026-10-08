@@ -1,7 +1,7 @@
 ﻿import { getSession, type UserPayload } from '@/lib/auth'
 import type { AdminRole } from '@/lib/admin-access'
 import { isSafeguardingTeam } from '@/lib/safeguarding'
-import { getGrantedSections } from '@/lib/admin-access-grants'
+import { getSectionLevel, type AccessLevel } from '@/lib/admin-access-grants'
 import sql from '@/lib/db'
 
 const PRIMARY_DIRECTOR_EMAIL = process.env.FOUNDER_EMAIL || 'director@wissenhaus.org'
@@ -56,30 +56,46 @@ export async function masterAdminGuard(): Promise<UserPayload | null> {
 
 // Trustee accounts (role 'trustee') start with zero access to everything,
 // and gain it one section at a time, only as the master admin grants it
-// (lib/admin-access-grants.ts, managed from the Access Control page). This
-// is the per-route equivalent of adminGuard()/directorGuard() for that
-// model: pass it the section key the route serves (see lib/admin-sections.ts)
-// and it admits a director, the master admin, or anyone granted that exact
-// section -- never a bare 'admin'/'editor' role, which has no bearing on
-// trustee grants at all.
+// (lib/admin-access-grants.ts, managed from the Access Control page), at
+// one of two levels: 'read' or 'write' (which implies read -- there is no
+// write-only grant). These are the per-route equivalent of
+// adminGuard()/directorGuard() for that model: pass the section key the
+// route serves (see lib/admin-sections.ts). Both admit a director or the
+// master admin unconditionally -- never a bare 'admin'/'editor' role, which
+// has no bearing on trustee grants at all.
+//
+// sectionGuard() is for GET/read routes: a 'read' or 'write' grant both
+// pass. sectionWriteGuard() is for anything that mutates data (POST, PUT,
+// PATCH, DELETE): only a 'write' grant passes -- a trustee granted
+// read-only access to a section can open it and see everything in it, but
+// every save/create/delete call in that section must use this instead.
 export async function sectionGuard(sectionKey: string): Promise<UserPayload | null> {
   const session = await getSession()
   if (!session) return null
   if (isDirector(session.email) || isMasterAdmin(session.email)) return session
-  const granted = await getGrantedSections(session.email)
-  return granted.includes(sectionKey) ? session : null
+  const level = await getSectionLevel(session.email, sectionKey)
+  return level ? session : null
+}
+
+export async function sectionWriteGuard(sectionKey: string): Promise<UserPayload | null> {
+  const session = await getSession()
+  if (!session) return null
+  if (isDirector(session.email) || isMasterAdmin(session.email)) return session
+  const level = await getSectionLevel(session.email, sectionKey)
+  return level === 'write' ? session : null
 }
 
 // Guards the shared WHF-CIO documents API (app/api/admin/whf-cio/documents/**),
 // which every tab's DocumentsPanel calls through with its own linked_type
 // (e.g. "meetings", "trustee_declarations"). A request scoped to one
-// linked_type needs that tab's own grant -- the same one that would let a
-// trustee into the tab itself -- not a separate "documents" permission. An
-// unfiltered request (the standalone Documents tab, which lists everything
-// regardless of tab) stays director/master-admin only: a trustee seeing that
-// could see attachments from tabs they were never granted.
-export async function documentsGuard(linkedType: string | null): Promise<UserPayload | null> {
-  if (linkedType) return sectionGuard(`whf_cio.${linkedType}`)
+// linked_type needs that tab's own grant, at the given level -- the same
+// grant that would let a trustee into the tab itself, not a separate
+// "documents" permission. An unfiltered request (the standalone Documents
+// tab, which lists everything regardless of tab) stays director/master-admin
+// only: a trustee seeing that could see attachments from tabs they were
+// never granted.
+export async function documentsGuard(linkedType: string | null, level: AccessLevel): Promise<UserPayload | null> {
+  if (linkedType) return level === 'write' ? sectionWriteGuard(`whf_cio.${linkedType}`) : sectionGuard(`whf_cio.${linkedType}`)
   const session = await getSession()
   if (!session) return null
   return (isDirector(session.email) || isMasterAdmin(session.email)) ? session : null
@@ -87,11 +103,11 @@ export async function documentsGuard(linkedType: string | null): Promise<UserPay
 
 // Same question as documentsGuard(), for routes that only have the
 // document's id (PUT/DELETE/download/backup) -- looks up its linked_type
-// first, then asks the same question.
-export async function documentByIdGuard(id: string): Promise<UserPayload | null> {
+// first, then asks the same question at the given level.
+export async function documentByIdGuard(id: string, level: AccessLevel): Promise<UserPayload | null> {
   const rows = await sql`SELECT linked_type FROM cio_documents WHERE id = ${id}`
   if (!rows.length) return null
-  return documentsGuard(rows[0].linked_type as string | null)
+  return documentsGuard(rows[0].linked_type as string | null, level)
 }
 
 // The single place a session becomes a role name. Everything that renders
