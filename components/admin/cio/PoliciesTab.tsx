@@ -1,6 +1,7 @@
 'use client'
 
 import DocumentsPanel from './DocumentsPanel'
+import PolicyPreview from './PolicyPreview'
 import RecordsManager, { type Field, type Column } from '../RecordsManager'
 import { fmtDate, daysUntil, humanise, type Row } from '../cio-ui'
 import Badge from './Badge'
@@ -14,6 +15,7 @@ const FIELDS: Field[] = [
   { name: 'status', label: 'Status', type: 'select', required: true, options: STATUSES },
   { name: 'adopted_date', label: 'Adopted on', type: 'date' },
   { name: 'review_date', label: 'Next review', type: 'date' },
+  { name: 'body_text', label: 'Policy text', type: 'textarea', placeholder: 'The policy itself -- use "1. Heading" and "1.1 text" for a formatted preview.' },
   { name: 'notes', label: 'Notes', type: 'textarea' },
 ]
 
@@ -41,7 +43,22 @@ export default function PoliciesTab() {
       addLabel="+ Add policy"
       emptyText="No policies recorded yet."
       fields={FIELDS}
-      renderExtra={row => <DocumentsPanel linkedType="policies" linkedId={row.id} heading="Attached documents" />}
+      renderExtra={row => (
+        <>
+          <div style={{ marginBottom: 20 }}>
+            <PolicyPreview
+              title={String(row.title ?? '')}
+              category={row.category as string | null}
+              status={String(row.status ?? '')}
+              adoptedDate={row.adopted_date}
+              reviewDate={row.review_date}
+              owner={row.owner as string | null}
+              bodyText={String(row.body_text ?? '')}
+            />
+          </div>
+          <DocumentsPanel linkedType="policies" linkedId={row.id} heading="Attached documents" />
+        </>
+      )}
       columns={COLUMNS}
       defaults={{ status: 'draft' }}
     />

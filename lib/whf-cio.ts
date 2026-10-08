@@ -92,6 +92,7 @@ export const RESOURCES = {
       { name: 'status', type: 'text', options: ['draft', 'adopted', 'under_review', 'retired'] },
       { name: 'adopted_date', type: 'date' },
       { name: 'review_date', type: 'date' },
+      { name: 'body_text', type: 'text' },
       { name: 'notes', type: 'text' },
     ],
   },

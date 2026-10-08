@@ -78,10 +78,12 @@ CREATE TABLE IF NOT EXISTS cio_policies (
   status       TEXT NOT NULL DEFAULT 'draft' CHECK (status IN ('draft','adopted','under_review','retired')),
   adopted_date DATE,
   review_date  DATE,
+  body_text    TEXT,
   notes        TEXT,
   created_at   TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at   TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
+ALTER TABLE cio_policies ADD COLUMN IF NOT EXISTS body_text TEXT;
 
 CREATE TABLE IF NOT EXISTS cio_filings (
   id             UUID PRIMARY KEY DEFAULT gen_random_uuid(),

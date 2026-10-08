@@ -716,10 +716,17 @@ CREATE TABLE IF NOT EXISTS cio_policies (
   status       TEXT NOT NULL DEFAULT 'draft' CHECK (status IN ('draft','adopted','under_review','retired')),
   adopted_date DATE,
   review_date  DATE,
+  -- The policy's own text, previewed/printed the same way as Meetings &
+  -- Minutes (components/admin/cio/PolicyPreview.tsx, same parser as
+  -- lib/minutes-render.ts). Distinct from lib/policy-doc-defaults.ts, which
+  -- is unrelated public-site page copy (the published /safeguarding etc.
+  -- pages), not this governance tracking record.
+  body_text    TEXT,
   notes        TEXT,
   created_at   TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at   TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
+ALTER TABLE cio_policies ADD COLUMN IF NOT EXISTS body_text TEXT;
 
 CREATE TABLE IF NOT EXISTS cio_filings (
   id             UUID PRIMARY KEY DEFAULT gen_random_uuid(),
