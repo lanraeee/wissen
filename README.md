@@ -21,6 +21,7 @@ Web platform for Wissen-Haus — a Nigerian NGO bridging the skills gap by equip
 - Donation flow (Stripe + Paystack)
 - Policy research library
 - Automated opportunity refresh via cron
+- Telegram command center for admins (`docs/TELEGRAM_BOT.md`)
 
 ## Getting Started
 
@@ -39,6 +40,9 @@ npm run dev
 | `JWT_SECRET` | Secret for signing JWTs (min 32 chars) |
 | `FOUNDER_EMAIL` | Receives contact/volunteer/partner submissions |
 | `CRON_SECRET` | Authorises the `/api/cron/*` endpoints, called by `.github/workflows/nightly-crons.yml` (opportunities, knowledge) and `ledger-sync.yml` (ledger) |
+| `TELEGRAM_BOT_TOKEN` | Optional. BotFather token for the Telegram command center — see `docs/TELEGRAM_BOT.md` |
+| `TELEGRAM_WEBHOOK_SECRET` | Optional. Checked on every webhook call; must match what `scripts/telegram-setup.mjs set` registered |
+| `TELEGRAM_ADMINS` | Optional. `telegramId:email` pairs linking Telegram accounts to admin accounts |
 
 Additional variables for Stripe, Paystack, and Resend are required for payments and email — see your provider dashboards.
 
