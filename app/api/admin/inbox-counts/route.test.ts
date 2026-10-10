@@ -2,7 +2,8 @@ const sqlMock = vi.fn()
 vi.mock('@/lib/db', () => ({ default: (...args: unknown[]) => sqlMock(...args) }))
 
 const adminGuardMock = vi.fn()
-vi.mock('@/lib/admin-guard', () => ({ adminGuard: () => adminGuardMock() }))
+const trusteeGuardMock = vi.fn()
+vi.mock('@/lib/admin-guard', () => ({ adminGuard: () => adminGuardMock(), trusteeSectionsGuard: () => trusteeGuardMock() }))
 
 import { GET } from './route'
 
@@ -11,6 +12,7 @@ describe('GET /api/admin/inbox-counts', () => {
 
   it('returns 403 when not staff', async () => {
     adminGuardMock.mockResolvedValue(null)
+    trusteeGuardMock.mockResolvedValue(null)
     const res = await GET()
     expect(res.status).toBe(403)
     expect(sqlMock).not.toHaveBeenCalled()

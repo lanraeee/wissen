@@ -36,7 +36,7 @@ function tierFor(target: TargetUser): 'user' | 'editor' | 'privileged' {
 async function guardFor(tier: 'user' | 'editor' | 'privileged') {
   if (tier === 'privileged') return directorGuard()
   if (tier === 'editor') return userAdminGuard()
-  return adminGuard()
+  return (await adminGuard() || await sectionGuard('users'))
 }
 
 export async function GET(_: NextRequest, { params }: { params: Promise<{ id: string }> }) {

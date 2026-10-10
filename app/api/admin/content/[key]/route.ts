@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
-import { adminGuard, directorGuard, masterAdminGuard, adminRole } from '@/lib/admin-guard'
+import { adminGuard, directorGuard, masterAdminGuard, adminRole, sectionGuard, sectionWriteGuard } from '@/lib/admin-guard'
 import { ACCESS_GRANTS_KEY } from '@/lib/admin-access-grants-shared'
+import { ACCESS_ROLES_KEY } from '@/lib/admin-access-roles-shared'
 import sql from '@/lib/db'
 import { parseBody } from '@/lib/validation'
 import { writeContent } from '@/lib/content-approvals'
@@ -29,11 +30,26 @@ const DIRECTOR_ONLY_KEYS = new Set(['bank_transfer_details', 'ai_settings'])
 // Who may grant/revoke every other section: the master admin only, not even
 // a director -- same restriction as the AI agent's allow-list, and for the
 // same reason (this key decides who can reach the other sensitive ones).
-const MASTER_ADMIN_ONLY_KEYS = new Set([ACCESS_GRANTS_KEY])
+const MASTER_ADMIN_ONLY_KEYS = new Set([ACCESS_GRANTS_KEY, ACCESS_ROLES_KEY])
 
-function guardFor(key: string) {
+// Which admin section a trustee needs to read or write each key. Staff
+// (admin/editor) are not subject to this -- adminGuard() admits them for every
+// key outside the two restricted sets above -- so it only decides what a
+// trustee's grant covers. Unlisted keys are public page copy, which is the
+// Content section.
+const KEY_SECTION: Record<string, string> = {
+  site_settings: 'settings', contact_details: 'settings', foundation_details: 'settings',
+  donation_settings: 'settings', donation_certificates: 'settings', whatsapp_channel: 'settings',
+  courses: 'courses', partner_scholarships: 'scholarships',
+}
+
+async function guardFor(key: string, level: 'read' | 'write' = 'read') {
   if (MASTER_ADMIN_ONLY_KEYS.has(key)) return masterAdminGuard()
-  return DIRECTOR_ONLY_KEYS.has(key) ? directorGuard() : adminGuard()
+  if (DIRECTOR_ONLY_KEYS.has(key)) return directorGuard()
+  const staff = await adminGuard()
+  if (staff) return staff
+  const section = KEY_SECTION[key] ?? 'content'
+  return level === 'write' ? sectionWriteGuard(section) : sectionGuard(section)
 }
 
 export async function GET(_: NextRequest, { params }: { params: Promise<{ key: string }> }) {
@@ -45,7 +61,7 @@ export async function GET(_: NextRequest, { params }: { params: Promise<{ key: s
 
 export async function PUT(req: NextRequest, { params }: { params: Promise<{ key: string }> }) {
   const { key } = await params
-  const session = await guardFor(key)
+  const session = await guardFor(key, 'write')
   if (!session) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   const { data, error } = await parseBody(req, ContentSchema)
   if (error) return error

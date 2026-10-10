@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
 import { masterAdminGuard } from '@/lib/admin-guard'
-import AccessControlEditor from '@/components/admin/AccessControlEditor'
+import AccessControlTabs from '@/components/admin/AccessControlTabs'
 
 export const metadata: Metadata = { title: 'Access Control · Admin · Wissen-Haus' }
 
@@ -15,10 +15,10 @@ export default async function AccessControlPage() {
       <div className="admin-page-header">
         <h1 className="admin-page-title">Access Control</h1>
         <p className="admin-page-desc">
-          Create trustee logins and grant or revoke which admin sections each one can see. Only the master admin account can reach this page.
+          See everyone who holds permissions and revoke what is not needed, manage trustee logins and their read or write access, and define reusable roles. Only the master admin account can reach this page.
         </p>
       </div>
-      <AccessControlEditor />
+      <AccessControlTabs />
     </>
   )
 }

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
-import { adminGuard, isMasterAdmin } from '@/lib/admin-guard'
+import { masterAdminGuard } from '@/lib/admin-guard'
 import sql from '@/lib/db'
 import { parseBody } from '@/lib/validation'
 import { getAiSettings, AI_SETTINGS_KEY } from '@/lib/ai-settings'
@@ -19,8 +19,8 @@ const GrantSchema = z.object({
 })
 
 export async function POST(req: NextRequest) {
-  const session = await adminGuard()
-  if (!session || !isMasterAdmin(session.email)) {
+  const session = await masterAdminGuard()
+  if (!session) {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   }
 

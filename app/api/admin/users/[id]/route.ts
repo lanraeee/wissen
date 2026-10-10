@@ -68,6 +68,10 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   const callerIsDirector = isDirector(session.email)
   // Only the director may act on the director's own record.
   if (isDirector(target.email) && !callerIsDirector) return forbidden()
+  // A trustee granted write access to Users manages ordinary members only. The
+  // temp-password and reset-email actions on a staff account would otherwise
+  // be a way to sign in as that account and inherit everything it can do.
+  if (session.role === 'trustee' && target.role !== 'user') return forbidden()
 
   if (body.action === 'grant_premium') {
     const expiry = new Date()
@@ -162,6 +166,7 @@ export async function DELETE(_: NextRequest, { params }: { params: Promise<{ id:
   }
 
   const callerIsDirector = isDirector(session.email)
+  if (session.role === 'trustee' && target.role !== 'user') return forbidden()
 
   // Removing a privileged account is the destructive twin of promoting one, so
   // it belongs to the director alone. Without this an admin could delete the

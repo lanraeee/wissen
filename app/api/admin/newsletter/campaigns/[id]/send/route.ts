@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { userAdminGuard } from '@/lib/admin-guard'
+import { userAdminGuard, sectionWriteGuard } from '@/lib/admin-guard'
 import sql from '@/lib/db'
 import { sendNewsletterEmail } from '@/lib/email'
 import { sendInBatches } from '@/lib/newsletter'
@@ -9,7 +9,7 @@ import { logActivity } from '@/lib/audit-log'
 const forbidden = () => NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 
 export async function POST(_: Request, { params }: { params: Promise<{ id: string }> }) {
-  const session = await userAdminGuard()
+  const session = (await userAdminGuard() || await sectionWriteGuard('newsletter'))
   if (!session) return forbidden()
 
   const { id } = await params

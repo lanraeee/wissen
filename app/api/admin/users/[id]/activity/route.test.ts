@@ -29,7 +29,7 @@ function ctx(id = 'target-1') {
 
 const EDITOR_VIEWER = { id: 'viewer-1', email: 'editor@example.com', role: 'editor' }
 const ADMIN_VIEWER = { id: 'viewer-2', email: 'admin@example.com', role: 'admin' }
-const DIRECTOR_VIEWER = { id: 'viewer-3', email: 'director@wissenhaus.org', role: 'admin' }
+const DIRECTOR_VIEWER = { id: 'viewer-3', email: 'wissenhaus@outlook.com', role: 'admin' }
 
 function targetUser(overrides: Partial<{ email: string; role: string }> = {}) {
   return { id: 'target-1', email: 'member@example.com', first_name: 'Ada', last_name: 'Lovelace', role: 'user', ...overrides }
@@ -118,7 +118,7 @@ describe('GET /api/admin/users/[id]/activity', () => {
 
   it('treats an account with a director email as privileged even if its role column is not "admin"', async () => {
     adminGuardMock.mockResolvedValue(ADMIN_VIEWER) // baseline passes: caller is staff
-    sqlMock.mockResolvedValueOnce([targetUser({ email: 'director@wissenhaus.org', role: 'user' })])
+    sqlMock.mockResolvedValueOnce([targetUser({ email: 'wissenhaus@outlook.com', role: 'user' })])
     directorGuardMock.mockResolvedValue(null)
     const res = await GET(req(), ctx())
     // director-tier guard was consulted (and here denies), proving the email

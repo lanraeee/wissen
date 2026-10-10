@@ -1,6 +1,6 @@
 import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
-import { directorGuard } from '@/lib/admin-guard'
+import { directorGuard, isMasterAdmin, sectionGuard, sectionWriteGuard } from '@/lib/admin-guard'
 import sql from '@/lib/db'
 
 export async function GET(
@@ -8,7 +8,7 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await directorGuard()
+    const session = (await directorGuard() || await sectionGuard('whf_cio.trustees') || await sectionGuard('whf_cio.trustee_declarations') || await sectionGuard('whf_cio.conflicts'))
 
     if (!session) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
@@ -23,7 +23,9 @@ export async function GET(
       return NextResponse.json({ error: 'Trustee not found' }, { status: 404 })
     }
 
-    return NextResponse.json(result[0])
+    const full = isMasterAdmin(session.email) || !!(await sectionGuard('whf_cio.trustees'))
+    const { phone: _p, date_of_birth: _d, ...limited } = result[0]
+    return NextResponse.json(full ? result[0] : limited)
   } catch (err) {
     console.error('Trustee GET by ID error:', err)
     return NextResponse.json({ error: 'Database error' }, { status: 500 })
@@ -35,7 +37,7 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await directorGuard()
+    const session = (await directorGuard() || await sectionWriteGuard('whf_cio.trustees') || await sectionWriteGuard('whf_cio.trustee_declarations'))
 
     if (!session) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
@@ -94,7 +96,7 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await directorGuard()
+    const session = (await directorGuard() || await sectionWriteGuard('whf_cio.trustees'))
 
     if (!session) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })

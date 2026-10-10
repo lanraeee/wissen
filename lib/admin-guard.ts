@@ -1,32 +1,63 @@
 ﻿import { getSession, type UserPayload } from '@/lib/auth'
 import type { AdminRole } from '@/lib/admin-access'
 import { isSafeguardingTeam } from '@/lib/safeguarding'
-import { getSectionLevel, type AccessLevel } from '@/lib/admin-access-grants'
+import { getSectionLevel, getGrantedSections, type AccessLevel } from '@/lib/admin-access-grants'
 import sql from '@/lib/db'
 
-const PRIMARY_DIRECTOR_EMAIL = process.env.FOUNDER_EMAIL || 'director@wissenhaus.org'
-
-// List of director emails with full admin access
-const DIRECTOR_EMAILS = [
-  PRIMARY_DIRECTOR_EMAIL,
-  'wissenhaus@outlook.com',
-]
-
-export function isDirector(email?: string) {
-  return email ? DIRECTOR_EMAILS.includes(email) : false
-}
-
-// The Wissen-Haus Ltd (UK) master admin account. Protected from deletion
-// entirely -- including by the other director -- so there is never a path,
-// accidental or otherwise, to delete the organisation's own top-level account.
+// The Wissen-Haus Ltd (UK) master admin account: the one account with total
+// control, and the only director. Protected from deletion entirely so there is
+// never a path, accidental or otherwise, to delete the organisation's own
+// top-level account.
 export const MASTER_ADMIN_EMAIL = 'wissenhaus@outlook.com'
 
+// Accounts that must never hold any admin access, whatever their stored role
+// or grants say. director@wissenhaus.org used to be a second director; the
+// master admin withdrew that. Enforced here (not just by demoting the row)
+// so a leftover 'admin' role or grant can never bring it back.
+const BLOCKED_ADMIN_EMAILS = ['director@wissenhaus.org']
+
+function norm(email?: string) {
+  return email?.trim().toLowerCase() ?? ''
+}
+
+export function isBlockedAdmin(email?: string) {
+  return BLOCKED_ADMIN_EMAILS.includes(norm(email))
+}
+
 export function isMasterAdmin(email?: string) {
-  return email === MASTER_ADMIN_EMAIL
+  return norm(email) === MASTER_ADMIN_EMAIL
+}
+
+// "Director" and "master admin" are now the same single account; the name
+// stays because every director-only guard and UI branch keys off it.
+export function isDirector(email?: string) {
+  return isMasterAdmin(email)
+}
+
+const PRIVILEGED_ROLES = new Set(['admin', 'editor', 'trustee'])
+
+// The session cookie is a 30-day JWT carrying the role it was issued with, so
+// demoting or deleting an account would otherwise change nothing until that
+// token expired. For privileged roles the role is re-read from the database on
+// every admin request; admin traffic is low, and ordinary members never pay
+// for this. A failed lookup refuses rather than trusting a possibly-revoked
+// token.
+async function getLiveSession(): Promise<UserPayload | null> {
+  const session = await getSession()
+  if (!session) return null
+  if (isBlockedAdmin(session.email)) return null
+  if (isMasterAdmin(session.email) || !session.role || !PRIVILEGED_ROLES.has(session.role)) return session
+  try {
+    const rows = await sql`SELECT role FROM users WHERE id = ${session.id}`
+    if (!rows.length) return null
+    return { ...session, role: rows[0].role as string }
+  } catch {
+    return null
+  }
 }
 
 export async function adminGuard(): Promise<UserPayload | null> {
-  const session = await getSession()
+  const session = await getLiveSession()
   if (!session) return null
   const ok = isDirector(session.email) || session.role === 'admin' || session.role === 'editor'
   return ok ? session : null
@@ -36,20 +67,20 @@ export async function adminGuard(): Promise<UserPayload | null> {
 // adminGuard() admits: editors are content contributors, and user records carry
 // both PII and the email address that isDirector() derives identity from.
 export async function userAdminGuard(): Promise<UserPayload | null> {
-  const session = await getSession()
+  const session = await getLiveSession()
   if (!session) return null
   const ok = isDirector(session.email) || session.role === 'admin'
   return ok ? session : null
 }
 
 export async function directorGuard(): Promise<UserPayload | null> {
-  const session = await getSession()
+  const session = await getLiveSession()
   if (!session) return null
   return isDirector(session.email) ? session : null
 }
 
 export async function masterAdminGuard(): Promise<UserPayload | null> {
-  const session = await getSession()
+  const session = await getLiveSession()
   if (!session) return null
   return isMasterAdmin(session.email) ? session : null
 }
@@ -60,9 +91,11 @@ export async function masterAdminGuard(): Promise<UserPayload | null> {
 // one of two levels: 'read' or 'write' (which implies read -- there is no
 // write-only grant). These are the per-route equivalent of
 // adminGuard()/directorGuard() for that model: pass the section key the
-// route serves (see lib/admin-sections.ts). Both admit a director or the
-// master admin unconditionally -- never a bare 'admin'/'editor' role, which
-// has no bearing on trustee grants at all.
+// route serves (see lib/admin-sections.ts). Both admit the master admin
+// unconditionally and otherwise only a live 'trustee' account holding the
+// grant -- never a bare 'admin'/'editor' role (which has no bearing on trustee
+// grants, and which the nav would not show the section to either), and never
+// a demoted account whose grants merely haven't been cleaned up yet.
 //
 // sectionGuard() is for GET/read routes: a 'read' or 'write' grant both
 // pass. sectionWriteGuard() is for anything that mutates data (POST, PUT,
@@ -70,19 +103,31 @@ export async function masterAdminGuard(): Promise<UserPayload | null> {
 // read-only access to a section can open it and see everything in it, but
 // every save/create/delete call in that section must use this instead.
 export async function sectionGuard(sectionKey: string): Promise<UserPayload | null> {
-  const session = await getSession()
+  const session = await getLiveSession()
   if (!session) return null
-  if (isDirector(session.email) || isMasterAdmin(session.email)) return session
+  if (isMasterAdmin(session.email)) return session
+  if (session.role !== 'trustee') return null
   const level = await getSectionLevel(session.email, sectionKey)
   return level ? session : null
 }
 
 export async function sectionWriteGuard(sectionKey: string): Promise<UserPayload | null> {
-  const session = await getSession()
+  const session = await getLiveSession()
   if (!session) return null
-  if (isDirector(session.email) || isMasterAdmin(session.email)) return session
+  if (isMasterAdmin(session.email)) return session
+  if (session.role !== 'trustee') return null
   const level = await getSectionLevel(session.email, sectionKey)
   return level === 'write' ? session : null
+}
+
+// For read-only aggregate endpoints (nav badges) that serve several sections
+// at once: returns the live trustee session plus every section key it holds,
+// so the handler can include only the parts that account may see.
+export async function trusteeSectionsGuard(): Promise<{ session: UserPayload; sections: string[] } | null> {
+  const session = await getLiveSession()
+  if (!session || session.role !== 'trustee') return null
+  const sections = await getGrantedSections(session.email)
+  return sections.length ? { session, sections } : null
 }
 
 // Guards the shared WHF-CIO documents API (app/api/admin/whf-cio/documents/**),
@@ -96,7 +141,7 @@ export async function sectionWriteGuard(sectionKey: string): Promise<UserPayload
 // never granted.
 export async function documentsGuard(linkedType: string | null, level: AccessLevel): Promise<UserPayload | null> {
   if (linkedType) return level === 'write' ? sectionWriteGuard(`whf_cio.${linkedType}`) : sectionGuard(`whf_cio.${linkedType}`)
-  const session = await getSession()
+  const session = await getLiveSession()
   if (!session) return null
   return (isDirector(session.email) || isMasterAdmin(session.email)) ? session : null
 }
@@ -116,7 +161,7 @@ export async function documentByIdGuard(id: string, level: AccessLevel): Promise
 // email comparison of its own, which is how app/admin/layout.tsx and the cron
 // route ended up disagreeing with isDirector() about wissenhaus@outlook.com.
 export async function adminRole(): Promise<AdminRole | null> {
-  const session = await getSession()
+  const session = await getLiveSession()
   if (!session) return null
   if (isDirector(session.email)) return 'director'
   if (session.role === 'admin') return 'admin'
@@ -136,7 +181,7 @@ export async function canAccessSafeguarding(email?: string): Promise<boolean> {
 }
 
 export async function safeguardingGuard(): Promise<UserPayload | null> {
-  const session = await getSession()
+  const session = await getLiveSession()
   if (!session) return null
   return (await canAccessSafeguarding(session.email)) ? session : null
 }

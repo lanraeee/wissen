@@ -20,7 +20,7 @@ describe('GET /api/admin/activity', () => {
   })
 
   it('a director sees the unfiltered feed, minus the master admin', async () => {
-    adminGuardMock.mockResolvedValue({ id: 'dir-1', email: 'director@wissenhaus.org', role: 'admin' })
+    adminGuardMock.mockResolvedValue({ id: 'dir-1', email: 'wissenhaus@outlook.com', role: 'admin' })
     sqlMock.mockResolvedValueOnce([{ action: 'x' }])
     const res = await GET()
     const body = await res.json()

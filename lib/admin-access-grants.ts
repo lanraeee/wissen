@@ -1,6 +1,8 @@
 import { getSiteContent } from '@/lib/site-content'
 import { log } from '@/lib/logger'
 import { ACCESS_GRANTS_KEY, ACCESS_GRANTS_DEFAULTS, coerceAccessGrants, type AccessGrants, type AccessLevel } from './admin-access-grants-shared'
+import { effectiveLevels } from './admin-access-roles-shared'
+import { getAccessRoles } from './admin-access-roles'
 
 export { ACCESS_GRANTS_KEY }
 export type { AccessLevel }
@@ -20,16 +22,19 @@ export async function getAccessGrants(): Promise<AccessGrants> {
   }
 }
 
-/** Every section key this email has any level of access to (read or write) -- for nav/path visibility, which doesn't distinguish levels. */
-export async function getGrantedSections(email: string | undefined): Promise<string[]> {
-  if (!email) return []
-  const { grants } = await getAccessGrants()
-  return Object.keys(grants[email.trim().toLowerCase()] ?? {})
+async function levelsFor(email: string): Promise<Record<string, { level: AccessLevel }>> {
+  const [grants, roles] = await Promise.all([getAccessGrants(), getAccessRoles()])
+  return effectiveLevels(email, grants, roles)
 }
 
-/** This email's access level for one section, or null if ungranted. */
+/** Every section key this email has any level of access to (direct or via an assigned role) -- for nav/path visibility, which doesn't distinguish levels. */
+export async function getGrantedSections(email: string | undefined): Promise<string[]> {
+  if (!email) return []
+  return Object.keys(await levelsFor(email))
+}
+
+/** This email's effective access level for one section, or null if ungranted. */
 export async function getSectionLevel(email: string | undefined, sectionKey: string): Promise<AccessLevel | null> {
   if (!email) return null
-  const { grants } = await getAccessGrants()
-  return grants[email.trim().toLowerCase()]?.[sectionKey] ?? null
+  return (await levelsFor(email))[sectionKey]?.level ?? null
 }

@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { adminGuard } from '@/lib/admin-guard'
+import { adminGuard, trusteeSectionsGuard } from '@/lib/admin-guard'
 import sql from '@/lib/db'
 
 // Pending-count-per-resource, used to badge each dedicated admin nav item so
@@ -7,7 +7,11 @@ import sql from '@/lib/db'
 // have no pending concept (a completed ledger, not a triage queue) so
 // they're not counted here.
 export async function GET() {
-  if (!await adminGuard()) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+  const staff = await adminGuard()
+  const trustee = staff ? null : await trusteeSectionsGuard()
+  if (!staff && !trustee) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+  // A trustee is only told about the queues for sections they hold.
+  const may = (section: string) => !trustee || trustee.sections.includes(section)
   const [contact, volunteer, partner, bankTransfer, scholarship, contentApproval, support, kbPending] = await Promise.all([
     sql`SELECT COUNT(*)::int AS c FROM contact_messages WHERE status = 'pending'`,
     sql`SELECT COUNT(*)::int AS c FROM volunteer_applications WHERE status = 'pending'`,
@@ -23,13 +27,13 @@ export async function GET() {
     sql`SELECT COUNT(*)::int AS c FROM kb_entries WHERE status = 'pending'`,
   ])
   return NextResponse.json({
-    contact: contact[0].c as number,
-    volunteer: volunteer[0].c as number,
-    partner: partner[0].c as number,
-    bank_transfer: bankTransfer[0].c as number,
-    scholarship: scholarship[0].c as number,
-    content_approval: contentApproval[0].c as number,
-    support: support[0].c as number,
-    kb_pending: kbPending[0].c as number,
+    contact: may('contact') ? contact[0].c as number : 0,
+    volunteer: may('volunteer') ? volunteer[0].c as number : 0,
+    partner: may('partner') ? partner[0].c as number : 0,
+    bank_transfer: may('bank_transfers') ? bankTransfer[0].c as number : 0,
+    scholarship: may('scholarships') ? scholarship[0].c as number : 0,
+    content_approval: may('content_approvals') ? contentApproval[0].c as number : 0,
+    support: may('support') ? support[0].c as number : 0,
+    kb_pending: may('knowledge') ? kbPending[0].c as number : 0,
   })
 }
