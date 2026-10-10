@@ -1,0 +1,49 @@
+# Six-hourly summary for the Telegram command center. Sends each linked admin
+# a counts-only digest (see lib/telegram-digest.ts). Runs against the same
+# host as the nightly crons (vars.APP_URL) and uses the same CRON_SECRET, so
+# it needs no new configuration.
+#
+# Needs:
+#   vars.APP_URL        - repository variable, e.g. https://www.wissenhaus.org
+#   secrets.CRON_SECRET - must equal the CRON_SECRET env var on the host.
+#
+# Schedule is UTC. GitHub may start a scheduled run several minutes late.
+
+name: Telegram digest
+
+on:
+  schedule:
+    - cron: '23 */6 * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: telegram-digest
+  cancel-in-progress: false
+
+jobs:
+  send:
+    runs-on: ubuntu-latest
+    env:
+      APP_URL: ${{ vars.APP_URL }}
+      CRON_SECRET: ${{ secrets.CRON_SECRET }}
+    steps:
+      # A missing variable or secret expands to '' and would produce a
+      # confusing curl error. Fail with the name of what is missing instead.
+      - name: Verify configuration
+        run: |
+          missing=0
+          if [ -z "$APP_URL" ]; then
+            echo "::error::Repository variable APP_URL is missing or empty."
+            missing=1
+          fi
+          if [ -z "$CRON_SECRET" ]; then
+            echo "::error::Repository secret CRON_SECRET is missing or empty."
+            missing=1
+          fi
+          exit $missing
+
+      - name: Send digest
+        run: |
+          curl -fsS -X POST --max-time 120 \
+            -H "Authorization: Bearer $CRON_SECRET" \
+            "${APP_URL%/}/api/cron/telegram-digest"
