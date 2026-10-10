@@ -11,7 +11,7 @@ const getAiSettingsMock = vi.fn()
 vi.mock('@/lib/ai-settings', () => ({ getAiSettings: (...a: unknown[]) => getAiSettingsMock(...a) }))
 vi.mock('@/lib/ai-provider', () => ({ resolveProvider: () => null }))
 
-import { buildDigest, sendDigest } from './telegram-digest'
+import { buildDigest, sendDigest, OUTAGE_NOTICE } from './telegram-digest'
 
 describe('buildDigest', () => {
   beforeEach(() => {
@@ -50,7 +50,7 @@ describe('sendDigest', () => {
   })
 
   it('sends nothing when no admins are linked', async () => {
-    expect(await sendDigest()).toEqual({ recipients: 0, skipped: 0 })
+    expect(await sendDigest()).toEqual({ recipients: 0, skipped: 0, degraded: 0 })
     expect(sendMessageMock).not.toHaveBeenCalled()
   })
 
@@ -59,8 +59,19 @@ describe('sendDigest', () => {
     resolveActorMock
       .mockResolvedValueOnce({ id: 'u1', email: 'admin@x.com', role: 'admin', telegramId: 111 })
       .mockResolvedValueOnce(null)
-    expect(await sendDigest()).toEqual({ recipients: 1, skipped: 1 })
+    expect(await sendDigest()).toEqual({ recipients: 1, skipped: 1, degraded: 0 })
     expect(sendMessageMock).toHaveBeenCalledTimes(1)
     expect(sendMessageMock.mock.calls[0][0]).toBe(111)
+  })
+
+  it('still sends an outage notice with no figures when admin lookup fails', async () => {
+    process.env.TELEGRAM_ADMINS = '111:admin@x.com'
+    resolveActorMock.mockRejectedValueOnce(new Error('connection refused'))
+    expect(await sendDigest()).toEqual({ recipients: 0, skipped: 0, degraded: 1 })
+    expect(sendMessageMock).toHaveBeenCalledTimes(1)
+    const [id, text] = sendMessageMock.mock.calls[0]
+    expect(id).toBe(111)
+    expect(text).toBe(OUTAGE_NOTICE)
+    expect(text).not.toMatch(/Sign-ups|Waiting|Opportunities/)
   })
 })
