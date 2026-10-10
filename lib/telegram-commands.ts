@@ -2,16 +2,20 @@ import { NextRequest } from 'next/server'
 import sql from '@/lib/db'
 import { log } from '@/lib/logger'
 import { logActivity, type Actor } from '@/lib/audit-log'
-import { isBlockedAdmin, isMasterAdmin } from '@/lib/admin-guard'
+import { isBlockedAdmin, isDirector, isMasterAdmin } from '@/lib/admin-guard'
 import { canUseAdminAgent, getAiSettings } from '@/lib/ai-settings'
 import { resolveProvider } from '@/lib/ai-provider'
 import { askAdminAgent } from '@/lib/admin-agent'
 import { sendMessage, sendTyping } from '@/lib/telegram'
 import { CRON_JOBS, escapeHtml, isCronJob, type CronJob } from '@/lib/telegram-shared'
 
-// Same set lib/admin-guard.ts treats as staff. Kept local because that one
-// is not exported, and widening its surface for this is not worth it.
-const PRIVILEGED_ROLES = new Set(['admin', 'editor', 'trustee'])
+// The roles adminGuard() in lib/admin-guard.ts admits as general staff. The
+// command center is the Telegram equivalent of that guard, so it admits
+// exactly the same set. Trustees are deliberately left out: in the web app a
+// trustee starts with zero access and sees a section only once the master
+// admin grants it (sectionGuard), so they must not get blanket access to
+// submissions or stats here.
+const STAFF_ROLES = new Set(['admin', 'editor'])
 
 export interface TelegramActor extends Actor {
   telegramId: number
@@ -28,7 +32,7 @@ export async function resolveActor(telegramId: number, email: string): Promise<T
     { id: string; email: string; role: string }[]
   const user = rows[0]
   if (!user) return null
-  if (!isMasterAdmin(user.email) && !PRIVILEGED_ROLES.has(user.role)) return null
+  if (!isMasterAdmin(user.email) && !STAFF_ROLES.has(user.role)) return null
   return { id: user.id, email: user.email, role: user.role, telegramId }
 }
 
@@ -169,6 +173,12 @@ async function loadCronHandler(job: CronJob): Promise<(req: NextRequest) => Prom
 }
 
 export async function cmdRun(chatId: number, actor: TelegramActor, args: string): Promise<void> {
+  // Same rule as the admin panel's job runner (app/api/admin/cron uses
+  // directorGuard): running jobs on demand is director-only.
+  if (!isDirector(actor.email)) {
+    await sendMessage(chatId, 'Only the director account can run jobs on demand.')
+    return
+  }
   const job = args.split(/\s+/)[0]?.toLowerCase() ?? ''
   if (!isCronJob(job)) {
     await sendMessage(chatId, `Usage: /run &lt;job&gt;\nJobs: ${CRON_JOBS.join(', ')}`, { html: true })

@@ -10,7 +10,7 @@ A Telegram bot that lets linked admins check on the platform and run jobs from t
 | `/submissions` | The 10 newest pending submissions — **name and subject only**; bodies and email addresses stay in the admin panel |
 | `/opps` | Opportunity count by type, and when listings last refreshed |
 | `/health` | Database ping, which host answered (Vercel or Azure), build commit, AI credential, whether `CRON_SECRET` is set |
-| `/run <job>` | Runs `opportunities`, `knowledge`, `ledger` or `recurring-giving` now and reports the result. Logged to `admin_activity_log` as `telegram.run_job` |
+| `/run <job>` | **Director only**, matching the admin panel's job runner. Runs `opportunities`, `knowledge`, `ledger` or `recurring-giving` now and reports the result. Logged to `admin_activity_log` as `telegram.run_job` |
 | `/ask <question>` | Asks the existing read-only database agent (`lib/admin-agent.ts`). Same access rule, monthly AI cap and `ai_agent_runs` audit as the admin panel; the actor is recorded as `<email> (telegram)` |
 | `/whoami` | Your Telegram ID and the account it is linked to |
 | `/help` | The list |
@@ -19,8 +19,8 @@ A Telegram bot that lets linked admins check on the platform and run jobs from t
 
 1. **Webhook secret.** Every request must carry `X-Telegram-Bot-Api-Secret-Token` equal to `TELEGRAM_WEBHOOK_SECRET`, compared in constant time. Anything else gets 401.
 2. **Allowlist.** Only Telegram user IDs in `TELEGRAM_ADMINS` are answered. Everyone else gets no reply at all; the attempt is logged with their ID (`ignored command from unlinked account`).
-3. **Live role check.** Each Telegram ID is linked to a website account by email. On every command that account is re-read from `users`: it must exist, not be blocked, and be the master admin or hold `admin`, `editor` or `trustee`. Demoting someone in the admin panel removes their bot access on their next message.
-4. **`/ask` has its own gate.** It requires `canUseAdminAgent()` — the master admin, or someone granted the agent under AI settings.
+3. **Live role check.** Each Telegram ID is linked to a website account by email. On every command that account is re-read from `users`: it must exist, not be blocked, and be the master admin or hold `admin` or `editor` — the same roles `adminGuard()` admits. Trustees are not admitted: in the web app they only see sections the master admin grants. Demoting someone in the admin panel removes their bot access on their next message.
+4. **`/run` and `/ask` have their own gates.** `/run` is director-only, like `app/api/admin/cron`. It requires `canUseAdminAgent()` — the master admin, or someone granted the agent under AI settings.
 5. **Private chats only.** Commands sent in a group are ignored, so replies are never shown to people who were not meant to see them.
 6. **Replays.** Recent `update_id`s are remembered per instance so a Telegram retry does not run a job twice.
 
