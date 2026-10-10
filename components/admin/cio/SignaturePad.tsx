@@ -37,8 +37,8 @@ export default function SignaturePad({ resource, recordId, existing, onSaved }: 
     setRedraw(false)
   }
 
-  async function onDraw(dataUrl: string, saveName: string | null) {
-    if (saveName) await lib.save(saveName, dataUrl)
+  async function onDraw(dataUrl: string) {
+    await lib.save(dataUrl)
     await persist(dataUrl)
   }
 

@@ -4,6 +4,9 @@ import { useCallback, useEffect, useState } from 'react'
 
 export interface SavedSignatureItem { id: string; name: string; image_data: string; owner_email: string }
 
+const defaultName = () =>
+  `Signature ${new Date().toLocaleString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}`
+
 export function useSavedSignatures() {
   const [items, setItems] = useState<SavedSignatureItem[]>([])
   const [loaded, setLoaded] = useState(false)
@@ -19,7 +22,7 @@ export function useSavedSignatures() {
 
   useEffect(() => { void reload() }, [reload])
 
-  const save = useCallback(async (name: string, imageData: string) => {
+  const save = useCallback(async (imageData: string, name = defaultName()) => {
     const res = await fetch('/api/admin/signatures', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

@@ -32,10 +32,9 @@ export default function SignatureSelect({ value, onChange }: { value?: string; o
       {drawing && (
         <div style={{ marginTop: 12 }}>
           <SignatureCanvas
-            alwaysSave
             submitLabel="Save & use"
-            onDone={async (dataUrl, name) => {
-              const item = await lib.save(name ?? 'Signature', dataUrl)
+            onDone={async dataUrl => {
+              const item = await lib.save(dataUrl)
               onChange(item.id)
               setDrawing(false)
             }}

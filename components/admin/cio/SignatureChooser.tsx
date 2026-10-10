@@ -25,8 +25,8 @@ export default function SignatureChooser({ value, onChange, label = 'Apply a sig
   const [error, setError] = useState('')
   const selected = lib.items.find(i => i.image_data === value.image)
 
-  async function onDraw(dataUrl: string, saveName: string | null) {
-    if (saveName) await lib.save(saveName, dataUrl)
+  async function onDraw(dataUrl: string) {
+    await lib.save(dataUrl)
     onChange({ ...value, image: dataUrl })
     setDrawing(false)
   }
@@ -59,7 +59,7 @@ export default function SignatureChooser({ value, onChange, label = 'Apply a sig
           style={field}
         >
           <option value="">No signature (blank line)</option>
-          {value.image && !selected && <option value="__drawn">Drawn just now (not saved)</option>}
+          {value.image && !selected && <option value="__drawn">Signature just drawn</option>}
           {lib.items.map(i => <option key={i.id} value={i.id}>{i.name}</option>)}
         </select>
         <label style={{ fontSize: '.8rem', display: 'flex', gap: 6, alignItems: 'center' }}>

@@ -1,4 +1,5 @@
 import sql from './db'
+import { MASTER_ADMIN_EMAIL } from './admin-guard'
 
 export const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 export const MAX_SIGNATURE_BYTES = 300_000
@@ -36,7 +37,29 @@ export async function ensureSignaturesTable() {
       created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
     )
   `
+  await backfillDeclarationSignatures()
   ensured = true
+}
+
+// Signatures already drawn on trustee declarations before the library existed
+// become reusable: copied once per image, owned by the trustee's email (or the
+// master admin when the register has none). Best-effort; the declarations
+// table may not exist on a database that never ran the WHF-CIO migration.
+async function backfillDeclarationSignatures() {
+  try {
+    await sql`
+      INSERT INTO saved_signatures (name, image_data, owner_email)
+      SELECT t.full_name || ' (declaration)', d.signature_data,
+             lower(COALESCE(NULLIF(trim(t.email), ''), ${MASTER_ADMIN_EMAIL}))
+      FROM cio_trustee_declarations d
+      JOIN trustee_register t ON t.id = d.trustee_id
+      WHERE d.signature_data LIKE 'data:image/png;base64,%'
+        AND length(d.signature_data) <= ${MAX_SIGNATURE_BYTES}
+        AND NOT EXISTS (SELECT 1 FROM saved_signatures s WHERE s.image_data = d.signature_data)
+    `
+  } catch {
+    // table missing or not yet migrated: nothing to import
+  }
 }
 
 export async function listSignatures(ownerEmail: string | null): Promise<SavedSignature[]> {
