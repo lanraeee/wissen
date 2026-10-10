@@ -1,9 +1,10 @@
 'use client'
 
-import { Fragment, useEffect, useMemo, useRef } from 'react'
+import { Fragment, useEffect, useMemo, useRef, useState } from 'react'
 import { parseMinutes, RESOLVED_RE, OPEN_RE, type MinutesBlock } from '@/lib/minutes-render'
 import type { Run } from '@/lib/constitution-render'
 import { btn, fmtDate, humanise } from '../cio-ui'
+import SignatureChooser, { NO_SIGNATURE, type SignatureChoice } from './SignatureChooser'
 import { MINUTES_CSS, MINUTES_PRINT_CSS, FONTS_URL } from './minutes-css'
 
 interface Props {
@@ -61,6 +62,7 @@ function BlockView({ b }: { b: MinutesBlock }) {
 export default function MinutesPreview({ title, meetingDate, meetingType, status, attendees, minutes, orgName = 'Wissen Haus Foundation' }: Props) {
   const blocks = useMemo(() => parseMinutes(minutes), [minutes])
   const sheetRef = useRef<HTMLDivElement>(null)
+  const [sig, setSig] = useState<SignatureChoice>(NO_SIGNATURE)
 
   useEffect(() => {
     if (!document.getElementById('mn-fonts')) {
@@ -105,6 +107,8 @@ export default function MinutesPreview({ title, meetingDate, meetingType, status
         <button type="button" style={btn('#1a3c2e')} onClick={print}>Print / Save as PDF</button>
       </div>
 
+      <SignatureChooser value={sig} onChange={setSig} label="Apply the chair's saved signature and date when printing" />
+
       <div className="mn-stage">
         <div className="mn-sheet" ref={sheetRef}>
           <div className="mn-head">
@@ -119,8 +123,16 @@ export default function MinutesPreview({ title, meetingDate, meetingType, status
           {blocks.map((b, i) => <BlockView key={i} b={b} />)}
 
           <div className="mn-sigrow">
-            <div className="mn-sigblock"><div className="mn-sigline" /><div className="mn-sigcap">Chair&apos;s signature</div></div>
-            <div className="mn-sigblock"><div className="mn-sigline" /><div className="mn-sigcap">Date</div></div>
+            <div className="mn-sigblock">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              {sig.image ? <img className="mn-sig-img" src={sig.image} alt="Chair's signature" /> : <div className="mn-sigline" />}
+              <div className="mn-sigcap">Chair&apos;s signature</div>
+            </div>
+            <div className="mn-sigblock">
+              {sig.date ? <div className="mn-sigdate">{fmtDate(sig.date as never)}</div> : null}
+              <div className="mn-sigline" style={sig.date ? { marginTop: 0 } : undefined} />
+              <div className="mn-sigcap">Date</div>
+            </div>
           </div>
         </div>
       </div>

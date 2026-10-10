@@ -878,3 +878,15 @@ CREATE TABLE IF NOT EXISTS cio_safeguarding_team (
   added_by   TEXT,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
+
+-- Reusable drawn signatures (PNG data URLs) that can be applied to printed
+-- documents (constitution, minutes, declarations, certificates). Private to
+-- the owner (master admin sees all). Also created lazily at runtime by
+-- lib/signatures.ts so a missed migration cannot break the feature.
+CREATE TABLE IF NOT EXISTS saved_signatures (
+  id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  name        TEXT NOT NULL,
+  image_data  TEXT NOT NULL,
+  owner_email TEXT NOT NULL,
+  created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);

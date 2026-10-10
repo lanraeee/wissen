@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import type { FoundationDetails } from '@/app/donate/receipt/[certId]/page'
+import SignatureSelect from './SignatureSelect'
 
 const DEFAULT: FoundationDetails = {
   legal_name: 'Wissen-Haus Empowerment Foundation',
@@ -114,6 +115,12 @@ export default function FoundationDetailsEditor() {
             />
           </div>
         ))}
+        <div style={{ gridColumn: '1 / -1' }}>
+          <label style={{ display: 'block', fontSize: '.7rem', fontWeight: 700, textTransform: 'uppercase', color: '#8a9a8f', letterSpacing: '.06em', marginBottom: 4 }}>
+            Signatory signature image — optional
+          </label>
+          <SignatureSelect value={details.signature_id} onChange={id => setDetails(d => ({ ...d, signature_id: id || undefined }))} />
+        </div>
       </div>
 
       <div style={{ marginTop: 32, paddingTop: 20, borderTop: '1px solid #e8e4dc' }}>
@@ -135,6 +142,12 @@ export default function FoundationDetailsEditor() {
               />
             </div>
           ))}
+          <div style={{ gridColumn: '1 / -1' }}>
+            <label style={{ display: 'block', fontSize: '.7rem', fontWeight: 700, textTransform: 'uppercase', color: '#8a9a8f', letterSpacing: '.06em', marginBottom: 4 }}>
+              Signatory signature image — optional
+            </label>
+            <SignatureSelect value={details.intl_signature_id} onChange={id => setDetails(d => ({ ...d, intl_signature_id: id || undefined }))} />
+          </div>
         </div>
       </div>
     </div>

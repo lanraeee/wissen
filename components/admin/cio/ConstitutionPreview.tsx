@@ -1,8 +1,9 @@
 'use client'
 
-import { Fragment, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
+import { Fragment, createContext, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { parseConstitution, paginate, type Block, type Piece, type Run } from '@/lib/constitution-render'
 import { btn } from '../cio-ui'
+import SignatureChooser, { NO_SIGNATURE, type SignatureChoice } from './SignatureChooser'
 import { BOOKLET_CSS, PRINT_CSS, FONTS_URL, PAGE_W, PAGE_H, BODY_H, LINE_H } from './booklet-css'
 
 interface Props {
@@ -32,6 +33,24 @@ const Runs = ({ runs }: { runs: Run[] }) => (
   <>{runs.map((r, i) => (r.b ? <strong key={i}>{r.t}</strong> : r.i ? <em key={i}>{r.t}</em> : <Fragment key={i}>{r.t}</Fragment>))}</>
 )
 
+const SigContext = createContext<SignatureChoice>(NO_SIGNATURE)
+
+function SigBlock() {
+  const sig = useContext(SigContext)
+  const date = longDate(sig.date)
+  return (
+    <div className="bk-sigblock">
+      <div className="bk-sigfill">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        {sig.image ? <img src={sig.image} alt="Signature" /> : <span />}
+        {date && <span className="bk-sigdate">{date}</span>}
+      </div>
+      <div className="bk-sigline" />
+      <div className="bk-sigcap">Signature &nbsp;·&nbsp; Date</div>
+    </div>
+  )
+}
+
 function BlockView({ b }: { b: Block }) {
   switch (b.kind) {
     case 'clause':
@@ -54,7 +73,7 @@ function BlockView({ b }: { b: Block }) {
         </table>
       )
     case 'sig':
-      return <div className="bk-sigblock"><div className="bk-sigline" /><div className="bk-sigcap">Signature &nbsp;·&nbsp; Date</div></div>
+      return <SigBlock />
     case 'end':
       return <div className="bk-end">End of Constitution</div>
   }
@@ -85,6 +104,7 @@ export default function ConstitutionPreview({ source, versionLabel, status, adop
   const [scale, setScale] = useState(1)
   const [narrow, setNarrow] = useState(false)
   const [spread, setSpread] = useState(0)
+  const [sig, setSig] = useState<SignatureChoice>(NO_SIGNATURE)
 
   useEffect(() => {
     if (!document.getElementById('bk-fonts')) {
@@ -246,8 +266,11 @@ export default function ConstitutionPreview({ source, versionLabel, status, adop
   }
 
   return (
+    <SigContext.Provider value={sig}>
     <section className="bk-root" lang="en-GB" aria-label="Booklet preview">
       <style>{BOOKLET_CSS}</style>
+
+      <SignatureChooser value={sig} onChange={setSig} label="Apply a saved signature and date to the signature block when printing" />
 
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12, flexWrap: 'wrap', marginBottom: 10 }}>
         <div>
@@ -280,5 +303,6 @@ export default function ConstitutionPreview({ source, versionLabel, status, adop
       </div>
       <div ref={allRef} style={{ display: 'none' }} aria-hidden>{sheets}</div>
     </section>
+    </SigContext.Provider>
   )
 }

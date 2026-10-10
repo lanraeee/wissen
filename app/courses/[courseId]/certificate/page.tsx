@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { getCourse } from '@/lib/courses'
 import { getSession } from '@/lib/auth'
 import sql from '@/lib/db'
+import { getSignatureImage } from '@/lib/signatures'
 import CertShareButtons from '@/components/CertShareButtons'
 import './certificate.css'
 
@@ -76,6 +77,13 @@ export default async function CertificatePage({ params }: Props) {
   const issuedYear = issuedDate.getFullYear()
   const issuedMonth = issuedDate.getMonth() + 1
 
+  // An optional saved signature (Admin > Settings > Foundation details) replaces the typed signatory.
+  const [foundationRow] = await sql`SELECT value FROM site_content WHERE key = 'foundation_details'`
+  const foundation = (foundationRow?.value ?? {}) as { signature_id?: string; signatory_name?: string; signatory_role?: string }
+  const signature = await getSignatureImage(foundation.signature_id)
+  const signatoryName = signature && foundation.signatory_name ? foundation.signatory_name : 'Benz Olagbaye'
+  const signatoryRole = signature && foundation.signatory_role ? foundation.signatory_role : 'Founder & Director'
+
   return (
     <div className="cert-page">
 
@@ -115,9 +123,13 @@ export default async function CertificatePage({ params }: Props) {
 
           {/* Signature */}
           <div className="cert-sig">
-            <div className="cert-sig__name">Benz Olagbaye</div>
+            {signature && (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img className="cert-sig__img" src={signature} alt={`Signature of ${signatoryName}`} />
+            )}
+            <div className="cert-sig__name">{signatoryName}</div>
             <div className="cert-sig__rule" />
-            <div className="cert-sig__title">Founder &amp; Director</div>
+            <div className="cert-sig__title">{signatoryRole}</div>
           </div>
         </div>
 

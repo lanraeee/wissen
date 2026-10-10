@@ -46,7 +46,10 @@ export const BOOKLET_CSS = `
 .bk-table th{font-family:${DISPLAY};text-transform:uppercase;letter-spacing:.1em;font-size:10.5px;text-align:left;color:var(--green);border-top:1.2px solid var(--green);border-bottom:.8px solid var(--green);padding:5px 6px}
 .bk-table td{padding:5px 6px;border-bottom:.6px solid #d8d1bd;vertical-align:top}
 .bk-sigblock{padding-top:14px}
-.bk-sigline{height:1px;background:#4a4a46;width:68%;margin-top:22px}
+.bk-sigfill{height:40px;width:68%;display:flex;justify-content:space-between;align-items:flex-end}
+.bk-sigfill img{max-height:38px;max-width:60%;display:block}
+.bk-sigdate{font-size:12.4px;color:#1d1d1b;padding-bottom:2px}
+.bk-sigline{height:1px;background:#4a4a46;width:68%}
 .bk-sigcap{font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:#6d6a5e;margin-top:3px}
 .bk-end{text-align:center;padding-top:18px;font-family:${DISPLAY};letter-spacing:.3em;text-transform:uppercase;font-size:11px;color:var(--gold);font-weight:700}
 .bk-draft .bk-body::before{content:'DRAFT';position:absolute;left:50%;top:44%;transform:translate(-50%,-50%) rotate(-32deg);font-family:${DISPLAY};font-size:120px;font-weight:700;letter-spacing:.12em;color:rgba(18,53,36,.055);pointer-events:none;z-index:0}

@@ -163,6 +163,16 @@
   margin-bottom: 6px;
 }
 
+/* Drawn ink is dark on white; invert + screen leaves light ink on the dark panel. */
+.cert-sig__img {
+  display: block;
+  margin: 0 auto 4px;
+  max-height: 48px;
+  max-width: 100%;
+  filter: invert(1);
+  mix-blend-mode: screen;
+}
+
 .cert-sig__rule {
   height: 1px;
   background: rgba(184,149,42,0.45);

@@ -111,7 +111,11 @@ export default function TrusteeDeclarationPreview({
                 : <div className="mn-sigline" />}
               <div className="mn-sigcap">Trustee&apos;s signature</div>
             </div>
-            <div className="mn-sigblock"><div className="mn-sigline" /><div className="mn-sigcap">Date</div></div>
+            <div className="mn-sigblock">
+              {signedDate ? <div className="mn-sigdate">{fmtDate(signedDate as never)}</div> : null}
+              <div className="mn-sigline" style={signedDate ? { marginTop: 0 } : undefined} />
+              <div className="mn-sigcap">Date</div>
+            </div>
           </div>
         </div>
       </div>

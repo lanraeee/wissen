@@ -29,6 +29,7 @@ export const MINUTES_CSS = `
 .mn-sigblock{flex:1;min-width:200px}
 .mn-sigline{height:1px;background:#4a4a46;margin-top:28px}
 .mn-sig-img{max-height:64px;max-width:100%;display:block;margin:0 0 -4px}
+.mn-sigdate{min-height:56px;display:flex;align-items:flex-end;padding-bottom:3px;font-size:13px;color:#1d1d1b}
 .mn-sigcap{font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:#6d6a5e;margin-top:4px}
 .mn-takenby{margin-top:18px;font-size:12px;color:#5a564a}
 

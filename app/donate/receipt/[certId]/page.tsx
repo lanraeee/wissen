@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
 import sql from '@/lib/db'
+import { getSignatureImage } from '@/lib/signatures'
 import PrintReceiptButton from '@/components/PrintReceiptButton'
 
 export interface DonationCert {
@@ -26,6 +27,8 @@ export interface FoundationDetails {
   email: string
   signatory_name: string
   signatory_role: string
+  // Saved-signature id (lib/signatures.ts) drawn above the signatory line.
+  signature_id?: string
   // Optional international entity — used for non-Naira donations when filled in.
   // Left blank until a real international entity (e.g. a UK CIC) is registered.
   intl_legal_name?: string
@@ -35,6 +38,7 @@ export interface FoundationDetails {
   intl_email?: string
   intl_signatory_name?: string
   intl_signatory_role?: string
+  intl_signature_id?: string
 }
 
 const DEFAULT_FOUNDATION: FoundationDetails = {
@@ -65,6 +69,7 @@ function resolveIssuingEntity(foundation: FoundationDetails, currency: string): 
     email: foundation.intl_email || foundation.email,
     signatory_name: foundation.intl_signatory_name || foundation.signatory_name,
     signatory_role: foundation.intl_signatory_role || foundation.signatory_role,
+    signature_id: foundation.intl_signature_id || foundation.signature_id,
   }
 }
 
@@ -100,7 +105,8 @@ async function getData(certId: string) {
     ? { ...DEFAULT_FOUNDATION, ...(foundationRow[0].value as Partial<FoundationDetails>) }
     : DEFAULT_FOUNDATION
   const foundation = cert ? resolveIssuingEntity(savedFoundation, cert.currency) : savedFoundation
-  return { cert, foundation }
+  const signature = await getSignatureImage(foundation.signature_id)
+  return { cert, foundation, signature }
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -115,7 +121,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function DonationReceiptPage({ params }: Props) {
   const { certId } = await params
-  const { cert, foundation } = await getData(certId)
+  const { cert, foundation, signature } = await getData(certId)
 
   if (!cert) {
     return (
@@ -306,9 +312,13 @@ export default async function DonationReceiptPage({ params }: Props) {
                 <div style={{ fontSize: '.8rem', color: '#5a5a4a' }}>{foundation.email}</div>
               </div>
               <div style={{ textAlign: 'right', minWidth: 160 }}>
+                {signature && (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={signature} alt={`Signature of ${foundation.signatory_name}`} style={{ display: 'block', marginLeft: 'auto', maxHeight: 56, maxWidth: 200, marginBottom: 2 }} />
+                )}
                 <div style={{
                   fontFamily: 'Georgia, serif', fontStyle: 'italic',
-                  fontSize: '1.3rem', color: '#0F2D1D', lineHeight: 1, marginBottom: 6,
+                  fontSize: signature ? '.95rem' : '1.3rem', color: '#0F2D1D', lineHeight: 1, marginBottom: 6,
                 }}>
                   {foundation.signatory_name}
                 </div>
