@@ -97,23 +97,42 @@ export async function buildDigest(now = new Date()): Promise<string> {
   return lines.join('\n')
 }
 
+// Carries no figures on purpose: when the database cannot be read, neither
+// the admin check nor the counts are available, so the notice only says so.
+export const OUTAGE_NOTICE = [
+  '<b>Wissen-Haus summary: database unreachable</b>',
+  'Counts are withheld because admin access could not be checked. Health details will return with the next summary.',
+].join('\n')
+
 /**
  * Sends the digest to every admin in TELEGRAM_ADMINS who still qualifies.
  * Re-checking each account here means a demoted admin stops receiving the
  * summary on the next run, the same as every other bot command.
  */
-export async function sendDigest(now = new Date()): Promise<{ recipients: number; skipped: number }> {
+export async function sendDigest(now = new Date()): Promise<{ recipients: number; skipped: number; degraded: number }> {
   const admins = parseAdmins(process.env.TELEGRAM_ADMINS)
-  if (admins.size === 0) return { recipients: 0, skipped: 0 }
+  if (admins.size === 0) return { recipients: 0, skipped: 0, degraded: 0 }
 
   const text = await buildDigest(now)
   let recipients = 0
   let skipped = 0
+  let degraded = 0
   for (const [telegramId, email] of admins) {
-    const actor: TelegramActor | null = await resolveActor(telegramId, email).catch(() => null)
+    // Two different outcomes: a null actor means the account no longer
+    // qualifies (skip it). A thrown error means the database could not be
+    // asked, so admin access is unknown. That is the outage case the digest
+    // exists to report, so send a notice with no figures rather than nothing.
+    let actor: TelegramActor | null
+    try {
+      actor = await resolveActor(telegramId, email)
+    } catch {
+      await sendMessage(telegramId, OUTAGE_NOTICE, { html: true })
+      degraded++
+      continue
+    }
     if (!actor) { skipped++; continue }
     await sendMessage(telegramId, text, { html: true })
     recipients++
   }
-  return { recipients, skipped }
+  return { recipients, skipped, degraded }
 }
