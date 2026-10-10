@@ -11,7 +11,7 @@ export type Block =
   | { kind: 'item'; label: string; level: 1 | 2; runs: Run[] }
   | { kind: 'bullet'; runs: Run[] }
   | { kind: 'table'; head: string[]; rows: string[][] }
-  | { kind: 'sig'; label: string }
+  | { kind: 'sig'; label: string; who?: number }
   | { kind: 'end' }
 
 export interface ParsedConstitution {
@@ -167,4 +167,18 @@ export function paginate(blocks: Block[], heights: number[], pageHeight: number,
     i = last + 1
   }
   return pages.filter(p => p.length > 0)
+}
+
+/** Replaces the constitution's signature line with one signature block per signatory (index kept in `who`). With no signatories the original single line is left alone. */
+export function expandSignatories(blocks: Block[], count: number): Block[] {
+  if (count <= 0) return blocks
+  const out: Block[] = []
+  let done = false
+  for (const b of blocks) {
+    if (b.kind !== 'sig') { out.push(b); continue }
+    if (done) continue
+    done = true
+    for (let who = 0; who < count; who++) out.push({ ...b, who })
+  }
+  return out
 }

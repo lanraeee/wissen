@@ -1,7 +1,7 @@
 'use client'
 
 import { Fragment, createContext, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
-import { parseConstitution, paginate, type Block, type Piece, type Run } from '@/lib/constitution-render'
+import { parseConstitution, expandSignatories, paginate, type Block, type Piece, type Run } from '@/lib/constitution-render'
 import { btn } from '../cio-ui'
 import SignatureChooser, { NO_SIGNATURE, type SignatureChoice } from './SignatureChooser'
 import { BOOKLET_CSS, PRINT_CSS, FONTS_URL, PAGE_W, PAGE_H, BODY_H, LINE_H } from './booklet-css'
@@ -33,10 +33,14 @@ const Runs = ({ runs }: { runs: Run[] }) => (
   <>{runs.map((r, i) => (r.b ? <strong key={i}>{r.t}</strong> : r.i ? <em key={i}>{r.t}</em> : <Fragment key={i}>{r.t}</Fragment>))}</>
 )
 
-const SigContext = createContext<SignatureChoice>(NO_SIGNATURE)
+interface Signatory { id: string; name: string; role: string; signature: string | null; signed_date: string }
+interface SigState { single: SignatureChoice; people: Signatory[]; choices: Record<string, SignatureChoice> }
+const SigContext = createContext<SigState>({ single: NO_SIGNATURE, people: [], choices: {} })
 
-function SigBlock() {
-  const sig = useContext(SigContext)
+function SigBlock({ who }: { who?: number }) {
+  const { single, people, choices } = useContext(SigContext)
+  const person = who === undefined ? undefined : people[who]
+  const sig = person ? (choices[person.id] ?? NO_SIGNATURE) : single
   const date = longDate(sig.date)
   return (
     <div className="bk-sigblock">
@@ -46,7 +50,7 @@ function SigBlock() {
         {date && <span className="bk-sigdate">{date}</span>}
       </div>
       <div className="bk-sigline" />
-      <div className="bk-sigcap">Signature &nbsp;·&nbsp; Date</div>
+      <div className="bk-sigcap">{person ? `${person.name}${person.role ? ` · ${person.role}` : ''}` : <>Signature &nbsp;·&nbsp; Date</>}</div>
     </div>
   )
 }
@@ -73,7 +77,7 @@ function BlockView({ b }: { b: Block }) {
         </table>
       )
     case 'sig':
-      return <SigBlock />
+      return <SigBlock who={b.who} />
     case 'end':
       return <div className="bk-end">End of Constitution</div>
   }
@@ -93,7 +97,11 @@ const ROMAN = ['i', 'ii', 'iii', 'iv']
 const TOC_PER_PAGE = 24
 
 export default function ConstitutionPreview({ source, versionLabel, status, adoptedDate }: Props) {
-  const parsed = useMemo(() => parseConstitution(source), [source])
+  const [people, setPeople] = useState<Signatory[]>([])
+  const parsed = useMemo(() => {
+    const p = parseConstitution(source)
+    return { ...p, blocks: expandSignatories(p.blocks, people.length) }
+  }, [source, people.length])
   const measureRef = useRef<HTMLDivElement>(null)
   const allRef = useRef<HTMLDivElement>(null)
   // State, not a ref: the frame only exists once there is text, so the observer must attach whenever it appears.
@@ -105,6 +113,21 @@ export default function ConstitutionPreview({ source, versionLabel, status, adop
   const [narrow, setNarrow] = useState(false)
   const [spread, setSpread] = useState(0)
   const [sig, setSig] = useState<SignatureChoice>(NO_SIGNATURE)
+  const [choices, setChoices] = useState<Record<string, SignatureChoice>>({})
+
+  // One signature block per active trustee, pre-filled from their signed declaration.
+  useEffect(() => {
+    let cancelled = false
+    fetch('/api/admin/whf-cio/signatories')
+      .then(r => (r.ok ? r.json() : []))
+      .then((list: Signatory[]) => {
+        if (cancelled || !Array.isArray(list)) return
+        setPeople(list)
+        setChoices(Object.fromEntries(list.map(p => [p.id, { image: p.signature, date: p.signed_date }])))
+      })
+      .catch(() => {})
+    return () => { cancelled = true }
+  }, [])
 
   useEffect(() => {
     if (!document.getElementById('bk-fonts')) {
@@ -266,11 +289,27 @@ export default function ConstitutionPreview({ source, versionLabel, status, adop
   }
 
   return (
-    <SigContext.Provider value={sig}>
+    <SigContext.Provider value={{ single: sig, people, choices }}>
     <section className="bk-root" lang="en-GB" aria-label="Booklet preview">
       <style>{BOOKLET_CSS}</style>
 
-      <SignatureChooser value={sig} onChange={setSig} label="Apply a saved signature and date to the signature block when printing" />
+      {people.length === 0 ? (
+        <SignatureChooser value={sig} onChange={setSig} label="Apply a saved signature and date to the signature block when printing" />
+      ) : (
+        <div>
+          <p style={{ margin: '0 0 8px', fontSize: '.78rem', color: '#8a9a8f', fontFamily: 'system-ui, sans-serif' }}>
+            One signature block is printed for each of the {people.length} active trustee{people.length === 1 ? '' : 's'}, filled from their signed declaration. Change a signature or date below if needed.
+          </p>
+          {people.map(p => (
+            <SignatureChooser
+              key={p.id}
+              label={`${p.name}${p.role ? ` · ${p.role}` : ''}`}
+              value={choices[p.id] ?? NO_SIGNATURE}
+              onChange={v => setChoices(c => ({ ...c, [p.id]: v }))}
+            />
+          ))}
+        </div>
+      )}
 
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12, flexWrap: 'wrap', marginBottom: 10 }}>
         <div>

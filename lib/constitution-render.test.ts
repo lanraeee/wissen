@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { readFileSync } from 'fs'
-import { parseConstitution, parseInline, paginate, type Block } from './constitution-render'
+import { parseConstitution, parseInline, paginate, expandSignatories, type Block } from './constitution-render'
 
 describe('parseInline', () => {
   it('handles bold, italic and plain text', () => {
@@ -87,5 +87,17 @@ describe('paginate', () => {
   })
   it('handles an empty document', () => {
     expect(paginate([], [], 100)).toEqual([])
+  })
+})
+
+describe('expandSignatories', () => {
+  const blocks: Block[] = [{ kind: 'para', runs: [] }, { kind: 'sig', label: 'Signature' }, { kind: 'sig', label: 'Signature' }, { kind: 'end' }]
+  it('makes one signature block per signatory, in order', () => {
+    const out = expandSignatories(blocks, 3)
+    expect(out.map(b => b.kind)).toEqual(['para', 'sig', 'sig', 'sig', 'end'])
+    expect(out.filter(b => b.kind === 'sig').map(b => (b as { who?: number }).who)).toEqual([0, 1, 2])
+  })
+  it('leaves the document unchanged with no signatories', () => {
+    expect(expandSignatories(blocks, 0)).toBe(blocks)
   })
 })
