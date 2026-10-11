@@ -27,5 +27,8 @@ export async function GET(req: NextRequest) {
     sql`SELECT COUNT(*) AS c FROM users`,
   ])
   const viewerIsDirector = isDirector(session.email)
-  return NextResponse.json({ users: rows, total: Number(count[0].c), page, limit, viewerIsDirector })
+  // Mirrors the gate in app/api/admin/view-as: directors and the admin role
+  // only. Trustees with write access to Users cannot open member accounts.
+  const viewerCanViewAs = viewerIsDirector || session.role === 'admin'
+  return NextResponse.json({ users: rows, total: Number(count[0].c), page, limit, viewerIsDirector, viewerCanViewAs })
 }

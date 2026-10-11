@@ -3,6 +3,7 @@ import { COOKIE_NAME, verifyToken } from '@/lib/auth-edge'
 import { hit, clientIp, findRateLimit } from '@/lib/rate-limit'
 import { RETURN_PARAM } from '@/lib/return-url'
 import { PATH_HEADER } from '@/lib/admin-access'
+import { VIEW_AS_COOKIE, VIEW_AS_EXIT_PATH, verifyViewAs } from '@/lib/view-as-shared'
 
 // The Community Hub itself is PUBLIC: browsing opportunities is the front
 // door, and gating it hid every listing from search engines while the sitemap
@@ -30,6 +31,20 @@ const adminRoutes = ['/admin']
 
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl
+
+  // A "view as member" session is read-only: every write (API, page form or
+  // server action) is refused while it is live. Only the exit endpoint may
+  // write. Checked before anything else, so no route can be reached first.
+  // Fails open only for an absent or expired view cookie, which is then just
+  // the admin's own session.
+  if (req.method !== 'GET' && req.method !== 'HEAD' && pathname !== VIEW_AS_EXIT_PATH) {
+    if (await verifyViewAs(req.cookies.get(VIEW_AS_COOKIE)?.value)) {
+      const message = 'Read-only while viewing a member account. Exit the view to make changes.'
+      return pathname.startsWith('/api/')
+        ? NextResponse.json({ error: message }, { status: 403 })
+        : new NextResponse(message, { status: 403 })
+    }
+  }
 
   // Rate limit mutating requests to abuse-prone API routes. GETs (reads) are
   // never limited here. See lib/rate-limit.ts for the per-route table and
@@ -100,11 +115,10 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
+  // Every route except static assets, so the read-only rule for a member view
+  // covers writes anywhere. Routes that need no check return NextResponse.next()
+  // straight away, so the extra matches cost a cookie lookup at most.
   matcher: [
-    '/community/threads/:path*', '/profile', '/admin/:path*',
-    '/partners/:partner/apply',
-    '/api/auth/:path*', '/api/contact', '/api/safeguarding/:path*', '/api/partner', '/api/volunteer', '/api/submissions',
-    '/api/payments/:path*', '/api/forum/:path*', '/api/testimonials', '/api/career-fair/:path*',
-    '/api/scholarships/:path*',
+    '/((?!_next/static|_next/image|favicon.ico).*)',
   ]
 }
