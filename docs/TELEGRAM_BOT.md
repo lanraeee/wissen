@@ -80,15 +80,18 @@ Use the email of your **website admin account**. Add more people as comma-separa
 - **No reply at all** — your ID is not in `TELEGRAM_ADMINS`, or you wrote in a group. Check the logs for `ignored command from unlinked account`.
 - **"no longer has admin access"** — the linked email is not an admin account in the database.
 - **`/run knowledge` reports a failure on Azure after ~230s** — the App Service front end cut the request. The job may still have finished; see "Mind the 230-second ceiling" in `docs/AZURE_DEPLOYMENT.md`.
-
+- **Summary says "database unreachable"** — the database could not be read, so the digest sent the outage notice without counts. Check `/health` or the Neon dashboard. No action is needed in Telegram; the next summary (six hours later) carries the figures again.
+- **Summary never arrives** — check the *Telegram digest* workflow run in the Actions tab. A 401 means `CRON_SECRET` differs between GitHub and the host; a 503 means the bot token or webhook secret is missing on that host.
 ## Six-hourly summary
 
 Every six hours the linked admins receive a short summary in Telegram: sign-ups, new contact / volunteer / partner submissions and donations since the last summary, what is still waiting for a reply, opportunity listings and when they last refreshed, and a health line (database, host, build, AI credential).
 
 - **Schedule:** `.github/workflows/telegram-digest.yml`, at 23 minutes past every sixth hour UTC. GitHub may start the run a few minutes late. Run it on demand from the Actions tab with *Run workflow*.
 - **Endpoint:** `POST /api/cron/telegram-digest`, guarded by `CRON_SECRET`, the same secret the nightly jobs use. No new variable is needed.
-- **Who gets it:** every account in `TELEGRAM_ADMINS` that still passes the live role check. Demoting someone stops their summaries on the next run.
+- **Who gets it:** every account in `TELEGRAM_ADMINS` that still passes the live role check (master admin, `admin` or `editor`; trustees are not included). Demoting someone stops their summaries on the next run.
 - **What it contains:** counts and times only. No names, email addresses or message text, so a summary is safe to read on a lock screen.
 - **Partial failures:** if one count can't be read it shows as `unavailable`, and the rest of the summary still sends.
+- **Database outage:** the admin check needs the database. If it cannot be reached, admins still receive a short notice headed *database unreachable*. That notice carries no figures, because admin access could not be confirmed. The health details return with the next summary once the database is back.
+- **Response:** the endpoint returns `{ success, recipients, skipped, degraded }`. `skipped` counts accounts that no longer qualify. `degraded` counts outage notices sent.
 
 To stop the summaries, disable the workflow in the Actions tab, or remove an admin from `TELEGRAM_ADMINS`.
