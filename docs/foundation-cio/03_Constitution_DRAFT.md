@@ -901,16 +901,10 @@ This Constitution was adopted on **3 October 2026** by the initial members (char
 
 **SIGNATURES OF INITIAL TRUSTEES:**
 
-Benz Olagbaye  
-Founder & Executive Director  
 Signature: _________________________ Date: _____________
 
-[**THIRD INITIAL TRUSTEE**]  
-[**Position**]  
 Signature: _________________________ Date: _____________
 
-Gbemisola Abatan  
-Programmes & Partnerships Director  
 Signature: _________________________ Date: _____________
 
 ---
