@@ -34,7 +34,7 @@ function brandEmailChrome(html: string, brand: { name: string; descriptor: strin
   const footerRe = new RegExp(`${escapeRegExp(FOOTER_START)}[\\s\\S]*?${escapeRegExp(FOOTER_END)}`)
   return html
     .replace(headerRe, renderEmailHeader(brand))
-    .replace(footerRe, renderEmailFooter(brand, contact))
+    .replace(footerRe, renderEmailFooter(contact.tagline))
 }
 
 // Resend's SDK never throws on API-level failures (invalid/unverified sender
