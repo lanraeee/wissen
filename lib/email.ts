@@ -126,7 +126,9 @@ export async function sendVolunteerNotification(data: {
     replyBtn: replyButton(data.email, data.name),
   }
   const { subject, html } = await renderTemplate('volunteer-notification', vars, defaultsFor('volunteer-notification'))
-  return sendEmail({ from: FROM, to: details.admin_emails, replyTo: data.email, subject, html })
+  // The volunteers inbox, plus the admin list (no duplicates).
+  const to = Array.from(new Set([inboxFor('volunteer', details), ...details.admin_emails]))
+  return sendEmail({ from: FROM, to, replyTo: data.email, subject, html })
 }
 
 // ─── Volunteer confirmation (to user) ──────────────────────────────────────
@@ -259,7 +261,9 @@ export async function sendPartnerNotification(data: {
     replyBtn: replyButton(data.email, data.name),
   }
   const { subject, html } = await renderTemplate('partner-notification', vars, defaultsFor('partner-notification'))
-  return sendEmail({ from: FROM, to: details.admin_emails, replyTo: data.email, subject, html })
+  // The partners inbox, plus the admin list (no duplicates).
+  const to = Array.from(new Set([inboxFor('partnership', details), ...details.admin_emails]))
+  return sendEmail({ from: FROM, to, replyTo: data.email, subject, html })
 }
 
 // ─── Partner confirmation (to inquirer) ────────────────────────────────────

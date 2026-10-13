@@ -61,6 +61,20 @@ describe('every transactional email renders its default template with no leftove
     assertFullyRendered(sent())
   })
 
+  it('sendVolunteerNotification goes to the volunteers inbox and the admin list', async () => {
+    await email.sendVolunteerNotification({ name: 'Ada Lovelace', email: 'ada@example.com', role: 'Mentor', message: 'I want to help' })
+    expect((sent() as { to: unknown }).to).toEqual([
+      'volunteers@wissenhaus.org', 'director@wissenhaus.org', 'wissenhaus@outlook.com',
+    ])
+  })
+
+  it('sendPartnerNotification goes to the partners inbox and the admin list', async () => {
+    await email.sendPartnerNotification({ name: 'Ada Lovelace', email: 'ada@example.com', organisation: 'Acme', message: 'Partnership' })
+    expect((sent() as { to: unknown }).to).toEqual([
+      'partners@wissenhaus.org', 'director@wissenhaus.org', 'wissenhaus@outlook.com',
+    ])
+  })
+
   it('sendVolunteerConfirmation', async () => {
     await email.sendVolunteerConfirmation('ada@example.com', 'Ada Lovelace', 'Mentor')
     assertFullyRendered(sent())
