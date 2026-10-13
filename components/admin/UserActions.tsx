@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import UserActivityModal from './UserActivityModal'
+import ViewAsDialog from './ViewAsDialog'
 
 interface User {
   id: string
@@ -33,10 +34,11 @@ const ROLE_COLORS: Record<string, string> = {
 // it just to see the refusal.
 const MASTER_ADMIN_EMAIL = 'wissenhaus@outlook.com'
 
-export default function UserActions({ user, onRefresh, isDirector }: { user: User; onRefresh: () => void; isDirector: boolean }) {
+export default function UserActions({ user, onRefresh, isDirector, canViewAs = false, viewerIsMaster = false }: { user: User; onRefresh: () => void; isDirector: boolean; canViewAs?: boolean; viewerIsMaster?: boolean }) {
   const [busy, setBusy] = useState(false)
   const [editing, setEditing] = useState(false)
   const [viewingActivity, setViewingActivity] = useState(false)
+  const [viewingAs, setViewingAs] = useState(false)
   const [form, setForm] = useState({
     first_name: user.first_name, last_name: user.last_name, email: user.email,
     created_at: toDateInputValue(user.created_at),
@@ -131,6 +133,9 @@ export default function UserActions({ user, onRefresh, isDirector }: { user: Use
             <option value="admin">Admin</option>
           </select>
         )}
+        {canViewAs && user.role === 'user' && (
+          <button style={btn('#7c2d12')} onClick={() => setViewingAs(true)} disabled={busy}>View as member</button>
+        )}
         <button style={btn('#e8e4dc', '#3a4a3f')} onClick={() => setViewingActivity(true)} disabled={busy}>Activity</button>
         <button style={btn('#e8e4dc', '#3a4a3f')} onClick={() => setEditing(true)} disabled={busy}>Edit</button>
         <button style={btn('#1d4ed8')} onClick={sendResetEmail} disabled={busy}>Send Reset Email</button>
@@ -145,6 +150,7 @@ export default function UserActions({ user, onRefresh, isDirector }: { user: Use
         )}
       </div>
       {viewingActivity && <UserActivityModal userId={user.id} onClose={() => setViewingActivity(false)} />}
+      {viewingAs && <ViewAsDialog userId={user.id} memberName={`${user.first_name} ${user.last_name}`} onClose={() => setViewingAs(false)} reasonOptional={viewerIsMaster} />}
     </>
   )
 }

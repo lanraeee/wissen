@@ -5,6 +5,7 @@ import Navigation from '@/components/Navigation'
 import ScrollEffects from '@/components/ScrollEffects'
 import PageLoader from '@/components/PageLoader'
 import LiveChat from '@/components/support/LiveChat'
+import ViewAsBanner from '@/components/ViewAsBanner'
 import type { Brand } from '@/lib/brand'
 
 export default function SiteShell({ children, footer, brand }: { children: React.ReactNode; footer: React.ReactNode; brand: Brand }) {
@@ -15,6 +16,7 @@ export default function SiteShell({ children, footer, brand }: { children: React
 
   return (
     <>
+      <ViewAsBanner />
       <PageLoader />
       <Navigation brand={brand} />
       <main id="main">{children}</main>

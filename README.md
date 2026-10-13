@@ -22,6 +22,7 @@ Web platform for Wissen-Haus — a Nigerian NGO bridging the skills gap by equip
 - Policy research library
 - Automated opportunity refresh via cron
 - Telegram command center for admins (`docs/TELEGRAM_BOT.md`)
+- Support "view as member": a read-only, 30-minute view of a member's account, logged with a reason (`docs/VIEW_AS.md`)
 
 ## Getting Started
 
