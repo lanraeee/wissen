@@ -24,9 +24,13 @@ interface Props {
   instructions?: string
   donorEmail: string
   supportEmail?: string
+  proofUploaded: boolean
+  proofFileName?: string
 }
 
 const GREEN = '#1a3c2e'
+const PROOF_ACCEPT = 'application/pdf,image/png,image/jpeg'
+const PROOF_MAX_BYTES = 4 * 1024 * 1024
 
 function CopyButton({ value, label }: { value: string; label: string }) {
   const [copied, setCopied] = useState(false)
@@ -61,11 +65,43 @@ function CopyButton({ value, label }: { value: string; label: string }) {
 
 export default function BankTransferPanel({
   reference, rows, amountLabel, initialStatus, certUrl, instructions, donorEmail, supportEmail = 'info@wissenhaus.org',
+  proofUploaded, proofFileName,
 }: Props) {
   const router = useRouter()
   const [status, setStatus] = useState(initialStatus)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
+  const [hasProof, setHasProof] = useState(proofUploaded)
+  const [proofName, setProofName] = useState(proofFileName ?? '')
+  const [uploading, setUploading] = useState(false)
+  const [proofError, setProofError] = useState('')
+
+  async function uploadProof(file: File) {
+    setProofError('')
+    if (file.size > PROOF_MAX_BYTES) {
+      setProofError('That file is over 4 MB. Please send a smaller copy.')
+      return
+    }
+    if (!PROOF_ACCEPT.split(',').includes(file.type)) {
+      setProofError('Upload your receipt as a PDF, PNG or JPG.')
+      return
+    }
+    setUploading(true)
+    try {
+      const form = new FormData()
+      form.append('reference', reference)
+      form.append('file', file)
+      const res = await fetch('/api/payments/bank-transfer/proof', { method: 'POST', body: form })
+      const data = await res.json().catch(() => ({}))
+      if (!res.ok) throw new Error(data.error || 'The upload failed. Please try again.')
+      setHasProof(true)
+      setProofName(data.fileName ?? file.name)
+    } catch (err) {
+      setProofError(err instanceof Error ? err.message : 'The upload failed. Please try again.')
+    } finally {
+      setUploading(false)
+    }
+  }
 
   async function declareSent() {
     setBusy(true); setError('')
@@ -193,15 +229,53 @@ export default function BankTransferPanel({
         </div>
       ) : (
         <>
+          {/* Step 1: proof of payment. Required before the transfer can be declared. */}
+          <div style={{
+            background: hasProof ? '#f0f7f3' : '#fdf8ec',
+            border: `1px solid ${hasProof ? '#c8e0d0' : '#f0e2c0'}`,
+            borderRadius: 10, padding: '16px 18px', marginBottom: 14,
+          }}>
+            <div style={{ fontSize: '.92rem', fontWeight: 700, color: '#1a2e24', marginBottom: 4 }}>
+              {hasProof ? '✓ Proof of payment received' : '1. Upload proof of payment (required)'}
+            </div>
+            <p style={{ margin: '0 0 10px', fontSize: '.82rem', color: '#5a6a5f', lineHeight: 1.5 }}>
+              {hasProof
+                ? `${proofName ? `${proofName} is attached.` : 'Your receipt is attached.'} You can replace it by uploading another copy below.`
+                : 'Once you have sent the transfer, upload a bank receipt or a screenshot of it. We need it to match your gift, so you will be asked for it before you confirm.'}
+            </p>
+            <label style={{
+              display: 'inline-block', border: '1px solid #c8e0d0', background: '#fff', color: GREEN,
+              borderRadius: 7, padding: '7px 16px', fontSize: '.82rem', fontWeight: 600,
+              cursor: uploading ? 'wait' : 'pointer', opacity: uploading ? .6 : 1,
+            }}>
+              {uploading ? 'Uploading…' : hasProof ? 'Replace file' : 'Choose file'}
+              <input
+                type="file"
+                accept=".pdf,.png,.jpg,.jpeg,application/pdf,image/png,image/jpeg"
+                disabled={uploading}
+                onChange={e => { const f = e.target.files?.[0]; if (f) uploadProof(f); e.target.value = '' }}
+                style={{ display: 'none' }}
+              />
+            </label>
+            <div style={{ fontSize: '.72rem', color: '#6b7a70', marginTop: 6 }}>PDF, PNG or JPG, up to 4 MB</div>
+            {proofError && <p role="alert" style={{ color: '#c0392b', fontSize: '.82rem', margin: '8px 0 0' }}>{proofError}</p>}
+          </div>
+
+          {/* Step 2: declare the transfer sent, which needs step 1 first. */}
           <button
             type="button"
             className="btn btn--block btn--lg"
             onClick={declareSent}
-            disabled={busy}
-            style={{ fontSize: '1rem' }}
+            disabled={busy || !hasProof}
+            style={{ fontSize: '1rem', opacity: hasProof ? 1 : .55 }}
           >
-            {busy ? 'Saving…' : "I've sent the transfer"}
+            {busy ? 'Saving…' : "2. I've sent the transfer"}
           </button>
+          {!hasProof && (
+            <p style={{ textAlign: 'center', fontSize: '.78rem', color: '#b45309', marginTop: '.6rem' }}>
+              Upload your proof of payment to continue.
+            </p>
+          )}
           <p style={{ textAlign: 'center', fontSize: '.78rem', color: 'var(--ink-60,#8a9a8f)', marginTop: '.9rem' }}>
             Tell us once you&apos;ve made the payment so we can match it and send your certificate.
           </p>

@@ -237,6 +237,46 @@ export async function sendBankTransferNotification(data: {
   return sendEmail({ from: FROM, to: details.admin_emails, replyTo: data.email, subject, html })
 }
 
+// ─── Bank transfer proof request (to donor) ─────────────────────────────────
+// Asks a donor to upload proof of payment, for an older transfer or one they
+// declared sent without a receipt.
+export async function sendBankTransferProofRequest(opts: {
+  to: string
+  name: string
+  amount: number
+  currency: string
+  reference: string
+  uploadUrl: string
+}) {
+  const formatted = formatMoney(opts.amount, opts.currency)
+  const vars = {
+    firstName: firstNameOf(opts.name), formatted,
+    referenceField: field('Your Reference', `<span style="font-family:monospace;font-size:1rem"><strong>${esc(opts.reference)}</strong></span>`),
+    uploadUrl: esc(opts.uploadUrl),
+  }
+  const { subject, html } = await renderTemplate('bank-transfer-proof-request', vars, defaultsFor('bank-transfer-proof-request'))
+  return sendEmail({ from: FROM, to: opts.to, subject, html })
+}
+
+// ─── Content approval request (to master admin) ─────────────────────────────
+// Sent when an editor proposes a change to public content and it waits for
+// approval. Goes to the master admin only, not the wider admin list.
+export async function sendContentApprovalRequest(opts: {
+  to: string
+  keyLabel: string
+  requestedBy: string
+  reviewUrl: string
+}) {
+  const vars = {
+    keyRaw: opts.keyLabel,
+    keyField: fieldText('Content', opts.keyLabel),
+    requestedByField: fieldText('Requested by', opts.requestedBy),
+    reviewUrl: esc(opts.reviewUrl),
+  }
+  const { subject, html } = await renderTemplate('content-approval-request', vars, defaultsFor('content-approval-request'))
+  return sendEmail({ from: FROM, to: opts.to, subject, html })
+}
+
 // ─── Certificate email ──────────────────────────────────────────────────────
 export async function sendCertificateEmail(to: string, name: string, courseName: string, certId: string) {
   const vars = {

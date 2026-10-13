@@ -13,6 +13,9 @@ interface Pledge {
   status: 'awaiting_transfer' | 'declared_sent' | 'confirmed' | 'cancelled'
   cert_id: string | null
   created_at: string
+  proof_uploaded_at: string | null
+  proof_file_name: string | null
+  proof_requested_at: string | null
 }
 
 const STATUS_COLORS: Record<string, { background: string; color: string }> = {
@@ -67,6 +70,24 @@ export default function AdminBankTransfers() {
       await load()
     } catch (err) {
       setMsg({ id: rowId, text: err instanceof Error ? err.message : 'Failed to confirm', ok: false })
+    }
+    setBusy(null)
+  }
+
+  async function requestProof(rowId: string, reference: string) {
+    if (!confirm('Email the donor and ask them to upload proof of payment?')) return
+    setBusy(rowId); setMsg(null)
+    try {
+      const res = await fetch('/api/admin/bank-transfers/request-proof', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ reference }),
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error || 'Could not send the request')
+      setMsg({ id: rowId, text: 'Request sent to the donor', ok: true })
+      await load()
+    } catch (err) {
+      setMsg({ id: rowId, text: err instanceof Error ? err.message : 'Could not send the request', ok: false })
     }
     setBusy(null)
   }
@@ -136,13 +157,33 @@ export default function AdminBankTransfers() {
                   )}
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 14, flexWrap: 'wrap', gap: 8 }}>
-                  {row.status === 'confirmed' && row.cert_id ? (
-                    <a href={`/donate/receipt/${row.cert_id}`} target="_blank" rel="noopener noreferrer" style={{ fontSize: '.82rem', fontWeight: 600, color: '#1a3c2e' }}>
-                      View Certificate ↗
-                    </a>
-                  ) : <span />}
+                  <div style={{ display: 'flex', gap: 14, alignItems: 'center', flexWrap: 'wrap' }}>
+                    {row.status === 'confirmed' && row.cert_id && (
+                      <a href={`/donate/receipt/${row.cert_id}`} target="_blank" rel="noopener noreferrer" style={{ fontSize: '.82rem', fontWeight: 600, color: '#1a3c2e' }}>
+                        View Certificate ↗
+                      </a>
+                    )}
+                    {row.proof_uploaded_at ? (
+                      <a href={`/api/admin/bank-transfers/proof?reference=${encodeURIComponent(row.reference)}`} target="_blank" rel="noopener noreferrer" style={{ fontSize: '.82rem', fontWeight: 600, color: '#1a3c2e' }}>
+                        View proof{row.proof_file_name ? `: ${row.proof_file_name}` : ''} ↗
+                      </a>
+                    ) : (
+                      <span style={{ fontSize: '.78rem', color: '#b45309' }}>
+                        No proof of payment yet{row.proof_requested_at ? ` · requested ${new Date(row.proof_requested_at).toLocaleDateString('en-GB')}` : ''}
+                      </span>
+                    )}
+                  </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                     {msg?.id === row.id && <span style={{ fontSize: '.78rem', color: msg.ok ? '#16a34a' : '#dc2626' }}>{msg.text}</span>}
+                    {row.status !== 'confirmed' && row.status !== 'cancelled' && !row.proof_uploaded_at && (
+                      <button
+                        onClick={() => requestProof(row.id, row.reference)}
+                        disabled={busy === row.id}
+                        style={{ padding: '4px 12px', borderRadius: 6, fontSize: '.78rem', fontWeight: 600, background: '#fff', color: '#1a3c2e', border: '1px solid #1a3c2e', cursor: 'pointer', opacity: busy === row.id ? .6 : 1 }}
+                      >
+                        Request proof
+                      </button>
+                    )}
                     {row.status !== 'confirmed' && row.status !== 'cancelled' && (
                       <>
                         <button

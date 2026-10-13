@@ -53,8 +53,10 @@ export interface ViewAsTarget {
  * Says why a view may not be started, or null when it may. Kept pure so the
  * rules can be tested without a database.
  */
-export function viewAsRefusal(viewerId: string, target: ViewAsTarget): string | null {
+export function viewAsRefusal(viewerId: string, target: ViewAsTarget, viewerIsMaster = false): string | null {
   if (target.id === viewerId) return 'You cannot view your own account this way.'
+  // The master admin can view any other account, staff and protected ones alike.
+  if (viewerIsMaster) return null
   if (target.protected) return 'This account cannot be viewed.'
   // Staff accounts are excluded on purpose: a view of an editor or admin would
   // show that person's admin tools, and the support need is the member's view.

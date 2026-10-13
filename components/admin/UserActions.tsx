@@ -133,7 +133,7 @@ export default function UserActions({ user, onRefresh, isDirector, canViewAs = f
             <option value="admin">Admin</option>
           </select>
         )}
-        {canViewAs && user.role === 'user' && (
+        {canViewAs && (viewerIsMaster || user.role === 'user') && (
           <button style={btn('#7c2d12')} onClick={() => setViewingAs(true)} disabled={busy}>View as member</button>
         )}
         <button style={btn('#e8e4dc', '#3a4a3f')} onClick={() => setViewingActivity(true)} disabled={busy}>Activity</button>
