@@ -22,6 +22,7 @@ export default function AdminUsers() {
   const [search, setSearch] = useState('')
   const [isDirector, setIsDirector] = useState(false)
   const [canViewAs, setCanViewAs] = useState(false)
+  const [viewerIsMaster, setViewerIsMaster] = useState(false)
   const [forbidden, setForbidden] = useState(false)
 
   const load = useCallback(async () => {
@@ -35,6 +36,7 @@ export default function AdminUsers() {
     setTotal(data.total ?? 0)
     setIsDirector(data.viewerIsDirector ?? false)
     setCanViewAs(data.viewerCanViewAs ?? false)
+    setViewerIsMaster(data.viewerIsMaster ?? false)
     setLoading(false)
   }, [])
 
@@ -91,7 +93,7 @@ export default function AdminUsers() {
                     <span style={{ fontSize: '.75rem', color: '#8a9a8f' }}>Joined {new Date(u.created_at).toLocaleDateString('en-GB')}</span>
                   </div>
                 </div>
-                <UserActions user={u} onRefresh={load} isDirector={isDirector} canViewAs={canViewAs} />
+                <UserActions user={u} onRefresh={load} isDirector={isDirector} canViewAs={canViewAs} viewerIsMaster={viewerIsMaster} />
               </div>
             </div>
           ))}

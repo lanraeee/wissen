@@ -34,7 +34,7 @@ const ROLE_COLORS: Record<string, string> = {
 // it just to see the refusal.
 const MASTER_ADMIN_EMAIL = 'wissenhaus@outlook.com'
 
-export default function UserActions({ user, onRefresh, isDirector, canViewAs = false }: { user: User; onRefresh: () => void; isDirector: boolean; canViewAs?: boolean }) {
+export default function UserActions({ user, onRefresh, isDirector, canViewAs = false, viewerIsMaster = false }: { user: User; onRefresh: () => void; isDirector: boolean; canViewAs?: boolean; viewerIsMaster?: boolean }) {
   const [busy, setBusy] = useState(false)
   const [editing, setEditing] = useState(false)
   const [viewingActivity, setViewingActivity] = useState(false)
@@ -150,7 +150,7 @@ export default function UserActions({ user, onRefresh, isDirector, canViewAs = f
         )}
       </div>
       {viewingActivity && <UserActivityModal userId={user.id} onClose={() => setViewingActivity(false)} />}
-      {viewingAs && <ViewAsDialog userId={user.id} memberName={`${user.first_name} ${user.last_name}`} onClose={() => setViewingAs(false)} />}
+      {viewingAs && <ViewAsDialog userId={user.id} memberName={`${user.first_name} ${user.last_name}`} onClose={() => setViewingAs(false)} reasonOptional={viewerIsMaster} />}
     </>
   )
 }

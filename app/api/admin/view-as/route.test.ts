@@ -125,4 +125,20 @@ describe('POST /api/admin/view-as', () => {
     const meta = res.cookies.get('wh_view_as_meta')
     expect(meta?.httpOnly).toBeFalsy()
   })
+
+  it('lets the master admin start a view with no reason, and writes no audit row', async () => {
+    guardMock.mockResolvedValue({ id: VIEWER_ID, email: 'wissenhaus@outlook.com', role: 'admin' })
+    mockRows({ id: MEMBER_ID, email: 'm@example.com', first_name: 'Ada', last_name: 'Lovelace', role: 'user', membership_expiry: null })
+    const res = await POST(req({ userId: MEMBER_ID, password: 'pw' }))
+    expect(res.status).toBe(200)
+    expect(logRequiredMock).not.toHaveBeenCalled()
+    expect(res.cookies.get('wh_view_as')?.httpOnly).toBe(true)
+  })
+
+  it('still requires a reason from a non-master admin', async () => {
+    guardMock.mockResolvedValue({ id: VIEWER_ID, email: 'admin@example.com', role: 'admin' })
+    const res = await POST(req({ userId: MEMBER_ID, password: 'pw' }))
+    expect(res.status).toBe(400)
+    expect(logRequiredMock).not.toHaveBeenCalled()
+  })
 })

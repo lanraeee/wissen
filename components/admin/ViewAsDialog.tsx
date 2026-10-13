@@ -2,9 +2,10 @@
 
 import { useState } from 'react'
 
-// Confirms a support "view as member" before it starts. The reason and the
-// admin's password are both required, and both are checked on the server.
-export default function ViewAsDialog({ userId, memberName, onClose }: { userId: string; memberName: string; onClose: () => void }) {
+// Confirms a support "view as member" before it starts. The admin's password is
+// always required and checked on the server. The reason is required too, except
+// for the master admin (reasonOptional), whose views are not logged.
+export default function ViewAsDialog({ userId, memberName, onClose, reasonOptional = false }: { userId: string; memberName: string; onClose: () => void; reasonOptional?: boolean }) {
   const [reason, setReason] = useState('')
   const [password, setPassword] = useState('')
   const [busy, setBusy] = useState(false)
@@ -44,11 +45,14 @@ export default function ViewAsDialog({ userId, memberName, onClose }: { userId: 
         <h2 id="view-as-title" style={{ margin: 0, fontSize: '1.05rem' }}>View as {memberName}</h2>
         <p style={{ margin: 0, fontSize: '.85rem', color: '#4b5563', lineHeight: 1.5 }}>
           You will see the member’s account exactly as they see it, read-only, for 30 minutes.
-          Nothing you do in the view can change their account. This view is recorded in the activity log with your reason.
+          Nothing you do in the view can change their account.{' '}
+          {reasonOptional
+            ? 'As master admin, this view is not recorded in the activity log, and a reason is optional.'
+            : 'This view is recorded in the activity log with your reason.'}
         </p>
         <label style={{ display: 'grid', gap: 4, fontSize: '.8rem', fontWeight: 600 }}>
-          Reason for viewing
-          <textarea value={reason} onChange={e => setReason(e.target.value)} rows={3} maxLength={500} required
+          Reason for viewing{reasonOptional ? ' (optional)' : ''}
+          <textarea value={reason} onChange={e => setReason(e.target.value)} rows={3} maxLength={500} required={!reasonOptional}
             placeholder="e.g. Member cannot see their certificate (ticket #123)"
             style={{ ...field, fontWeight: 400, resize: 'vertical' }} />
         </label>
@@ -61,7 +65,7 @@ export default function ViewAsDialog({ userId, memberName, onClose }: { userId: 
         <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
           <button type="button" onClick={onClose} disabled={busy}
             style={{ padding: '8px 14px', borderRadius: 6, border: '1px solid #d0ccc4', background: '#fff', cursor: 'pointer' }}>Cancel</button>
-          <button type="submit" disabled={busy || reason.trim().length < 10 || !password}
+          <button type="submit" disabled={busy || (!reasonOptional && reason.trim().length < 10) || !password}
             style={{ padding: '8px 14px', borderRadius: 6, border: 'none', background: '#7c2d12', color: '#fff', fontWeight: 600, cursor: 'pointer', opacity: busy ? .6 : 1 }}>
             {busy ? 'Starting…' : 'Start view'}
           </button>

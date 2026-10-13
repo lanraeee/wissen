@@ -14,7 +14,8 @@ import {
 
 const StartSchema = z.object({
   userId: z.string().uuid(),
-  reason: z.string().trim().min(VIEW_AS_MIN_REASON_LENGTH, `Say why you need to view this account (at least ${VIEW_AS_MIN_REASON_LENGTH} characters).`).max(500),
+  // Required for everyone except the master admin, checked below.
+  reason: z.string().trim().max(500).default(''),
   // Re-entered on purpose: a stolen or left-open admin session must not be
   // enough to read a member's account.
   password: z.string().min(1).max(200),
@@ -35,6 +36,15 @@ export async function POST(req: NextRequest) {
 
   const { data, error } = await parseBody(req, StartSchema)
   if (error) return error
+
+  // The master admin is not asked for a reason and their views are not logged.
+  const master = isMasterAdmin(session.email)
+  if (!master && data.reason.length < VIEW_AS_MIN_REASON_LENGTH) {
+    return NextResponse.json(
+      { error: `Say why you need to view this account (at least ${VIEW_AS_MIN_REASON_LENGTH} characters).` },
+      { status: 400 },
+    )
+  }
 
   const [me] = await sql`SELECT password_hash FROM users WHERE id = ${session.id}`
   if (!me || !(await verifyPassword(data.password, me.password_hash as string))) {
@@ -57,16 +67,19 @@ export async function POST(req: NextRequest) {
   const expiresAt = new Date(Date.now() + VIEW_AS_TTL_SECONDS * 1000)
 
   // Audit first, and fail closed: if the record cannot be written, the view
-  // does not start. Throws to the outer catch below.
-  try {
-    await logActivityRequired(
-      { id: session.id as string, email: session.email, role: session.role },
-      'user.view_as.start',
-      { targetType: 'user', targetId: target.id as string, details: { reason: data.reason, expires_at: expiresAt.toISOString() } },
-    )
-  } catch (err) {
-    log.error('view-as', err, { viewerId: session.id })
-    return NextResponse.json({ error: 'Could not record the view, so it was not started. Try again.' }, { status: 500 })
+  // does not start. Throws to the outer catch below. The master admin's views
+  // are not written to the activity log.
+  if (!master) {
+    try {
+      await logActivityRequired(
+        { id: session.id as string, email: session.email, role: session.role },
+        'user.view_as.start',
+        { targetType: 'user', targetId: target.id as string, details: { reason: data.reason, expires_at: expiresAt.toISOString() } },
+      )
+    } catch (err) {
+      log.error('view-as', err, { viewerId: session.id })
+      return NextResponse.json({ error: 'Could not record the view, so it was not started. Try again.' }, { status: 500 })
+    }
   }
 
   const token = await signViewAs({

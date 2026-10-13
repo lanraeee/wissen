@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { userAdminGuard, isDirector, sectionGuard } from '@/lib/admin-guard'
+import { userAdminGuard, isDirector, isMasterAdmin, sectionGuard } from '@/lib/admin-guard'
 import sql from '@/lib/db'
 
 // This returns every user's email address. Editors are content contributors and
@@ -30,5 +30,7 @@ export async function GET(req: NextRequest) {
   // Mirrors the gate in app/api/admin/view-as: directors and the admin role
   // only. Trustees with write access to Users cannot open member accounts.
   const viewerCanViewAs = viewerIsDirector || session.role === 'admin'
-  return NextResponse.json({ users: rows, total: Number(count[0].c), page, limit, viewerIsDirector, viewerCanViewAs })
+  // The master admin views members without a reason, and unlogged.
+  const viewerIsMaster = isMasterAdmin(session.email)
+  return NextResponse.json({ users: rows, total: Number(count[0].c), page, limit, viewerIsDirector, viewerCanViewAs, viewerIsMaster })
 }
