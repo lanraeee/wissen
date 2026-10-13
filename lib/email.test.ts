@@ -47,7 +47,7 @@ describe('every transactional email renders its default template with no leftove
     const payload = sent() as { subject: string; html: string; to?: unknown }
     assertFullyRendered(payload)
     // Delivered to the inbox for the chosen topic, and tagged with its label.
-    expect(payload.to).toBe('partnership@wissenhaus.org')
+    expect(payload.to).toBe('partners@wissenhaus.org')
     expect(payload.subject).toContain('Partnership')
   })
 

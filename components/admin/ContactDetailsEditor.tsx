@@ -1,11 +1,16 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { DEFAULT_CONTACT_INBOX } from '@/lib/contact-routes'
 
 export interface ContactDetails {
   primary_email: string
   admin_emails: string[]
   support_email: string
+  // Inbox each contact-form topic delivers to (see lib/contact-routes.ts).
+  inbox_general: string
+  inbox_partnership: string
+  inbox_volunteer: string
   phone_nigeria: string
   phone_uk: string
   whatsapp_url: string
@@ -23,6 +28,9 @@ const DEFAULT: ContactDetails = {
   primary_email: 'info@wissenhaus.org',
   admin_emails: ['director@wissenhaus.org', 'wissenhaus@outlook.com'],
   support_email: 'info@wissenhaus.org',
+  inbox_general: DEFAULT_CONTACT_INBOX.general,
+  inbox_partnership: DEFAULT_CONTACT_INBOX.partnership,
+  inbox_volunteer: DEFAULT_CONTACT_INBOX.volunteer,
   phone_nigeria: '+234800947736',
   phone_uk: '',
   whatsapp_url: '',
@@ -102,6 +110,35 @@ export default function ContactDetailsEditor() {
 
       <div style={{ background: '#fffdf5', border: '1px solid rgba(184,149,42,0.3)', borderRadius: 8, padding: '16px 20px', marginBottom: 20, fontSize: '.8rem', color: '#5a5a4a', lineHeight: 1.6 }}>
         <strong style={{ color: '#0F2D1D' }}>💡 Instant Updates:</strong> Edit any field below and save. All email notifications, website footers, and contact forms will reflect your changes immediately.
+      </div>
+
+      {/* Contact form inboxes: where each topic on the contact form is delivered.
+          The public site never shows these addresses. */}
+      <div style={{ marginBottom: 32 }}>
+        <h3 style={{ margin: '0 0 6px', fontSize: '0.95rem', color: '#1a3c2e', fontWeight: 600 }}>Contact Form Inboxes</h3>
+        <p style={{ margin: '0 0 14px', fontSize: '.8rem', color: '#8a9a8f' }}>
+          Each topic on the contact form is delivered to its inbox. The addresses are never printed on the public site. If a field is left blank or is not an email address, that topic falls back to the default shown in the placeholder.
+        </p>
+        <div className="rgrid-2" style={{ gap: 14 }}>
+          {([
+            ['inbox_general', 'General enquiries', 'info@wissenhaus.org'],
+            ['inbox_partnership', 'Partnerships', 'partners@wissenhaus.org'],
+            ['inbox_volunteer', 'Volunteering', 'volunteers@wissenhaus.org'],
+          ] as const).map(([key, label, fallback]) => (
+            <div key={key}>
+              <label style={{ display: 'block', fontSize: '.7rem', fontWeight: 700, textTransform: 'uppercase', color: '#8a9a8f', letterSpacing: '.06em', marginBottom: 4 }}>
+                {label}
+              </label>
+              <input
+                style={inp}
+                type="email"
+                value={details[key]}
+                onChange={e => setDetails(d => ({ ...d, [key]: e.target.value }))}
+                placeholder={fallback}
+              />
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* Primary Contact Information */}

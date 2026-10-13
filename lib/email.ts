@@ -7,7 +7,7 @@ import {
 import { renderTemplate } from './email-render'
 import { EMAIL_TEMPLATES_BY_ID } from './email-catalog'
 import { getContactDetails } from './contact-details'
-import { CONTACT_INBOX, CONTACT_TOPIC_LABEL, type ContactTopic } from './contact-routes'
+import { CONTACT_TOPIC_LABEL, inboxFor, type ContactTopic } from './contact-routes'
 
 let _resend: Resend | null = null
 function getResend() {
@@ -92,6 +92,7 @@ export async function sendWelcomeEmail(to: string, name: string) {
 export async function sendContactNotification(data: {
   name: string; email: string; subject: string; message: string; topic: ContactTopic
 }) {
+  const details = await getContactDetails()
   const vars = {
     nameRaw: data.name, subjectLine: `[${CONTACT_TOPIC_LABEL[data.topic]}] ${data.subject}`,
     nameField: fieldText('Name', data.name),
@@ -101,7 +102,7 @@ export async function sendContactNotification(data: {
     replyBtn: replyButton(data.email, data.name),
   }
   const { subject, html } = await renderTemplate('contact-notification', vars, defaultsFor('contact-notification'))
-  return sendEmail({ from: FROM, to: CONTACT_INBOX[data.topic], replyTo: data.email, subject, html })
+  return sendEmail({ from: FROM, to: inboxFor(data.topic, details), replyTo: data.email, subject, html })
 }
 
 // ─── Contact confirmation (to user) ────────────────────────────────────────

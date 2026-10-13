@@ -96,7 +96,7 @@ export default async function Footer() {
 
             <div className="footer-col">
               <h5>Contact</h5>
-              <a href={`mailto:${details.primary_email}`}>{details.primary_email}</a>
+              <Link href="/contact">Send us a message</Link>
               {details.address_nigeria && (
                 <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                   <span aria-hidden="true">🇳🇬</span> {details.address_nigeria}

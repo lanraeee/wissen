@@ -1,10 +1,14 @@
 import { getSiteContent } from './site-content'
 import type { ContactDetails } from '@/components/admin/ContactDetailsEditor'
+import { DEFAULT_CONTACT_INBOX } from './contact-routes'
 
 const DEFAULTS: ContactDetails = {
   primary_email: 'info@wissenhaus.org',
   admin_emails: ['director@wissenhaus.org', 'wissenhaus@outlook.com'],
   support_email: 'info@wissenhaus.org',
+  inbox_general: DEFAULT_CONTACT_INBOX.general,
+  inbox_partnership: DEFAULT_CONTACT_INBOX.partnership,
+  inbox_volunteer: DEFAULT_CONTACT_INBOX.volunteer,
   phone_nigeria: '+234800947736',
   phone_uk: '',
   whatsapp_url: '',
