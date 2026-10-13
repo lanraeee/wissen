@@ -1,10 +1,20 @@
 ﻿import Link from 'next/link'
 import Image from 'next/image'
-import { brandFromSettings, fullName } from '@/lib/brand'
 import { getContactDetails } from '@/lib/contact-details'
+import { getFooterContent } from '@/lib/footer-content'
+import { footerCopyright, isExternalFooterHref, type FooterLink } from '@/lib/footer-content-shared'
+
+// Footer links are edited in Admin > Content > Footer. External links (http,
+// mailto, tel) open as plain anchors; site paths use the router.
+function FooterLinkItem({ link }: { link: FooterLink }) {
+  if (isExternalFooterHref(link.href)) {
+    return <a href={link.href} target={link.href.startsWith('http') ? '_blank' : undefined} rel="noopener noreferrer">{link.label}</a>
+  }
+  return <Link href={link.href}>{link.label}</Link>
+}
 
 export default async function Footer() {
-  const details = await getContactDetails()
+  const [details, footer] = await Promise.all([getContactDetails(), getFooterContent()])
 
   // Use details for brand to get the tagline
   const brand = { name: 'Wissen-Haus', descriptor: 'Empowerment Foundation' }
@@ -20,7 +30,7 @@ export default async function Footer() {
                 <Image src="/img/logo.png" alt={`${brand.name} logo`} width={40} height={40} />
                 <span>{brand.name}{brand.descriptor && <small>{brand.descriptor}</small>}</span>
               </Link>
-              <p>Bridging the skills gap for African youth and the diaspora, equipping young people with practical guidance, mentorship and global exposure for economic independence.</p>
+              <p>{footer.description}</p>
               <div className="footer-social">
                 {details.instagram_url && (
                   <a href={details.instagram_url} aria-label="Instagram" target="_blank" rel="noopener noreferrer">
@@ -71,32 +81,16 @@ export default async function Footer() {
               </div>
             </div>
 
-            <div className="footer-col">
-              <h5>Explore</h5>
-              <Link href="/programmes">Programmes</Link>
-              <Link href="/community">Community Hub</Link>
-              <Link href="/community?tab=jobs#opportunities">Remote Jobs</Link>
-              <Link href="/community?tab=internships#opportunities">Internships</Link>
-              <Link href="/community?tab=scholarships#opportunities">Scholarships</Link>
-              <Link href="/community?tab=competitions#opportunities">Competitions</Link>
-              <Link href="/impact-content">Impact Stories</Link>
-              <Link href="/policy-research">Policy &amp; Research</Link>
-              <Link href="/wiki">Foundation Overview</Link>
-            </div>
+            {footer.columns.map(col => (
+              <div className="footer-col" key={col.title}>
+                <h5>{col.title}</h5>
+                {col.links.map(link => <FooterLinkItem key={`${link.label}-${link.href}`} link={link} />)}
+              </div>
+            ))}
 
             <div className="footer-col">
-              <h5>Get Involved</h5>
-              <Link href="/volunteer">Volunteer</Link>
-              <Link href="/careers">Careers</Link>
-              <Link href="/partner">Partner With Us</Link>
-              <Link href="/donate">Donate</Link>
-              <Link href="/contact">Contact</Link>
-              <Link href="/support">Support</Link>
-            </div>
-
-            <div className="footer-col">
-              <h5>Contact</h5>
-              <Link href="/contact">Send us a message</Link>
+              <h5>{footer.contactTitle}</h5>
+              <Link href="/contact">{footer.contactLinkLabel}</Link>
               {details.address_nigeria && (
                 <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                   <span aria-hidden="true">🇳🇬</span> {details.address_nigeria}
@@ -121,18 +115,15 @@ export default async function Footer() {
           </div>
         </div>
 
-        <div className="footer-mega" aria-hidden="true">WISSEN-HAUS</div>
+        <div className="footer-mega" aria-hidden="true">{footer.watermark}</div>
 
         <div className="wrap wrap-wide">
           <div className="footer-bottom">
-            <span> © {year} {brand.name}. All rights reserved.</span>
+            <span>{footerCopyright(footer.copyright, year)}</span>
             <span style={{ display: 'flex', gap: 16, alignItems: 'center', flexWrap: 'wrap' }}>
-              <Link href="/privacy">Privacy Policy</Link>
-              <Link href="/terms">Terms &amp; Conditions</Link>
-              <Link href="/safeguarding">Safeguarding</Link>
-              <Link href="/transparency/ledger">Financial Ledger</Link>
+              {footer.bottomLinks.map(link => <FooterLinkItem key={`${link.label}-${link.href}`} link={link} />)}
             </span>
-            <span>{details.tagline}</span>
+            <span>{footer.tagline || details.tagline}</span>
           </div>
         </div>
       </footer>

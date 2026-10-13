@@ -17,12 +17,14 @@ import BankDetailsEditor from '@/components/admin/BankDetailsEditor'
 import PageCopyEditor from '@/components/admin/PageCopyEditor'
 import PartnerScholarshipsEditor from '@/components/admin/PartnerScholarshipsEditor'
 import ContactDetailsEditor from '@/components/admin/ContactDetailsEditor'
+import FooterEditor from '@/components/admin/FooterEditor'
 import DonationProcessorEditor from '@/components/admin/DonationProcessorEditor'
 
 export const metadata: Metadata = { title: 'Content · Admin · Wissen-Haus' }
 
 const TABS = [
   { key: 'contact', label: '📞 Contact Details' },
+  { key: 'footer', label: '🔻 Footer' },
   { key: 'page-copy', label: '✏️ Page Copy' },
   { key: 'homepage', label: 'Homepage Hero' },
   { key: 'careers', label: 'Careers Roles' },
@@ -76,6 +78,7 @@ export default async function AdminContent({ searchParams }: { searchParams: Pro
 
       <div style={{ background: '#fff', borderRadius: 10, padding: 24, boxShadow: '0 1px 4px rgba(0,0,0,.06)' }}>
         {activeTab === 'contact' && <ContactDetailsEditor />}
+        {activeTab === 'footer' && <FooterEditor />}
         {activeTab === 'page-copy' && <PageCopyEditor />}
         {activeTab === 'homepage' && <HomeContentEditor />}
         {activeTab === 'careers' && <CareersEditor />}
