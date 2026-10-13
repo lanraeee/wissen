@@ -43,6 +43,7 @@ npm run dev
 | `CRON_SECRET` | Authorises the `/api/cron/*` endpoints, called by `.github/workflows/nightly-crons.yml` (opportunities, knowledge) and `ledger-sync.yml` (ledger) |
 | `TELEGRAM_BOT_TOKEN` | Optional. BotFather token for the Telegram command center — see `docs/TELEGRAM_BOT.md` |
 | `TELEGRAM_WEBHOOK_SECRET` | Optional. Checked on every webhook call; must match what `scripts/telegram-setup.mjs set` registered |
+| `TELEGRAM_ADMINS` | Optional. `telegramId:email` pairs linking Telegram accounts to admin accounts |
 | `TELEGRAM_BOT_USERNAME` | Optional. The bot's username without `@`, so `/command@YourBot` addressed to this bot is accepted |
 | `TELEGRAM_ADMINS` | Optional. `telegramId:email` pairs linking Telegram accounts to admin accounts. The six-hourly summary goes to these accounts too (`.github/workflows/telegram-digest.yml`) |
 
