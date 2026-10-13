@@ -94,6 +94,7 @@ export default async function VolunteerPage() {
             <h2>{c.applyHeading}</h2>
             <p className="lead">{c.applyLead}</p>
           </div>
+          <p className="lead center mb-m" style={{ maxWidth: 720, marginInline: 'auto' }}>{c.siteNote}</p>
           <VolunteerForm />
         </div>
       </section>

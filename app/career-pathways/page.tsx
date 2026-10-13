@@ -16,7 +16,7 @@ import './career-pathways.css'
 
 type Phase = 'form' | 'results'
 
-type PathwayKey = 'tech' | 'business' | 'media' | 'healthcare' | 'social' | 'entrepreneurship'
+type PathwayKey = 'tech' | 'business' | 'media' | 'healthcare' | 'social' | 'entrepreneurship' | 'care' | 'infrastructure'
 
 
 
@@ -114,6 +114,10 @@ const PATHWAYS = [
 
   { icon: '🤝', title: 'Social Impact', roles: 'NGO Leader, Policy Expert, Community Developer, CSR Manager', salary: '₦800K – ₦3M+/year' },
 
+  { icon: '🤲', title: 'Care & Support', roles: 'Community Care Coordinator, Support Worker, Early Years Assistant, Care Team Lead (non-clinical training)', salary: 'Salary range being verified' },
+
+  { icon: '🏗️', title: 'Infrastructure', roles: 'Site Supervisor, Project Coordinator, Civil Engineering Technician, Built-Environment Planner', salary: 'Salary range being verified' },
+
 ]
 
 
@@ -143,6 +147,8 @@ const PATHWAY_SKILLS: Record<PathwayKey, string[]> = {
   healthcare: ['Clinical Skills', 'Research', 'Empathy', 'Attention to Detail', 'Medical Knowledge'],
 
   social: ['Systems Thinking', 'Advocacy', 'Program Management', 'Community Building', 'Policy'],
+  care: ['Active Listening', 'Safeguarding Awareness', 'Record Keeping', 'First-Aid Basics', 'Teamwork'],
+  infrastructure: ['Project Planning', 'Site Safety', 'Technical Drawing', 'Budget Tracking', 'Quality Checks'],
 
   entrepreneurship: ['Business Planning', 'Financial Mgmt', 'Sales', 'Leadership', 'Innovation'],
 
@@ -163,6 +169,8 @@ function detectPathway(careerGoal: string): PathwayKey {
   if (g.includes('media') || g.includes('content') || g.includes('journal') || g.includes('creator') || g.includes('video') || g.includes('podcast') || g.includes('film')) return 'media'
 
   if (g.includes('health') || g.includes('medical') || g.includes('doctor') || g.includes('nurse') || g.includes('pharma') || g.includes('clinical')) return 'healthcare'
+  if (/\bcare\b|caregiv|carer|childcare|child care|support worker/.test(g)) return 'care'
+  if (/infrastructure|civil engineer|construction|architect|surveyor|built environment|urban planning|site supervisor/.test(g)) return 'infrastructure'
 
   if (g.includes('social') || g.includes('impact') || g.includes('ngo') || g.includes('policy') || g.includes('community') || g.includes('nonprofit')) return 'social'
 
@@ -422,9 +430,10 @@ export default function CareerPathwaysPage() {
 
               <div className="cp-section-box">
 
-                <div className="cp-section-title">💼 Discover 6 Career Pathways</div>
+                <div className="cp-section-title">💼 Discover 8 Career Pathways</div>
 
                 <p className="cp-section-sub">Explore different career paths with realistic salary ranges in Nigeria and the skills needed.</p>
+                <p className="cp-section-sub">Care & Support and Infrastructure are career training routes, not clinical or certified engineering advice. Roles in those fields need accredited qualifications and supervised practice. Salary ranges for these two are still being verified, so we have not published them.</p>
 
                 <div className="cp-pathway-grid">
 
