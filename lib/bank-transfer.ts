@@ -3,6 +3,21 @@ import {
   DEFAULT_BANK_DETAILS, normalizeBankDetails,
   type BankDetails, type BankPledge, type PledgeStatus, type BankCurrency,
 } from '@/lib/bank-transfer-shared'
+import { MAX_UPLOAD_BYTES } from '@/lib/whf-cio-files'
+
+// Proof of payment: a bank receipt or a screenshot of the transfer.
+export const PROOF_TYPES: Record<string, string> = {
+  'application/pdf': 'pdf',
+  'image/png': 'png',
+  'image/jpeg': 'jpg',
+}
+
+export function validateProof(file: { size: number; type: string }): string | null {
+  if (!file.size) return 'The file is empty'
+  if (file.size > MAX_UPLOAD_BYTES) return `File is too large (limit ${MAX_UPLOAD_BYTES / 1024 / 1024} MB)`
+  if (!PROOF_TYPES[file.type]) return 'Upload your receipt as a PDF, PNG or JPG'
+  return null
+}
 
 // Server-side helpers for the bank-transfer flow. Types and constants live in
 // bank-transfer-shared so the admin editor (a client component) can import them
@@ -74,6 +89,42 @@ function mapRow(row: Record<string, unknown>): BankPledge {
     confirmed_at: (row.confirmed_at as string | null) ?? undefined,
     donation_id: (row.donation_id as string | null) ?? undefined,
     cert_id: (row.donation_cert_id as string | null) ?? undefined,
+    proof_uploaded_at: (row.proof_uploaded_at as string | null) ?? undefined,
+    proof_file_name: (row.proof_file_name as string | null) ?? undefined,
+    proof_requested_at: (row.proof_requested_at as string | null) ?? undefined,
+  }
+}
+
+// Stores where a donor's proof of payment was saved. Replaces any earlier
+// upload, so a donor can send a clearer copy before declaring the transfer sent.
+export async function recordProof(
+  reference: string,
+  proof: { blobPath: string; fileName: string; contentType: string },
+): Promise<void> {
+  await sql`
+    UPDATE bank_transfers SET
+      proof_blob_path = ${proof.blobPath},
+      proof_file_name = ${proof.fileName},
+      proof_content_type = ${proof.contentType},
+      proof_uploaded_at = NOW()
+    WHERE reference = ${reference}
+  `
+}
+
+export async function markProofRequested(reference: string): Promise<void> {
+  await sql`UPDATE bank_transfers SET proof_requested_at = NOW() WHERE reference = ${reference}`
+}
+
+// The stored proof for an admin download. Server-only: the path never reaches a browser.
+export async function getProofLocation(reference: string): Promise<{ blobPath: string; fileName: string; contentType: string } | null> {
+  const [row] = await sql`
+    SELECT proof_blob_path, proof_file_name, proof_content_type FROM bank_transfers WHERE reference = ${reference}
+  `
+  if (!row?.proof_blob_path) return null
+  return {
+    blobPath: row.proof_blob_path as string,
+    fileName: row.proof_file_name as string,
+    contentType: row.proof_content_type as string,
   }
 }
 

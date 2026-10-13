@@ -123,6 +123,8 @@ export default async function BankTransferDetailsPage({ params }: Props) {
               instructions={details.instructions}
               donorEmail={pledge.email}
               supportEmail={contactDetails.primary_email}
+              proofUploaded={!!pledge.proof_uploaded_at}
+              proofFileName={pledge.proof_file_name}
             />
           )}
         </div>

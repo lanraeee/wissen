@@ -363,6 +363,8 @@ function recipientsFor(recipient: AlertRecipient, d: ContactDetails): string {
       return `${d.inbox_partnership} and ${admins}`
     case 'safeguarding':
       return `Safeguarding lead and team (WHF-CIO > Safeguarding), and ${admins}`
+    case 'master_admin':
+      return 'Master admin account only'
     case 'telegram':
       return 'Linked Telegram admins (Telegram, not email)'
     case 'none':

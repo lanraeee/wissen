@@ -365,6 +365,13 @@ CREATE TABLE IF NOT EXISTS bank_transfers (
 );
 CREATE UNIQUE INDEX IF NOT EXISTS idx_bank_transfers_reference ON bank_transfers(reference);
 CREATE INDEX IF NOT EXISTS idx_bank_transfers_status_created ON bank_transfers(status, created_at DESC);
+-- Proof of payment (receipt or screenshot). The file is stored in a private
+-- Blob store and served only through the admin route, never directly.
+ALTER TABLE bank_transfers ADD COLUMN IF NOT EXISTS proof_blob_path TEXT;
+ALTER TABLE bank_transfers ADD COLUMN IF NOT EXISTS proof_file_name TEXT;
+ALTER TABLE bank_transfers ADD COLUMN IF NOT EXISTS proof_content_type TEXT;
+ALTER TABLE bank_transfers ADD COLUMN IF NOT EXISTS proof_uploaded_at TIMESTAMPTZ;
+ALTER TABLE bank_transfers ADD COLUMN IF NOT EXISTS proof_requested_at TIMESTAMPTZ;
 
 -- Monthly giving commitments collected alongside volunteer and partner
 -- applications. This is a soft gate: the application itself (volunteer_

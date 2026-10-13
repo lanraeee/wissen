@@ -20,6 +20,18 @@ describe('viewAsRefusal', () => {
   it.each(['admin', 'editor', 'trustee'])('refuses staff accounts with role %s', role => {
     expect(viewAsRefusal(VIEWER, { ...member, role })).toMatch(/Only member accounts/)
   })
+
+  it.each(['admin', 'editor', 'trustee', 'user'])('lets the master admin view any %s account', role => {
+    expect(viewAsRefusal(VIEWER, { ...member, role }, true)).toBeNull()
+  })
+
+  it('lets the master admin view a protected account', () => {
+    expect(viewAsRefusal(VIEWER, { ...member, protected: true, role: 'admin' }, true)).toBeNull()
+  })
+
+  it('still refuses the master admin viewing their own account', () => {
+    expect(viewAsRefusal(VIEWER, { ...member, id: VIEWER }, true)).toMatch(/own account/)
+  })
 })
 
 describe('view-as tokens', () => {

@@ -135,6 +135,20 @@ describe('POST /api/admin/view-as', () => {
     expect(res.cookies.get('wh_view_as')?.httpOnly).toBe(true)
   })
 
+  it('lets the master admin view an editor account', async () => {
+    guardMock.mockResolvedValue({ id: VIEWER_ID, email: 'wissenhaus@outlook.com', role: 'admin' })
+    mockRows({ id: MEMBER_ID, email: 'ed@example.com', first_name: 'E', last_name: 'D', role: 'editor', membership_expiry: null })
+    const res = await POST(req({ userId: MEMBER_ID, password: 'pw' }))
+    expect(res.status).toBe(200)
+  })
+
+  it('still refuses a staff account for a non-master admin', async () => {
+    guardMock.mockResolvedValue({ id: VIEWER_ID, email: 'admin@example.com', role: 'admin' })
+    mockRows({ id: MEMBER_ID, email: 'ed@example.com', first_name: 'E', last_name: 'D', role: 'editor', membership_expiry: null })
+    const res = await POST(req({ userId: MEMBER_ID, reason, password: 'pw' }))
+    expect(res.status).toBe(403)
+  })
+
   it('still requires a reason from a non-master admin', async () => {
     guardMock.mockResolvedValue({ id: VIEWER_ID, email: 'admin@example.com', role: 'admin' })
     const res = await POST(req({ userId: MEMBER_ID, password: 'pw' }))

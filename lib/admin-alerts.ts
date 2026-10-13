@@ -12,6 +12,7 @@ export type AlertRecipient =
   | 'volunteers_inbox' // inbox_volunteer, plus the admin list
   | 'partners_inbox'   // inbox_partnership, plus the admin list
   | 'safeguarding'     // safeguarding lead, safeguarding team, plus the admin list
+  | 'master_admin'     // the master admin account only (it is the one that approves)
   | 'telegram'         // linked Telegram admins (not email)
   | 'none'             // no email; badge only
 
@@ -37,7 +38,7 @@ export const ADMIN_ALERTS: AdminAlert[] = [
   { label: 'Testimonial', trigger: 'Someone submits a testimonial', recipient: 'admin', badge: 'Testimonials: pending', badgePath: '/admin/testimonials' },
   { label: 'Support ticket', trigger: 'A new ticket, or a reply to one', recipient: 'admin', badge: 'Support: open and escalated', badgePath: '/admin/support' },
   { label: 'Safeguarding concern', trigger: 'A concern is reported (any route)', recipient: 'safeguarding', badge: 'WHF-CIO Records: new or triaging concerns (leads and directors only)', badgePath: '/admin/whf-cio' },
-  { label: 'Content approval request', trigger: 'A team member asks for content to be approved', recipient: 'none', badge: 'Content Approvals: pending', badgePath: '/admin/content-approvals' },
+  { label: 'Content approval request', trigger: 'A team member asks for content to be approved', recipient: 'master_admin', badge: 'Content Approvals: pending', badgePath: '/admin/content-approvals' },
   { label: 'Knowledge base answer', trigger: 'A team answer is waiting to join the knowledge base', recipient: 'none', badge: 'Knowledge Base: pending', badgePath: '/admin/knowledge' },
   { label: 'Telegram summary', trigger: 'Every six hours', recipient: 'telegram', badge: null },
 ]

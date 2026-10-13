@@ -60,7 +60,7 @@ export async function POST(req: NextRequest) {
     id: target.id as string,
     role: target.role as string,
     protected: isDirector(target.email as string) || isMasterAdmin(target.email as string) || isBlockedAdmin(target.email as string),
-  })
+  }, master)
   if (refusal) return NextResponse.json({ error: refusal }, { status: 403 })
 
   const name = `${target.first_name} ${target.last_name}`

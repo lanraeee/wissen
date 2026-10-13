@@ -162,7 +162,7 @@ export default function DonateWidget({ zeffyEnabled = false, zeffyFormUrl }: Pro
         <form onSubmit={handleSubmit}>
           <p style={{ fontSize: '.8rem', color: 'var(--ink-60,#8a9a8f)', margin: '0 0 22px', lineHeight: 1.5 }}>
             {method === 'bank'
-              ? "Fill in your details and we'll show you the account to transfer to, with a reference to quote. Your receipt and certificate follow once the transfer clears."
+              ? "Fill in your details and we'll show you the account to transfer to, with a reference to quote. Once you've sent it, you'll need to upload proof of payment (a bank receipt or screenshot) before we can match it. Your receipt and certificate follow once the transfer clears."
               : 'Pay securely by card — your receipt and certificate arrive by email straight away.'}
           </p>
 
