@@ -43,8 +43,12 @@ describe('every transactional email renders its default template with no leftove
   })
 
   it('sendContactNotification', async () => {
-    await email.sendContactNotification({ name: 'Ada Lovelace', email: 'ada@example.com', subject: 'Hi', message: 'Hello there' })
-    assertFullyRendered(sent())
+    await email.sendContactNotification({ name: 'Ada Lovelace', email: 'ada@example.com', subject: 'Hi', message: 'Hello there', topic: 'partnership' })
+    const payload = sent() as { subject: string; html: string; to?: unknown }
+    assertFullyRendered(payload)
+    // Delivered to the inbox for the chosen topic, and tagged with its label.
+    expect(payload.to).toBe('partnership@wissenhaus.org')
+    expect(payload.subject).toContain('Partnership')
   })
 
   it('sendContactConfirmation', async () => {

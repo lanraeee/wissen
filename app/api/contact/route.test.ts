@@ -37,8 +37,21 @@ describe('POST /api/contact', () => {
     expect(res.status).toBe(200)
     const body = await res.json()
     expect(body).toEqual({ success: true })
-    expect(sendContactNotification).toHaveBeenCalledWith(VALID_BODY)
+    // No topic sent: falls back to the general inbox.
+    expect(sendContactNotification).toHaveBeenCalledWith({ ...VALID_BODY, topic: 'general' })
     expect(sendContactConfirmation).toHaveBeenCalledWith(VALID_BODY.email, VALID_BODY.name)
+  })
+
+  it('passes the chosen topic through to the notification', async () => {
+    const res = await POST(jsonRequest({ ...VALID_BODY, topic: 'partnership' }))
+    expect(res.status).toBe(200)
+    expect(sendContactNotification).toHaveBeenCalledWith({ ...VALID_BODY, topic: 'partnership' })
+  })
+
+  it('rejects an unknown topic with 400, so no address can be chosen directly', async () => {
+    const res = await POST(jsonRequest({ ...VALID_BODY, topic: 'director@wissenhaus.org' }))
+    expect(res.status).toBe(400)
+    expect(sendContactNotification).not.toHaveBeenCalled()
   })
 
   it('rejects a submission missing required fields with 400, no emails sent', async () => {
