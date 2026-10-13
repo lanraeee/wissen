@@ -7,6 +7,7 @@ import {
 import { renderTemplate } from './email-render'
 import { EMAIL_TEMPLATES_BY_ID } from './email-catalog'
 import { getContactDetails } from './contact-details'
+import { CONTACT_TOPIC_LABEL, inboxFor, type ContactTopic } from './contact-routes'
 
 let _resend: Resend | null = null
 function getResend() {
@@ -84,13 +85,16 @@ export async function sendWelcomeEmail(to: string, name: string) {
   return sendEmail({ from: FROM, to, subject, html })
 }
 
-// ─── Contact form notification (to admin) ──────────────────────────────────
+// ─── Contact form notification (to the inbox for the chosen topic) ─────────
+// Delivered only to the topic's inbox (lib/contact-routes.ts). The sender's
+// address is never printed on a public page, so the inbox is the only place
+// the message goes.
 export async function sendContactNotification(data: {
-  name: string; email: string; subject: string; message: string
+  name: string; email: string; subject: string; message: string; topic: ContactTopic
 }) {
   const details = await getContactDetails()
   const vars = {
-    nameRaw: data.name, subjectLine: data.subject,
+    nameRaw: data.name, subjectLine: `[${CONTACT_TOPIC_LABEL[data.topic]}] ${data.subject}`,
     nameField: fieldText('Name', data.name),
     emailField: field('Email', mailtoLink(data.email)),
     subjectField: fieldText('Subject', data.subject),
@@ -98,7 +102,7 @@ export async function sendContactNotification(data: {
     replyBtn: replyButton(data.email, data.name),
   }
   const { subject, html } = await renderTemplate('contact-notification', vars, defaultsFor('contact-notification'))
-  return sendEmail({ from: FROM, to: details.admin_emails, replyTo: data.email, subject, html })
+  return sendEmail({ from: FROM, to: inboxFor(data.topic, details), replyTo: data.email, subject, html })
 }
 
 // ─── Contact confirmation (to user) ────────────────────────────────────────
@@ -122,7 +126,9 @@ export async function sendVolunteerNotification(data: {
     replyBtn: replyButton(data.email, data.name),
   }
   const { subject, html } = await renderTemplate('volunteer-notification', vars, defaultsFor('volunteer-notification'))
-  return sendEmail({ from: FROM, to: details.admin_emails, replyTo: data.email, subject, html })
+  // The volunteers inbox, plus the admin list (no duplicates).
+  const to = Array.from(new Set([inboxFor('volunteer', details), ...details.admin_emails]))
+  return sendEmail({ from: FROM, to, replyTo: data.email, subject, html })
 }
 
 // ─── Volunteer confirmation (to user) ──────────────────────────────────────
@@ -255,7 +261,9 @@ export async function sendPartnerNotification(data: {
     replyBtn: replyButton(data.email, data.name),
   }
   const { subject, html } = await renderTemplate('partner-notification', vars, defaultsFor('partner-notification'))
-  return sendEmail({ from: FROM, to: details.admin_emails, replyTo: data.email, subject, html })
+  // The partners inbox, plus the admin list (no duplicates).
+  const to = Array.from(new Set([inboxFor('partnership', details), ...details.admin_emails]))
+  return sendEmail({ from: FROM, to, replyTo: data.email, subject, html })
 }
 
 // ─── Partner confirmation (to inquirer) ────────────────────────────────────

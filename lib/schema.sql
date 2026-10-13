@@ -287,8 +287,12 @@ CREATE TABLE IF NOT EXISTS contact_messages (
   subject     TEXT NOT NULL,
   message     TEXT NOT NULL,
   status      TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending','reviewed','actioned')),
+  topic       TEXT NOT NULL DEFAULT 'general' CHECK (topic IN ('general','partnership','volunteer')),
   created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
+-- Migration (run once on existing DBs): which inbox the message was routed to.
+-- Existing rows become 'general'. Re-running is a no-op.
+ALTER TABLE contact_messages ADD COLUMN IF NOT EXISTS topic TEXT NOT NULL DEFAULT 'general' CHECK (topic IN ('general','partnership','volunteer'));
 CREATE INDEX IF NOT EXISTS idx_contact_messages_status_created ON contact_messages(status, created_at DESC);
 
 CREATE TABLE IF NOT EXISTS volunteer_applications (
