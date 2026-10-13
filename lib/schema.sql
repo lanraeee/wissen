@@ -287,8 +287,12 @@ CREATE TABLE IF NOT EXISTS contact_messages (
   subject     TEXT NOT NULL,
   message     TEXT NOT NULL,
   status      TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending','reviewed','actioned')),
+  topic       TEXT NOT NULL DEFAULT 'general' CHECK (topic IN ('general','partnership','volunteer')),
   created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
+-- Migration (run once on existing DBs): which inbox the message was routed to.
+-- Existing rows become 'general'. Re-running is a no-op.
+ALTER TABLE contact_messages ADD COLUMN IF NOT EXISTS topic TEXT NOT NULL DEFAULT 'general' CHECK (topic IN ('general','partnership','volunteer'));
 CREATE INDEX IF NOT EXISTS idx_contact_messages_status_created ON contact_messages(status, created_at DESC);
 
 CREATE TABLE IF NOT EXISTS volunteer_applications (
@@ -361,6 +365,13 @@ CREATE TABLE IF NOT EXISTS bank_transfers (
 );
 CREATE UNIQUE INDEX IF NOT EXISTS idx_bank_transfers_reference ON bank_transfers(reference);
 CREATE INDEX IF NOT EXISTS idx_bank_transfers_status_created ON bank_transfers(status, created_at DESC);
+-- Proof of payment (receipt or screenshot). The file is stored in a private
+-- Blob store and served only through the admin route, never directly.
+ALTER TABLE bank_transfers ADD COLUMN IF NOT EXISTS proof_blob_path TEXT;
+ALTER TABLE bank_transfers ADD COLUMN IF NOT EXISTS proof_file_name TEXT;
+ALTER TABLE bank_transfers ADD COLUMN IF NOT EXISTS proof_content_type TEXT;
+ALTER TABLE bank_transfers ADD COLUMN IF NOT EXISTS proof_uploaded_at TIMESTAMPTZ;
+ALTER TABLE bank_transfers ADD COLUMN IF NOT EXISTS proof_requested_at TIMESTAMPTZ;
 
 -- Monthly giving commitments collected alongside volunteer and partner
 -- applications. This is a soft gate: the application itself (volunteer_

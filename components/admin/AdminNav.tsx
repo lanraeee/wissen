@@ -38,9 +38,10 @@ export const NAV = [
 // isMasterAdmin is passed, same shape of exception as AI_AGENT_PATH/canUseAgent.
 export const ACCESS_CONTROL_ITEM = ['Access Control', '/admin/access-control'] as const
 
-// Maps a nav href to its key in useSubmissionsBadge()'s pending-counts
-// object (app/api/admin/inbox-counts). Donations/Opportunities/etc. have no
-// pending-triage concept, so they're simply absent here -- no badge shown.
+// Maps a nav href to its key in useSubmissionsBadge()'s counts object
+// (app/api/admin/inbox-counts). Each badge's meaning is listed in
+// lib/admin-alerts.ts, which the Contact Details tab also shows.
+// Opportunities, Courses and similar have no alert, so they have no badge.
 export const BADGE_KEYS: Record<string, string> = {
   '/admin/support': 'support',
   '/admin/contact': 'contact',
@@ -50,6 +51,11 @@ export const BADGE_KEYS: Record<string, string> = {
   '/admin/scholarships': 'scholarship',
   '/admin/content-approvals': 'content_approval',
   '/admin/knowledge': 'kb_pending',
+  '/admin/donations': 'donations',
+  '/admin/giving': 'giving',
+  '/admin/career-fair': 'career_fair',
+  '/admin/testimonials': 'testimonials',
+  '/admin/whf-cio': 'safeguarding',
 }
 
 export function isNavActive(pathname: string, href: string) {

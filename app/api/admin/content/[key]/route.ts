@@ -1,12 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
-import { adminGuard, directorGuard, masterAdminGuard, adminRole, sectionGuard, sectionWriteGuard } from '@/lib/admin-guard'
+import { adminGuard, directorGuard, masterAdminGuard, adminRole, sectionGuard, sectionWriteGuard, MASTER_ADMIN_EMAIL } from '@/lib/admin-guard'
 import { ACCESS_GRANTS_KEY } from '@/lib/admin-access-grants-shared'
 import { ACCESS_ROLES_KEY } from '@/lib/admin-access-roles-shared'
 import sql from '@/lib/db'
 import { parseBody } from '@/lib/validation'
 import { writeContent } from '@/lib/content-approvals'
 import { logActivity } from '@/lib/audit-log'
+import { sendContentApprovalRequest } from '@/lib/email'
+import { log } from '@/lib/logger'
 
 // site_content.value shape varies per key by design (each admin editor owns
 // its own shape) so this stays a generic JSON blob rather than a per-key
@@ -80,6 +82,18 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ key:
               ${session.id}, ${session.email})
     `
     logActivity(session, 'content.request', { targetType: 'site_content', targetId: key })
+    // Only the master admin can approve, so that is who needs to know it is waiting.
+    try {
+      const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://wissenhaus.org'
+      await sendContentApprovalRequest({
+        to: MASTER_ADMIN_EMAIL,
+        keyLabel: key,
+        requestedBy: session.email as string,
+        reviewUrl: `${siteUrl}/admin/content-approvals`,
+      })
+    } catch (err) {
+      log.error('content approval request email', err)
+    }
     return NextResponse.json({ success: true, pending: true })
   }
 

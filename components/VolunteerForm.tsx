@@ -50,6 +50,8 @@ export default function VolunteerForm() {
         <option>Technical Training</option>
         <option>Operations &amp; Events</option>
         <option>Content Creation</option>
+        <option>Care &amp; Support</option>
+        <option>Infrastructure &amp; Community Build</option>
         <option>Other</option>
       </FormSelect>
       <FormTextarea

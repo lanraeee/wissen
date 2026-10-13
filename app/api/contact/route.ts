@@ -5,12 +5,16 @@ import sql from '@/lib/db'
 import { parseBody, zEmail, zName, zShortText, zLongText } from '@/lib/validation'
 import { log } from '@/lib/logger'
 import { recordConcern, looksLikeSafeguarding } from '@/lib/safeguarding'
+import { CONTACT_TOPICS } from '@/lib/contact-routes'
 
 const ContactSchema = z.object({
   name: zName,
   email: zEmail,
   subject: zShortText,
   message: zLongText,
+  // Picks the inbox the message is delivered to (lib/contact-routes.ts).
+  // Older clients that send no topic land in the general inbox.
+  topic: z.enum(CONTACT_TOPICS).default('general'),
   // "This is a safeguarding concern" on the contact form.
   safeguarding: z.boolean().optional(),
 })
@@ -18,7 +22,7 @@ const ContactSchema = z.object({
 export async function POST(req: NextRequest) {
   const { data, error } = await parseBody(req, ContactSchema)
   if (error) return error
-  const { name, email, subject, message, safeguarding } = data
+  const { name, email, subject, message, safeguarding, topic } = data
 
   // A message the sender marked as a safeguarding concern goes only to the
   // restricted incident log, not to the general contact inbox and its
@@ -41,7 +45,7 @@ export async function POST(req: NextRequest) {
 
   let contactId: string | undefined
   try {
-    const rows = await sql`INSERT INTO contact_messages (name, email, subject, message) VALUES (${name}, ${email}, ${subject}, ${message}) RETURNING id`
+    const rows = await sql`INSERT INTO contact_messages (name, email, subject, message, topic) VALUES (${name}, ${email}, ${subject}, ${message}, ${topic}) RETURNING id`
     contactId = rows?.[0]?.id as string | undefined
   } catch { /* non-fatal if DB unavailable */ }
 
@@ -60,7 +64,7 @@ export async function POST(req: NextRequest) {
 
   try {
     await Promise.all([
-      sendContactNotification({ name, email, subject, message }),
+      sendContactNotification({ name, email, subject, message, topic }),
       sendContactConfirmation(email, name),
     ])
   } catch (err) {

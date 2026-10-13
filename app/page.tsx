@@ -90,7 +90,7 @@ export default async function HomePage() {
               <h2 className="mt-s">{tagline}</h2>
             </div>
             <div className="reveal--right">
-              <p className="lead">We are dedicated to bridging the skills gap for African youth and the diaspora by equipping young people with practical career guidance and global exposure. Founded in Ibadan, Nigeria, our mission is to empower the next generation — in Nigeria, across Africa, and internationally — through economic independence and social impact.</p>
+              <p className="lead">We are dedicated to bridging the skills gap for African youth and the diaspora by equipping young people with practical career guidance and global exposure. Two threads run through that work: training young people for care and support, and for the infrastructure that makes communities work. Founded in Ibadan, Nigeria, our mission is to empower the next generation — in Nigeria, across Africa, and internationally — through economic independence and social impact.</p>
               <Link href="/about" className="textlink mt-m">Read our story {ARROW}</Link>
             </div>
           </div>

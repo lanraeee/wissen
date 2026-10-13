@@ -67,7 +67,7 @@ export function replyButton(email: string, name: string) {
 // contact details, the same way it already patches the brand name via
 // brandify(). A send is never blocked on this: if that replacement fails for
 // any reason the static defaults still render a complete, correct-looking
-// email, just with Nigeria/HQ defaults instead of whatever admin edited.
+// email, just with NGA/HQ defaults instead of whatever admin edited.
 
 export const SITE_URL = 'https://www.wissenhaus.org'
 export const DEFAULT_TAGLINE = 'Empowering Youth, Shaping Futures'
@@ -122,7 +122,7 @@ function defaultFooterInner(brand: EmailBrand = { name: 'Wissen-Haus', descripto
     primary_email: 'info@wissenhaus.org',
     phone_nigeria: '+234800947736',
     phone_uk: '',
-    address_nigeria: 'Ibadan, Oyo State, Nigeria',
+    address_nigeria: 'Ibadan, Oyo State, NGA',
     address_uk: '',
     instagram_url: 'https://www.instagram.com/wissen_haus',
     linkedin_url: 'https://www.linkedin.com/company/wissen-haus-empowerment-foundation',
@@ -134,7 +134,7 @@ function defaultFooterInner(brand: EmailBrand = { name: 'Wissen-Haus', descripto
   const year = new Date().getFullYear()
 
   const offices = [
-    c.address_nigeria && `Nigeria: ${esc(c.address_nigeria)}${c.phone_nigeria ? ` · ${esc(c.phone_nigeria)}` : ''}`,
+    c.address_nigeria && `NGA: ${esc(c.address_nigeria)}${c.phone_nigeria ? ` · ${esc(c.phone_nigeria)}` : ''}`,
     c.address_uk && `UK: ${esc(c.address_uk)}${c.phone_uk ? ` · ${esc(c.phone_uk)}` : ''}`,
   ].filter(Boolean).join('<br/>')
 
@@ -218,7 +218,7 @@ export function shell(body: string, tagline: string = DEFAULT_TAGLINE) {
   <div class="body">${body}</div>
   <div class="foot">${FOOTER_START}${defaultFooterInner(undefined, { ...{
     primary_email: 'info@wissenhaus.org', phone_nigeria: '+234800947736', phone_uk: '',
-    address_nigeria: 'Ibadan, Oyo State, Nigeria', address_uk: '',
+    address_nigeria: 'Ibadan, Oyo State, NGA', address_uk: '',
     instagram_url: 'https://www.instagram.com/wissen_haus',
     linkedin_url: 'https://www.linkedin.com/company/wissen-haus-empowerment-foundation',
     twitter_url: '', whatsapp_url: '', tagline,

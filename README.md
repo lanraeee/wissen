@@ -22,6 +22,7 @@ Web platform for Wissen-Haus — a Nigerian NGO bridging the skills gap by equip
 - Policy research library
 - Automated opportunity refresh via cron
 - Telegram command center for admins (`docs/TELEGRAM_BOT.md`)
+- Support "view as member": a read-only, 30-minute view of a member's account, logged with a reason (`docs/VIEW_AS.md`)
 
 ## Getting Started
 
@@ -43,6 +44,8 @@ npm run dev
 | `TELEGRAM_BOT_TOKEN` | Optional. BotFather token for the Telegram command center — see `docs/TELEGRAM_BOT.md` |
 | `TELEGRAM_WEBHOOK_SECRET` | Optional. Checked on every webhook call; must match what `scripts/telegram-setup.mjs set` registered |
 | `TELEGRAM_ADMINS` | Optional. `telegramId:email` pairs linking Telegram accounts to admin accounts |
+| `TELEGRAM_BOT_USERNAME` | Optional. The bot's username without `@`, so `/command@YourBot` addressed to this bot is accepted |
+| `TELEGRAM_ADMINS` | Optional. `telegramId:email` pairs linking Telegram accounts to admin accounts. The six-hourly summary goes to these accounts too (`.github/workflows/telegram-digest.yml`) |
 
 Additional variables for Stripe, Paystack, and Resend are required for payments and email — see your provider dashboards.
 

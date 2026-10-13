@@ -35,3 +35,23 @@ export async function logActivity(
     log.error('audit-log', err, { action, actorId: actor.id })
   }
 }
+
+/**
+ * Like logActivity, but throws when the row cannot be written. Use it where
+ * the action must not happen unless it is on the record, such as opening a
+ * member's account to an admin.
+ */
+export async function logActivityRequired(
+  actor: Actor,
+  action: string,
+  opts: { targetType?: string; targetId?: string; details?: Record<string, unknown> } = {}
+): Promise<void> {
+  await sql`
+    INSERT INTO admin_activity_log (actor_id, actor_email, actor_role, action, target_type, target_id, details)
+    VALUES (
+      ${actor.id}, ${actor.email}, ${actor.role ?? 'user'}, ${action},
+      ${opts.targetType ?? null}, ${opts.targetId ?? null},
+      ${opts.details ? JSON.stringify(opts.details) : null}
+    )
+  `
+}
