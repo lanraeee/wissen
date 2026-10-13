@@ -60,6 +60,7 @@ export default async function AboutStoryPage() {
               <p className="lead mt-m"><strong style={{ color: '#fff' }}>{c.pillar1Label}</strong> — {c.pillar1Body}</p>
               <p className="lead mt-m"><strong style={{ color: '#fff' }}>{c.pillar2Label}</strong> — {c.pillar2Body}</p>
               <p className="lead mt-m"><strong style={{ color: '#fff' }}>{c.pillar3Label}</strong> — {c.pillar3Body}</p>
+              <p className="lead mt-m">{c.s2Thread}</p>
               <p className="lead mt-m">{c.s2Closing}</p>
             </div>
           </div>

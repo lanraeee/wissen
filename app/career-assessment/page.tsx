@@ -85,6 +85,7 @@ const QUESTIONS = [
       { label: 'Creative Arts & Design', icon: '🎨' },
 
       { label: 'Social Impact & Community', icon: '🌍' },
+      { label: 'Care & Community Support', icon: '🤲' },
 
     ],
 
@@ -291,6 +292,7 @@ const SCORING: ScoreMap[][] = [
     { ux: 3, cc: 3, mm: 2 },
 
     { sim: 3, te: 2, pa: 3 },
+    { sim: 3, te: 1 },
 
   ],
 
@@ -523,6 +525,7 @@ const MATCH_SIGNALS: Record<CareerKey, Record<string, string>> = {
   sim: {
 
     '0_4': 'Passion for social impact is the defining trait of great Social Impact Managers.',
+    '0_5': 'Care and support work is community work at its core: patience, reliability and dignity are what make programmes last.',
 
     '1_3': 'Field-based community work is where social impact professionals create real change.',
 

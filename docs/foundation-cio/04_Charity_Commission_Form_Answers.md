@@ -69,9 +69,9 @@ Your draft has almost every box ticked, including pre-school, village hall, leis
 
 | Question | Draft answer |
 |---|---|
-| Subjects the organisation advances education in | Career guidance and career planning; employability and workplace skills; digital and data skills; entrepreneurship; financial and economic independence. |
+| Subjects the organisation advances education in | Career guidance and career planning; employability and workplace skills; digital and data skills; entrepreneurship; financial and economic independence; **[CONFIRM and add once running:]** care and support skills (non-clinical); infrastructure and built-environment skills (technical and vocational). |
 | What it does to support/advance education | Runs career fairs, workshops, seminars, mentorship, free and premium online courses, and signposts partner-funded scholarships and opportunities. |
-| Provides training in | Practical career skills, employability, digital skills, entrepreneurship. **[CONFIRM list]** |
+| Provides training in | Practical career skills, employability, digital skills, entrepreneurship. **[CONFIRM list]** Add, only when the courses are running: non-clinical care and support training; technical and vocational infrastructure training. Training does not include clinical or certified engineering practice. |
 | Qualifications the training leads to | Wissen Haus certificates of completion (not accredited qualifications). **[CONFIRM]** |
 | Educational establishments supported and how | Secondary schools (via the Career Clarity Fair), by delivering career-guidance sessions on site. **[CONFIRM schools]** |
 | Support to students and where | Mentoring, career guidance and scholarship/opportunity information for secondary and tertiary students in Nigeria, Ghana, Kenya, South Africa and the diaspora. |
@@ -180,7 +180,7 @@ Reviewed against the newer 22-page draft printout (application 5300610). Section
 ## Answers for blank fields
 
 **Page 6: What does the organisation advance education in?**
-Career guidance and career planning; employability and workplace skills; digital and data skills; entrepreneurship; and financial and economic independence.
+Career guidance and career planning; employability and workplace skills; digital and data skills; entrepreneurship; and financial and economic independence. **[CONFIRM and add once running:]** non-clinical care and support skills, and technical infrastructure and built-environment skills.
 
 **Page 6: How are the trustees satisfied that all those providing education are suitably qualified?**
 Trainers, speakers and mentors are chosen for relevant professional or teaching experience, with identity checks, two references and safeguarding vetting (see wissenhaus.org/safeguarding). The programmes lead reviews content and delivery, participant feedback is collected after each programme, and trustees receive an annual report on who delivered what and their credentials.

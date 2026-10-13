@@ -40,6 +40,8 @@ export const CAREER_INTERESTS = [
   'Education',
   'Skilled Trades',
   'Science & Research',
+  'Care & Support',
+  'Infrastructure & Construction',
   'Other',
 ] as const
 
