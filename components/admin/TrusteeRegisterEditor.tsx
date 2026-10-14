@@ -175,7 +175,7 @@ export default function TrusteeRegisterEditor() {
         <div>
           <h2 style={{ margin: '0 0 4px', fontSize: '1.1rem' }}>Charity Trustee Register</h2>
           <p style={{ margin: 0, fontSize: '.8rem', color: '#8a9a8f' }}>
-            Governance record for Wissen-Haus Empowerment Foundation. Only directors can view and manage.
+            Governance record for Wissen-Haus Foundation. Only directors can view and manage.
           </p>
         </div>
         <button style={s('#1a3c2e')} onClick={startNew} disabled={showForm}>

@@ -18,7 +18,7 @@ describe('brand', () => {
     expect(brandFromSettings({ brand_name: 'x'.repeat(200) }).name.length).toBe(60)
   })
   it('replaces the full and short default names', () => {
-    expect(brandify('Wissen-Haus Empowerment Foundation runs Wissen-Haus', B)).toBe('Acme Trust runs Acme')
+    expect(brandify('Wissen-Haus Foundation runs Wissen-Haus', B)).toBe('Acme Trust runs Acme')
     expect(brandify('The Wissen-Haus journey', { name: 'Acme', descriptor: '' })).toBe('The Acme journey')
   })
   it('does not treat replacement text specially', () => {

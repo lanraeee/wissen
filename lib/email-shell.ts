@@ -88,7 +88,7 @@ export const FOOTER_END = '<!--/WH_FOOTER-->'
 
 export interface EmailBrand { name: string; descriptor: string }
 
-function defaultHeaderInner(brand: EmailBrand = { name: 'Wissen-Haus', descriptor: 'Empowerment Foundation' }) {
+function defaultHeaderInner(brand: EmailBrand = { name: 'Wissen-Haus', descriptor: 'Foundation' }) {
   return `<img src="${LOGO_URL}" width="48" height="48" alt="${esc(brand.name)}" style="display:block;margin:0 auto 10px;border-radius:10px"/>
     <h1>${esc(brand.name)}</h1>
     ${brand.descriptor ? `<p>${esc(brand.descriptor)}</p>` : ''}`

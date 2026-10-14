@@ -16,7 +16,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSiteContent<{ tagline?: string }>('site_settings')
   const tagline = settings?.tagline || 'Empowering Youth, Shaping Futures'
   const seo = await getOgCopy(ogSchemaFor('home')!, {
-    title: `Wissen-Haus Empowerment Foundation · ${tagline}`,
+    title: `Wissen-Haus Foundation · ${tagline}`,
     ogTitle: `Wissen-Haus — ${tagline}`,
   })
   return pageMetadata(seo)

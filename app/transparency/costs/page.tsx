@@ -11,7 +11,7 @@ export const dynamic = 'force-dynamic'
 export const metadata: Metadata = pageMetadata({
   title: 'Operational Fixed Costs · Wissen-Haus',
   ogTitle: 'What it costs to run Wissen-Haus',
-  description: 'What it costs each month to keep the Wissen-Haus Empowerment Foundation running: the core tools, services and admin.',
+  description: 'What it costs each month to keep the Wissen-Haus Foundation running: the core tools, services and admin.',
 })
 
 type Cost = CostRow & { id: string; name: string; category: string; supplier: string | null }

@@ -25,7 +25,7 @@ const DEFAULTS: Settings = {
   linkedin_url: '',
   twitter_url: '',
   brand_name: 'Wissen-Haus',
-  brand_descriptor: 'Empowerment Foundation',
+  brand_descriptor: 'Foundation',
   tagline: 'Empowering Youth, Shaping Futures',
   footer_note: '',
   google_business_url: '',
@@ -109,7 +109,7 @@ export default function SettingsEditor() {
       {error && <div style={{ marginBottom: 16, color: '#dc2626', fontSize: '.85rem', background: '#fee2e2', padding: '8px 14px', borderRadius: 7 }}>{error}</div>}
 
       <p style={{ margin: '0 0 16px', fontSize: '.78rem', color: '#8a9a8f', lineHeight: 1.6 }}>
-        Brand Name and Descriptor replace “Wissen-Haus Empowerment Foundation” in the header, footer, page titles, share previews, emails and page text as soon as you save. Legal names (Foundation Details, constitution) are separate and unchanged.
+        Brand Name and Descriptor replace “Wissen-Haus Foundation” in the header, footer, page titles, share previews, emails and page text as soon as you save. Legal names (Foundation Details, constitution) are separate and unchanged.
       </p>
       <div className="rgrid-2" style={{ gap: 16, marginBottom: 28 }}>
         {fields.map(([key, label, type]) => (

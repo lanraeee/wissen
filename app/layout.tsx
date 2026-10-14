@@ -14,12 +14,12 @@ const BASE_METADATA: Metadata = {
   // No title template: every page already writes its own full title
   // ("X · Wissen-Haus") rather than just "X", since that's simpler to read
   // at a glance in each page file. A template here would double the suffix.
-  title: 'Wissen-Haus Empowerment Foundation',
+  title: 'Wissen-Haus Foundation',
   description: 'Bridging the skills gap for African youth and the diaspora — practical guidance, mentorship and global exposure for economic independence. Founded in Ibadan, Nigeria, now reaching youth across Africa and internationally, including the UK.',
   keywords: ['youth empowerment Africa', 'career guidance Nigeria', 'skills gap Africa', 'African diaspora youth', 'Ibadan youth foundation', 'mentorship Nigeria UK', 'Wissen-Haus'],
-  authors: [{ name: 'Wissen-Haus Empowerment Foundation' }],
-  creator: 'Wissen-Haus Empowerment Foundation',
-  publisher: 'Wissen-Haus Empowerment Foundation',
+  authors: [{ name: 'Wissen-Haus Foundation' }],
+  creator: 'Wissen-Haus Foundation',
+  publisher: 'Wissen-Haus Foundation',
   icons: {
     icon: [
       { url: '/img/logo.png', sizes: '32x32', type: 'image/png' },
@@ -32,21 +32,21 @@ const BASE_METADATA: Metadata = {
     type: 'website',
     locale: 'en_NG',
     url: 'https://www.wissenhaus.org',
-    siteName: 'Wissen-Haus Empowerment Foundation',
-    title: 'Wissen-Haus Empowerment Foundation',
+    siteName: 'Wissen-Haus Foundation',
+    title: 'Wissen-Haus Foundation',
     description: 'Bridging the skills gap for African youth and the diaspora — practical guidance, mentorship and global exposure for economic independence.',
     images: [
       {
         url: '/opengraph-image',
         width: 1200,
         height: 630,
-        alt: 'Wissen-Haus Empowerment Foundation',
+        alt: 'Wissen-Haus Foundation',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Wissen-Haus Empowerment Foundation',
+    title: 'Wissen-Haus Foundation',
     description: 'Bridging the skills gap for African youth and the diaspora — practical guidance, mentorship and global exposure for economic independence.',
     images: ['/opengraph-image'],
   },

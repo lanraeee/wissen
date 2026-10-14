@@ -2,7 +2,7 @@ import { OG_SIZE, loadCardData, loadLogo, loadPageCopy, renderCard } from '@/lib
 
 export const runtime = 'edge'
 export const dynamic = 'force-dynamic'
-export const alt = 'Wissen-Haus Empowerment Foundation — Encyclopedia Overview'
+export const alt = 'Wissen-Haus Foundation — Encyclopedia Overview'
 export const size = OG_SIZE
 export const contentType = 'image/png'
 
