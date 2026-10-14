@@ -12,6 +12,15 @@ export async function generateMetadata(): Promise<Metadata> {
   return pageMetadata(await getOgCopy(ogSchemaFor('about')!))
 }
 
+// The four questions every programme answers before it starts. Written as
+// commitments about how we work, so each one must be true of current programmes.
+const HOW_WE_CHOOSE = [
+  { question: 'Who is it for?', answer: 'A named group of young people, not a general audience.' },
+  { question: 'What lasts after the cohort leaves?', answer: 'Skills, materials and networks that keep working without us.' },
+  { question: 'Who runs it?', answer: 'A named lead, accountable for it after launch.' },
+  { question: 'What do we learn?', answer: 'Each programme feeds what we change next time.' },
+]
+
 export default async function AboutPage() {
   const c = await getPageCopy(ABOUT_SCHEMA)
   return (
@@ -60,6 +69,27 @@ export default async function AboutPage() {
               <article className="feature reveal" key={o.title}>
                 <span className="card__num">0{i + 1}</span>
                 <p><strong>{o.title}</strong>{o.rest}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="section">
+        <div className="wrap">
+          <div className="section-head mb-l reveal">
+            <span className="eyebrow">How We Choose Our Work</span>
+            <h2>Lasting help, not one-off help.</h2>
+            <p className="lead mt-s">
+              One-off help meets this month&#39;s need. A skill a young person keeps, or a network that keeps meeting after the course ends, meets next year&#39;s. Every programme we run answers four questions before it starts.
+            </p>
+          </div>
+          <div className="grid grid-2">
+            {HOW_WE_CHOOSE.map((q, i) => (
+              <article className="feature reveal" key={q.question}>
+                <span className="card__num">0{i + 1}</span>
+                <h3>{q.question}</h3>
+                <p>{q.answer}</p>
               </article>
             ))}
           </div>
