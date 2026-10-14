@@ -62,12 +62,11 @@ export function replyButton(email: string, name: string) {
 // shell() ships with sensible static defaults (used as-is by the admin
 // template preview, which never fetches live data) between HTML comment
 // markers. lib/email.ts's sendEmail() — the one chokepoint every real send
-// passes through — replaces the marked regions with renderEmailHeader()/
-// renderEmailFooter() output built from the actually-configured brand and
-// contact details, the same way it already patches the brand name via
-// brandify(). A send is never blocked on this: if that replacement fails for
-// any reason the static defaults still render a complete, correct-looking
-// email, just with NGA/HQ defaults instead of whatever admin edited.
+// passes through — replaces the marked regions with renderEmailHeader() output
+// built from the configured brand, and renderEmailFooter() output. The footer
+// text is fixed (see renderEmailFooter); only its tagline follows the caller.
+// A send is never blocked on this: if that replacement fails for any reason
+// the static defaults still render a complete, correct-looking email.
 
 export const SITE_URL = 'https://www.wissenhaus.org'
 export const DEFAULT_TAGLINE = 'Empowering Youth, Shaping Futures'
@@ -89,19 +88,6 @@ export const FOOTER_END = '<!--/WH_FOOTER-->'
 
 export interface EmailBrand { name: string; descriptor: string }
 
-export interface EmailContact {
-  primary_email: string
-  phone_nigeria: string
-  phone_uk: string
-  address_nigeria: string
-  address_uk: string
-  instagram_url: string
-  linkedin_url: string
-  twitter_url: string
-  whatsapp_url: string
-  tagline: string
-}
-
 function defaultHeaderInner(brand: EmailBrand = { name: 'Wissen-Haus', descriptor: 'Empowerment Foundation' }) {
   return `<img src="${LOGO_URL}" width="48" height="48" alt="${esc(brand.name)}" style="display:block;margin:0 auto 10px;border-radius:10px"/>
     <h1>${esc(brand.name)}</h1>
@@ -113,55 +99,27 @@ export function renderEmailHeader(brand: EmailBrand) {
   return defaultHeaderInner(brand)
 }
 
-function socialLink(url: string, label: string) {
-  return url ? `<a href="${esc(url)}" style="color:#8a9a8f;text-decoration:underline">${esc(label)}</a>` : ''
-}
-
-function defaultFooterInner(brand: EmailBrand = { name: 'Wissen-Haus', descriptor: 'Empowerment Foundation' }, contact?: EmailContact) {
-  const c: EmailContact = contact ?? {
-    primary_email: 'info@wissenhaus.org',
-    phone_nigeria: '+234800947736',
-    phone_uk: '',
-    address_nigeria: 'Ibadan, Oyo State, NGA',
-    address_uk: '',
-    instagram_url: 'https://www.instagram.com/wissen_haus',
-    linkedin_url: 'https://www.linkedin.com/company/wissen-haus-empowerment-foundation',
-    twitter_url: '',
-    whatsapp_url: '',
-    tagline: DEFAULT_TAGLINE,
-  }
-  const fullName = brand.descriptor ? `${brand.name} ${brand.descriptor}` : brand.name
+// The footer every email carries. The text is fixed here rather than read from
+// contact_details, on purpose: the same block is pasted into the Resend
+// templates, which cannot read the database, so a live send and its template
+// always show the same footer. Contact details still drive the website footer
+// and the contact page. The tagline is the one part that follows the caller,
+// so a template can keep its own.
+export function renderEmailFooter(tagline: string = DEFAULT_TAGLINE) {
   const year = new Date().getFullYear()
-
-  const offices = [
-    c.address_nigeria && `NGA: ${esc(c.address_nigeria)}${c.phone_nigeria ? ` · ${esc(c.phone_nigeria)}` : ''}`,
-    c.address_uk && `UK: ${esc(c.address_uk)}${c.phone_uk ? ` · ${esc(c.phone_uk)}` : ''}`,
-  ].filter(Boolean).join('<br/>')
-
-  const socials = [
-    socialLink(c.instagram_url, 'Instagram'),
-    socialLink(c.linkedin_url, 'LinkedIn'),
-    socialLink(c.twitter_url, 'X / Twitter'),
-    socialLink(c.whatsapp_url, 'WhatsApp'),
-  ].filter(Boolean).join(' · ')
-
-  return `<strong>${esc(c.tagline)}</strong><br/>
-    ${esc(fullName)}<br/>
-    ${offices}<br/>
-    <a href="mailto:${esc(c.primary_email)}">${esc(c.primary_email)}</a> · <a href="${SITE_URL}">wissenhaus.org</a>
-    ${socials ? `<div style="margin-top:10px">${socials}</div>` : ''}
+  return `<strong>${esc(tagline)}</strong><br/>
+    Wissen Haus Foundation<br/>
+    NGA: Ibadan, Oyo State · <a href="tel:+234800947736">+234800947736</a><br/>
+    UK: Manchester, England · <a href="tel:+443302201562">+443302201562</a><br/>
+    <a href="mailto:info@wissenhaus.org">info@wissenhaus.org</a> · <a href="${SITE_URL}/">wissenhaus.org</a>
+    <div style="margin-top:10px"><a href="https://www.instagram.com/wissen_haus" style="color:#8a9a8f;text-decoration:underline">Instagram</a> · <a href="https://www.linkedin.com/company/wissen-haus-empowerment-foundation" style="color:#8a9a8f;text-decoration:underline">LinkedIn</a></div>
     <div class="legal-links" style="margin-top:14px">
       <a href="${SITE_URL}/privacy">Privacy Policy</a> ·
       <a href="${SITE_URL}/terms">Terms &amp; Conditions</a> ·
       <a href="${SITE_URL}/safeguarding">Safeguarding</a> ·
       <a href="${SITE_URL}/policy-research">Policy &amp; Research</a>
     </div>
-    <div style="margin-top:10px;color:#b4c4ba">© ${year} ${esc(fullName)}. All rights reserved.</div>`
-}
-
-/** Real footer chrome built from the live brand + contact details -- what sendEmail() splices in for every actual send. */
-export function renderEmailFooter(brand: EmailBrand, contact: EmailContact) {
-  return defaultFooterInner(brand, contact)
+    <div style="margin-top:10px;color:#b4c4ba">© ${year} Wissen Haus Foundation UK &amp; Wissen Haus Empowerment Foundation NGA. All rights reserved.</div>`
 }
 
 // ─── Shared HTML shell ─────────────────────────────────────────────────────
@@ -216,13 +174,7 @@ export function shell(body: string, tagline: string = DEFAULT_TAGLINE) {
 <div class="wrap">
   <div class="head">${HEADER_START}${defaultHeaderInner()}${HEADER_END}</div>
   <div class="body">${body}</div>
-  <div class="foot">${FOOTER_START}${defaultFooterInner(undefined, { ...{
-    primary_email: 'info@wissenhaus.org', phone_nigeria: '+234800947736', phone_uk: '',
-    address_nigeria: 'Ibadan, Oyo State, NGA', address_uk: '',
-    instagram_url: 'https://www.instagram.com/wissen_haus',
-    linkedin_url: 'https://www.linkedin.com/company/wissen-haus-empowerment-foundation',
-    twitter_url: '', whatsapp_url: '', tagline,
-  } })}${FOOTER_END}</div>
+  <div class="foot">${FOOTER_START}${renderEmailFooter(tagline)}${FOOTER_END}</div>
 </div>
 </body>
 </html>`
