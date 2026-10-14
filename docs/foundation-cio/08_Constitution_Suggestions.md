@@ -1,7 +1,7 @@
 # Constitution suggestions for trustee review
 
 **Date:** 14 October 2026
-**Status:** Sections 1 to 6 have been written into `03_Constitution_DRAFT.md` (clauses 3.1(e), (k) to (o), 3.2, 3.3, 5.2.6, 9.4, 17.3.2(c) and 17.4). Clause 2.1 is unchanged. They are still a draft: the trustees must approve them and a charity solicitor should check the wording before the application is signed.
+**Status:** Sections 1 to 6 have been written into `03_Constitution_DRAFT.md` (clauses 3.1(e), (k) to (o), 3.2, 3.3, 5.2.6, 9.5, 17.3.2(c) and 17.4). Clause 2.1 is unchanged. They are still a draft: the trustees must approve them and a charity solicitor should check the wording before the application is signed.
 
 ## Principles
 

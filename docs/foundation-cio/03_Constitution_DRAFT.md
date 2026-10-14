@@ -66,7 +66,7 @@
 
 3.2 The CIO may carry on a trade or business only where it is (a) in the course of carrying out a primary purpose of the CIO, or (b) ancillary to and in furtherance of its charitable objects. Any other trade or business shall be carried on only through a company under clause 3.1(m), and the profits of that company shall be applied only for the charitable objects.
 
-3.3 Any company in which the CIO holds shares or has control shall be managed under written terms approved by the charity trustees, and no charity trustee shall be remunerated for acting as its director unless clause 8.2 permits it. Clause 9.4 applies to any transaction between the CIO and a connected company.
+3.3 Any company in which the CIO holds shares or has control shall be managed under written terms approved by the charity trustees, and no charity trustee shall be remunerated for acting as its director unless clause 8.2 permits it. Clause 9.5 applies to any transaction between the CIO and a connected company.
 
 ---
 
@@ -356,11 +356,11 @@ If a charity trustee has failed to disclose a material conflict of interest and 
 
 ---
 
-### 9.4 Connected Companies
+### 9.5 Connected Companies
 
-9.4.1 In this clause, a "connected company" means any company, partnership or other body in which a charity trustee or a person connected with a charity trustee holds a significant interest or a management position, or which is under common control with such a body. This includes Wissen Haus Ltd, for so long as any charity trustee or connected person has such an interest in it.
+9.5.1 In this clause, a "connected company" means any company, partnership or other body in which a charity trustee or a person connected with a charity trustee holds a significant interest or a management position, or which is under common control with such a body. This includes Wissen Haus Ltd, for so long as any charity trustee or connected person has such an interest in it.
 
-9.4.2 The CIO may enter into a grant, contract, loan, investment, collaboration or other arrangement with a connected company only if:
+9.5.2 The CIO may enter into a grant, contract, loan, investment, collaboration or other arrangement with a connected company only if:
 
    (a) the interest has been disclosed and recorded in the minutes under clause 9.2;
 
@@ -370,7 +370,7 @@ If a charity trustee has failed to disclose a material conflict of interest and 
 
    (d) the arrangement is on terms no more favourable to the connected company than would be agreed at arm's length, supported by written evidence of comparison or independent advice.
 
-9.4.3 The CIO shall keep a register of connected companies and of every arrangement under this clause, reviewed by the charity trustees at least annually, and shall disclose related party transactions in its annual accounts as required by clause 17.2.
+9.5.3 The CIO shall keep a register of connected companies and of every arrangement under this clause, reviewed by the charity trustees at least annually, and shall disclose related party transactions in its annual accounts as required by clause 17.2.
 
 ---
 
