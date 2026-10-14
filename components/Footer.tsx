@@ -17,7 +17,7 @@ export default async function Footer() {
   const [details, footer] = await Promise.all([getContactDetails(), getFooterContent()])
 
   // Use details for brand to get the tagline
-  const brand = { name: 'Wissen-Haus', descriptor: 'Empowerment Foundation' }
+  const brand = { name: 'Wissen-Haus', descriptor: 'Foundation' }
   const year = new Date().getFullYear()
 
   return (
