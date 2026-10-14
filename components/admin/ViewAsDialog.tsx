@@ -27,6 +27,7 @@ export default function ViewAsDialog({ userId, memberName, onClose, reasonOption
         setBusy(false)
         return
       }
+      try { sessionStorage.setItem('wh_view_as_return', window.location.pathname + window.location.search) } catch { /* optional */ }
       window.location.assign('/profile')
     } catch {
       setError('Network error. The view was not started.')

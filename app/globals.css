@@ -157,7 +157,7 @@ strong{font-weight:600}
 
 /* ---------- Header ---------- */
 .site-header{
-  position:sticky;top:0;z-index:100;
+  position:sticky;top:var(--view-as-h,0px);z-index:100;
   background:color-mix(in srgb, var(--cream) 82%, transparent);
   backdrop-filter:saturate(1.2) blur(14px);
   border-bottom:1px solid var(--line);

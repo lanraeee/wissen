@@ -34,9 +34,16 @@ export default function ViewAsBanner() {
     return () => clearInterval(tick)
   }, [pathname])
 
-  if (!meta) return null
-  const expires = new Date(meta.expiresAt).getTime()
-  if (!(expires > now)) return null
+  const expires = meta ? new Date(meta.expiresAt).getTime() : 0
+  const active = !!meta && expires > now
+
+  // Push the sticky site header down so the banner never covers it.
+  useEffect(() => {
+    document.documentElement.style.setProperty('--view-as-h', active ? '40px' : '0px')
+    return () => { document.documentElement.style.removeProperty('--view-as-h') }
+  }, [active])
+
+  if (!meta || !active) return null
 
   const minutesLeft = Math.max(1, Math.ceil((expires - now) / 60_000))
   const until = new Date(expires).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })
@@ -46,16 +53,24 @@ export default function ViewAsBanner() {
     try {
       await fetch('/api/view-as/exit', { method: 'POST' })
     } finally {
-      window.location.assign('/admin/users')
+      let back = '/admin/users'
+      try {
+        const saved = sessionStorage.getItem('wh_view_as_return')
+        sessionStorage.removeItem('wh_view_as_return')
+        // Same-site paths only.
+        if (saved && saved.startsWith('/') && !saved.startsWith('//')) back = saved
+      } catch { /* storage unavailable: fall back to the users list */ }
+      window.location.assign(back)
     }
   }
 
   return (
     <div
       role="status"
+      aria-live="polite"
       style={{
         position: 'sticky', top: 0, zIndex: 1000, background: '#7c2d12', color: '#fff',
-        padding: '8px 16px', fontSize: '.85rem', display: 'flex', gap: 12,
+        minHeight: 40, boxSizing: 'border-box', padding: '8px 16px', fontSize: '.85rem', display: 'flex', gap: 12,
         alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap',
       }}
     >
