@@ -21,7 +21,7 @@ const FALLBACK_PERSONNEL = [
     name: 'Benz Olagbaye',
     role: 'Founder & Executive Director',
     group: 'Leadership',
-    note: 'Founded Wissen-Haus after identifying Nigeria\'s youth gap as an access problem rather than a talent deficit. Has personally mentored over 50 young people.',
+    note: 'Founded Wissen-Haus after identifying Nigeria\'s youth gap as an access problem rather than a talent deficit. Has personally mentored over 50 youth.',
     href: '/founder',
   },
   { name: 'Lanre', role: 'IT Operations Consultant', group: 'Volunteer', note: null, href: null },

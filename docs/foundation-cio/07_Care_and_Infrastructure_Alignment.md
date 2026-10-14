@@ -6,7 +6,7 @@
 
 ## What changed on the site
 
-The website now runs a thread across the three pillars: training young people for care and support, and for the infrastructure that makes communities work. The thread is training-led. It does not describe the charity delivering care or building infrastructure.
+The website now runs a thread across the three pillars: training youth for care and support, and for the infrastructure that makes communities work. The thread is training-led. It does not describe the charity delivering care or building infrastructure.
 
 - Mission copy (home page, hard-coded in `app/page.tsx`, so changed by a code edit, not in Admin > Page Copy) and the "Three Pillars" section (about story, editable in Admin > Page Copy).
 - Career Clarity Fair: booth categories "Care & Support" and "Infrastructure & Construction" added to the registration and booth dropdowns.
@@ -20,7 +20,7 @@ The website now runs a thread across the three pillars: training young people fo
 |---|---|---|
 | Training in care and support skills (non-clinical) | Yes, under (a) advancement of education, through skills training | Must not be presented as clinical or regulated care. |
 | Training in infrastructure and built-environment skills | Yes, under (a), as technical and vocational training | Training only. |
-| Community projects run by trained young people | Yes, under (c) community development | Must be described as volunteer-led and local. |
+| Community projects run by trained youth | Yes, under (c) community development | Must be described as volunteer-led and local. |
 | Direct care delivery (looking after people in need) | **No** | Would need a new or amended object, for example relief of those in need. |
 | Building or maintaining infrastructure as the charity's own activity | **No** | Would need a new object and a delivery model. |
 | Clinical care, or certified engineering practice | **No, and not intended** | The site says so explicitly. |

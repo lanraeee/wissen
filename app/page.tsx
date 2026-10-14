@@ -56,7 +56,7 @@ const DEFAULT_STATS: StatItem[] = [
 const HOME_OBJECTS = [
   {
     heading: 'Advancing education',
-    body: 'Career guidance, skills training, mentorship and global exposure for young people in Nigeria, Africa and the diaspora, bridging the gap between academic knowledge and real-world professional readiness.',
+    body: 'Career guidance, skills training, mentorship and global exposure for youth in Nigeria, Africa and the diaspora, bridging the gap between academic knowledge and real-world professional readiness.',
     linkText: 'Explore our programmes',
     href: '/programmes',
   },
@@ -68,7 +68,7 @@ const HOME_OBJECTS = [
   },
   {
     heading: 'Community development and social mobility',
-    body: 'Professional mentorship, peer support and international connection that help young people build sustainable personal and community development.',
+    body: 'Professional mentorship, peer support and international connection that help youth build sustainable personal and community development.',
     linkText: 'Join the community',
     href: '/community',
   },
@@ -120,7 +120,7 @@ export default async function HomePage() {
               <h2 className="mt-s">{tagline}</h2>
             </div>
             <div className="reveal--right">
-              <p className="lead">We are dedicated to bridging the skills gap for African youth and the diaspora. Our work advances education through career guidance, skills training, mentorship and global exposure; relieves poverty and promotes economic independence through career skills, professional networks and global opportunities; advances community development and social mobility through mentorship and peer support; and publishes research on youth economic independence and the future of work. Two threads run through that work: training young people for a better edge in the job market, and in the infrastructure that makes communities work. Founded in Ibadan, Nigeria, our mission is to empower the next generation — in Nigeria, across Africa, and internationally — through economic independence and social impact.</p>
+              <p className="lead">We are dedicated to bridging the skills gap for African youth and the diaspora. Our work advances education through career guidance, skills training, mentorship and global exposure; relieves poverty and promotes economic independence through career skills, professional networks and global opportunities; advances community development and social mobility through mentorship and peer support; and publishes research on youth economic independence and the future of work. Two threads run through that work: training youth for a better edge in the job market, and in the infrastructure that makes communities work. Founded in Ibadan, Nigeria, our mission is to empower the next generation — in Nigeria, across Africa, and internationally — through economic independence and social impact.</p>
               <Link href="/about" className="textlink mt-m">Read our story {ARROW}</Link>
             </div>
           </div>
@@ -249,7 +249,7 @@ export default async function HomePage() {
             <div className="reveal--left">
               <span className="eyebrow eyebrow--light">Watch · @wissen_haus</span>
               <h2 className="mt-s">See the movement in motion.</h2>
-              <p className="lead mt-s">Real students, real mentors, real impact. Get a glimpse of Wissen-Haus in action and the young people bridging their own skills gap.</p>
+              <p className="lead mt-s">Real students, real mentors, real impact. Get a glimpse of Wissen-Haus in action and the youth bridging their own skills gap.</p>
               <div className="hero-cta mt-m">
                 <a href="https://www.instagram.com/reel/DaGV76FIV2u/" target="_blank" rel="noopener noreferrer" className="btn btn--light btn--lg mag">
                   Watch on Instagram {ARROW}
@@ -338,7 +338,7 @@ export default async function HomePage() {
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6l8-3z" /></svg>
               </div>
               <h3>Safeguarding</h3>
-              <p>How we keep young people safe, and how to tell our safeguarding lead about anything that worries you.</p>
+              <p>How we keep youth safe, and how to tell our safeguarding lead about anything that worries you.</p>
               <Link href="/safeguarding#report-a-concern" className="textlink">Report a concern {ARROW}</Link>
             </div>
           </div>
@@ -351,7 +351,7 @@ export default async function HomePage() {
           <div className="cta-band reveal">
             <span className="eyebrow" style={{ color: '#fff' }}><span style={{ background: '#fff' }} />Get Involved</span>
             <h2 className="mt-s">Help us empower the next generation of African and diaspora youth.</h2>
-            <p className="lead">Mentor a student, partner your institution, or fuel the mission with a gift. Every hour and every naira moves a young person closer to economic independence.</p>
+            <p className="lead">Mentor a student, partner your institution, or fuel the mission with a gift. Every hour and every naira moves a youth closer to economic independence.</p>
             <div className="cta-actions">
               <Link href="/volunteer" className="btn btn--light btn--lg">Volunteer with us</Link>
               <Link href="/donate" className="btn btn--outline-light btn--lg">Donate</Link>

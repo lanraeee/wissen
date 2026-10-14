@@ -18,11 +18,11 @@
 
 2.1 The objects of the CIO are:
 
-   (a) **The advancement of education** for young people in Nigeria, Africa, and diaspora communities, particularly through the provision of practical career guidance, skills training, mentorship programmes, and global exposure designed to bridge the gap between academic knowledge and real-world professional readiness;
+   (a) **The advancement of education** for youth in Nigeria, Africa, and diaspora communities, particularly through the provision of practical career guidance, skills training, mentorship programmes, and global exposure designed to bridge the gap between academic knowledge and real-world professional readiness;
 
    (b) **The relief of poverty and promotion of economic independence** for young African and diaspora youth through equipping them with practical career skills, professional networks, and global opportunities that enable employment, entrepreneurship, and sustainable livelihoods;
 
-   (c) **The advancement of community development and social mobility** for young people by fostering networks of professional mentorship, peer support, and international connection that empower sustainable personal and community development;
+   (c) **The advancement of community development and social mobility** for youth by fostering networks of professional mentorship, peer support, and international connection that empower sustainable personal and community development;
 
    (d) **The conduct of research and publication of evidence** on youth economic independence, skills development, employment outcomes, and the future of work across Nigeria, Africa, and diaspora communities, to advance public understanding and inform policy and practice in youth development.
 

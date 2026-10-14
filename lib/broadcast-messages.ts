@@ -14,12 +14,12 @@ export const BROADCAST_PRESETS: BroadcastPreset[] = [
   {
     key: 'general',
     label: 'General Invitation',
-    message: "We're reaching out because we believe you care about what we're building. {{project}} is one of the clearest ways your support turns into real outcomes for young people across Nigeria and the diaspora — and we'd love for you to be part of it.",
+    message: "We're reaching out because we believe you care about what we're building. {{project}} is one of the clearest ways your support turns into real outcomes for youth across Nigeria and the diaspora — and we'd love for you to be part of it.",
   },
   {
     key: 'impact',
     label: 'Impact-Focused',
-    message: "Every gift to {{project}} goes directly toward mentorship, training, and opportunities for young people who are ready to work but short on access. We track every outcome closely, and we'd love to show you exactly what your support makes possible.",
+    message: "Every gift to {{project}} goes directly toward mentorship, training, and opportunities for youth who are ready to work but short on access. We track every outcome closely, and we'd love to show you exactly what your support makes possible.",
   },
   {
     key: 'urgent',

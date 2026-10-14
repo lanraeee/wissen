@@ -58,7 +58,7 @@ interface FounderInfo {
 const DEFAULT_FOUNDER: FounderInfo = {
   name: 'Benz Olagbaye',
   role: 'Founder & Executive Director',
-  quote: "Benz founded Wissen-Haus after seeing firsthand that the youth gap across Nigeria, Africa and the diaspora is not a talent problem — it's an access problem. She has personally mentored over 50 young people and leads every programme with that conviction.",
+  quote: "Benz founded Wissen-Haus after seeing firsthand that the youth gap across Nigeria, Africa and the diaspora is not a talent problem — it's an access problem. She has personally mentored over 50 youth and leads every programme with that conviction.",
 }
 
 async function getFounder(): Promise<FounderInfo> {

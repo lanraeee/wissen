@@ -20,7 +20,7 @@ export default async function DataCampScholarshipApplyPage() {
           <span className="eyebrow">DataCamp Scholarship Programme</span>
           <h1 className="display-lg mt-s">Are you ready to build skills that can change your career?</h1>
           <p className="lead mt-m" style={{ maxWidth: '60ch', margin: 'var(--spacing-m) auto 0' }}>
-            Wissen-Haus is offering DataCamp scholarships to young people who are motivated to develop practical
+            Wissen-Haus is offering DataCamp scholarships to youth who are motivated to develop practical
             skills in data, analytics, AI, programming and related fields — but may not otherwise have access to
             premium learning resources. Designed for learners who demonstrate motivation, genuine financial/access
             barriers, commitment to learning, and a clear plan for using their skills.

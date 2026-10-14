@@ -67,7 +67,7 @@ export default async function EventsPage() {
       <div style={{ position: 'relative', width: '100%', aspectRatio: '16 / 6', overflow: 'hidden' }}>
         <Image
           src="/img/events-hero.jpg"
-          alt="Young people at a Wissen-Haus community event, hands raised to ask questions"
+          alt="Youth at a Wissen-Haus community event, hands raised to ask questions"
           fill
           sizes="100vw"
           style={{ objectFit: 'cover' }}

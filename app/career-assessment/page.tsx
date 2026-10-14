@@ -545,7 +545,7 @@ const MATCH_SIGNALS: Record<CareerKey, Record<string, string>> = {
 
   te: {
 
-    '0_4': 'Social impact interest means you\'ll find deep fulfilment in shaping young people\'s futures.',
+    '0_4': 'Social impact interest means you\'ll find deep fulfilment in shaping youth\'s futures.',
 
     '1_3': 'School and community environments are where great educators do their best work.',
 

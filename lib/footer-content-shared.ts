@@ -46,7 +46,7 @@ export const FOOTER_LIMITS = {
 } as const
 
 export const FOOTER_DEFAULTS: FooterContent = {
-  description: 'Bridging the skills gap for African youth and the diaspora, equipping young people with practical guidance, mentorship and global exposure for economic independence.',
+  description: 'Bridging the skills gap for African youth and the diaspora, equipping youth with practical guidance, mentorship and global exposure for economic independence.',
   columns: [
     {
       title: 'Explore',

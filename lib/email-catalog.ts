@@ -118,7 +118,7 @@ export const EMAIL_TEMPLATES: EmailTemplateInfo[] = [
     defaultSubject: 'Donation received — thank you, {{firstNameRaw}}!',
     defaultBody: `<span class="badge">Donation Confirmed</span>
 <h2>Thank you for your gift, {{firstName}}!</h2>
-<p>Your generous donation has been received. Every naira (and pound) goes directly toward empowering young people across Africa and the diaspora.</p>
+<p>Your generous donation has been received. Every naira (and pound) goes directly toward empowering youth across Africa and the diaspora.</p>
 {{amountField}}
 {{refField}}
 {{certBtn}}

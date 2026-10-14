@@ -19,7 +19,7 @@ export const OG_PAGE_SCHEMAS: OgPageSchema[] = [
     slug: 'home', label: 'Homepage',
     defaultTitle: 'Wissen-Haus Empowerment Foundation · Empowering Youth, Shaping Futures',
     defaultOgTitle: 'Wissen-Haus — Empowering Youth, Shaping Futures',
-    defaultDescription: 'We equip African youth and the diaspora with practical skills, mentorship and global exposure for economic independence. Founded in Ibadan, Nigeria, now reaching young people across Africa and internationally.',
+    defaultDescription: 'We equip African youth and the diaspora with practical skills, mentorship and global exposure for economic independence. Founded in Ibadan, Nigeria, now reaching youth across Africa and internationally.',
   },
   {
     slug: 'about', label: 'About',
@@ -99,7 +99,7 @@ export const OG_PAGE_SCHEMAS: OgPageSchema[] = [
   {
     slug: 'partners-datacamp-apply', label: 'Partners · DataCamp Application',
     defaultTitle: 'DataCamp Scholarship Application · Wissen-Haus', defaultOgTitle: 'Apply for a DataCamp Scholarship',
-    defaultDescription: 'Apply for a Wissen-Haus × DataCamp scholarship — free access to DataCamp for motivated young people facing genuine barriers to learning data, analytics and AI skills.',
+    defaultDescription: 'Apply for a Wissen-Haus × DataCamp scholarship — free access to DataCamp for motivated youth facing genuine barriers to learning data, analytics and AI skills.',
   },
   {
     slug: 'donate', label: 'Donate',
@@ -194,7 +194,7 @@ export const OG_PAGE_SCHEMAS: OgPageSchema[] = [
   {
     slug: 'safeguarding', label: 'Safeguarding Policy',
     defaultTitle: 'Safeguarding Policy · Wissen-Haus', defaultOgTitle: 'Safeguarding Policy',
-    defaultDescription: 'How Wissen Haus Foundation keeps children, young people and adults safe, and how to raise a concern.',
+    defaultDescription: 'How Wissen Haus Foundation keeps children, youth and adults safe, and how to raise a concern.',
   },
   {
     slug: 'terms', label: 'Terms & Conditions',

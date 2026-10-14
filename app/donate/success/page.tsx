@@ -46,11 +46,11 @@ export default async function DonateSuccess({ searchParams }: Props) {
         <h1 className="display-lg" style={{ marginBottom: '1rem' }}>Thank you for giving.</h1>
         {donation ? (
           <p className="lead" style={{ maxWidth: '38ch', margin: '0 auto 2rem', color: 'var(--ink-60)' }}>
-            Your gift of {new Intl.NumberFormat('en-NG', { style: 'currency', currency: donation.currency }).format(donation.amount)} is on its way to changing a young person&apos;s life. A receipt has been sent to your email.
+            Your gift of {new Intl.NumberFormat('en-NG', { style: 'currency', currency: donation.currency }).format(donation.amount)} is on its way to changing a youth&apos;s life. A receipt has been sent to your email.
           </p>
         ) : (
           <p className="lead" style={{ maxWidth: '38ch', margin: '0 auto 2rem', color: 'var(--ink-60)' }}>
-            Your donation is on its way to changing a young person&apos;s life. If your payment completed successfully, a receipt has been sent to your email.
+            Your donation is on its way to changing a youth&apos;s life. If your payment completed successfully, a receipt has been sent to your email.
           </p>
         )}
         <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>

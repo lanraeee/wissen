@@ -25,9 +25,9 @@ It applies to every grant, scholarship or bursary the charity pays to an individ
 - **Accountable.** Decisions, reasons and payments are recorded, and the use of grants is monitored.
 
 ## 4. Who can apply
-**Individuals:** young people aged 5 to 35 who live in any African country, or who belong to African diaspora communities anywhere in the world, and who meet the criteria set for the particular grant.
+**Individuals:** youth aged 5 to 35 who live in any African country, or who belong to African diaspora communities anywhere in the world, and who meet the criteria set for the particular grant.
 
-**Organisations:** [schools, educational establishments, registered charities or non-profit organisations] working with young people aged 5 to 35 in African countries or African diaspora communities anywhere in the world, with a governing document, a bank account in the organisation's name, and safeguarding arrangements.
+**Organisations:** [schools, educational establishments, registered charities or non-profit organisations] working with youth aged 5 to 35 in African countries or African diaspora communities anywhere in the world, with a governing document, a bank account in the organisation's name, and safeguarding arrangements.
 
 The following **cannot** receive a grant: trustees; the founder; members of staff or their close family; and organisations connected to them, unless approved in advance. For an individual, approval is under clause 8.4 of the constitution. For a company or other body connected to a trustee or the founder (including Wissen Haus Ltd), approval is under clause 9.5, which also requires a written record of why the grant furthers the objects and terms no more favourable than arm's length. In every case the interested person takes no part in the decision, and the grant goes on the connected-companies register (clause 9.5.3).
 
@@ -97,7 +97,7 @@ Where applications exceed funds, priority goes first to those facing the greates
 - The charity may ask for repayment, or stop further instalments, if a grant is not used for its purpose, was obtained through false information, or is not spent as agreed.
 
 ## 13. Safeguarding
-Grants to or for young people are subject to the charity's Safeguarding Policy (wissenhaus.org/safeguarding). Any safeguarding concern arising during an application or grant is reported to the Designated Safeguarding Lead at once.
+Grants to or for youth are subject to the charity's Safeguarding Policy (wissenhaus.org/safeguarding). Any safeguarding concern arising during an application or grant is reported to the Designated Safeguarding Lead at once.
 
 ## 14. Data protection and confidentiality
 Applicants' personal data is used only to assess and administer their application, stored securely, shared only where necessary, and kept no longer than needed in line with data protection law and the charity's Privacy Policy (wissenhaus.org/privacy). Successful applicants agree that their name and the amount may be recorded in the charity's accounts and, with their consent, in published case studies.

@@ -50,7 +50,7 @@
 5.1 The trustees read the Safeguarding Policy (published at wissenhaus.org/safeguarding) and the Charity Commission's guidance on safeguarding for trustees.
 5.2 It was **RESOLVED** that the Safeguarding Policy be adopted, to be reviewed at least every year.
 5.3 It was **RESOLVED** that [name] be appointed Designated Safeguarding Lead, [name] be appointed Deputy, and [name, a trustee] be the trustee responsible for safeguarding.
-5.4 It was noted that no under-18 will be present at the charity's premises, and that vetting, training and the code of conduct in the policy apply before anyone works with young people.
+5.4 It was noted that no under-18 will be present at the charity's premises, and that vetting, training and the code of conduct in the policy apply before anyone works with youth.
 
 ## 6. Conflicts of interest
 6.1 It was **RESOLVED** that the conflicts-of-interest provisions in clause 9 govern all trustee decisions and that conflicts be recorded in the minutes as clause 9.2.2 requires.

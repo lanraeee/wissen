@@ -18,7 +18,7 @@ const NAV = [
       ['/about/story', 'Our Story', 'The Wissen-Haus journey'],
       ['/founder', 'Meet the Founder', 'Learn about Benz Olagbaye'],
       ['/team', 'Our Team', 'The people who hold it together'],
-      ['/safeguarding', 'Safeguarding', 'How we keep young people safe'],
+      ['/safeguarding', 'Safeguarding', 'How we keep youth safe'],
       ['/contact', 'Contact', 'Get in touch with us'],
     ]
   },

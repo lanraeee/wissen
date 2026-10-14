@@ -15,7 +15,7 @@ export async function generateMetadata(): Promise<Metadata> {
 // The four questions every programme answers before it starts. Written as
 // commitments about how we work, so each one must be true of current programmes.
 const HOW_WE_CHOOSE = [
-  { question: 'Who is it for?', answer: 'A named group of young people, not a general audience.' },
+  { question: 'Who is it for?', answer: 'A named group of youth, not a general audience.' },
   { question: 'What lasts after the cohort leaves?', answer: 'Skills, materials and networks that keep working without us.' },
   { question: 'Who runs it?', answer: 'A named lead, accountable for it after launch.' },
   { question: 'What do we learn?', answer: 'Each programme feeds what we change next time.' },
@@ -81,7 +81,7 @@ export default async function AboutPage() {
             <span className="eyebrow">How We Choose Our Work</span>
             <h2>Lasting help, not one-off help.</h2>
             <p className="lead mt-s">
-              One-off help meets this month&#39;s need. A skill a young person keeps, or a network that keeps meeting after the course ends, meets next year&#39;s. Every programme we run answers four questions before it starts.
+              One-off help meets this month&#39;s need. A skill a youth keeps, or a network that keeps meeting after the course ends, meets next year&#39;s. Every programme we run answers four questions before it starts.
             </p>
           </div>
           <div className="grid grid-2">

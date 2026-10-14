@@ -44,19 +44,19 @@
 **Recommended Format:** "The objects of the CIO are [purpose statement - e.g., 'the relief of poverty, the advancement of education and religion']"
 
 **Object 1:**
-The advancement of education for young people across Nigeria, Africa, and the global diaspora, particularly through the provision of career guidance, skills training, and mentorship programmes that bridge the gap between academic knowledge and real-world professional readiness.
+The advancement of education for youth across Nigeria, Africa, and the global diaspora, particularly through the provision of career guidance, skills training, and mentorship programmes that bridge the gap between academic knowledge and real-world professional readiness.
 
 **Object 2:**
 The relief of poverty and promotion of economic independence for young African and diaspora youth through equipping them with practical career skills, global exposure, and professional networks that enable employment and entrepreneurship.
 
 **Object 3:**
-The advancement of community development and social mobility by fostering networks of mentorship, peer support, and professional connection that empower young people to achieve sustainable livelihoods and contribute to their communities.
+The advancement of community development and social mobility by fostering networks of mentorship, peer support, and professional connection that empower youth to achieve sustainable livelihoods and contribute to their communities.
 
 **Object 4:**
 The conduct of research and publication of evidence on youth economic independence, skills development, and employment outcomes across Africa and the diaspora, to advance public understanding and inform policy and practice.
 
 **Geographic Limits (if applicable):**
-Primary operations in Nigeria (Ibadan headquarters); programmes extended to serve young people across Africa and in the diaspora communities in the United Kingdom and beyond.
+Primary operations in Nigeria (Ibadan headquarters); programmes extended to serve youth across Africa and in the diaspora communities in the United Kingdom and beyond.
 
 ---
 
@@ -588,7 +588,7 @@ The above worksheet translates to the following constitutional model (simplified
 The CIO is called Wissen Haus Foundation. Its registered principal office is [UK address to be confirmed].
 
 **2. Charitable Objects**
-The CIO's objects are: (1) Advancement of education for young people across Nigeria, Africa, and diaspora through career guidance and mentorship; (2) Relief of poverty through skills training and economic empowerment for youth; (3) Advancement of community development and social mobility through mentorship networks; (4) Conduct of research on youth economic independence.
+The CIO's objects are: (1) Advancement of education for youth across Nigeria, Africa, and diaspora through career guidance and mentorship; (2) Relief of poverty through skills training and economic empowerment for youth; (3) Advancement of community development and social mobility through mentorship networks; (4) Conduct of research on youth economic independence.
 
 **3. Powers**
 The CIO has power to do all things calculated to further its objects, including borrowing, acquiring property, employing staff, and investing funds.

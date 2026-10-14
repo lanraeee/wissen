@@ -1,6 +1,6 @@
 # Wissen-Haus Empowerment Foundation
 
-Web platform for Wissen-Haus — a Nigerian NGO bridging the skills gap by equipping young people with practical career guidance, mentorship, and global exposure.
+Web platform for Wissen-Haus — a Nigerian NGO bridging the skills gap by equipping youth with practical career guidance, mentorship, and global exposure.
 
 ## Tech Stack
 

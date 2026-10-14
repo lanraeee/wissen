@@ -13,7 +13,7 @@ export interface CharitableObject {
 export const CHARITABLE_OBJECTS: readonly CharitableObject[] = [
   {
     title: 'The advancement of education',
-    rest: ' for young people in Nigeria, Africa, and diaspora communities, particularly through the provision of practical career guidance, skills training, mentorship programmes, and global exposure designed to bridge the gap between academic knowledge and real-world professional readiness;',
+    rest: ' for youth in Nigeria, Africa, and diaspora communities, particularly through the provision of practical career guidance, skills training, mentorship programmes, and global exposure designed to bridge the gap between academic knowledge and real-world professional readiness;',
   },
   {
     title: 'The relief of poverty and promotion of economic independence',
@@ -21,7 +21,7 @@ export const CHARITABLE_OBJECTS: readonly CharitableObject[] = [
   },
   {
     title: 'The advancement of community development and social mobility',
-    rest: ' for young people by fostering networks of professional mentorship, peer support, and international connection that empower sustainable personal and community development;',
+    rest: ' for youth by fostering networks of professional mentorship, peer support, and international connection that empower sustainable personal and community development;',
   },
   {
     title: 'The conduct of research and publication of evidence',
