@@ -370,6 +370,7 @@ export const DONATE_SCHEMA: PageCopySchema = {
     ta('split2Body', 'Fund split 2 body', 'Staff time, technology, and administration that makes delivery possible.', 250),
     t('split3Title', 'Fund split 3 title', '10% Growth'),
     ta('split3Body', 'Fund split 3 body', 'Reserved to expand to new schools and communities across Nigeria, Africa, and the diaspora.', 250),
+    ta('investNote', 'Note under the fund split', 'Any money we have left over will be invested in projects that generate more income, to better our mission.', 300),
   ],
 }
 PAGE_COPY_SCHEMAS.push(DONATE_SCHEMA)
