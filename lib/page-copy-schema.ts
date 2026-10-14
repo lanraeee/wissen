@@ -382,7 +382,7 @@ export const SAFEGUARDING_SCHEMA: PageCopySchema = {
     t('version', 'Version', '1.0', 20),
     t('lastUpdated', 'Last updated', '3 October 2026', 40),
     t('nextReview', 'Next review', 'October 2027', 40),
-    ta('intro', 'Opening paragraph', 'Wissen Haus Foundation (“Wissen-Haus”, “we”, “us”) works with youth in Nigeria, Ghana, Kenya, South Africa and diaspora communities, including students under 18. This policy explains how we keep the children, youth and adults we work with safe, and what everyone connected with Wissen-Haus must do if they have a concern.', 1000),
+    ta('intro', 'Opening paragraph', 'Wissen Haus Foundation (“Wissen-Haus”, “we”, “us”) works with youth in Nigeria, Ghana, Kenya, South Africa and diaspora communities, including students under 18. This policy explains how we keep everyone we work with safe, children and adults alike, and what everyone connected with Wissen-Haus must do if they have a concern.', 1000),
     ta('emergencyNotice', 'Emergency notice box', 'If someone is in immediate danger, contact your local emergency services first (for example 999 in the UK or the emergency number in your country), then tell us as soon as it is safe to do so. In the UK you can also call the NSPCC helpline on 0808 800 5000 or Childline on 0800 1111.', 600),
   ],
 }
