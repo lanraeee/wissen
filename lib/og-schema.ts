@@ -34,7 +34,7 @@ export const OG_PAGE_SCHEMAS: OgPageSchema[] = [
   {
     slug: 'founder', label: 'Founder',
     defaultTitle: 'Meet the Founder · Wissen-Haus', defaultOgTitle: 'Meet the Founder',
-    defaultDescription: 'Meet Benz Olagbaye, Founder and Executive Director of Wissen-Haus Foundation.',
+    defaultDescription: 'Meet Benz Olagbaye, founder of Wissen Haus Empowerment Foundation NGA and Executive Director of Wissen-Haus Foundation.',
   },
   {
     slug: 'team', label: 'Team',
