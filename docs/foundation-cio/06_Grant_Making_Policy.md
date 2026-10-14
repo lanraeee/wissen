@@ -25,9 +25,9 @@ It applies to every grant, scholarship or bursary the charity pays to an individ
 - **Accountable.** Decisions, reasons and payments are recorded, and the use of grants is monitored.
 
 ## 4. Who can apply
-**Individuals:** young people aged [age range, to be confirmed] who live in [Nigeria and any other country the trustees approve] or who are part of the African diaspora, and who meet the criteria set for the particular grant.
+**Individuals:** young people aged 5 to 35 who live in any African country, or who belong to African diaspora communities anywhere in the world, and who meet the criteria set for the particular grant.
 
-**Organisations:** [schools, educational establishments, registered charities or non-profit organisations] working with young people in the same areas, with a governing document, a bank account in the organisation's name, and safeguarding arrangements.
+**Organisations:** [schools, educational establishments, registered charities or non-profit organisations] working with young people aged 5 to 35 in African countries or African diaspora communities anywhere in the world, with a governing document, a bank account in the organisation's name, and safeguarding arrangements.
 
 The following **cannot** receive a grant: trustees; the founder; members of staff or their close family; and organisations connected to them, unless approved in advance. For an individual, approval is under clause 8.4 of the constitution. For a company or other body connected to a trustee or the founder (including Wissen Haus Ltd), approval is under clause 9.5, which also requires a written record of why the grant furthers the objects and terms no more favourable than arm's length. In every case the interested person takes no part in the decision, and the grant goes on the connected-companies register (clause 9.5.3).
 
