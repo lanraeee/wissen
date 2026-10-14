@@ -50,6 +50,36 @@ const DEFAULT_STATS: StatItem[] = [
   { count: '1', suffix: '', label: 'Year Since Launch' },
 ]
 
+// Plain-language version of the four charitable objects in clause 2.1 of the
+// constitution (the About page quotes them verbatim). Each one links to the
+// work that serves it, so the home page shows where every object is delivered.
+const HOME_OBJECTS = [
+  {
+    heading: 'Advancing education',
+    body: 'Career guidance, skills training, mentorship and global exposure for young people in Nigeria, Africa and the diaspora, bridging the gap between academic knowledge and real-world professional readiness.',
+    linkText: 'Explore our programmes',
+    href: '/programmes',
+  },
+  {
+    heading: 'Relief of poverty and economic independence',
+    body: 'Practical career skills, professional networks and global opportunities that lead to employment, entrepreneurship and sustainable livelihoods for young African and diaspora youth.',
+    linkText: 'See career pathways',
+    href: '/career-pathways',
+  },
+  {
+    heading: 'Community development and social mobility',
+    body: 'Professional mentorship, peer support and international connection that help young people build sustainable personal and community development.',
+    linkText: 'Join the community',
+    href: '/community',
+  },
+  {
+    heading: 'Research and evidence',
+    body: 'Research and published evidence on youth economic independence, skills development, employment outcomes and the future of work, to advance public understanding and inform policy and practice.',
+    linkText: 'Read our papers',
+    href: '/policy-research',
+  },
+]
+
 export default async function HomePage() {
   const [settings, heroSlidesContent, legacyHeroContent, statsContent] = await Promise.all([
     getSiteContent<{ tagline?: string }>('site_settings'),
@@ -100,6 +130,26 @@ export default async function HomePage() {
                 <div className="num" data-count={s.count} data-suffix={s.suffix}>{s.count}{s.suffix}</div>
                 <div className="lbl">{s.label}</div>
               </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CHARITABLE OBJECTS */}
+      <section className="section section--tight">
+        <div className="wrap">
+          <div className="section-head mb-l reveal">
+            <span className="eyebrow">What We Exist To Do</span>
+            <h2>Our work serves four charitable objects.</h2>
+          </div>
+          <div className="grid grid-2">
+            {HOME_OBJECTS.map((o, i) => (
+              <article className="feature reveal" key={o.heading}>
+                <span className="card__num">0{i + 1}</span>
+                <h3>{o.heading}</h3>
+                <p>{o.body}</p>
+                <Link href={o.href} className="textlink">{o.linkText} {ARROW}</Link>
+              </article>
             ))}
           </div>
         </div>
