@@ -8,7 +8,7 @@
 
 The website now runs a thread across the three pillars: training young people for care and support, and for the infrastructure that makes communities work. The thread is training-led. It does not describe the charity delivering care or building infrastructure.
 
-- Mission copy (home page) and the "Three Pillars" section (about story), both editable in Admin > Page Copy.
+- Mission copy (home page, hard-coded in `app/page.tsx`, so changed by a code edit, not in Admin > Page Copy) and the "Three Pillars" section (about story, editable in Admin > Page Copy).
 - Career Clarity Fair: booth categories "Care & Support" and "Infrastructure & Construction" added to the registration and booth dropdowns.
 - Career pathways: two new routes, Care & Support and Infrastructure, with skills and a note that they are training routes, not clinical or certified engineering advice. Salary ranges are not published for these two until they are sourced.
 - Career assessment: one new interest option, "Care & Community Support", scored to Social Impact Management. Appended at the end of the first (interests) question so existing answer codes do not move.
@@ -42,7 +42,7 @@ The website now runs a thread across the three pillars: training young people fo
 
 ## Things that will not update automatically
 
-- Page copy has saved overrides. Any pillar, mission, or volunteer text already saved in Admin > Page Copy will keep showing the saved version and will not pick up these defaults. Check those fields in the admin editor after deploy.
+- Page copy has saved overrides. Any pillar or volunteer text already saved in Admin > Page Copy will keep showing the saved version and will not pick up these defaults. Check those fields in the admin editor after deploy.
 - The Charity Commission draft answers and the constitution draft are not linked to the site and must be updated by hand.
 
 ## Phase plan (built together on this branch)
