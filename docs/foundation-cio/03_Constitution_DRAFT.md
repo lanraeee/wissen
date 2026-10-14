@@ -42,7 +42,7 @@
 
    (d) To employ and remunerate such staff and agents as the charity trustees shall determine, on such terms as they shall determine;
 
-   (e) To invest funds not immediately required for the purposes of the CIO in such manner as the charity trustees shall determine;
+   (e) To invest funds not immediately required for the purposes of the CIO in any investments, securities or property that the charity trustees consider suitable, subject to clause 17.4;
 
    (f) To publish, produce, and distribute research papers, reports, and educational materials;
 
@@ -54,9 +54,19 @@
 
    (j) To undertake fundraising activities and to solicit and receive donations, grants, and other forms of financial support;
 
-   (k) To do all such other things as are incidental or conducive to the attainment of the charitable objects.
+   (k) To make programme-related investments, being investments (including loans, guarantees and shareholdings) made mainly to further the charitable objects and not mainly for financial return, subject to clause 17.4;
 
-3.2 The CIO shall not carry on any substantial trade or business other than in furtherance of its charitable objects.
+   (l) To make grants, bursaries and scholarships to individuals, and grants to organisations in the United Kingdom or overseas (including overseas partner organisations), where this furthers the charitable objects, subject to clause 17.3;
+
+   (m) To form, own, or take part in companies, including a wholly owned trading subsidiary, and to receive the profits of any such company by way of gift aid or otherwise, subject to clause 3.3;
+
+   (n) To enter into joint ventures and consortia and to hold property through nominees or custodians;
+
+   (o) To do all such other things as are incidental or conducive to the attainment of the charitable objects.
+
+3.2 The CIO may carry on a trade or business only where it is (a) in the course of carrying out a primary purpose of the CIO, or (b) ancillary to and in furtherance of its charitable objects. Any other trade or business shall be carried on only through a company under clause 3.1(m), and the profits of that company shall be applied only for the charitable objects.
+
+3.3 Any company in which the CIO holds shares or has control shall be managed under written terms approved by the charity trustees, and no charity trustee shall be remunerated for acting as its director unless clause 8.2 permits it. Clause 9.4 applies to any transaction between the CIO and a connected company.
 
 ---
 
@@ -155,6 +165,8 @@ The CIO shall have a variable number of charity trustees with no maximum limit, 
 5.2.4 The appointment of a new charity trustee must be approved by majority resolution of the existing charity trustees at a properly convened meeting or by majority written resolution.
 
 5.2.5 A newly appointed charity trustee must provide written acceptance of the office before, or immediately upon, appointment.
+
+5.2.6 In making appointments under clause 5.2.1, the charity trustees must ensure that the board, taken as a whole, includes (or has ready access to) experience of finance and investment, and of operating or working with partners overseas, including in Nigeria. Where the board lacks either, filling that gap takes priority in the next appointment.
 
 ---
 
@@ -341,6 +353,24 @@ If a charity trustee has failed to disclose a material conflict of interest and 
    (c) Remove the trustee from office;
 
    (d) Take such other action as is necessary to protect the CIO.
+
+---
+
+### 9.4 Connected Companies
+
+9.4.1 In this clause, a "connected company" means any company, partnership or other body in which a charity trustee or a person connected with a charity trustee holds a significant interest or a management position, or which is under common control with such a body. This includes Wissen Haus Ltd, for so long as any charity trustee or connected person has such an interest in it.
+
+9.4.2 The CIO may enter into a grant, contract, loan, investment, collaboration or other arrangement with a connected company only if:
+
+   (a) the interest has been disclosed and recorded in the minutes under clause 9.2;
+
+   (b) the arrangement is approved by a majority of the charity trustees who have no interest in the connected company;
+
+   (c) the trustees have recorded why the arrangement furthers the charitable objects and is in the best interests of the CIO; and
+
+   (d) the arrangement is on terms no more favourable to the connected company than would be agreed at arm's length, supported by written evidence of comparison or independent advice.
+
+9.4.3 The CIO shall keep a register of connected companies and of every arrangement under this clause, reviewed by the charity trustees at least annually, and shall disclose related party transactions in its annual accounts as required by clause 17.2.
 
 ---
 
@@ -732,9 +762,17 @@ The members may, by unanimous written resolution, temporarily suspend any provis
 
    (a) Establish and maintain restricted funds for specific purposes;
 
-   (b) Invest funds not immediately required in accordance with the Charities Act 2011;
+   (b) Invest funds not immediately required in accordance with clause 17.4;
 
-   (c) Make grants to other charities to further the objects of the CIO.
+   (c) Make grants to other charities, to individuals, and to other organisations (in the United Kingdom or overseas) to further the objects of the CIO, provided that before making a grant to an overseas organisation the trustees have carried out reasonable due diligence, entered into a written grant agreement, and put in place monitoring of how the grant is used.
+
+### 17.4 Investment and Reserves
+
+17.4.1 When investing, the charity trustees must comply with their statutory duties, including having regard to the suitability of investments and the need for diversification, and must take proper advice unless they reasonably conclude that it is unnecessary.
+
+17.4.2 The charity trustees may make programme-related investments under clause 3.1(k). Each such investment must be approved by resolution recording how it furthers the objects, the expected benefit and the risk to the CIO's funds, and must be reported in the trustees' annual report.
+
+17.4.3 The charity trustees shall adopt and review at least annually a written reserves policy stating the level of reserves the CIO needs and why, and how funds above that level will be invested in furtherance of the charitable objects.
 
 ---
 

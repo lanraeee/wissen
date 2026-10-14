@@ -28,7 +28,7 @@ The website now runs a thread across the three pillars: training young people fo
 ## What the CIO records now say
 
 - Charity Commission draft answers (`04_Charity_Commission_Form_Answers.md`): care and support, and infrastructure, are added to the subjects and training rows, and to the Page 6 answer, each marked **[CONFIRM and add once running]**. Remove the marks only when the courses actually run.
-- Constitution draft (`03_Constitution_DRAFT.md`): **not changed.** Clause 2.1 is checked word for word by the Commission and must match the version you sign.
+- Constitution draft (`03_Constitution_DRAFT.md`): **clause 2.1 not changed.** It is checked word for word by the Commission and must match the version you sign. Other clauses were later amended for investment, trading, grants and connected companies (see `08_Constitution_Suggestions.md`).
 
 ## Decisions for trustees
 
