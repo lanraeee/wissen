@@ -76,10 +76,10 @@ export default async function WhfCioPage({ searchParams }: { searchParams: Promi
         <h1 className="admin-page-title">WHF-CIO Records</h1>
         <p className="admin-page-desc">
           {director
-            ? 'CIO Trustee governance record for Wissen-Haus Empowerment Foundation. Only directors can view and manage trustee information required by the Charity Commission.'
+            ? 'CIO Trustee governance record for Wissen-Haus Foundation. Only directors can view and manage trustee information required by the Charity Commission.'
             : safeguarding
-              ? 'Safeguarding incident log for Wissen-Haus Empowerment Foundation. Visible only to directors and the designated safeguarding team.'
-              : 'CIO Trustee governance record for Wissen-Haus Empowerment Foundation. You can see the sections the master admin has granted you.'}
+              ? 'Safeguarding incident log for Wissen-Haus Foundation. Visible only to directors and the designated safeguarding team.'
+              : 'CIO Trustee governance record for Wissen-Haus Foundation. You can see the sections the master admin has granted you.'}
         </p>
       </div>
 

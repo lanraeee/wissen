@@ -117,7 +117,7 @@ export default function CareerFairRegisterForm() {
       </FormSelect>
       <label className="field" style={{ flexDirection: 'row', alignItems: 'flex-start', gap: '.5rem', display: 'flex' }}>
         <input type="checkbox" name="newsletterOptIn" id="cf-newsletter" style={{ marginTop: 3 }} />
-        <span>Add me to the Wissen-Haus Empowerment Foundation newsletter list</span>
+        <span>Add me to the Wissen-Haus Foundation newsletter list</span>
       </label>
       {status === 'error' && <FormError error={error} />}
       <button type="submit" className="btn btn--block" disabled={status === 'sending'}>

@@ -33,7 +33,7 @@ describe('scoreApplication', () => {
       weeklyHours: '10+ hours',
       priorCourses: 'Yes',
       evidenceTypes: ['GitHub'],
-      impactAreas: ['Myself', 'My family', 'Other young people'],
+      impactAreas: ['Myself', 'My family', 'Other youth'],
     }))
     expect(score).toBeGreaterThan(85)
     expect(breakdown.financialNeed).toBeLessThanOrEqual(25)
@@ -59,7 +59,7 @@ describe('scoreApplication', () => {
 
   it('rewards more impact areas with a higher potential-impact score', () => {
     const one = scoreApplication(baseAnswers({ impactAreas: ['Myself'] }))
-    const three = scoreApplication(baseAnswers({ impactAreas: ['Myself', 'My family', 'Other young people'] }))
+    const three = scoreApplication(baseAnswers({ impactAreas: ['Myself', 'My family', 'Other youth'] }))
     expect(three.breakdown.potentialImpact).toBeGreaterThan(one.breakdown.potentialImpact)
   })
 

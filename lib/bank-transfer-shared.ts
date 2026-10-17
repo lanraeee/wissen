@@ -174,6 +174,12 @@ export interface BankPledge {
   declared_at?: string
   confirmed_at?: string
   donation_id?: string
+  // Proof of payment: the donor uploads it before they can say they've sent
+  // the transfer. proof_requested_at is set when an admin asks for it (older
+  // transfers). The file path itself is server-only and is never mapped here.
+  proof_uploaded_at?: string
+  proof_file_name?: string
+  proof_requested_at?: string
   // Not a bank_transfers column -- joined in from the linked donations row
   // (once confirmed) so callers keep the same "pledge.cert_id" shape as before.
   cert_id?: string

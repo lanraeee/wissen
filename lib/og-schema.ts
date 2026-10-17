@@ -17,9 +17,9 @@ import type { OgPageSchema } from './og-shared'
 export const OG_PAGE_SCHEMAS: OgPageSchema[] = [
   {
     slug: 'home', label: 'Homepage',
-    defaultTitle: 'Wissen-Haus Empowerment Foundation · Empowering Youth, Shaping Futures',
+    defaultTitle: 'Wissen-Haus Foundation · Empowering Youth, Shaping Futures',
     defaultOgTitle: 'Wissen-Haus — Empowering Youth, Shaping Futures',
-    defaultDescription: 'We equip African youth and the diaspora with practical skills, mentorship and global exposure for economic independence. Founded in Ibadan, Nigeria, now reaching young people across Africa and internationally.',
+    defaultDescription: 'We equip African youth and the diaspora with practical skills, mentorship and global exposure for economic independence. Founded in Ibadan, Nigeria, now reaching youth across Africa and internationally.',
   },
   {
     slug: 'about', label: 'About',
@@ -34,7 +34,7 @@ export const OG_PAGE_SCHEMAS: OgPageSchema[] = [
   {
     slug: 'founder', label: 'Founder',
     defaultTitle: 'Meet the Founder · Wissen-Haus', defaultOgTitle: 'Meet the Founder',
-    defaultDescription: 'Meet Benz Olagbaye, Founder and Executive Director of Wissen-Haus Empowerment Foundation.',
+    defaultDescription: 'Meet Benz Olagbaye, founder of Wissen Haus Empowerment Foundation NGA and Executive Director of Wissen-Haus Foundation.',
   },
   {
     slug: 'team', label: 'Team',
@@ -99,7 +99,7 @@ export const OG_PAGE_SCHEMAS: OgPageSchema[] = [
   {
     slug: 'partners-datacamp-apply', label: 'Partners · DataCamp Application',
     defaultTitle: 'DataCamp Scholarship Application · Wissen-Haus', defaultOgTitle: 'Apply for a DataCamp Scholarship',
-    defaultDescription: 'Apply for a Wissen-Haus × DataCamp scholarship — free access to DataCamp for motivated young people facing genuine barriers to learning data, analytics and AI skills.',
+    defaultDescription: 'Apply for a Wissen-Haus × DataCamp scholarship — free access to DataCamp for motivated youth facing genuine barriers to learning data, analytics and AI skills.',
   },
   {
     slug: 'donate', label: 'Donate',
@@ -114,7 +114,7 @@ export const OG_PAGE_SCHEMAS: OgPageSchema[] = [
   {
     slug: 'donate-bank-transfer', label: 'Donate · Bank Transfer',
     defaultTitle: 'Complete Your Bank Transfer · Wissen-Haus', defaultOgTitle: 'Complete Your Bank Transfer',
-    defaultDescription: 'Bank account details for your donation to Wissen-Haus Empowerment Foundation.',
+    defaultDescription: 'Bank account details for your donation to Wissen-Haus Foundation.',
   },
   {
     slug: 'careers', label: 'Careers',
@@ -189,22 +189,22 @@ export const OG_PAGE_SCHEMAS: OgPageSchema[] = [
   {
     slug: 'privacy', label: 'Privacy Policy',
     defaultTitle: 'Privacy Policy · Wissen-Haus', defaultOgTitle: 'Privacy Policy',
-    defaultDescription: 'How Wissen-Haus Empowerment Foundation collects, uses, and protects your personal information.',
+    defaultDescription: 'How Wissen-Haus Foundation collects, uses, and protects your personal information.',
   },
   {
     slug: 'safeguarding', label: 'Safeguarding Policy',
     defaultTitle: 'Safeguarding Policy · Wissen-Haus', defaultOgTitle: 'Safeguarding Policy',
-    defaultDescription: 'How Wissen Haus Foundation keeps children, young people and adults safe, and how to raise a concern.',
+    defaultDescription: 'How Wissen Haus Foundation keeps everyone we work with safe, children and adults alike, and how to raise a concern.',
   },
   {
     slug: 'terms', label: 'Terms & Conditions',
     defaultTitle: 'Terms & Conditions of Use · Wissen-Haus', defaultOgTitle: 'Terms & Conditions',
-    defaultDescription: 'The terms and conditions governing your use of the Wissen-Haus Empowerment Foundation website and programmes.',
+    defaultDescription: 'The terms and conditions governing your use of the Wissen-Haus Foundation website and programmes.',
   },
   {
     slug: 'wiki', label: 'Wiki / Overview',
-    defaultTitle: 'About Wissen-Haus · Encyclopedia Entry', defaultOgTitle: 'Wissen-Haus Empowerment Foundation — Overview',
-    defaultDescription: 'An encyclopedic overview of the Wissen-Haus Empowerment Foundation — its history, programmes, and mission to bridge the skills gap for African youth and the diaspora.',
+    defaultTitle: 'About Wissen-Haus · Encyclopedia Entry', defaultOgTitle: 'Wissen-Haus Foundation — Overview',
+    defaultDescription: 'An encyclopedic overview of the Wissen-Haus Foundation — its history, programmes, and mission to bridge the skills gap for African youth and the diaspora.',
   },
 ]
 

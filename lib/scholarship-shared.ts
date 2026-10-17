@@ -69,7 +69,7 @@ export const EVIDENCE_OPTIONS = [
 // Replaces the old free-text impactEssay -- who benefits is just as legible
 // from a checklist, and it's a two-second tap instead of a paragraph.
 export const IMPACT_AREA_OPTIONS = [
-  'Myself', 'My family', 'My community or the people I mentor', 'My employer or my own business', 'Other young people', 'Other',
+  'Myself', 'My family', 'My community or the people I mentor', 'My employer or my own business', 'Other youth', 'Other',
 ] as const
 
 export interface ScholarshipAnswers {

@@ -1,12 +1,12 @@
 // Client-safe brand helpers. The brand is two admin-editable settings (Admin →
 // Settings → General): the display name ("Wissen-Haus") and the descriptor
-// shown beside it ("Empowerment Foundation"). Everywhere the site's own copy
+// shown beside it ("Foundation"). Everywhere the site's own copy
 // says the default brand, brandify() swaps in the configured one at read time,
 // so a rename takes effect on the next request with no redeploy.
 
 export interface Brand { name: string; descriptor: string }
 
-export const DEFAULT_BRAND: Brand = { name: 'Wissen-Haus', descriptor: 'Empowerment Foundation' }
+export const DEFAULT_BRAND: Brand = { name: 'Wissen-Haus', descriptor: 'Foundation' }
 export const BRAND_MAX = 60
 
 const clean = (v: unknown, fallback: string, allowEmpty: boolean) => {
@@ -25,7 +25,7 @@ export function brandFromSettings(settings: unknown): Brand {
 
 export const fullName = (b: Brand) => (b.descriptor ? `${b.name} ${b.descriptor}` : b.name)
 
-const FULL_DEFAULT = /Wissen-Haus Empowerment Foundation/g
+const FULL_DEFAULT = /Wissen-Haus Foundation/g
 const SHORT_DEFAULT = /Wissen-Haus/g
 
 /** Replaces the built-in brand in a string. No-op for the default brand. */

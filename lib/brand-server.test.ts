@@ -14,7 +14,7 @@ beforeEach(() => { for (const k of Object.keys(store)) delete store[k] })
 
 describe('brand applied at read time', () => {
   it('uses defaults until settings are saved', async () => {
-    expect(await getBrand()).toEqual({ name: 'Wissen-Haus', descriptor: 'Empowerment Foundation' })
+    expect(await getBrand()).toEqual({ name: 'Wissen-Haus', descriptor: 'Foundation' })
     expect((await getPageCopy(ABOUT_SCHEMA)).heroEyebrow).toBe('About Wissen-Haus')
   })
   it('a saved rename shows up in page copy, share previews and policy text', async () => {

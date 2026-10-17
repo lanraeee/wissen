@@ -127,6 +127,14 @@ export async function PUT(req: NextRequest) {
   if (pledge.status === 'confirmed' || pledge.status === 'declared_sent')
     return NextResponse.json({ status: pledge.status })
 
+  // Proof of payment is required before a donor can say the money is sent, so
+  // the admin always has a receipt to match against the account.
+  if (!pledge.proof_uploaded_at)
+    return NextResponse.json(
+      { error: 'Upload your proof of payment first. We need it to match your transfer.' },
+      { status: 400 },
+    )
+
   const updated = await updatePledge(reference, {
     status: 'declared_sent',
     declared_at: new Date().toISOString(),

@@ -118,7 +118,7 @@ export const EMAIL_TEMPLATES: EmailTemplateInfo[] = [
     defaultSubject: 'Donation received — thank you, {{firstNameRaw}}!',
     defaultBody: `<span class="badge">Donation Confirmed</span>
 <h2>Thank you for your gift, {{firstName}}!</h2>
-<p>Your generous donation has been received. Every naira (and pound) goes directly toward empowering young people across Africa and the diaspora.</p>
+<p>Your generous donation has been received. Every naira (and pound) goes directly toward empowering youth across Africa and the diaspora.</p>
 {{amountField}}
 {{refField}}
 {{certBtn}}
@@ -148,8 +148,9 @@ export const EMAIL_TEMPLATES: EmailTemplateInfo[] = [
 {{referenceField}}
 {{instructionsPara}}
 <div class="divider"></div>
+<p><strong>Proof of payment is required.</strong> Once you've sent the transfer, upload a receipt or screenshot (PDF, PNG or JPG) on your donation page. We need it to match your gift, so you'll be asked for it before you confirm.</p>
 <p>Once you've sent the transfer, let us know so we can watch for it:</p>
-<a href="{{detailsUrl}}" class="btn">Confirm you've sent the transfer →</a>
+<a href="{{detailsUrl}}" class="btn">Upload proof and confirm you've sent →</a>
 <p style="font-size:.82rem;color:#8a9a8f">We'll email your official receipt and donation certificate as soon as the funds clear into our account.</p>`,
     trigger: 'Sent when a donor chooses bank transfer, before funds are confirmed.',
     source: 'sendBankTransferInstructions',
@@ -337,6 +338,44 @@ export const EMAIL_TEMPLATES: EmailTemplateInfo[] = [
       donorField: fieldText('Donor', 'Ada Lovelace'), emailField: field('Email', mailtoLink('ada@example.com')),
       amountField: field('Amount', '<strong>₦50,000.00</strong>'), refField: fieldMono('Reference', 'WH-REF-SAMPLE'),
       bankTransfersUrl: `${SITE_URL}/admin/bank-transfers`,
+    },
+  },
+  {
+    id: 'bank-transfer-proof-request', name: 'Bank Transfer Proof Request', category: 'Donations', recipient: 'User',
+    variables: ['firstName', 'formatted', 'referenceField', 'uploadUrl'],
+    defaultSubject: 'Please upload proof of your {{formatted}} bank transfer',
+    defaultBody: `<span class="badge">Proof Needed</span>
+<h2>Hello {{firstName}}, we need proof of your transfer.</h2>
+<p>We haven't yet received a receipt for your <strong>{{formatted}}</strong> bank transfer. Please upload a copy so we can match it to your gift.</p>
+{{referenceField}}
+<p>Accepted files: PDF, PNG or JPG, up to 4 MB. A screenshot of the transfer or the bank's receipt is fine.</p>
+<a href="{{uploadUrl}}" class="btn">Upload your proof of payment →</a>
+<p style="font-size:.82rem;color:#8a9a8f">If you've already sent a copy in the last day or two, you can ignore this email.</p>`,
+    trigger: 'Sent when an admin asks a donor to upload proof of payment for a bank transfer.',
+    source: 'sendBankTransferProofRequest',
+    sampleVars: {
+      firstName: 'Ada', formatted: '₦50,000.00',
+      referenceField: field('Your Reference', '<span style="font-family:monospace;font-size:1rem"><strong>WH-REF-SAMPLE</strong></span>'),
+      uploadUrl: `${SITE_URL}/donate/bank-transfer/sample`,
+    },
+  },
+  {
+    id: 'content-approval-request', name: 'Content Approval Request', category: 'Admin Notifications', recipient: 'Admin',
+    variables: ['keyRaw', 'keyField', 'requestedByField', 'reviewUrl'],
+    defaultSubject: '[Approval] Content change waiting: {{keyRaw}}',
+    defaultBody: `<span class="badge">Approval Needed</span>
+<h2>A content change is waiting for your approval</h2>
+{{keyField}}
+{{requestedByField}}
+<div class="divider"></div>
+<p>Nothing goes live until you approve it.</p>
+<a href="{{reviewUrl}}" class="btn">Review content approvals →</a>`,
+    trigger: 'Sent to the master admin only, when an editor proposes a change to public content.',
+    source: 'sendContentApprovalRequest',
+    sampleVars: {
+      keyRaw: 'Homepage hero', keyField: fieldText('Content', 'Homepage hero'),
+      requestedByField: fieldText('Requested by', 'editor@example.com'),
+      reviewUrl: `${SITE_URL}/admin/content-approvals`,
     },
   },
   {

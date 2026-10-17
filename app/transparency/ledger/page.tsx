@@ -11,7 +11,7 @@ export const dynamic = 'force-dynamic'
 export const metadata: Metadata = pageMetadata({
   title: 'Financial Ledger · Wissen-Haus',
   ogTitle: 'Wissen-Haus Financial Ledger',
-  description: `The last ${LEDGER_LIMIT} transactions across the Wissen-Haus Empowerment Foundation's accounts: what came in and what went out.`,
+  description: `The last ${LEDGER_LIMIT} transactions across the Wissen-Haus Foundation's accounts: what came in and what went out.`,
 })
 
 const cell = { padding: '10px 8px', borderBottom: '1px solid #e8e4dc', verticalAlign: 'top' as const }

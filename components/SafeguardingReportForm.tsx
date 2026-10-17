@@ -81,7 +81,7 @@ export default function SafeguardingReportForm() {
       </div>
       <div className="form-row">
         <FormInput label="Your phone" id="sg-phone" name="phone" maxLength={40} placeholder="Optional" />
-        <FormInput label="How are you connected to this?" id="sg-rel" name="relationship" maxLength={100} placeholder="e.g. parent, teacher, volunteer, the young person" />
+        <FormInput label="How are you connected to this?" id="sg-rel" name="relationship" maxLength={100} placeholder="e.g. parent, teacher, volunteer, the youth" />
       </div>
       <label style={{ display: 'flex', gap: 8, alignItems: 'flex-start', fontSize: '.9rem', margin: '.4rem 0 1rem' }}>
         <input type="checkbox" name="immediate_danger" style={{ marginTop: 4 }} />

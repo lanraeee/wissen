@@ -142,6 +142,7 @@ export default async function DonatePage() {
               <p>{c.split3Body}</p>
             </div>
           </div>
+          <p className="lead mt-m reveal">{c.investNote}</p>
         </div>
       </section>
     </>

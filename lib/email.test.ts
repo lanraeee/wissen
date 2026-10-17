@@ -43,8 +43,12 @@ describe('every transactional email renders its default template with no leftove
   })
 
   it('sendContactNotification', async () => {
-    await email.sendContactNotification({ name: 'Ada Lovelace', email: 'ada@example.com', subject: 'Hi', message: 'Hello there' })
-    assertFullyRendered(sent())
+    await email.sendContactNotification({ name: 'Ada Lovelace', email: 'ada@example.com', subject: 'Hi', message: 'Hello there', topic: 'partnership' })
+    const payload = sent() as { subject: string; html: string; to?: unknown }
+    assertFullyRendered(payload)
+    // Delivered to the inbox for the chosen topic, and tagged with its label.
+    expect(payload.to).toBe('partners@wissenhaus.org')
+    expect(payload.subject).toContain('Partnership')
   })
 
   it('sendContactConfirmation', async () => {
@@ -55,6 +59,20 @@ describe('every transactional email renders its default template with no leftove
   it('sendVolunteerNotification', async () => {
     await email.sendVolunteerNotification({ name: 'Ada Lovelace', email: 'ada@example.com', role: 'Mentor', message: 'I want to help' })
     assertFullyRendered(sent())
+  })
+
+  it('sendVolunteerNotification goes to the volunteers inbox and the admin list', async () => {
+    await email.sendVolunteerNotification({ name: 'Ada Lovelace', email: 'ada@example.com', role: 'Mentor', message: 'I want to help' })
+    expect((sent() as unknown as { to: unknown }).to).toEqual([
+      'volunteers@wissenhaus.org', 'director@wissenhaus.org', 'wissenhaus@outlook.com',
+    ])
+  })
+
+  it('sendPartnerNotification goes to the partners inbox and the admin list', async () => {
+    await email.sendPartnerNotification({ name: 'Ada Lovelace', email: 'ada@example.com', organisation: 'Acme', message: 'Partnership' })
+    expect((sent() as unknown as { to: unknown }).to).toEqual([
+      'partners@wissenhaus.org', 'director@wissenhaus.org', 'wissenhaus@outlook.com',
+    ])
   })
 
   it('sendVolunteerConfirmation', async () => {

@@ -58,7 +58,7 @@ async function runQuery(raw: string): Promise<{ sql: string; rows: number; data?
 }
 
 function systemPrompt(schema: string, extra: string): string {
-  return `You are the internal analyst for Wissen-Haus Empowerment Foundation, a non-profit serving African youth and the diaspora. You are speaking with a member of their staff inside the admin panel.
+  return `You are the internal analyst for Wissen-Haus Foundation, a non-profit serving African youth and the diaspora. You are speaking with a member of their staff inside the admin panel.
 
 You can query the organisation's database with the run_sql tool, and you can reason, draft and analyse using your own knowledge. You have no other tools: you cannot browse the web, send email, publish anything, or change any data. If asked to do any of those, say plainly that you cannot and describe what the person should do instead.
 

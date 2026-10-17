@@ -74,6 +74,9 @@ export const RATE_LIMITS: Array<{ prefix: string; limit: number; windowMs: numbe
   { prefix: '/api/scholarships/datacamp', limit: 5, windowMs: 10 * 60_000 },
   // Payments — generous enough for legitimate retries, still bounded.
   { prefix: '/api/payments', limit: 20, windowMs: 10 * 60_000 },
+  // Starting a "view as member" re-checks the admin's password, so it is
+  // throttled like the login route. Per IP, so one browser cannot keep guessing.
+  { prefix: '/api/admin/view-as', limit: 10, windowMs: 15 * 60_000 },
   // Logged-in community actions — abuse-resistant but not restrictive.
   { prefix: '/api/forum', limit: 30, windowMs: 10 * 60_000 },
   { prefix: '/api/testimonials', limit: 10, windowMs: 10 * 60_000 },

@@ -3,11 +3,21 @@
 import { useFormSubmit } from '@/lib/useFormSubmit'
 import { FormInput, FormTextarea } from '@/components/form/FormField'
 import { FormSuccess, FormError } from '@/components/form/FormSuccess'
+import { CONTACT_TOPICS, CONTACT_TOPIC_LABEL } from '@/lib/contact-routes'
+
+// What each topic is for, shown under its radio button. The choice decides
+// which team receives the message; the addresses themselves are never shown.
+const TOPIC_HELP = {
+  general: 'Questions about Wissen-Haus, our programmes or anything else.',
+  partnership: 'Schools, employers and organisations that want to work with us. See our partner page for the details.',
+  volunteer: 'Questions about volunteering. To apply, use our volunteer page.',
+} as const
 
 export default function ContactForm() {
   const { status, error, handleSubmit } = useFormSubmit({
     endpoint: '/api/contact',
     buildPayload: fd => ({
+      topic: fd.get('topic') || 'general',
       name: fd.get('name'),
       email: fd.get('email'),
       subject: fd.get('subject'),
@@ -15,7 +25,10 @@ export default function ContactForm() {
       safeguarding: fd.get('safeguarding') === 'on',
     }),
     event: 'contact_form_submitted',
-    eventProperties: fd => ({ subject_length: (fd.get('subject') as string | null)?.length ?? 0 }),
+    eventProperties: fd => ({
+      topic: fd.get('topic') || 'general',
+      subject_length: (fd.get('subject') as string | null)?.length ?? 0,
+    }),
   })
 
   if (status === 'done') {
@@ -31,6 +44,20 @@ export default function ContactForm() {
   return (
     <form className="feature form reveal" onSubmit={handleSubmit}>
       <h3 style={{ marginBottom: '1.2rem' }}>Send a Message</h3>
+      <fieldset style={{ border: 0, padding: 0, margin: '0 0 1.2rem' }}>
+        <legend style={{ fontSize: '.88rem', fontWeight: 600, marginBottom: '.5rem' }}>What is this about?</legend>
+        <div style={{ display: 'grid', gap: '.6rem' }}>
+          {CONTACT_TOPICS.map((topic, i) => (
+            <label key={topic} style={{ display: 'flex', gap: 10, alignItems: 'flex-start', fontSize: '.9rem', cursor: 'pointer' }}>
+              <input type="radio" name="topic" value={topic} defaultChecked={i === 0} style={{ marginTop: 4 }} />
+              <span>
+                <strong style={{ fontWeight: 600 }}>{CONTACT_TOPIC_LABEL[topic]}</strong>
+                <span style={{ display: 'block', color: 'var(--ink-60)', fontSize: '.84rem' }}>{TOPIC_HELP[topic]}</span>
+              </span>
+            </label>
+          ))}
+        </div>
+      </fieldset>
       <div className="form-row">
         <FormInput label="Name" id="c-name" name="name" required placeholder="Your name" />
         <FormInput label="Email" id="c-email" name="email" type="email" required placeholder="you@example.com" />

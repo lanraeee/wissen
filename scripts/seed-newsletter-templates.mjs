@@ -40,9 +40,9 @@ ${btn(`${SITE}/impact`, 'See the full impact report')}`,
   },
   {
     name: 'Donation Appeal — General',
-    subject: 'Help us reach more young people',
+    subject: 'Help us reach more youth',
     body: `<h2>A small gift goes further than you'd think.</h2>
-<p>Every donation to Wissen-Haus funds mentorship, career guidance, and real opportunities for young people who are ready to work but short on access.</p>
+<p>Every donation to Wissen-Haus funds mentorship, career guidance, and real opportunities for youth who are ready to work but short on access.</p>
 <p>Whether it's ₦5,000 or ₦50,000, your gift directly funds the next career fair, the next scholarship match, the next mentoring session.</p>
 ${btn(`${SITE}/donate`, 'Make a gift today')}`,
   },
@@ -70,7 +70,7 @@ ${btn(`${SITE}/volunteer`, 'See open roles')}`,
   {
     name: 'Corporate Partnership Invitation',
     subject: 'Partner with Wissen-Haus',
-    body: `<h2>Your company could change how young people see their future.</h2>
+    body: `<h2>Your company could change how youth see their future.</h2>
 <p>We partner with companies and schools to deliver mentorship, internships, and career exposure to African youth and the diaspora. If your organisation is looking for a meaningful way to invest in the next generation of talent, we'd like to talk.</p>
 ${btn(`${SITE}/partner`, 'Explore partnership models')}`,
   },
@@ -129,7 +129,7 @@ ${btn(`${SITE}/impact-content`, 'Read more stories like this')}`,
     body: `<span class="badge">Year-End Appeal</span>
 <h2>This year, because of people like you —</h2>
 <ul>
-  <li>[number] young people reached</li>
+  <li>[number] youth reached</li>
   <li>[number] mentorship matches made</li>
   <li>[number] opportunities shared</li>
 </ul>
@@ -187,7 +187,7 @@ ${btn(`${SITE}/policy-research`, 'Read the full report')}`,
     name: 'Safeguarding Policy Update',
     subject: 'An update to our Safeguarding policy',
     body: `<h2>We've updated our Safeguarding policy.</h2>
-<p>Keeping the young people we work with safe is foundational to everything we do. We've made the following changes: [summarise changes].</p>
+<p>Keeping the youth we work with safe is foundational to everything we do. We've made the following changes: [summarise changes].</p>
 <p>You can read the full policy at any time.</p>
 ${btn(`${SITE}/safeguarding`, 'View our Safeguarding policy')}
 <p style="font-size:.85rem;color:#8a9a8f">If you ever have a safeguarding concern, you can report it confidentially at any time.</p>`,

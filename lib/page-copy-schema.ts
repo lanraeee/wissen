@@ -27,7 +27,7 @@ export const ABOUT_STORY_SCHEMA: PageCopySchema = {
   fields: [
     t('heroEyebrow', 'Hero eyebrow', 'Our Story'),
     t('heroTitle', 'Hero title', 'Building the bridge young Africans and the diaspora deserve.', 160),
-    ta('heroLead', 'Hero intro', "We started small in Ibadan, Nigeria—mentoring and counselling young people one by one, seeing firsthand how transformative real guidance can be. What we discovered is that this problem is bigger than one country or one person can solve. So we're building Wissen-Haus to scale what we've learned and help thousands of talented young people—across Nigeria, Africa, and the diaspora—access the opportunities that should be available to everyone.", 800),
+    ta('heroLead', 'Hero intro', "We started small in Ibadan, Nigeria—mentoring and counselling youth one by one, seeing firsthand how transformative real guidance can be. What we discovered is that this problem is bigger than one country or one person can solve. So we're building Wissen-Haus to scale what we've learned and help thousands of talented youth—across Nigeria, Africa, and the diaspora—access the opportunities that should be available to everyone.", 800),
 
     t('s1Index', 'Section 1 index label', '01 · The Problem We Saw'),
     t('s1Heading', 'Section 1 heading', 'What Sparked Our Mission'),
@@ -37,13 +37,14 @@ export const ABOUT_STORY_SCHEMA: PageCopySchema = {
 
     t('s2Index', 'Section 2 index label', "02 · What We're Building"),
     t('s2Heading', 'Section 2 heading', 'Three Pillars of Change'),
-    ta('s2Intro', 'Section 2 intro line', "We've learned from mentoring 50+ young people that real transformation happens through three things:", 300),
+    ta('s2Intro', 'Section 2 intro line', "We've learned from mentoring 50+ youth that real transformation happens through three things:", 300),
     t('pillar1Label', 'Pillar 1 label', 'Career Clarity Fair'),
-    ta('pillar1Body', 'Pillar 1 body', 'Intensive, practical training in the skills employers actually need. Not textbooks. Real tools for landing jobs and building careers.', 400),
+    ta('pillar1Body', 'Pillar 1 body', 'Intensive, practical training in the skills employers and communities actually need, including care and support and infrastructure trades. Not textbooks. Real tools for landing jobs and building careers.', 500),
     t('pillar2Label', 'Pillar 2 label', 'Opportunity Blueprint Podcast'),
-    ta('pillar2Body', 'Pillar 2 body', "Direct access to the stories of people who've built what you dream about. Proof that it's possible. Inspiration that sticks.", 400),
+    ta('pillar2Body', 'Pillar 2 body', "Direct access to the stories of people who've built what you dream about, from caregivers and site engineers to founders and coders. Proof that it's possible. Inspiration that sticks.", 500),
     t('pillar3Label', 'Pillar 3 label', 'Community & Mentorship'),
-    ta('pillar3Body', 'Pillar 3 body', "A network where you're not alone. Real mentors. Real peers. Real accountability. This is where lasting change happens.", 400),
+    ta('pillar3Body', 'Pillar 3 body', "A network where you're not alone. Real mentors. Real peers. Real accountability. Volunteer-led community projects, where the people we train put their skills to work locally. This is where lasting change happens.", 500),
+    ta('s2Thread', 'Section 2 thread line (shown under the pillars)', 'Running through all three is one idea: strong communities need people who can care for others and build the places they live. We train youth for both, and we start in our own communities.', 500),
     ta('s2Closing', 'Section 2 closing line', "We're just getting started. Every person we mentor teaches us how to build this better. Every success story shows us we're on the right path.", 400),
 
     t('approachEyebrow', '"Our Approach" eyebrow', 'Our Approach'),
@@ -138,7 +139,7 @@ export const CAREER_CLARITY_FAIR_SCHEMA: PageCopySchema = {
     t('howEyebrow', '"How It Works" eyebrow', 'How It Works'),
     t('howHeading', '"How It Works" heading', 'What happens at the Career Clarity Fair', 200),
     t('step1Title', 'Step 1 title', 'Arrive & Explore'),
-    ta('step1Body', 'Step 1 body', 'Browse booths representing 20+ career paths from tech to healthcare to media.', 250),
+    ta('step1Body', 'Step 1 body', 'Browse booths representing 20+ career paths, from tech and healthcare to care and support, infrastructure and media.', 250),
     t('step2Title', 'Step 2 title', 'Meet the Pros'),
     ta('step2Body', 'Step 2 body', "Have real conversations with professionals. Ask the questions you couldn't ask a teacher.", 250),
     t('step3Title', 'Step 3 title', 'Skills Tasters'),
@@ -172,7 +173,7 @@ export const OPPORTUNITY_BLUEPRINT_SCHEMA: PageCopySchema = {
     t('expectEyebrow', '"What to Expect" eyebrow', 'What to Expect'),
     t('expectHeading', '"What to Expect" heading', 'Real conversations that open doors.', 200),
     t('f1Title', 'Feature 1 title', 'Career Stories'),
-    ta('f1Body', 'Feature 1 body', 'Hear how professionals went from school to their dream careers — including the failures, setbacks, and breakthroughs.', 300),
+    ta('f1Body', 'Feature 1 body', 'Hear how professionals went from school to their dream careers, from nurses and site engineers to coders and founders, including the failures, setbacks, and breakthroughs.', 300),
     t('f2Title', 'Feature 2 title', 'Global Perspective'),
     ta('f2Body', 'Feature 2 body', 'From Lagos to London, insights on how to position yourself for global opportunities while remaining grounded in Nigeria.', 300),
     t('f3Title', 'Feature 3 title', 'Practical Takeaways'),
@@ -193,7 +194,7 @@ export const IMPACT_CONTENT_SCHEMA: PageCopySchema = {
   fields: [
     t('heroEyebrow', 'Hero eyebrow', 'Programmes · Impact Content'),
     t('heroTitle', 'Hero title', 'Stories that inspire action.', 160),
-    ta('heroLead', 'Hero intro', "African youth and diaspora changemakers doing extraordinary things. We tell their stories so the next generation knows what's possible.", 400),
+    ta('heroLead', 'Hero intro', "African youth and diaspora changemakers doing extraordinary things, in technology, care and support, infrastructure, and every field in between. We tell their stories so the next generation knows what's possible.", 400),
     t('ctaTitle', 'Closing banner title', 'Have a story to tell?'),
     ta('ctaLead', 'Closing banner body', "We're always looking for young Africans and diaspora changemakers doing extraordinary things. If that's you — or if you know someone whose story deserves to be heard — reach out.", 400),
     t('ctaBtnText', 'Closing banner button', 'Submit a story'),
@@ -294,6 +295,7 @@ export const VOLUNTEER_SCHEMA: PageCopySchema = {
     t('applyEyebrow', 'Apply-form eyebrow', 'Apply'),
     t('applyHeading', 'Apply-form heading', 'Ready to give your time?', 160),
     ta('applyLead', 'Apply-form intro', 'Fill out the form below and our team will reach out within 5 business days.', 300),
+    ta('siteNote', 'Note above the form for care and site-based roles', 'Care and site-based volunteering is covered by our Safeguarding Policy. Before any placement starts, you will be told what safeguarding steps apply to your role. Tell us in your application if you are interested in care or infrastructure work.', 500),
   ],
 }
 PAGE_COPY_SCHEMAS.push(VOLUNTEER_SCHEMA)
@@ -348,7 +350,7 @@ export const DONATE_SCHEMA: PageCopySchema = {
 
     t('impactEyebrow', '"Your Impact" eyebrow', 'Your Impact'),
     t('impactHeading', '"Your Impact" heading', 'Every naira builds a career-ready future.', 160),
-    ta('impactLead', '"Your Impact" body', 'Since our launch in 2025, gifts from people like you have reached young people across Ibadan, Nigeria, and are now extending to Africa and the diaspora.', 400),
+    ta('impactLead', '"Your Impact" body', 'Since our launch in 2025, gifts from people like you have reached youth across Ibadan, Nigeria, and are now extending to Africa and the diaspora.', 400),
 
     t('giveEyebrow', '"Give Now" eyebrow', 'Give Now'),
     t('giveHeading', '"Give Now" heading', 'Choose a gift that changes a life.', 160),
@@ -368,6 +370,7 @@ export const DONATE_SCHEMA: PageCopySchema = {
     ta('split2Body', 'Fund split 2 body', 'Staff time, technology, and administration that makes delivery possible.', 250),
     t('split3Title', 'Fund split 3 title', '10% Growth'),
     ta('split3Body', 'Fund split 3 body', 'Reserved to expand to new schools and communities across Nigeria, Africa, and the diaspora.', 250),
+    ta('investNote', 'Note under the fund split', 'Any money we have left over will be invested in projects that generate more income, to better our mission.', 300),
   ],
 }
 PAGE_COPY_SCHEMAS.push(DONATE_SCHEMA)
@@ -379,7 +382,7 @@ export const SAFEGUARDING_SCHEMA: PageCopySchema = {
     t('version', 'Version', '1.0', 20),
     t('lastUpdated', 'Last updated', '3 October 2026', 40),
     t('nextReview', 'Next review', 'October 2027', 40),
-    ta('intro', 'Opening paragraph', 'Wissen Haus Foundation (“Wissen-Haus”, “we”, “us”) works with young people in Nigeria, Ghana, Kenya, South Africa and diaspora communities, including students under 18. This policy explains how we keep the children, young people and adults we work with safe, and what everyone connected with Wissen-Haus must do if they have a concern.', 1000),
+    ta('intro', 'Opening paragraph', 'Wissen Haus Foundation (“Wissen-Haus”, “we”, “us”) works with youth in Nigeria, Ghana, Kenya, South Africa and diaspora communities, including students under 18. This policy explains how we keep everyone we work with safe, children and adults alike, and what everyone connected with Wissen-Haus must do if they have a concern.', 1000),
     ta('emergencyNotice', 'Emergency notice box', 'If someone is in immediate danger, contact your local emergency services first (for example 999 in the UK or the emergency number in your country), then tell us as soon as it is safe to do so. In the UK you can also call the NSPCC helpline on 0808 800 5000 or Childline on 0800 1111.', 600),
   ],
 }
@@ -410,14 +413,14 @@ export const WIKI_SCHEMA: PageCopySchema = {
   slug: 'wiki', label: 'Wiki / Overview',
   fields: [
     t('eyebrow', 'Header eyebrow', 'Foundation Overview'),
-    t('title', 'Page title', 'Wissen-Haus Empowerment Foundation', 120),
+    t('title', 'Page title', 'Wissen-Haus Foundation', 120),
     t('subtitle', 'Header subtitle', 'Non-profit organisation · Founded in Ibadan, Oyo State, Nigeria · Est. 2025 · Serving Africa & the diaspora', 240),
-    ta('intro', 'Opening paragraph (supports [links](url) and {ref:1} footnotes)', '**Wissen-Haus Empowerment Foundation** is a non-profit organisation founded in [Ibadan](https://en.wikipedia.org/wiki/Ibadan), [Oyo State](https://en.wikipedia.org/wiki/Oyo_State), Nigeria, focused on bridging the skills gap among African youth and the diaspora through career guidance, mentorship, and access to global opportunities. The foundation was established with a mission to equip young people — in Nigeria, across the wider African continent, and in diaspora communities including the United Kingdom — with the practical knowledge and exposure needed for economic independence.{ref:1}', 1500),
+    ta('intro', 'Opening paragraph (supports [links](url) and {ref:1} footnotes)', '**Wissen-Haus Foundation** is a non-profit organisation founded in [Ibadan](https://en.wikipedia.org/wiki/Ibadan), [Oyo State](https://en.wikipedia.org/wiki/Oyo_State), Nigeria, focused on bridging the skills gap among African youth and the diaspora through career guidance, mentorship, and access to global opportunities. The foundation was established with a mission to equip youth — in Nigeria, across the wider African continent, and in diaspora communities including the United Kingdom — with the practical knowledge and exposure needed for economic independence.{ref:1}', 1500),
     t('referencesHeading', 'References heading', 'References', 60),
-    ta('references', 'References — one per line as: Label | URL (numbered in order, cited with {ref:N})', 'Wissen-Haus Empowerment Foundation | https://www.wissenhaus.org\nOur Story – Wissen-Haus | https://www.wissenhaus.org/about/story\nCareer Clarity Fair – Wissen-Haus | https://www.wissenhaus.org/career-clarity-fair\nOpportunity Blueprint – Wissen-Haus | https://www.wissenhaus.org/opportunity-blueprint\nImpact Content – Wissen-Haus | https://www.wissenhaus.org/impact-content\nCommunity Hub – Wissen-Haus | https://www.wissenhaus.org/community\nCareer Pathways Assessment – Wissen-Haus | https://www.wissenhaus.org/career-pathways\nPolicy Research – Wissen-Haus | https://www.wissenhaus.org/policy-research\nVolunteer – Wissen-Haus | https://www.wissenhaus.org/volunteer', 3000),
+    ta('references', 'References — one per line as: Label | URL (numbered in order, cited with {ref:N})', 'Wissen-Haus Foundation | https://www.wissenhaus.org\nOur Story – Wissen-Haus | https://www.wissenhaus.org/about/story\nCareer Clarity Fair – Wissen-Haus | https://www.wissenhaus.org/career-clarity-fair\nOpportunity Blueprint – Wissen-Haus | https://www.wissenhaus.org/opportunity-blueprint\nImpact Content – Wissen-Haus | https://www.wissenhaus.org/impact-content\nCommunity Hub – Wissen-Haus | https://www.wissenhaus.org/community\nCareer Pathways Assessment – Wissen-Haus | https://www.wissenhaus.org/career-pathways\nPolicy Research – Wissen-Haus | https://www.wissenhaus.org/policy-research\nVolunteer – Wissen-Haus | https://www.wissenhaus.org/volunteer', 3000),
     ta('wikipediaNote', 'Wikipedia note box (bottom of article)', 'This page is also being submitted as a draft article to [Wikipedia’s Articles for Creation](https://en.wikipedia.org/wiki/Wikipedia:Articles_for_creation). Once published, a link to the Wikipedia article will appear here.', 500),
     t('infoboxTitle', 'Sidebar infobox title', 'Wissen-Haus', 80),
-    ta('infobox', 'Sidebar infobox rows — one per line as: Label | Value', 'Type | Non-profit foundation\nFounded | 2025\nFounder | Benz Olagbaye\nHeadquarters | Ibadan, Oyo State, Nigeria\nFocus | Youth empowerment, career guidance, skills development — for African youth and the diaspora\nReach | 500+ students, expanding across Africa and internationally\nWebsite | [wissenhaus.org](https://www.wissenhaus.org)', 1500),
+    ta('infobox', 'Sidebar infobox rows — one per line as: Label | Value', 'Type | Non-profit foundation\nFounded | 2025\nFounder (Nigeria) | Benz Olagbaye\nIncorporated (UK) | Fawaz Bello\nHeadquarters | Ibadan, Oyo State, Nigeria\nFocus | Youth empowerment, career guidance, skills development — for African youth and the diaspora\nReach | 500+ students, expanding across Africa and internationally\nWebsite | [wissenhaus.org](https://www.wissenhaus.org)', 1500),
     t('seeAlsoHeading', '"See also" heading', 'See also', 60),
     ta('seeAlso', '"See also" links — one per line as: Label | /path', 'All Programmes | /programmes\nMeet the Founder | /founder\nOur Team | /team\nPolicy Research | /policy-research\nCommunity Hub | /community\nOur Story | /about/story', 1000),
   ],

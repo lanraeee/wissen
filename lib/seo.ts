@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 
 const DEFAULT_OG_IMAGE = '/opengraph-image'
-const DEFAULT_OG_ALT = 'Wissen-Haus Empowerment Foundation'
+const DEFAULT_OG_ALT = 'Wissen-Haus Foundation'
 
 // Next.js does NOT sync a page's top-level title/description into an
 // inherited openGraph/twitter object -- if a page only sets `title` and

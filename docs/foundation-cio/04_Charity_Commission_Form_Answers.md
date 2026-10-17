@@ -11,7 +11,7 @@ Answers below follow the order of the form (18-page draft printout). Anything ma
 ## Before you submit: blockers
 
 1. **Third trustee.** The constitution (clauses 4.1, 5.1, 5.2.3) requires **at least 3** charity trustees. Fawaz Bello is the application contact and not a trustee, so the draft names two (Benz Olagbaye, Gbemisola Abatan) and carries a `[THIRD INITIAL TRUSTEE]` placeholder in clause 4.2, the Adoption section and the signature page. Name a third trustee before signing, and add them to the trustee register.
-2. **Re-check the constitution text.** The name ("Wissen Haus Foundation") and the address (190 Dantzic Street, Manchester M4 4LF) were updated in the draft. If you have already loaded the constitution into the Constitution tab, update that version too so it matches what you sign and what the form says.
+2. **Re-check the constitution text.** Clauses 3.1, 3.2, 3.3, 5.2.6, 9.5, 17.3.2 and 17.4 were amended on 14 October 2026 (investment, trading, grants including to individuals and overseas, connected companies, trustee skills). Clause 2.1 is unchanged. The grant powers now cover the "Makes grants to individuals" tick, and the grant-making policy (`06_Grant_Making_Policy.md`) was checked against clause 17.3.2(c) on 14 October 2026 and updated (overseas due diligence, written agreements and monitoring; connected bodies under clause 9.5; programme-related investments kept separate). The name ("Wissen Haus Foundation") and the address (190 Dantzic Street, Manchester M4 4LF) were updated in the draft. If you have already loaded the constitution into the Constitution tab, update that version too so it matches what you sign and what the form says.
 3. **Bank account.** The only account is Wissen Haus Ltd's. The CIO is a separate legal entity, and charity money must not pass through the company's account. Open an account in the CIO's own name (the Commission accepts "not yet" for a new application).
 4. **Trustee details.** The Commission asks each trustee for identity details, and the form asks for the contact person's date of birth. Gather these, but do not put them in this repo.
 5. **Signed constitution.** The signed PDF is attached on page 2 ("Please attach the governing document"). Upload it in the Constitution tab first and mark it as the working copy.
@@ -43,11 +43,11 @@ Answers below follow the order of the form (18-page draft printout). Anything ma
 
 Paste exactly as in clause 2.1 of the constitution. The Commission checks this word for word:
 
-> (a) The advancement of education for young people in Nigeria, Africa, and diaspora communities, particularly through the provision of practical career guidance, skills training, mentorship programmes, and global exposure designed to bridge the gap between academic knowledge and real-world professional readiness;
+> (a) The advancement of education for youth in Nigeria, Africa, and diaspora communities, particularly through the provision of practical career guidance, skills training, mentorship programmes, and global exposure designed to bridge the gap between academic knowledge and real-world professional readiness;
 >
 > (b) The relief of poverty and promotion of economic independence for young African and diaspora youth through equipping them with practical career skills, professional networks, and global opportunities that enable employment, entrepreneurship, and sustainable livelihoods;
 >
-> (c) The advancement of community development and social mobility for young people by fostering networks of professional mentorship, peer support, and international connection that empower sustainable personal and community development;
+> (c) The advancement of community development and social mobility for youth by fostering networks of professional mentorship, peer support, and international connection that empower sustainable personal and community development;
 >
 > (d) The conduct of research and publication of evidence on youth economic independence, skills development, employment outcomes, and the future of work across Nigeria, Africa, and diaspora communities, to advance public understanding and inform policy and practice in youth development.
 
@@ -61,7 +61,7 @@ Your draft has almost every box ticked, including pre-school, village hall, leis
 
 **How:** Provides education/advocacy/advice/information; Sponsors or undertakes research; Workshops, conferences, seminars and/or lectures; Provides services. Add "Bursaries, scholarships, grants and other resources for education" and "Makes grants to individuals" **only if** the CIO will itself fund them (the DataCamp-type scholarships are partner-funded, so likely not).
 
-**Who:** Children/Young people; People in financial need; People living in a specified geographical area. Optionally "People of a particular ethnic or racial origin" for African and diaspora youth, which is your call. Untick: disabilities, other charities, general public, pupils at a named establishment, academics/professionals.
+**Who:** Children/Youth; People in financial need; People living in a specified geographical area. Optionally "People of a particular ethnic or racial origin" for African and diaspora youth, which is your call. Untick: disabilities, other charities, general public, pupils at a named establishment, academics/professionals.
 
 **Where:** Tick "Outside England & Wales" with **Nigeria, Ghana, Kenya, South Africa**. Tick an England option **only if** you will genuinely deliver activity in England. Your operating base is Manchester, so a Greater Manchester or specific-area option may be more accurate than "Throughout England". **[CONFIRM]**
 
@@ -69,9 +69,9 @@ Your draft has almost every box ticked, including pre-school, village hall, leis
 
 | Question | Draft answer |
 |---|---|
-| Subjects the organisation advances education in | Career guidance and career planning; employability and workplace skills; digital and data skills; entrepreneurship; financial and economic independence. |
+| Subjects the organisation advances education in | Career guidance and career planning; employability and workplace skills; digital and data skills; entrepreneurship; financial and economic independence; **[CONFIRM and add once running:]** care and support skills (non-clinical); infrastructure and built-environment skills (technical and vocational). |
 | What it does to support/advance education | Runs career fairs, workshops, seminars, mentorship, free and premium online courses, and signposts partner-funded scholarships and opportunities. |
-| Provides training in | Practical career skills, employability, digital skills, entrepreneurship. **[CONFIRM list]** |
+| Provides training in | Practical career skills, employability, digital skills, entrepreneurship. **[CONFIRM list]** Add, only when the courses are running: non-clinical care and support training; technical and vocational infrastructure training. Training does not include clinical or certified engineering practice. |
 | Qualifications the training leads to | Wissen Haus certificates of completion (not accredited qualifications). **[CONFIRM]** |
 | Educational establishments supported and how | Secondary schools (via the Career Clarity Fair), by delivering career-guidance sessions on site. **[CONFIRM schools]** |
 | Support to students and where | Mentoring, career guidance and scholarship/opportunity information for secondary and tertiary students in Nigeria, Ghana, Kenya, South Africa and the diaspora. |
@@ -82,7 +82,7 @@ Your draft has almost every box ticked, including pre-school, village hall, leis
 | How trustees are satisfied subjects have educational merit | Trustees review programme content annually against the objects; content is practical, skills-based and aligned to recognised career frameworks. |
 | How education is advanced without promoting a specific view | Content is factual and skills-based; participants are encouraged to explore options and make their own decisions; no political or religious promotion. |
 | How events are advertised | The website, social media, schools, partner organisations and the Community Hub. |
-| How trustees select beneficiaries | Open to young people in the target regions; places prioritised by need and capacity where limited. **[CONFIRM]** |
+| How trustees select beneficiaries | Open to youth in the target regions; places prioritised by need and capacity where limited. **[CONFIRM]** |
 | How trustees are satisfied educators are suitably qualified | Relevant professional experience, references and (where applicable) checks. |
 | Hours of education a week | **[CONFIRM: depends on programme calendar]** |
 | Safeguarding measures | Safeguarding policy at wissenhaus.org/safeguarding: Designated Safeguarding Lead, safer recruitment, mentoring rules, online safety, reporting. |
@@ -97,8 +97,8 @@ All questions: **Not applicable** (the organisation does not operate a village h
 - **Purposes are:** as above (clause 2.1).
 - **How the organisation carries out its purposes:** Through (1) career-guidance events and fairs for secondary-school students; (2) mentorship and skills programmes, online and in person; (3) a free community and opportunity hub with courses and listings of scholarships, jobs and internships; (4) impact storytelling and a podcast; and (5) research and policy publications on youth economic independence. Delivery is mostly digital, with local partners and volunteers in each country.
 - **Business plan attachment:** attach a short programme plan if you have one. **[CONFIRM]**
-- **Benefits of the purposes:** Young people gain practical skills, networks and exposure leading to employment, entrepreneurship and sustainable livelihoods; communities benefit from stronger economic participation; policy-makers gain evidence.
-- **Who can benefit:** Young people in Nigeria, Ghana, Kenya, South Africa and diaspora communities, regardless of background; priority to those facing economic disadvantage.
+- **Benefits of the purposes:** Youth gain practical skills, networks and exposure leading to employment, entrepreneurship and sustainable livelihoods; communities benefit from stronger economic participation; policy-makers gain evidence.
+- **Who can benefit:** Youth in Nigeria, Ghana, Kenya, South Africa and diaspora communities, regardless of background; priority to those facing economic disadvantage.
 - **Criteria for who benefits / what work it supports:** Age, location, need and capacity to engage; no membership requirement; no discrimination.
 - **Grant-making criteria:** If the CIO funds scholarships or bursaries: financial need, academic or professional potential, and fit with the objects, assessed by a panel of at least two trustees with a conflicts check. Otherwise state "not currently making grants". **[CONFIRM and attach a grant policy if applicable]**
 - **Do people have to be members to benefit?** **No.** Members are the charity trustees only (clause 12).
@@ -108,7 +108,7 @@ All questions: **Not applicable** (the organisation does not operate a village h
 - **Provides public facilities or services as a way of carrying out its purposes?** Yes: free and low-cost programmes, events and online services.
 - **Charges to be a member or to access services/facilities?** There is no membership fee. Some premium courses and events may carry a fee; access routes are free or bursary-supported. **[CONFIRM your pricing]**
 - **Overseas aid** (required, because you work outside England and Wales):
-  - *Needs addressed:* gap between education and employment; limited career guidance, mentoring and global exposure for young people; youth unemployment and underemployment.
+  - *Needs addressed:* gap between education and employment; limited career guidance, mentoring and global exposure for youth; youth unemployment and underemployment.
   - *How addressed:* career fairs and workshops, mentorship, certificate courses, access to partner-funded scholarships, and research.
   - *How needs were identified, and evidence:* founder's experience and work in Ibadan, participant and school feedback, and published labour-market data. **[CONFIRM: add specific figures or reports you used]**
   - *Local partners or delivery agents:* yes: schools, partner organisations such as DataCamp, and volunteer mentors. **[CONFIRM list]**
@@ -147,7 +147,7 @@ All questions: **Not applicable** (the organisation does not operate a village h
 
 - **Close links with other persons or bodies:** Yes: the founder and trustees are also connected with Wissen Haus Ltd (UK). State the relationship, any contracts or shared costs, and how conflicts will be managed (annual declarations under clause 9.3; register of interests). **[CONFIRM relationship and ownership]**
 - **Linked to or established by a non-charitable organisation:** **Yes**: Wissen Haus Ltd (UK). Explain how the two are separated: separate bank accounts, written arrangements for any shared services at fair value, and no transfer of charity assets for private benefit. **[CONFIRM]**
-- **Works with children or vulnerable people:** **Yes.** Beneficiaries are young people, including under-18 secondary-school students. Safeguarding policy: https://www.wissenhaus.org/safeguarding. Trustees will appoint a Designated Safeguarding Lead and record adoption.
+- **Works with children or vulnerable people:** **Yes.** Beneficiaries are youth, including under-18 secondary-school students. Safeguarding policy: https://www.wissenhaus.org/safeguarding. Trustees will appoint a Designated Safeguarding Lead and record adoption.
 - **Current number of trustees:** **[3 once the third trustee is named; currently two are identified]**
 - **Minimum number of trustees in the governing document:** **3** (clauses 4.1, 5.1, 5.2.3).
 - **Special circumstances requiring all trustee names to be kept off the public register:** **No.**
@@ -173,20 +173,20 @@ Reviewed against the newer 22-page draft printout (application 5300610). Section
 3. **Employment, goods or services, and personal benefits are all answered Yes, but their tables are empty.** The form wants names, payment and relationship in each table, **plus attached minutes of the trustee meeting that agreed each arrangement**. This means the trustees need to hold and minute a meeting before you submit (see the minutes checklist below). If an arrangement is not actually planned, answer No instead.
 4. **The 18 countries on page 6.** You listed Nigeria, Ghana, Kenya, South Africa, Rwanda, Gambia, Republic of Congo, Tanzania, Egypt, Zimbabwe, Zambia, Namibia, Lesotho, Mauritius, Mauritania, Ethiopia, Seychelles and Sierra Leone, and answered **Yes** to "carrying out its own operations in the locations you have named". The Commission may ask for evidence for every country. List only places where you work or will work in the next 12 months.
 5. **"Special circumstances" on page 1** contains the same text as "Additional information" on page 21. That field is meant for reasons the application needs special handling (such as urgency). Clear it, and keep the text on page 21.
-6. **Funding page: too many boxes ticked.** Each one opens follow-up questions. If you will not have them, untick: Investments, Funding from interest and return on endowments, Loans from any source, and Commercial sponsor. Keep Public donations and Grants, and Charging for services and Corporate donors if true.
-7. **Page 5: ethnic or racial origin is ticked** while page 8 says "regardless of background". Make these consistent, and be ready to explain why the benefit is directed at African and diaspora young people.
+6. **Funding page: too many boxes ticked.** Each one opens follow-up questions. If you will not have them, untick: Investments, Funding from interest and return on endowments, Loans from any source, and Commercial sponsor. (The amended constitution now permits investment, programme-related investment and a trading subsidiary, in clauses 3.1(e), (k), (m) and 17.4. Keep these unticked only if the CIO will not use them in its first year; otherwise tick them and expect follow-up questions.) Keep Public donations and Grants, and Charging for services and Corporate donors if true.
+7. **Page 5: ethnic or racial origin is ticked** while page 8 says "regardless of background". Make these consistent, and be ready to explain why the benefit is directed at African and diaspora youth.
 8. **Trustees.** Page 19 says 3 trustees currently, but only two are named. Leave this until the third is confirmed. The "Trustee details" table on page 20 needs each trustee entered.
 
 ## Answers for blank fields
 
 **Page 6: What does the organisation advance education in?**
-Career guidance and career planning; employability and workplace skills; digital and data skills; entrepreneurship; and financial and economic independence.
+Career guidance and career planning; employability and workplace skills; digital and data skills; entrepreneurship; and financial and economic independence. **[CONFIRM and add once running:]** non-clinical care and support skills, and technical infrastructure and built-environment skills.
 
 **Page 6: How are the trustees satisfied that all those providing education are suitably qualified?**
 Trainers, speakers and mentors are chosen for relevant professional or teaching experience, with identity checks, two references and safeguarding vetting (see wissenhaus.org/safeguarding). The programmes lead reviews content and delivery, participant feedback is collected after each programme, and trustees receive an annual report on who delivered what and their credentials.
 
 **Page 8: What criteria do the trustees use to decide who the organisation benefits or what work it does or supports?**
-Eligibility is young people in the countries the organisation works in (age range **[CONFIRM]**). Programmes are open to everyone who meets this. Where places are limited, priority goes first to those facing economic disadvantage, then to the order of application. Trustees approve the annual programme plan against the charity's purposes and assess new activities for charitable benefit before they start.
+Eligibility is youth in the countries the organisation works in (age range **[CONFIRM]**). Programmes are open to everyone who meets this. Where places are limited, priority goes first to those facing economic disadvantage, then to the order of application. Trustees approve the annual programme plan against the charity's purposes and assess new activities for charitable benefit before they start.
 
 **Page 8: Grant-making criteria (tidy of your pasted text)**
 Applicants are assessed on financial need, academic or professional potential, location and fit with the charity's purposes. There is no membership requirement and no discrimination. Applications are scored by a panel of at least two trustees who declare any conflict of interest and take no part in decisions where they have one. *(You ticked "Makes grants to individuals" on page 4, so the Commission may ask for a short grant-making policy to attach. It can be one page, and I can write it.)*
@@ -302,7 +302,7 @@ The co-working space is a non-residential area separate from the residential bui
 *If you use Option B, get the written permission from the operator and from the tenancy's landlord if its terms restrict business use.* It would be more robust to move to Option A, with a membership in the charity's name, once the charity has its bank account.
 
 **What is the land or property used for?**
-> Administration and online meetings for the charity (desk work, calls and post). The charity does not deliver programmes to the public or to young people at these premises.
+> Administration and online meetings for the charity (desk work, calls and post). The charity does not deliver programmes to the public or to youth at these premises.
 
 *(This also supports the safeguarding policy: no under-18 will be at the premises.)*
 

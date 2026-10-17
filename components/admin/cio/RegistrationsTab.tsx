@@ -15,7 +15,7 @@ const label = (v: unknown) => AUTHORITIES.find(a => a.value === v)?.label ?? Str
 
 const FIELDS: Field[] = [
   { name: 'authority', label: 'Registered with', type: 'select', required: true, options: AUTHORITIES },
-  { name: 'entity_name', label: 'Entity name', type: 'text', required: true, placeholder: 'e.g. Wissen-Haus Empowerment Foundation' },
+  { name: 'entity_name', label: 'Entity name', type: 'text', required: true, placeholder: 'e.g. Wissen-Haus Foundation' },
   { name: 'reg_number', label: 'Registration number', type: 'text' },
   { name: 'status', label: 'Status', type: 'text', placeholder: 'e.g. Application submitted, Registered' },
   { name: 'registered_date', label: 'Registered / filed on', type: 'date' },
