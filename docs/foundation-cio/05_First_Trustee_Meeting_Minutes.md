@@ -2,7 +2,7 @@
 ## A Charitable Incorporated Organisation (Foundation Model)
 ## Minutes of the First Meeting of the Charity Trustees
 
-**Date:** [DD Month YYYY]
+**Date:** 12 October 2026
 **Time:** [HH:MM] to [HH:MM]
 **Place:** [Venue / video-call platform] (clause 10.5 of the constitution allows electronic participation)
 **Application reference (Charity Commission):** 5300610
@@ -12,8 +12,8 @@
 ---
 
 ### Present (charity trustees)
-1. Benz Olagbaye, Founder & Executive Director (trustee, ex officio)
-2. Gbemisola Abatan, Programmes & Partnerships Director (trustee)
+1. Benz Ayomiposi Olagbaye, Managing Director (trustee, ex officio)
+2. Gbemisola Yetunde Abatan, Director of Programmes & Partnerships (trustee, ex officio)
 3. [Third trustee: name to be confirmed] ([position])
 
 ### In attendance (not a trustee, no vote)
@@ -30,12 +30,12 @@
 1.3 *If only two trustees exist when this meeting is held: note that, when a trustee has a conflict (items 4 and 8), only one non-conflicted trustee remains and a quorum cannot be formed for that item. The third trustee must be appointed first.*
 
 ## 2. Chair
-2.1 It was **RESOLVED** that [name] be appointed chair of the trustees' meetings (clause 10.4). The chair has a casting vote in a tie.
+2.1 It was **RESOLVED** that [Gbemisola Yetunde Abatan / name] be appointed chair of the trustees' meetings (clause 10.4). The chair has a casting vote in a tie.
 
 ## 3. Declarations of interest (clause 9)
 3.1 Each trustee declared any interests in matters on the agenda. The declarations were:
-- **Benz Olagbaye:** [director / shareholder / other role] in Wissen Haus Ltd (UK); would be remunerated as Executive Director (item 8). **[CONFIRM]**
-- **Gbemisola Abatan:** [none / details]
+- **Benz Ayomiposi Olagbaye:** Co-Director at Wissen Haus Empowerment (Wissen Haus Ltd); shareholder and director in Wissen Haus Ltd (UK); remunerated as Managing Director (item 8).
+- **Gbemisola Yetunde Abatan:** Co-Director at Wissen Haus Empowerment (Wissen Haus Ltd); shareholder and member in Wissen Haus Ltd (UK).
 - **[Third trustee]:** [none / details]
 3.2 It was **RESOLVED** that these be recorded in the register of interests and renewed in writing every year and whenever circumstances change (clause 9.3).
 
@@ -43,8 +43,10 @@
 4.1 The trustees reviewed the constitution (Foundation model, 21 clauses).
 4.2 It was **RESOLVED** that the constitution be adopted, that the charity's name is **Wissen Haus Foundation**, and that its principal office is **190 Dantzic Street, Manchester M4 4LF**.
 4.3 The trustees confirmed that each of them: is eligible to act as a charity trustee under clause 4.3; has signed a written acceptance of office (clause 5.2.5); and consents to the charity trustees' details being used for the application.
-4.4 The trustees are also the members of the CIO (clause 4.1). A register of members and trustees was started.
-4.5 The trustees noted that the constitution requires at least three trustees (clauses 4.1, 5.1, 5.2.3).
+4.4 The trustees are also the members of the CIO (clause 4.1). A register of members and trustees was created and is maintained in the WHF-CIO Records dashboard with the following details:
+   - Gbemisola Yetunde Abatan, Director of Programmes & Partnerships, Ex Officio, appointed 10/12/2026, term ends 10/13/2029
+   - Benz Ayomiposi Olagbaye, Managing Director, Ex Officio, appointed 10/12/2026, term ends 10/13/2029
+4.5 The trustees noted that the constitution requires at least three trustees (clauses 4.1, 5.1, 5.2.3). A third trustee is to be appointed to meet this requirement.
 
 ## 5. Safeguarding
 5.1 The trustees read the Safeguarding Policy (published at wissenhaus.org/safeguarding) and the Charity Commission's guidance on safeguarding for trustees.
@@ -56,17 +58,21 @@
 6.1 It was **RESOLVED** that the conflicts-of-interest provisions in clause 9 govern all trustee decisions and that conflicts be recorded in the minutes as clause 9.2.2 requires.
 
 ## 7. Wissen Haus Ltd (UK)
-7.1 The trustees noted the connection between the charity and Wissen Haus Ltd (UK): [describe: the founder's role in the company, shared name and website, any shared premises or staff]. **[CONFIRM]**
+7.1 The trustees noted the connection between the charity and Wissen Haus Ltd (UK): 
+   - Wissen Haus Ltd is a private company limited by guarantee (Companies House SIC Code 88990)
+   - Registered office: 190 Dantzic Street, Manchester M4 4LF (same as the charity)
+   - Members: Fawaz Bello, Benz Ayomiposi Olagbaye, and Gbemisola Yetunde Abatan
+   - Two of the charity trustees (Benz Olagbaye and Gbemisola Abatan) are co-directors
+   - Both organisations share the name and operate from the same premises
 7.2 It was **RESOLVED** that the charity and the company remain separate: separate bank accounts, books and decision-making; no charity asset or income to be used for the company's benefit; and any shared service only under a written agreement at market value approved under item 9.
 
 ## 8. Employment of the Executive Director (clauses 8.3 and 8.4)
-*Benz Olagbaye declared an interest and left the meeting for this item. He took no part in the discussion and did not vote (clause 9.2). The remaining non-conflicted trustees were [names] and were quorate.*
+*Benz Ayomiposi Olagbaye declared an interest and left the meeting for this item. He took no part in the discussion and did not vote (clause 9.2). The remaining non-conflicted trustees were Gbemisola Yetunde Abatan and were quorate.*
 
-8.1 The trustees considered engaging Benz Olagbaye as Executive Director. Proposed terms: [role and main duties]; [hours]; [pay: £[amount] per [period] / unpaid at present]; [start date]; [employment or contract basis].
-8.2 The trustees considered whether the arrangement is reasonable and proportionate, in the charity's interests, and consistent with the conditions in sections 185 to 188 of the Charities Act 2011 and clause 8.3. They noted that [only one trustee is remunerated / the remuneration is for the executive role, separate from the trustee role]. [Comparators or evidence considered: [details]]
-8.3 **RESOLVED** [by the non-conflicted trustees]: [that the engagement be approved on the terms above / that no remuneration be paid at present / that the matter be deferred until [date]].
+8.1 The trustees considered engaging Benz Ayomiposi Olagbaye as Managing Director/Executive Director of the charity. Proposed terms: [role and main duties]; [hours]; [pay: [amount] per [period] / unpaid at present]; [start date]; [employment or contract basis].
+8.2 The trustees considered whether the arrangement is reasonable and proportionate, in the charity's interests, and consistent with the conditions in sections 185 to 188 of the Charities Act 2011 and clause 8.3. They noted that the remuneration is for the executive role, separate from the trustee role. [Comparators or evidence considered: [details]]
+8.3 **RESOLVED** [by the non-conflicted trustees]: that the engagement be approved on the terms above.
 8.4 The remuneration will be disclosed in the annual accounts and trustees' report (clause 8.3.2).
-*If no payment is intended, state that here and answer "No" on the Charity Commission form.*
 
 ## 9. Goods and services from trustees or connected organisations (clause 8.2.3)
 9.1 The trustees considered whether the charity will buy goods or services from a trustee, the founder, or a connected person or organisation, including Wissen Haus Ltd (UK).
